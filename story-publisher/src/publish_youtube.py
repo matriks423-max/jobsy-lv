@@ -40,6 +40,12 @@ def build_description(episode_data: dict) -> str:
     logline = episode_data["logline"]
     cliffhanger_hint = "Watch until the end — something changes everything."
 
+    website_url = os.environ.get("ARION_WEBSITE_URL", "").strip()
+    website_line = (
+        f"\n🌐 Full story world, character profiles & mysteries: {website_url}\n"
+        if website_url else ""
+    )
+
     return f"""Episode {ep_num}: {title}
 
 {logline}
@@ -52,7 +58,7 @@ ARION WORLD is an epic animated story series set in a universe where time is bro
 New episodes every Monday.
 
 Subscribe and hit the bell — the clues are in the details.
-
+{website_line}
 #ArionWorld #AnimeStory #EpicFantasy #Storytime
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """

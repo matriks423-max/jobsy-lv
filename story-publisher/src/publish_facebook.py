@@ -26,6 +26,12 @@ def upload_to_facebook(video_path: Path, episode_data: dict) -> str:
     ep_num = episode_data["episode_number"]
     title = episode_data["title"]
 
+    website_url = os.environ.get("ARION_WEBSITE_URL", "").strip()
+    website_line = (
+        f"\n🌐 Full story, character profiles & mysteries: {website_url}"
+        if website_url else ""
+    )
+
     description = (
         f"Episode {ep_num}: {title}\n\n"
         f"{episode_data['logline']}\n\n"
@@ -33,6 +39,7 @@ def upload_to_facebook(video_path: Path, episode_data: dict) -> str:
         f"Follow the page so you don't miss the clues hidden in every episode. "
         f"What you see today will mean something very different in 100 episodes.\n\n"
         f"#ArionWorld #AnimeStory #EpicFantasy"
+        f"{website_line}"
     )
 
     file_size = video_path.stat().st_size

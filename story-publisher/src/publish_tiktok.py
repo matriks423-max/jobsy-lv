@@ -29,6 +29,16 @@ def upload_to_tiktok(trailer_path: Path, episode_data: dict) -> str:
         f"#ArionWorld #AnimeStory #EpicFantasy #Anime #Fantasy #NewEpisode"
     )[:150]  # TikTok title limit
 
+    website_url = os.environ.get("ARION_WEBSITE_URL", "").strip()
+    description = (
+        f"Arion World — Episode {ep_num}: {episode_data['title']}. "
+        f"{episode_data.get('logline', '')} "
+        f"New episode every Monday. #ArionWorld #AnimeStory #EpicFantasy"
+    )
+    if website_url:
+        description += f" | Full story: {website_url}"
+    description = description[:2200]  # TikTok description limit
+
     file_size = trailer_path.stat().st_size
 
     # Query creator info to get upload constraints
@@ -50,6 +60,7 @@ def upload_to_tiktok(trailer_path: Path, episode_data: dict) -> str:
             json={
                 "post_info": {
                     "title": title,
+                    "description": description,
                     "privacy_level": "PUBLIC_TO_EVERYONE",
                     "disable_duet": False,
                     "disable_comment": False,

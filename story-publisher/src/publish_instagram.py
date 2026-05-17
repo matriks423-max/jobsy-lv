@@ -26,12 +26,19 @@ def upload_reel_to_instagram(trailer_path: Path, episode_data: dict) -> str:
     token = os.environ["FACEBOOK_ACCESS_TOKEN"]
     ep_num = episode_data["episode_number"]
 
+    website_url = os.environ.get("ARION_WEBSITE_URL", "").strip()
+    website_line = (
+        f"\n🌐 Full story at link in bio | {website_url}"
+        if website_url else ""
+    )
+
     caption = (
         f"⚔️ Arion World — Episode {ep_num}: {episode_data['title']}\n\n"
         f"{episode_data['logline']}\n\n"
         f"Full 30-minute episode on YouTube — link in bio.\n\n"
         f"New episode every Monday. The clues are hidden in plain sight. 👁️\n\n"
         f"#ArionWorld #AnimeStory #EpicFantasy #NewEpisode #Anime #Fantasy"
+        f"{website_line}"
     )
 
     # Step 1: Create media container
