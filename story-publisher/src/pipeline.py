@@ -8,10 +8,11 @@ Steps:
   1. Generate episode script (Claude)
   2. Generate narration audio (ElevenLabs)
   3. Generate scene images (Replicate SDXL)
-  4. Assemble 30-min video (FFmpeg)
-  5. Create 90-sec portrait trailer (FFmpeg)
-  6. Publish to YouTube, Facebook, Instagram, TikTok
-  7. Update story bible and commit
+  4. Generate SRT subtitles + translations (DeepL)
+  5. Assemble 1-hour video (FFmpeg)
+  6. Create 2-min portrait trailer with burned subtitles (FFmpeg)
+  7. Publish to YouTube, Facebook, Instagram, TikTok
+  8. Update story bible and commit
 """
 
 import json
@@ -26,6 +27,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from generate_story import generate_episode
 from generate_voice import generate_narration
 from generate_images import generate_all_images
+from generate_subtitles import generate_subtitles
 from assemble_video import assemble_video
 from create_trailer import create_portrait_trailer
 from publish_youtube import upload_to_youtube
@@ -55,6 +57,7 @@ def run_pipeline():
     episode_dir = WORK_DIR / f"ep{episode_number:03d}"
     audio_dir = episode_dir / "audio"
     images_dir = episode_dir / "images"
+    subs_dir = episode_dir / "subtitles"
     video_path = episode_dir / f"arion_world_ep{episode_number:03d}.mp4"
     trailer_path = episode_dir / f"arion_world_ep{episode_number:03d}_trailer.mp4"
 
@@ -71,28 +74,33 @@ def run_pipeline():
     print(f"{len(audio_files)} audio files generated.")
 
     # ── Step 3: Generate images ───────────────────────────────
-    print("\nStep 3/6 — Generating scene images with Replicate SDXL...")
+    print("\nStep 3/7 — Generating scene images with Replicate SDXL...")
     image_files = generate_all_images(episode_data, images_dir)
     print(f"{len(image_files)} images generated.")
 
-    # ── Step 4: Assemble video ────────────────────────────────
-    print("\nStep 4/6 — Assembling 30-minute video with FFmpeg...")
+    # ── Step 4: Generate subtitles ────────────────────────────
+    print("\nStep 4/7 — Generating subtitles + translations...")
+    subtitle_files = generate_subtitles(episode_data, audio_files, subs_dir)
+    en_srt = subtitle_files.get("EN")
+
+    # ── Step 5: Assemble video ────────────────────────────────
+    print("\nStep 5/7 — Assembling 1-hour video with FFmpeg...")
     music = find_background_music()
     if music:
         print(f"  Using background music: {music.name}")
     assemble_video(episode_data, image_files, audio_files, video_path, music)
 
-    # ── Step 5: Create trailer ────────────────────────────────
-    print("\nStep 5/6 — Creating 90-second portrait trailer...")
-    create_portrait_trailer(video_path, trailer_path)
+    # ── Step 6: Create trailer ────────────────────────────────
+    print("\nStep 6/7 — Creating 2-minute portrait trailer with subtitles...")
+    create_portrait_trailer(video_path, trailer_path, subtitle_file=en_srt)
 
-    # ── Step 6: Publish to all platforms ─────────────────────
-    print("\nStep 6/6 — Publishing to platforms...")
+    # ── Step 7: Publish to all platforms ─────────────────────
+    print("\nStep 7/7 — Publishing to platforms...")
     results = {}
 
     try:
-        print("  → YouTube (full 30-min video)...")
-        results["youtube"] = upload_to_youtube(video_path, episode_data)
+        print("  → YouTube (full 1-hour video + subtitle tracks)...")
+        results["youtube"] = upload_to_youtube(video_path, episode_data, subtitle_files)
     except Exception as e:
         print(f"  ✗ YouTube failed: {e}")
         results["youtube"] = f"FAILED: {e}"

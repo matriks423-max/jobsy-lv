@@ -45,7 +45,50 @@ Subscribe and hit the bell — the clues are in the details.
 """
 
 
-def upload_to_youtube(video_path: Path, episode_data: dict) -> str:
+LANGUAGE_NAMES = {
+    "EN": "English", "ES": "Spanish", "PT": "Portuguese",
+    "FR": "French", "DE": "German", "JA": "Japanese",
+}
+
+
+def upload_captions(video_id: str, subtitle_files: dict[str, Path], token: str):
+    """Upload SRT subtitle tracks to a YouTube video."""
+    headers = {"Authorization": f"Bearer {token}"}
+    for lang, srt_path in subtitle_files.items():
+        if not srt_path.exists():
+            continue
+        lang_lower = lang.lower()
+        lang_name = LANGUAGE_NAMES.get(lang, lang)
+        try:
+            resp = requests.post(
+                f"{API_URL}/captions?part=snippet",
+                headers=headers,
+                params={
+                    "videoId": video_id,
+                    "part": "snippet",
+                },
+                files={
+                    "snippet": (None, json.dumps({
+                        "snippet": {
+                            "videoId": video_id,
+                            "language": lang_lower,
+                            "name": lang_name,
+                            "isDraft": False,
+                        }
+                    }), "application/json"),
+                    "media": (srt_path.name, srt_path.read_bytes(), "text/plain"),
+                },
+                timeout=60,
+            )
+            if resp.status_code in (200, 201):
+                print(f"  Subtitles uploaded: {lang}")
+            else:
+                print(f"  Subtitle upload failed ({lang}): {resp.status_code} {resp.text[:200]}")
+        except Exception as e:
+            print(f"  Subtitle upload error ({lang}): {e}")
+
+
+def upload_to_youtube(video_path: Path, episode_data: dict, subtitle_files: dict[str, Path] | None = None) -> str:
     token = get_access_token()
     ep_num = episode_data["episode_number"]
     title = episode_data["title"]
@@ -100,6 +143,9 @@ def upload_to_youtube(video_path: Path, episode_data: dict) -> str:
             if upload_resp.status_code in (200, 201):
                 video_id = upload_resp.json()["id"]
                 print(f"YouTube upload complete: https://youtube.com/watch?v={video_id}")
+                if subtitle_files:
+                    print("  Uploading subtitle tracks...")
+                    upload_captions(video_id, subtitle_files, token)
                 return video_id
 
             if upload_resp.status_code == 308:

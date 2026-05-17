@@ -3,6 +3,12 @@ import json
 import random
 from pathlib import Path
 
+# File extensions treated as pre-rendered animated clips.
+# When generate_images.py is eventually replaced by an AI video generator
+# (Runway, Kling, Sora, etc.), the clips will have these extensions and the
+# pipeline will automatically skip the Ken Burns step and use them directly.
+_CLIP_EXTENSIONS = {".mp4", ".mov", ".webm", ".mkv"}
+
 
 def get_audio_duration(path: Path) -> float:
     result = subprocess.run(
@@ -26,6 +32,49 @@ def _ken_burns_filter(duration: float, index: int, width: int = 1920, height: in
     return f"{d}:d={frames}:s={width}x{height}:fps={fps}"
 
 
+def _build_scene_video(
+    scene_input: Path,
+    audio: Path,
+    scene_out: Path,
+    index: int,
+) -> None:
+    """Build one scene video.
+
+    If scene_input is a pre-rendered clip (.mp4 / .mov / .webm), it is used
+    directly — Ken Burns is skipped. This is the animation upgrade path: swap
+    generate_images.py for a video generator and the rest of the pipeline is
+    unchanged.
+    """
+    if scene_input.suffix.lower() in _CLIP_EXTENSIONS:
+        # Pre-rendered animated clip: re-encode with narration audio, preserve visuals
+        duration = get_audio_duration(audio)
+        subprocess.run([
+            "ffmpeg", "-y",
+            "-stream_loop", "-1", "-i", str(scene_input),
+            "-i", str(audio),
+            "-t", str(duration),
+            "-c:v", "libx264", "-preset", "fast", "-crf", "23",
+            "-c:a", "aac", "-b:a", "192k",
+            "-pix_fmt", "yuv420p",
+            str(scene_out)
+        ], check=True, capture_output=True)
+    else:
+        # Static image: apply Ken Burns zoom/pan effect for motion
+        duration = get_audio_duration(audio)
+        kb = _ken_burns_filter(duration, index)
+        subprocess.run([
+            "ffmpeg", "-y",
+            "-loop", "1", "-i", str(scene_input),
+            "-i", str(audio),
+            "-vf", kb,
+            "-c:v", "libx264", "-preset", "fast", "-crf", "23",
+            "-c:a", "aac", "-b:a", "192k",
+            "-shortest",
+            "-pix_fmt", "yuv420p",
+            str(scene_out)
+        ], check=True, capture_output=True)
+
+
 def assemble_video(
     episode_data: dict,
     image_files: list[Path],
@@ -38,26 +87,14 @@ def assemble_video(
     work_dir.mkdir(exist_ok=True)
 
     scene_videos = []
+    total = len(image_files)
 
-    for i, (img, audio) in enumerate(zip(image_files, audio_files)):
-        duration = get_audio_duration(audio)
-        kb = _ken_burns_filter(duration, i)
+    for i, (scene_input, audio) in enumerate(zip(image_files, audio_files)):
         scene_out = work_dir / f"scene_{i:02d}.mp4"
-
-        subprocess.run([
-            "ffmpeg", "-y",
-            "-loop", "1", "-i", str(img),
-            "-i", str(audio),
-            "-vf", kb,
-            "-c:v", "libx264", "-preset", "fast", "-crf", "23",
-            "-c:a", "aac", "-b:a", "192k",
-            "-shortest",
-            "-pix_fmt", "yuv420p",
-            str(scene_out)
-        ], check=True, capture_output=True)
-
+        _build_scene_video(scene_input, audio, scene_out, i)
         scene_videos.append(scene_out)
-        print(f"Assembled scene {i + 1}/{len(image_files)}")
+        mode = "animated" if scene_input.suffix.lower() in _CLIP_EXTENSIONS else "image"
+        print(f"Assembled scene {i + 1}/{total} ({mode})")
 
     # Crossfade transition between scenes using concat with xfade
     concat_list = work_dir / "concat.txt"
