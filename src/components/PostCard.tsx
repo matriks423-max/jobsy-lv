@@ -1,0 +1,121 @@
+import { Link } from "react-router";
+import { useLocale } from "@/lib/locale-context";
+import { t } from "@/lib/i18n";
+import { CATEGORIES } from "@/lib/categories";
+import type { Post, Profile } from "@db/schema";
+import {
+  Home,
+  Truck,
+  Wrench,
+  Flower2,
+  Car,
+  Baby,
+  Cat,
+  Monitor,
+  GraduationCap,
+  MoreHorizontal,
+  MapPin,
+  Calendar,
+  Wallet,
+} from "lucide-react";
+
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  Home,
+  Truck,
+  Wrench,
+  Flower2,
+  Car,
+  Baby,
+  Cat,
+  Monitor,
+  GraduationCap,
+  MoreHorizontal,
+};
+
+interface PostCardProps {
+  post: Post;
+  profile?: Profile | null;
+}
+
+export default function PostCard({ post }: PostCardProps) {
+  const { locale } = useLocale();
+
+  const category = CATEGORIES.find((c) => c.key === post.category);
+  const CategoryIcon = category ? iconMap[category.icon] : MoreHorizontal;
+
+  const isNeed = post.type === "need";
+
+  return (
+    <Link
+      to={`/post/${post.id}`}
+      className="group relative flex flex-col overflow-hidden rounded-2xl border-2 border-ink bg-white shadow-card transition-all duration-250 hover:-translate-y-1 hover:shadow-float"
+    >
+      {/* Left accent stripe */}
+      <div
+        className={`absolute left-0 top-0 h-full w-1 rounded-l-2xl ${
+          isNeed ? "bg-need" : "bg-sage"
+        }`}
+      />
+
+      <div className="flex flex-1 flex-col p-5 pl-6">
+        {/* Top row */}
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <span
+            className={`rounded px-2 py-0.5 font-mono text-[11px] font-medium uppercase ${
+              isNeed
+                ? "border border-need bg-need-light text-need"
+                : "border border-sage bg-sage-light text-sage"
+            }`}
+          >
+            {isNeed
+              ? t(locale, "browse.typeNeed")
+              : t(locale, "browse.typeOffer")}
+          </span>
+          <span className="inline-flex items-center gap-1 rounded-full border-1.5 border-ink bg-mustard-light px-2.5 py-1 font-body text-xs font-medium uppercase tracking-wide text-ink">
+            <CategoryIcon className="h-3 w-3" />
+            {t(locale, `categories.${post.category}` as never)}
+          </span>
+          {post.city && (
+            <span className="inline-flex items-center gap-1 font-body text-xs text-ink-light">
+              <MapPin className="h-3 w-3" />
+              {t(locale, `cities.${post.city}` as never)}
+            </span>
+          )}
+        </div>
+
+        {/* Title */}
+        <h3 className="mb-2 font-body text-lg font-bold text-ink line-clamp-2">
+          {post.title}
+        </h3>
+
+        {/* Description */}
+        {post.description && (
+          <p className="mb-4 font-body text-sm text-ink-muted line-clamp-2">
+            {post.description}
+          </p>
+        )}
+
+        {/* Bottom row */}
+        <div className="mt-auto flex flex-wrap items-center gap-3 pt-2">
+          {post.budgetText && (
+            <span className="inline-flex items-center gap-1 font-body text-sm text-ink">
+              <Wallet className="h-3.5 w-3.5 text-coral" />
+              {post.budgetText}
+            </span>
+          )}
+          {post.whenText && (
+            <span className="inline-flex items-center gap-1 font-body text-sm text-ink-muted">
+              <Calendar className="h-3.5 w-3.5" />
+              {post.whenText}
+            </span>
+          )}
+          <span className="ml-auto font-mono text-xs text-ink-light">
+            {new Date(post.createdAt).toLocaleDateString(
+              locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB"
+            )}
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}

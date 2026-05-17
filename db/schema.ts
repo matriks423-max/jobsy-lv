@@ -1,0 +1,135 @@
+import {
+  mysqlTable,
+  mysqlEnum,
+  bigint,
+  int,
+  varchar,
+  text,
+  timestamp,
+  boolean,
+} from "drizzle-orm/mysql-core";
+
+export const users = mysqlTable("users", {
+  id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
+  unionId: varchar("unionId", { length: 255 }).unique(),
+  googleId: varchar("googleId", { length: 255 }).unique(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  name: varchar("name", { length: 255 }),
+  avatar: text("avatar"),
+  passwordHash: varchar("passwordHash", { length: 255 }),
+  authMethod: mysqlEnum("authMethod", ["kimi", "google", "email"]).default("email").notNull(),
+  role: mysqlEnum("role", ["user", "admin", "banned"]).default("user").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  lastSignInAt: timestamp("lastSignInAt").defaultNow().notNull(),
+});
+
+export const profiles = mysqlTable("profiles", {
+  id: bigint("id", { mode: "number", unsigned: true }).primaryKey(),
+  userId: bigint("userId", { mode: "number", unsigned: true })
+    .notNull()
+    .unique(),
+  email: varchar("email", { length: 320 }),
+  name: varchar("name", { length: 255 }),
+  phone: varchar("phone", { length: 50 }),
+  city: varchar("city", { length: 100 }),
+  avatarUrl: text("avatarUrl"),
+  freePostUsed: boolean("freePostUsed").default(false).notNull(),
+  freePostCredits: int("freePostCredits", { unsigned: true }).default(0).notNull(),
+  referralCode: varchar("referralCode", { length: 20 }).unique(),
+  referredBy: bigint("referredBy", { mode: "number", unsigned: true }),
+  stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export const posts = mysqlTable("posts", {
+  id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
+  userId: bigint("userId", { mode: "number", unsigned: true }).notNull(),
+  type: mysqlEnum("type", ["need", "offer"]).notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  category: varchar("category", { length: 50 }).notNull(),
+  city: varchar("city", { length: 100 }),
+  region: varchar("region", { length: 100 }),
+  budgetText: varchar("budgetText", { length: 100 }),
+  whenText: varchar("whenText", { length: 100 }),
+  language: mysqlEnum("language", ["lv", "ru", "en"]).default("lv").notNull(),
+  status: mysqlEnum("status", [
+    "pending_payment",
+    "pending_review",
+    "active",
+    "closed",
+    "expired",
+    "rejected",
+  ])
+    .default("pending_payment")
+    .notNull(),
+  wasFree: boolean("wasFree").default(false).notNull(),
+  stripeSessionId: varchar("stripeSessionId", { length: 255 }),
+  stripePaymentId: varchar("stripePaymentId", { length: 255 }),
+  paidAt: timestamp("paidAt"),
+  expiresAt: timestamp("expiresAt"),
+  viewCount: int("viewCount", { unsigned: true }).default(0).notNull(),
+  contactCount: int("contactCount", { unsigned: true }).default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export const contacts = mysqlTable("contacts", {
+  id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
+  postId: bigint("postId", { mode: "number", unsigned: true }).notNull(),
+  fromUserId: bigint("fromUserId", { mode: "number", unsigned: true }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const reports = mysqlTable("reports", {
+  id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
+  postId: bigint("postId", { mode: "number", unsigned: true }).notNull(),
+  reporterId: bigint("reporterId", { mode: "number", unsigned: true }).notNull(),
+  reason: varchar("reason", { length: 50 }).notNull(),
+  details: text("details"),
+  resolved: boolean("resolved").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const referrals = mysqlTable("referrals", {
+  id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
+  referrerId: bigint("referrerId", { mode: "number", unsigned: true }).notNull(),
+  referredId: bigint("referredId", { mode: "number", unsigned: true }).notNull().unique(),
+  postMade: boolean("postMade").default(false).notNull(),
+  rewarded: boolean("rewarded").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const postImages = mysqlTable("postImages", {
+  id: int("id", { unsigned: true }).autoincrement().primaryKey(),
+  postId: int("postId", { unsigned: true }).notNull(),
+  url: text("url").notNull(),
+  sortOrder: int("sortOrder", { unsigned: true }).default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type User = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
+export type Profile = typeof profiles.$inferSelect;
+export type InsertProfile = typeof profiles.$inferInsert;
+export type Post = typeof posts.$inferSelect;
+export type InsertPost = typeof posts.$inferInsert;
+export type Contact = typeof contacts.$inferSelect;
+export type InsertContact = typeof contacts.$inferInsert;
+export type Report = typeof reports.$inferSelect;
+export type InsertReport = typeof reports.$inferInsert;
+export type Referral = typeof referrals.$inferSelect;
+export type InsertReferral = typeof referrals.$inferInsert;
+export type PostImage = typeof postImages.$inferSelect;
+export type InsertPostImage = typeof postImages.$inferInsert;
