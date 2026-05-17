@@ -75,7 +75,27 @@ Generate a complete 30-minute episode as structured JSON with this exact format:
   "character_state_updates": {{
     "Character Name": "Brief note on how this character changed or what they learned"
   }},
-  "cliffhanger": "One sentence describing the final image/moment of the episode"
+  "cliffhanger": "One sentence describing the final image/moment of the episode",
+
+  "character_deaths": ["List of character names who died in this episode — empty if none"],
+  "characters_introduced": [
+    {{
+      "name": "Character name",
+      "public_role": "One-line role description safe to show the audience",
+      "public_description": "2-3 sentence description of who they appear to be — NO hidden secrets"
+    }}
+  ],
+  "character_public_updates": {{
+    "Character Name": "Updated public description if the audience now knows significantly more about them"
+  }},
+  "world_reveals": {{
+    "timelines": [{{ "name": "Timeline name", "era": "Year range", "public_description": "What the audience now knows" }}],
+    "factions": [{{ "name": "Faction name", "public_description": "What the audience knows", "known_secret": "If a secret was revealed this episode, state it — otherwise omit" }}],
+    "locations": [{{ "name": "Location name", "public_description": "What the audience knows about it" }}],
+    "power_system": null
+  }},
+  "mysteries_raised": ["New questions raised in this episode that the audience will wonder about"],
+  "mysteries_resolved": ["Questions from previous episodes that were definitively answered this episode"]
 }}
 
 Requirements:

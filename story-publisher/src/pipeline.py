@@ -33,6 +33,7 @@ from publish_facebook import upload_to_facebook
 from publish_instagram import upload_reel_to_instagram
 from publish_tiktok import upload_to_tiktok
 from story_bible import get_episode_number, increment_episode_number, save_episode
+from generate_website_content import generate_all as update_website
 
 
 BASE_DIR = Path(__file__).parent.parent
@@ -116,6 +117,12 @@ def run_pipeline():
     except Exception as e:
         print(f"  ✗ TikTok failed: {e}")
         results["tiktok"] = f"FAILED: {e}"
+
+    # ── Update website content ────────────────────────────────
+    try:
+        update_website(episode_data, episode_number)
+    except Exception as e:
+        print(f"Website content update failed (non-fatal): {e}")
 
     # ── Save episode to bible ─────────────────────────────────
     save_episode(episode_number, {

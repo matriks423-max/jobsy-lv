@@ -76,12 +76,12 @@ jobs:
           print('Cliffhanger:', data['cliffhanger'])
           "
 
-      - name: Commit updated story bible
+      - name: Commit updated story bible and website content
         run: |
           git config user.name "Arion World Bot"
           git config user.email "arion-bot@arionworld.auto"
-          git add story-publisher/story_bible/
-          git diff --staged --quiet || git commit -m "chore(story-bible): update episode $(cat story-publisher/story_bible/.episode_counter)"
+          git add story-publisher/story_bible/ website/public/content/
+          git diff --staged --quiet || git commit -m "chore: episode $(cat story-publisher/story_bible/.episode_counter) — update story bible and website"
           git push origin HEAD
 
       - name: Upload episode artifacts
