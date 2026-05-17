@@ -16,7 +16,8 @@
       "game_mechanic_concept": "Passive ability: when player examines an object or enters a location, receives fragmented impressions of past events. Higher proficiency = clearer impressions, longer history accessible.",
       "cost": "No active cost. Passive. Overwhelming in high-residue environments.",
       "how_to_learn": "Most people with any Resonance awareness develop this unconsciously. Conscious control requires a teacher or significant self-directed practice.",
-      "variations_known": ["Can be suppressed — important for Resonants who find high-residue environments painful", "Can be focused on a specific time period with training"]
+      "variations_known": ["Can be suppressed — important for Resonants who find high-residue environments painful", "Can be focused on a specific time period with training"],
+      "visual_effect_tags": "character eyes glowing faint amber, ghostly transparent impressions overlaid on the scene, echo residue visible as golden haze, soft amber light at vision edges"
     },
     {
       "id": "tech_002",
@@ -29,7 +30,8 @@
       "game_mechanic_concept": "Active ability tree: light manipulation (illumination, blinding), heat manipulation (warming, minor ignition), force application (push/pull on small objects). Costs Resonance energy per use.",
       "cost": "Moderate Resonance energy. Sustainable for trained practitioners in short bursts.",
       "how_to_learn": "Guild curriculum — available to anyone who passes Guild entry assessment. Also self-teachable given the right starting point.",
-      "variations_known": ["Precision weaving — smaller effect, much lower cost, much harder (the water ball principle)", "Combined weaving — two effects simultaneously, exponentially harder"]
+      "variations_known": ["Precision weaving — smaller effect, much lower cost, much harder (the water ball principle)", "Combined weaving — two effects simultaneously, exponentially harder"],
+      "visual_effect_tags": "shimmering threads of resonance light being shaped by hands, glowing light strands woven between fingers, visible energy manipulation, soft white-gold luminescence"
     },
     {
       "id": "tech_003",
@@ -42,7 +44,8 @@
       "game_mechanic_concept": "Precision ranged attack: low energy cost, high damage, minimal visual telegraph. Requires significant Resonance Arts investment to unlock but is far more efficient than equivalent-damage conventional techniques.",
       "cost": "Low Resonance energy — the efficiency is the point.",
       "how_to_learn": "Cannot be learned through Guild curriculum. Requires understanding of pressure physics and Resonance interaction with liquids at a mechanical level. Self-discovery or a very specific teacher.",
-      "why_it_matters": "This technique exemplifies the core philosophy: understanding beats power. A Tier 1 practitioner who discovers this can threaten a Tier 3 practitioner who relies on brute Resonance output."
+      "why_it_matters": "This technique exemplifies the core philosophy: understanding beats power. A Tier 1 practitioner who discovers this can threaten a Tier 3 practitioner who relies on brute Resonance output.",
+      "visual_effect_tags": "coin-sized compressed water sphere with intense light refraction halo, near-invisible high-velocity water projectile, subtle shimmer trail in flight path, no visible energy buildup until release"
     },
     {
       "id": "tech_004",
@@ -59,7 +62,8 @@
         "Combat clone (standard — clone fights, takes damage, dissolves)",
         "Study clone (Aethon innovation — clone sent to learn a specific thing, optimised for knowledge recovery on dissolution)",
         "Persistence clone (theoretical — clone that survives longer than standard by being given independent Resonance sustaining — nobody has confirmed this works)"
-      ]
+      ],
+      "visual_effect_tags": "translucent duplicate figure with faint pale blue-white resonance outline, same appearance as original but slightly less solid, subtle chromatic fringe at clone edges, two versions of the same person in frame"
     },
     {
       "id": "tech_005",
@@ -71,7 +75,8 @@
       "description": "The Vorath shamanic tradition for communicating with the Shattered — people who exist partially across multiple timelines. Requires placing the practitioner's perception partially out of normal timeline phase, creating a shared perceptual space where Shattered individuals can communicate without the cognitive overload of full timeline-crossing.",
       "game_mechanic_concept": "Communication ability: allows conversation with Shattered NPCs/characters who cannot otherwise communicate coherently. Also provides brief timeline-adjacent perception — flickers of other timelines' versions of the current location.",
       "cost": "Moderate. Disorienting. Prolonged use causes temporary timeline-anchor loosening (practitioner briefly becomes partially Shattered themselves).",
-      "how_to_learn": "Vorath shamanic lineage primarily. Theory teachable; practice requires a Shattered individual willing to attempt contact."
+      "how_to_learn": "Vorath shamanic lineage primarily. Theory teachable; practice requires a Shattered individual willing to attempt contact.",
+      "visual_effect_tags": "practitioner with slight chromatic aberration aura, partial timeline desync effect, shattered individual visible as overlapping fractured translucent images, out-of-sync visual distortion around both figures, fractured purple-white light"
     }
   ],
 

@@ -51,7 +51,9 @@ Generate a complete 30-minute episode as structured JSON with this exact format:
       "location": "Specific location name",
       "time_of_day": "dawn/day/dusk/night",
       "duration_seconds": 180,
-      "image_prompt": "Detailed anime-style image description for SDXL. Include: art style, lighting, character positions, expressions, environment details, color palette. Style: high-quality anime, Studio Ghibli meets Attack on Titan, detailed backgrounds, cinematic composition.",
+      "characters_in_scene": ["List of character full names physically present — e.g. Kairo Voss, Ren"],
+      "techniques_used": ["List of named technique names used in this scene — e.g. Echo Sight (Basic). Empty list if none."],
+      "image_prompt": "Describe ONLY: environment details, lighting, composition, mood, action, and expressions. DO NOT describe character appearances — those are injected automatically from character profiles. Focus on: where are they, what is the light doing, what is the camera angle, what is the emotional tone of the frame.",
       "narration": "Full narration text for this scene (spoken by narrator). This should be vivid, immersive, and advance the story. Write at least 200 words per scene.",
       "dialogue": [
         {{"character": "Name", "line": "What they say", "tone": "angry/whispered/etc"}}
@@ -95,7 +97,31 @@ Generate a complete 30-minute episode as structured JSON with this exact format:
     "power_system": null
   }},
   "mysteries_raised": ["New questions raised in this episode that the audience will wonder about"],
-  "mysteries_resolved": ["Questions from previous episodes that were definitively answered this episode"]
+  "mysteries_resolved": ["Questions from previous episodes that were definitively answered this episode"],
+
+  "character_visual_state_updates": {{
+    "Character Name": {{
+      "new_injuries": [
+        {{
+          "description": "Human-readable description of the injury",
+          "prompt_tag": "SDXL prompt tag — short, specific, e.g. deep cut on left cheek, blood dried",
+          "severity": "minor/moderate/severe",
+          "heals_episode": 999
+        }}
+      ],
+      "injuries_healed": ["prompt_tag of any injury that healed this episode"],
+      "new_equipment": [
+        {{
+          "description": "What they acquired",
+          "prompt_tag": "SDXL prompt tag",
+          "permanent": false
+        }}
+      ],
+      "equipment_removed": ["prompt_tag of equipment no longer carried"],
+      "permanent_changes": ["Any permanent appearance change — new scar, lost limb, significantly aged"],
+      "age_appearance_override": null
+    }}
+  }}
 }}
 
 Requirements:

@@ -24,6 +24,8 @@ from pathlib import Path
 # Ensure src/ is on path when running from repo root
 sys.path.insert(0, str(Path(__file__).parent))
 
+import json as _json
+
 from generate_story import generate_episode
 from generate_voice import generate_narration
 from generate_images import generate_all_images
@@ -41,6 +43,53 @@ from generate_website_content import generate_all as update_website
 BASE_DIR = Path(__file__).parent.parent
 WORK_DIR = BASE_DIR / "output"
 MUSIC_DIR = BASE_DIR / "assets" / "music"
+BIBLE_DIR = BASE_DIR / "story_bible"
+
+
+def _apply_visual_state_updates(episode_number: int, updates: dict):
+    """Persist injury/aging/equipment changes to character_visual_state.json."""
+    state_path = BIBLE_DIR / "character_visual_state.json"
+    if not state_path.exists():
+        return
+
+    state = _json.loads(state_path.read_text())
+    chars = state.setdefault("characters", {})
+
+    for char_name, changes in updates.items():
+        if char_name not in chars:
+            chars[char_name] = {
+                "active_injuries": [], "healing_injuries": [],
+                "permanent_changes": [], "equipment_changes": [],
+                "prompt_additions": "", "prompt_removals": "",
+            }
+        c = chars[char_name]
+
+        for inj in changes.get("new_injuries", []):
+            inj["received_episode"] = episode_number
+            c.setdefault("active_injuries", []).append(inj)
+
+        for healed_tag in changes.get("injuries_healed", []):
+            c["active_injuries"] = [
+                i for i in c.get("active_injuries", []) if i.get("prompt_tag") != healed_tag
+            ]
+
+        for equip in changes.get("new_equipment", []):
+            equip["acquired_episode"] = episode_number
+            c.setdefault("equipment_changes", []).append(equip)
+
+        for removed_tag in changes.get("equipment_removed", []):
+            c["equipment_changes"] = [
+                e for e in c.get("equipment_changes", []) if e.get("prompt_tag") != removed_tag
+            ]
+
+        for perm in changes.get("permanent_changes", []):
+            c.setdefault("permanent_changes", []).append(perm)
+
+        if override := changes.get("age_appearance_override"):
+            c["age_appearance"] = override
+
+    state["episode_last_updated"] = episode_number
+    state_path.write_text(_json.dumps(state, indent=2))
 
 
 def find_background_music() -> Path | None:
@@ -131,6 +180,15 @@ def run_pipeline():
         update_website(episode_data, episode_number)
     except Exception as e:
         print(f"Website content update failed (non-fatal): {e}")
+
+    # ── Apply character visual state updates ──────────────────
+    visual_updates = episode_data.get("character_visual_state_updates", {})
+    if visual_updates:
+        try:
+            _apply_visual_state_updates(episode_number, visual_updates)
+            print(f"Visual state updated for: {', '.join(visual_updates.keys())}")
+        except Exception as e:
+            print(f"Visual state update failed (non-fatal): {e}")
 
     # ── Save episode to bible ─────────────────────────────────
     save_episode(episode_number, {
