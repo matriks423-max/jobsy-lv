@@ -40,6 +40,16 @@ def load_techniques() -> dict:
     return json.loads(path.read_text()) if path.exists() else {"techniques": []}
 
 
+def load_character_visual_state() -> dict:
+    path = BIBLE_DIR / "character_visual_state.json"
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
+def load_visual_style() -> dict:
+    path = BIBLE_DIR / "visual_style.json"
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
 def load_future_hooks() -> dict:
     return json.loads((BIBLE_DIR / "future_hooks.json").read_text())
 
@@ -69,6 +79,7 @@ def build_context_prompt(episode_number: int) -> str:
     techniques = load_techniques()
     hooks = load_future_hooks()
     recent_episodes = load_recent_episodes(3)
+    visual_state = load_character_visual_state()
 
     relevant_hooks = [
         h for h in hooks["hooks"]
@@ -125,6 +136,10 @@ ARION WORLD — STORY BIBLE CONTEXT FOR EPISODE {episode_number}
 
 === MAIN CHARACTERS ===
 {json.dumps(characters['main_cast'], indent=2)}
+
+=== CURRENT CHARACTER PHYSICAL STATE ===
+(Injuries, healing wounds, equipment changes — reflect these in scene descriptions)
+{json.dumps(visual_state.get('characters', {}), indent=2)}
 
 === RELEVANT FUTURE HOOKS ===
 {json.dumps(relevant_hooks, indent=2)}
