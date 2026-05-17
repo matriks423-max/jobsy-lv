@@ -1,0 +1,115 @@
+{
+  "world_name": "Arion World",
+  "tagline": "Where every truth is a lie waiting to be remembered",
+  "overview": "Arion World is a vast universe spanning multiple timelines, dimensions, and civilizations. At its core lies a fundamental mystery: the Arion Fracture — an event that shattered the fabric of time and scattered fragments of a hidden truth across thousands of years. Characters across different eras unknowingly carry pieces of this truth, and only by connecting the threads across timelines will the full picture emerge.",
+
+  "timelines": {
+    "The Founding Age": {
+      "era": "Year 0 - Year 400",
+      "description": "The age when the original Arion civilisation rose and fell. The first gods walked among mortals. The source of all power — the Luminal Core — was created and then deliberately hidden.",
+      "key_events": [
+        "The Birth of the First Arion (Year 0)",
+        "The Luminal Core Forging (Year 88)",
+        "The Great Betrayal — a god kills another god to seize the Core (Year 312)",
+        "The Arion Fracture — reality cracks into multiple parallel timelines (Year 400)"
+      ],
+      "status": "shown_in_flashbacks_only"
+    },
+    "The Shadow Centuries": {
+      "era": "Year 401 - Year 2000",
+      "description": "The dark age. Civilisations rise and fall without knowing why time feels broken. Ancient orders hunt for the Luminal Core fragments scattered by the Fracture.",
+      "key_events": [],
+      "status": "referenced_in_legend"
+    },
+    "The Present Age": {
+      "era": "Year 2847",
+      "description": "The primary timeline where the main story unfolds. A young outcast named Kairo discovers he can see echoes of other timelines — visions dismissed as madness by everyone around him.",
+      "status": "main_story"
+    },
+    "The Echo Timeline": {
+      "era": "Year 2847 (parallel)",
+      "description": "An alternate version of the present where the Great Betrayal was prevented. Here the world developed completely differently — but is slowly being erased as timelines collapse toward a single point.",
+      "status": "revealed_later"
+    },
+    "The Far Future": {
+      "era": "Year 5000+",
+      "description": "Brief glimpses only. A technologically advanced but spiritually hollow world where the Luminal Core was found and misused. These scenes exist as warnings embedded in the present story.",
+      "status": "cryptic_glimpses_only"
+    }
+  },
+
+  "power_system": {
+    "name": "Luminal Resonance",
+    "description": "All living beings carry a trace of the original Luminal Core inside them — called a Resonance Spark. Most people can't access it. Those who can are called Resonants.",
+    "tiers": [
+      {
+        "tier": 1,
+        "name": "Echo Sight",
+        "description": "Can perceive emotional residue left on objects and places"
+      },
+      {
+        "tier": 2,
+        "name": "Thread Weaving",
+        "description": "Can manipulate minor aspects of reality — light, gravity, time perception"
+      },
+      {
+        "tier": 3,
+        "name": "Fracture Walking",
+        "description": "Can briefly step between timelines — extremely rare, considered mythical"
+      },
+      {
+        "tier": 4,
+        "name": "Core Binding",
+        "description": "Theoretical only — what happens when someone reunites all Core fragments. Unknown consequences."
+      }
+    ],
+    "hidden_truth": "Every use of Luminal Resonance slowly erases the user from all timelines. The more power used, the more 'real' a person becomes in one timeline and ghost-like in others. This explains why many Resonants eventually vanish — not death, but temporal erasure."
+  },
+
+  "factions": {
+    "The Veilkeepers": {
+      "role": "Ancient secret society that knows the truth about the Arion Fracture. Their mission: prevent the Luminal Core from being reassembled at all costs.",
+      "public_face": "A philosophical order of scholars",
+      "secret": "They caused the Fracture deliberately to trap a god inside it"
+    },
+    "The Resonant Guild": {
+      "role": "Organisation that trains and regulates Resonants. Appears benevolent.",
+      "public_face": "Academy and peacekeeping force",
+      "secret": "Upper leadership are Veilkeeper puppets who harvest Resonance energy from students"
+    },
+    "The Shattered": {
+      "role": "People who partially lost their timeline anchor — they exist partly in multiple timelines simultaneously, appearing to others as unstable or insane.",
+      "public_face": "Outcasts and 'timeline-touched' wanderers",
+      "secret": "They are the only ones who can naturally perceive the full truth of the Arion Fracture"
+    },
+    "The Unnamed Court": {
+      "role": "Unknown. References appear in ancient texts only. No confirmed members.",
+      "public_face": "Considered myth",
+      "secret": "UNREVEALED — planted for future revelation"
+    }
+  },
+
+  "locations": {
+    "Caelum City": {
+      "description": "The sprawling capital of the present age. Built atop the ruins of an ancient Arion city — but no one knows it.",
+      "hidden_truth": "The city's foundation stones are fragments of the original Luminal Core structure"
+    },
+    "The Fractured Wastes": {
+      "description": "A vast desert where time moves strangely — clocks stop, people age in reverse, echoes of past events play on repeat",
+      "hidden_truth": "The geographic centre of the original Arion Fracture event"
+    },
+    "The Undercity": {
+      "description": "Ancient tunnels beneath Caelum City. Officially 'sealed for safety'.",
+      "hidden_truth": "Contains a fully intact Founding Age archive — and a door that leads to the Echo Timeline"
+    }
+  },
+
+  "active_mysteries": [
+    "Who really caused the Arion Fracture and why?",
+    "What is the Unnamed Court?",
+    "Why can Kairo see other timelines when no Resonant has ever done this?",
+    "What happened to the original Arion people — did they die or transform into something else?",
+    "Why does the god trapped in the Fracture sometimes speak through random people?",
+    "What is written on the door in the Undercity that no one can read?"
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "main_cast": {
+    "Kairo Voss": {
+      "role": "protagonist",
+      "age": 19,
+      "description": "A self-taught street-level Resonant from the outer districts of Caelum City. Labelled unstable and dangerous by the Resonant Guild after reporting visions of 'other worlds'. Has no formal training. Works odd jobs to survive.",
+      "power_tier": 1,
+      "visible_traits": ["impulsive", "deeply loyal to few people", "hides fear behind sarcasm", "draws compulsively — always sketching things he sees in visions"],
+      "hidden_traits": ["is the reincarnation of the Founding Age god who caused the Great Betrayal — but this memory is locked away", "his drawings are subconsciously accurate maps of the Echo Timeline"],
+      "arc_status": "awakening",
+      "secrets_revealed_so_far": [],
+      "secrets_still_hidden": [
+        "He is a reincarnated god",
+        "His drawings are real maps",
+        "His visions are not hallucinations — he is a natural Fracture Walker"
+      ],
+      "relationships": {
+        "Serin Alda": "reluctant alliance, growing trust",
+        "Director Malec": "targeted enemy — Malec knows what Kairo is",
+        "The Voice": "hears a voice that calls itself 'the one you used to be'"
+      },
+      "episode_introduced": 1
+    },
+
+    "Serin Alda": {
+      "role": "deuteragonist",
+      "age": 23,
+      "description": "A Tier 2 Resonant and junior investigator for the Resonant Guild. Assigned to monitor Kairo after his visions cause a public disturbance. Believes she is doing legitimate law enforcement work.",
+      "power_tier": 2,
+      "visible_traits": ["methodical", "struggles to trust gut instinct over rules", "genuinely wants to help people", "carries guilt over a past mission that went wrong"],
+      "hidden_traits": ["her mother was a member of the Veilkeepers — she was placed in the Guild as a long-term sleeper agent without her knowledge", "her 'assigned case' of Kairo is not random"],
+      "arc_status": "loyalties_being_tested",
+      "secrets_revealed_so_far": [],
+      "secrets_still_hidden": [
+        "She is an unknowing Veilkeeper plant",
+        "Her mother is still alive and is a high-ranking Veilkeeper",
+        "Her 'guild loyalty' chip implanted during training contains a compulsion command she has never triggered"
+      ],
+      "relationships": {
+        "Kairo Voss": "assigned target, becoming genuine ally",
+        "Director Malec": "superior she respects and trusts — misplaced trust",
+        "Her Mother (unnamed)": "believes deceased — mother is alive"
+      },
+      "episode_introduced": 1
+    },
+
+    "Director Malec Thorne": {
+      "role": "primary_antagonist_revealed_gradually",
+      "age": 58,
+      "description": "Head of the Resonant Guild's Enforcement Division. Respected, calm, politically powerful. Appears as a reasonable authority figure for the first arc.",
+      "power_tier": 3,
+      "visible_traits": ["measured speech", "never raises his voice", "always three steps ahead", "genuinely believes he is saving the world"],
+      "hidden_traits": ["senior Veilkeeper", "has been hunting Kairo's bloodline for 30 years", "knows the Core fragment locations — and is deliberately keeping them separated"],
+      "arc_status": "false_ally_phase",
+      "secrets_revealed_so_far": [],
+      "secrets_still_hidden": [
+        "He is the one who ordered Kairo's parents killed",
+        "He has a Core fragment hidden in his office",
+        "He believes reassembling the Core will free the trapped god — which he sees as apocalyptic"
+      ],
+      "relationships": {
+        "Serin Alda": "chess piece he is moving into position",
+        "Kairo Voss": "existential threat he is managing carefully",
+        "The Veilkeepers": "reports to an inner circle he calls 'the Foundation'"
+      },
+      "episode_introduced": 2
+    },
+
+    "Ren": {
+      "role": "comic_relief_and_emotional_anchor",
+      "age": 17,
+      "description": "Kairo's only genuine friend. No Resonance ability. Runs a small repair shop in the outer district. Completely ordinary — or so it appears.",
+      "power_tier": 0,
+      "visible_traits": ["endlessly optimistic", "talks too much when nervous", "surprisingly good in a crisis", "collects old clocks that don't work"],
+      "hidden_traits": ["is a Shattered — exists partially in three timelines simultaneously, which manifests as him always knowing what time it is with perfect accuracy", "his clock collection is not random — each clock stopped at a moment that corresponds to a key Fracture event"],
+      "arc_status": "comic_relief_slowly_revealed_as_crucial",
+      "secrets_revealed_so_far": [],
+      "secrets_still_hidden": [
+        "He is Shattered and perceives multiple timelines passively",
+        "His clocks are a subconscious record of the Fracture's timeline damage",
+        "In the Echo Timeline, Ren died preventing the Great Betrayal — this version of him exists because that sacrifice echoes forward"
+      ],
+      "relationships": {
+        "Kairo Voss": "best friend, one-sided protectiveness (Ren protects Kairo more than Kairo realises)",
+        "The Shattered": "unknowing member"
+      },
+      "episode_introduced": 1
+    },
+
+    "The Voice": {
+      "role": "mystery_figure",
+      "age": "ancient",
+      "description": "An entity that speaks to Kairo through his visions. Claims to be 'the one he used to be'. Gives cryptic guidance that only makes sense episodes later.",
+      "power_tier": 4,
+      "visible_traits": ["speaks in riddles", "shows genuine affection for Kairo", "sometimes warns Kairo of danger seconds before it happens"],
+      "hidden_traits": ["is the consciousness of the god trapped in the Arion Fracture — Kairo's past self", "can only communicate during Kairo's visions — cannot speak directly"],
+      "arc_status": "cryptic_guide",
+      "secrets_revealed_so_far": [],
+      "secrets_still_hidden": [
+        "Is Kairo's own past-life consciousness",
+        "Is also the god the Veilkeepers imprisoned",
+        "Has been slowly feeding Kairo fragments of memory to prepare him"
+      ],
+      "relationships": {
+        "Kairo Voss": "past self to present self",
+        "Director Malec": "ancient enemy — Malec's bloodline has imprisoned The Voice for 2000 years"
+      },
+      "episode_introduced": 1
+    }
+  },
+
+  "supporting_cast": {},
+  "future_characters": [
+    {
+      "name": "Lyra",
+      "introduction_episode": "~15",
+      "teaser": "A woman from the Echo Timeline who has somehow crossed over. She knows Kairo — but this Kairo has never met her."
+    },
+    {
+      "name": "The Archivist",
+      "introduction_episode": "~30",
+      "teaser": "Keeper of the Undercity archives. Has been down there for 400 years. Should be dead. Is not."
+    }
+  ]
+}

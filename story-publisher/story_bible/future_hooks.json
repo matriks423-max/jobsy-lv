@@ -1,0 +1,65 @@
+{
+  "hooks": [
+    {
+      "id": "hook_001",
+      "description": "In Episode 1, Ren mentions his oldest clock stopped at '3:12'. This is the exact year (Year 312) the Great Betrayal occurred in the Founding Age.",
+      "planted_episode": 1,
+      "payoff_episode": 88,
+      "payoff_description": "Ren realises all his clocks correspond to Fracture timeline events and confronts the truth that he is Shattered",
+      "revealed": false,
+      "category": "character_secret"
+    },
+    {
+      "id": "hook_002",
+      "description": "Kairo's sketchbook drawings are described as 'weird abstract city maps'. In Episode 1 he draws a city with a strange spiral tower that doesn't exist in Caelum City.",
+      "planted_episode": 1,
+      "payoff_episode": 45,
+      "payoff_description": "The spiral tower is a landmark in the Echo Timeline version of Caelum City. Lyra recognises it instantly when she arrives.",
+      "revealed": false,
+      "category": "world_lore"
+    },
+    {
+      "id": "hook_003",
+      "description": "Director Malec's office has a large antique clock on the wall. It has 13 hour marks instead of 12. Never commented on.",
+      "planted_episode": 2,
+      "payoff_episode": 120,
+      "payoff_description": "The 13-hour clock is a Veilkeeper symbol — 13 representing the 13 original members of the order that caused the Fracture. Malec's ancestry is revealed.",
+      "revealed": false,
+      "category": "villain_secret"
+    },
+    {
+      "id": "hook_004",
+      "description": "Serin has a habit of touching her left temple when she is about to make a decision. She thinks it is a nervous tic.",
+      "planted_episode": 1,
+      "payoff_episode": 67,
+      "payoff_description": "The compulsion chip implanted during her Guild training is located at her left temple. When the trigger command is spoken she physically cannot act against the Guild — and she finally understands what her gesture meant.",
+      "revealed": false,
+      "category": "character_secret"
+    },
+    {
+      "id": "hook_005",
+      "description": "The Voice tells Kairo in Episode 1: 'You have already made this choice. You will make it again. The third time you get it right.'",
+      "planted_episode": 1,
+      "payoff_episode": 200,
+      "payoff_description": "Kairo faces the exact same moral choice three times across three timelines. The first two times he fails. The third time — in the final arc — he succeeds, fulfilling this prophecy.",
+      "revealed": false,
+      "category": "long_game_prophecy"
+    },
+    {
+      "id": "hook_006",
+      "description": "There is graffiti on a wall in the outer district that reads 'ARION REMEMBERS'. Nobody in the story comments on it.",
+      "planted_episode": 1,
+      "payoff_episode": 150,
+      "payoff_description": "The Shattered use this phrase as a coded signal to each other. The graffiti means there is a Shattered living in that building — it is Ren's building.",
+      "revealed": false,
+      "category": "world_lore"
+    }
+  ],
+
+  "meta": {
+    "total_hooks": 6,
+    "revealed_hooks": 0,
+    "categories": ["character_secret", "world_lore", "villain_secret", "long_game_prophecy"],
+    "instruction": "Each episode should plant at least 2 new hooks and optionally pay off 1 existing hook if the episode number matches or the story calls for it."
+  }
+}
