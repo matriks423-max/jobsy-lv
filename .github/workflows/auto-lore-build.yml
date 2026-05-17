@@ -1,0 +1,70 @@
+name: Arion World — Auto Lore Builder
+
+on:
+  schedule:
+    # Every 5 hours — builds lore autonomously while you're away
+    - cron: '0 */5 * * *'
+  workflow_dispatch:
+    inputs:
+      run_number:
+        description: 'Task index to run (0=races, 1=continents, 2=techniques, 3=factions, 4=hooks, 5=world, 6=characters)'
+        required: false
+        default: 'auto'
+
+jobs:
+  build-lore:
+    name: Expand Story Bible
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: story-publisher/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r story-publisher/requirements.txt
+
+      - name: Determine run number
+        id: run_num
+        run: |
+          if [ "${{ github.event.inputs.run_number }}" = "auto" ] || [ -z "${{ github.event.inputs.run_number }}" ]; then
+            # Count total auto-lore commits to determine which task is next
+            COUNT=$(git log --oneline --grep="lore(auto):" | wc -l | tr -d ' ')
+            echo "run_number=$COUNT" >> $GITHUB_OUTPUT
+            echo "Auto run number: $COUNT"
+          else
+            echo "run_number=${{ github.event.inputs.run_number }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run lore builder
+        working-directory: story-publisher/src
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          RUN_NUMBER: ${{ steps.run_num.outputs.run_number }}
+        run: python auto_lore_builder.py
+
+      - name: Commit expanded lore
+        run: |
+          git config user.name "Arion World Bot"
+          git config user.email "arion-bot@arionworld.auto"
+          git add story-publisher/story_bible/
+          if git diff --staged --quiet; then
+            echo "No lore changes to commit."
+          else
+            TASK_NAMES=(races continents techniques factions hooks world_detail characters)
+            RUN_NUM=${{ steps.run_num.outputs.run_number }}
+            TASK=${TASK_NAMES[$((RUN_NUM % 7))]}
+            git commit -m "lore(auto): expand ${TASK} — run #${RUN_NUM}"
+            git push origin HEAD
+            echo "Lore committed: ${TASK}"
+          fi
