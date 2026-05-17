@@ -74,8 +74,13 @@ def assemble_video(
         str(merged)
     ], check=True, capture_output=True)
 
+    copyright_meta = [
+        "-metadata", "copyright=© Arion World. All rights reserved.",
+        "-metadata", "artist=Arion World",
+        "-metadata", "comment=Original intellectual property. Unauthorised reproduction prohibited.",
+    ]
+
     if background_music and background_music.exists():
-        final = output_path
         subprocess.run([
             "ffmpeg", "-y",
             "-i", str(merged),
@@ -84,10 +89,18 @@ def assemble_video(
             "-map", "0:v", "-map", "[aout]",
             "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
             "-shortest",
-            str(final)
+            *copyright_meta,
+            str(output_path)
         ], check=True, capture_output=True)
     else:
-        merged.rename(output_path)
+        subprocess.run([
+            "ffmpeg", "-y",
+            "-i", str(merged),
+            "-c", "copy",
+            *copyright_meta,
+            str(output_path)
+        ], check=True, capture_output=True)
+        merged.unlink(missing_ok=True)
 
     print(f"Full episode assembled: {output_path}")
     return output_path

@@ -1,4 +1,5 @@
 {
+  "_copyright": "© Arion World. All rights reserved.",
   "_purpose": "A growing log of every named technique demonstrated or discovered in the story. Structured for game compatibility — each entry is concrete enough to implement as a game ability. Entries are added automatically by the pipeline after each episode.",
 
   "_game_note": "This file is the living skill tree of Arion World. When the game is built, this becomes the ability database. Every technique has: which branch it belongs to, what it costs, what it does, who can learn it, and when it first appeared in the story.",
