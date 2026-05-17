@@ -1,0 +1,90 @@
+{
+  "_purpose": "A growing log of every named technique demonstrated or discovered in the story. Structured for game compatibility — each entry is concrete enough to implement as a game ability. Entries are added automatically by the pipeline after each episode.",
+
+  "_game_note": "This file is the living skill tree of Arion World. When the game is built, this becomes the ability database. Every technique has: which branch it belongs to, what it costs, what it does, who can learn it, and when it first appeared in the story.",
+
+  "techniques": [
+    {
+      "id": "tech_001",
+      "name": "Echo Sight (Basic)",
+      "branch": "Resonance Arts",
+      "tier": 1,
+      "introduced_episode": "pre-story",
+      "first_demonstrated_by": "Kairo Voss",
+      "description": "Passive perception of emotional and event residue left on objects and places. The practitioner feels impressions — not full visions, not complete information. Like reading a room that remembers what happened in it.",
+      "game_mechanic_concept": "Passive ability: when player examines an object or enters a location, receives fragmented impressions of past events. Higher proficiency = clearer impressions, longer history accessible.",
+      "cost": "No active cost. Passive. Overwhelming in high-residue environments.",
+      "how_to_learn": "Most people with any Resonance awareness develop this unconsciously. Conscious control requires a teacher or significant self-directed practice.",
+      "variations_known": ["Can be suppressed — important for Resonants who find high-residue environments painful", "Can be focused on a specific time period with training"]
+    },
+    {
+      "id": "tech_002",
+      "name": "Thread Weaving (Basic)",
+      "branch": "Resonance Arts",
+      "tier": 2,
+      "introduced_episode": "pre-story",
+      "first_demonstrated_by": "Serin Alda",
+      "description": "Active manipulation of Resonance energy — shaping light, heat, minor force. The Guild's curriculum covers this and calls it mastery. It is not mastery. It is the first floor of a very tall building.",
+      "game_mechanic_concept": "Active ability tree: light manipulation (illumination, blinding), heat manipulation (warming, minor ignition), force application (push/pull on small objects). Costs Resonance energy per use.",
+      "cost": "Moderate Resonance energy. Sustainable for trained practitioners in short bursts.",
+      "how_to_learn": "Guild curriculum — available to anyone who passes Guild entry assessment. Also self-teachable given the right starting point.",
+      "variations_known": ["Precision weaving — smaller effect, much lower cost, much harder (the water ball principle)", "Combined weaving — two effects simultaneously, exponentially harder"]
+    },
+    {
+      "id": "tech_003",
+      "name": "Precision Water Compression",
+      "branch": "Resonance Arts",
+      "tier": 2,
+      "introduced_episode": "to be assigned when demonstrated",
+      "first_demonstrated_by": "unknown — theoretical until demonstrated",
+      "description": "Rather than generating large-scale water manipulation, the practitioner compresses a small volume of water to extreme density and accelerates it to high velocity. The result: a projectile the size of a coin that hits with more force than a thrown boulder. Uses a fraction of the energy of conventional water magic. Near-invisible in flight.",
+      "game_mechanic_concept": "Precision ranged attack: low energy cost, high damage, minimal visual telegraph. Requires significant Resonance Arts investment to unlock but is far more efficient than equivalent-damage conventional techniques.",
+      "cost": "Low Resonance energy — the efficiency is the point.",
+      "how_to_learn": "Cannot be learned through Guild curriculum. Requires understanding of pressure physics and Resonance interaction with liquids at a mechanical level. Self-discovery or a very specific teacher.",
+      "why_it_matters": "This technique exemplifies the core philosophy: understanding beats power. A Tier 1 practitioner who discovers this can threaten a Tier 3 practitioner who relies on brute Resonance output."
+    },
+    {
+      "id": "tech_004",
+      "name": "Resonance Clone",
+      "branch": "Mind Arts",
+      "tier": 2,
+      "introduced_episode": "to be assigned when demonstrated",
+      "first_demonstrated_by": "unknown",
+      "description": "Creates a physical copy of the practitioner capable of independent action. The clone shares the practitioner's knowledge at moment of creation. As the clone acts and experiences, it accumulates new experience. On dissolution, the practitioner may attempt to recover what the clone learned — this recovery is imperfect and requires training.",
+      "game_mechanic_concept": "Utility ability: create a temporary duplicate for combat, exploration, or parallel tasks. Advanced versions allow partial knowledge recovery on dissolution. Clone has a health pool separate from practitioner.",
+      "cost": "High initial cost. Clone maintenance is ongoing. Knowledge recovery is its own ability with its own cost.",
+      "how_to_learn": "Aethon tradition primarily. Not impossible to discover independently but extremely rare. The Guild does not teach it.",
+      "variations_known": [
+        "Combat clone (standard — clone fights, takes damage, dissolves)",
+        "Study clone (Aethon innovation — clone sent to learn a specific thing, optimised for knowledge recovery on dissolution)",
+        "Persistence clone (theoretical — clone that survives longer than standard by being given independent Resonance sustaining — nobody has confirmed this works)"
+      ]
+    },
+    {
+      "id": "tech_005",
+      "name": "Shamanic Resonance Reading",
+      "branch": "Perception Arts + Mind Arts",
+      "tier": 2,
+      "introduced_episode": "to be assigned",
+      "first_demonstrated_by": "Vorath tradition",
+      "description": "The Vorath shamanic tradition for communicating with the Shattered — people who exist partially across multiple timelines. Requires placing the practitioner's perception partially out of normal timeline phase, creating a shared perceptual space where Shattered individuals can communicate without the cognitive overload of full timeline-crossing.",
+      "game_mechanic_concept": "Communication ability: allows conversation with Shattered NPCs/characters who cannot otherwise communicate coherently. Also provides brief timeline-adjacent perception — flickers of other timelines' versions of the current location.",
+      "cost": "Moderate. Disorienting. Prolonged use causes temporary timeline-anchor loosening (practitioner briefly becomes partially Shattered themselves).",
+      "how_to_learn": "Vorath shamanic lineage primarily. Theory teachable; practice requires a Shattered individual willing to attempt contact."
+    }
+  ],
+
+  "meta": {
+    "total_techniques": 5,
+    "by_branch": {
+      "Resonance Arts": 3,
+      "Mind Arts": 1,
+      "Perception Arts + Mind Arts": 1,
+      "Body Arts": 0,
+      "Essence Arts": 0,
+      "Craft Arts": 0,
+      "The Unnamed Branch": 0
+    },
+    "instruction": "Add new entries whenever a technique is named, demonstrated, or meaningfully described in an episode. The game team will use this file directly."
+  }
+}

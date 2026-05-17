@@ -99,13 +99,17 @@ Generate a complete 30-minute episode as structured JSON with this exact format:
 }}
 
 Requirements:
-- Write 10-14 scenes totalling approximately 1800 seconds (30 minutes)
-- Total narration across all scenes must be at least 4000 words
+- Write 20-28 scenes totalling approximately 3600 seconds (60 minutes)
+- Total narration across all scenes must be at least 8500 words
 - Each scene image_prompt must be unique and visually distinct
-- At least one scene must be an action or high-stakes confrontation
-- At least one scene must be a quiet, character-driven moment
-- Plant exactly 2-3 new hooks
-- The cliffhanger must make the viewer desperate for next week"""
+- Include at least two action or high-stakes sequences — separated by quieter scenes, not back to back
+- Include at least three quiet character-driven moments — these carry as much weight as the action
+- At least one scene must develop a relationship (friendship, tension, romance, rivalry) meaningfully
+- If a technique is used, name it and describe it concretely enough to be a game ability
+- Plant exactly 3-4 new hooks — more room means more seeds
+- Structure the episode in three movements: establishment, escalation, consequence
+- The cliffhanger must be earned by everything that came before it — not a random shock, a logical detonation
+- Also output "new_techniques" — any named ability demonstrated this episode, structured for techniques.json"""
 
     message = client.messages.create(
         model="claude-opus-4-7",

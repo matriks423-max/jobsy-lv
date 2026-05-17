@@ -25,6 +25,21 @@ def load_characters() -> dict:
     return json.loads((BIBLE_DIR / "characters.json").read_text())
 
 
+def load_races() -> dict:
+    path = BIBLE_DIR / "races.json"
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
+def load_continents() -> dict:
+    path = BIBLE_DIR / "continents.json"
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
+def load_techniques() -> dict:
+    path = BIBLE_DIR / "techniques.json"
+    return json.loads(path.read_text()) if path.exists() else {"techniques": []}
+
+
 def load_future_hooks() -> dict:
     return json.loads((BIBLE_DIR / "future_hooks.json").read_text())
 
@@ -49,10 +64,12 @@ def update_future_hooks(updated_hooks: dict):
 def build_context_prompt(episode_number: int) -> str:
     universe = load_universe()
     characters = load_characters()
+    races = load_races()
+    continents = load_continents()
+    techniques = load_techniques()
     hooks = load_future_hooks()
     recent_episodes = load_recent_episodes(3)
 
-    # Only include hooks relevant to this range (planted within last 50 eps or payoff due)
     relevant_hooks = [
         h for h in hooks["hooks"]
         if not h["revealed"] and (
@@ -61,11 +78,29 @@ def build_context_prompt(episode_number: int) -> str:
         )
     ]
 
+    # Only include races/continents relevant to current story scope
+    # Early episodes: only Known Continent + races present there
+    # Expand as episode count grows
+    if episode_number < 20:
+        relevant_races = {k: v for k, v in races.get("races", {}).items()
+                         if k in ("Humans", "Keth", "Valdri", "Seren", "Fael", "Resonborn")}
+        relevant_continents = {k: v for k, v in continents.get("continents", {}).items()
+                               if v.get("status") in ("primary_season_1_location",)}
+    else:
+        relevant_races = races.get("races", {})
+        relevant_continents = continents.get("continents", {})
+
     context = f"""
 ARION WORLD — STORY BIBLE CONTEXT FOR EPISODE {episode_number}
 
 === WORLD OVERVIEW ===
 {universe['overview']}
+
+=== WORLD SETTING ===
+{json.dumps(universe.get('world_setting', {}), indent=2)}
+
+=== SKILL SYSTEM (THE OPEN PATH) ===
+{json.dumps(universe.get('skill_system', {}), indent=2)}
 
 === ACTIVE TIMELINES ===
 {json.dumps(universe['timelines'], indent=2)}
@@ -73,13 +108,25 @@ ARION WORLD — STORY BIBLE CONTEXT FOR EPISODE {episode_number}
 === POWER SYSTEM ===
 {json.dumps(universe['power_system'], indent=2)}
 
-=== ACTIVE MYSTERIES (never resolve these without planning) ===
+=== RACES (in story scope for this episode) ===
+{json.dumps(relevant_races, indent=2)}
+
+=== KNOWN GEOGRAPHY ===
+{json.dumps(relevant_continents, indent=2)}
+
+=== KNOWN TECHNIQUES (game-compatible skill log) ===
+{json.dumps(techniques.get('techniques', []), indent=2)}
+
+=== FACTIONS ===
+{json.dumps(universe.get('factions', {}), indent=2)}
+
+=== ACTIVE MYSTERIES ===
 {json.dumps(universe['active_mysteries'], indent=2)}
 
 === MAIN CHARACTERS ===
 {json.dumps(characters['main_cast'], indent=2)}
 
-=== RELEVANT FUTURE HOOKS (planted clues & payoffs) ===
+=== RELEVANT FUTURE HOOKS ===
 {json.dumps(relevant_hooks, indent=2)}
 
 === RECENT EPISODE SUMMARIES ===

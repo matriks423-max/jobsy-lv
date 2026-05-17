@@ -2,10 +2,10 @@ import subprocess
 from pathlib import Path
 
 
-def create_portrait_trailer(full_video: Path, output_path: Path, duration_seconds: int = 90) -> Path:
+def create_portrait_trailer(full_video: Path, output_path: Path, duration_seconds: int = 180) -> Path:
+    """2-minute portrait trailer for TikTok and Instagram Reels."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Extract first N seconds and crop to 9:16 portrait for TikTok/Instagram
     subprocess.run([
         "ffmpeg", "-y",
         "-i", str(full_video),
@@ -20,7 +20,8 @@ def create_portrait_trailer(full_video: Path, output_path: Path, duration_second
     return output_path
 
 
-def create_landscape_trailer(full_video: Path, output_path: Path, duration_seconds: int = 90) -> Path:
+def create_landscape_trailer(full_video: Path, output_path: Path, duration_seconds: int = 180) -> Path:
+    """2-minute landscape trailer."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     subprocess.run([
