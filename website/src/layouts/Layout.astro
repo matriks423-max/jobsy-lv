@@ -1,4 +1,6 @@
 ---
+import ChatWidget from '../components/ChatWidget.astro';
+
 interface Props {
   title: string;
   description?: string;
@@ -43,6 +45,7 @@ const siteTitle = title === 'Arion World' ? title : `${title} — Arion World`;
           <a href="/characters" class="hover:text-text-primary transition-colors">Characters</a>
           <a href="/episodes" class="hover:text-text-primary transition-colors">Episodes</a>
           <a href="/mysteries" class="hover:text-text-primary transition-colors">Mysteries</a>
+          <a href="/merch" class="hover:text-text-primary transition-colors">Merch</a>
           <a href="https://youtube.com/@ArionWorld" target="_blank" rel="noopener"
              class="text-gold hover:text-gold-bright transition-colors">▶ Watch</a>
         </div>
@@ -53,6 +56,9 @@ const siteTitle = title === 'Arion World' ? title : `${title} — Arion World`;
     <main class="pt-16">
       <slot />
     </main>
+
+    <!-- Chat widget (floating FAQ, bottom-right) -->
+    <ChatWidget />
 
     <!-- Footer -->
     <footer class="mt-32 border-t border-white/5 py-12">
