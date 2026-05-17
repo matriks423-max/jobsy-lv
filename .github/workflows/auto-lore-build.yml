@@ -65,6 +65,7 @@ jobs:
             RUN_NUM=${{ steps.run_num.outputs.run_number }}
             TASK=${TASK_NAMES[$((RUN_NUM % 7))]}
             git commit -m "lore(auto): expand ${TASK} — run #${RUN_NUM}"
+            git pull --rebase origin HEAD || true
             git push origin HEAD
             echo "Lore committed: ${TASK}"
           fi

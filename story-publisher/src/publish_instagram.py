@@ -7,6 +7,19 @@ import requests
 GRAPH_API = "https://graph.facebook.com/v21.0"
 
 
+def _retry(fn, *args, max_attempts=3, **kwargs):
+    import time
+    for attempt in range(max_attempts):
+        try:
+            return fn(*args, **kwargs)
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            wait = 2 ** attempt
+            print(f"  Attempt {attempt+1} failed: {e}. Retrying in {wait}s...")
+            time.sleep(wait)
+
+
 def upload_reel_to_instagram(trailer_path: Path, episode_data: dict) -> str:
     """Upload a portrait-format video as an Instagram Reel."""
     account_id = os.environ["INSTAGRAM_ACCOUNT_ID"]
@@ -22,18 +35,22 @@ def upload_reel_to_instagram(trailer_path: Path, episode_data: dict) -> str:
     )
 
     # Step 1: Create media container
-    container_resp = requests.post(
-        f"{GRAPH_API}/{account_id}/media",
-        data={
-            "media_type": "REELS",
-            "video_url": _get_public_video_url(trailer_path),
-            "caption": caption,
-            "share_to_feed": "true",
-            "access_token": token,
-        },
-        timeout=60
-    )
-    container_resp.raise_for_status()
+    def _create_container():
+        resp = requests.post(
+            f"{GRAPH_API}/{account_id}/media",
+            data={
+                "media_type": "REELS",
+                "video_url": _get_public_video_url(trailer_path),
+                "caption": caption,
+                "share_to_feed": "true",
+                "access_token": token,
+            },
+            timeout=60
+        )
+        resp.raise_for_status()
+        return resp
+
+    container_resp = _retry(_create_container)
     container_id = container_resp.json()["id"]
 
     # Step 2: Wait for processing
@@ -70,10 +87,11 @@ def _get_public_video_url(video_path: Path) -> str:
     # In the GitHub Actions pipeline, the video is uploaded to a temporary
     # public URL. For now this reads from the TRAILER_PUBLIC_URL env var
     # set by the pipeline after uploading to a CDN or GitHub Releases asset.
-    url = os.environ.get("TRAILER_PUBLIC_URL")
+    url = os.environ.get("TRAILER_PUBLIC_URL", "").strip()
     if not url:
         raise RuntimeError(
-            "TRAILER_PUBLIC_URL env var must be set before calling Instagram upload. "
-            "Upload the trailer to a public URL (GitHub Releases, R2, S3) first."
+            "TRAILER_PUBLIC_URL not set. Add an upload step to your CI workflow that "
+            "uploads the trailer to a public URL and sets this env var. "
+            "See MANUAL_ACTIONS_REQUIRED.md for setup instructions."
         )
     return url

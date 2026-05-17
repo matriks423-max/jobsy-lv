@@ -10,6 +10,19 @@ UPLOAD_URL = "https://www.googleapis.com/upload/youtube/v3/videos"
 API_URL = "https://www.googleapis.com/youtube/v3"
 
 
+def _retry(fn, *args, max_attempts=3, **kwargs):
+    import time
+    for attempt in range(max_attempts):
+        try:
+            return fn(*args, **kwargs)
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            wait = 2 ** attempt
+            print(f"  Attempt {attempt+1} failed: {e}. Retrying in {wait}s...")
+            time.sleep(wait)
+
+
 def get_access_token() -> str:
     resp = requests.post(TOKEN_URL, data={
         "client_id": os.environ["YOUTUBE_CLIENT_ID"],
@@ -111,14 +124,18 @@ def upload_to_youtube(video_path: Path, episode_data: dict, subtitle_files: dict
     file_size = video_path.stat().st_size
 
     # Initiate resumable upload
-    init_resp = requests.post(
-        f"{UPLOAD_URL}?uploadType=resumable&part=snippet,status",
-        headers={**headers, "Content-Type": "application/json", "X-Upload-Content-Type": "video/mp4",
-                 "X-Upload-Content-Length": str(file_size)},
-        json=metadata,
-        timeout=30
-    )
-    init_resp.raise_for_status()
+    def _init_upload():
+        resp = requests.post(
+            f"{UPLOAD_URL}?uploadType=resumable&part=snippet,status",
+            headers={**headers, "Content-Type": "application/json", "X-Upload-Content-Type": "video/mp4",
+                     "X-Upload-Content-Length": str(file_size)},
+            json=metadata,
+            timeout=30
+        )
+        resp.raise_for_status()
+        return resp
+
+    init_resp = _retry(_init_upload)
     upload_uri = init_resp.headers["Location"]
 
     # Upload in chunks

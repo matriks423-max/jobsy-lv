@@ -27,7 +27,12 @@ def generate_narration(episode_data: dict, output_dir: Path) -> list[Path]:
         dialogue_lines = scene.get("dialogue", [])
         if dialogue_lines:
             for line in dialogue_lines:
-                narration_text += f"\n\n{line['character']} said: {line['line']}"
+                tone = line.get('tone', '')
+                tone_prefix = {
+                    'whispered': 'In a low voice, ', 'angry': 'With barely contained fury, ',
+                    'desperate': 'Desperately, ', 'cold': 'Coldly, ', 'quiet': 'Quietly, '
+                }.get(tone, '')
+                narration_text += f"\n\n{tone_prefix}{line['character']}: — {line['line']}"
 
         payload = {
             "text": narration_text,

@@ -7,6 +7,19 @@ import requests
 TIKTOK_API = "https://open.tiktokapis.com/v2"
 
 
+def _retry(fn, *args, max_attempts=3, **kwargs):
+    import time
+    for attempt in range(max_attempts):
+        try:
+            return fn(*args, **kwargs)
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            wait = 2 ** attempt
+            print(f"  Attempt {attempt+1} failed: {e}. Retrying in {wait}s...")
+            time.sleep(wait)
+
+
 def upload_to_tiktok(trailer_path: Path, episode_data: dict) -> str:
     token = os.environ["TIKTOK_ACCESS_TOKEN"]
     ep_num = episode_data["episode_number"]
@@ -30,28 +43,32 @@ def upload_to_tiktok(trailer_path: Path, episode_data: dict) -> str:
     max_video_post_duration = creator_info.get("max_video_post_duration_sec", 60)
 
     # Initialise upload
-    init_resp = requests.post(
-        f"{TIKTOK_API}/post/publish/video/init/",
-        headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json; charset=UTF-8"},
-        json={
-            "post_info": {
-                "title": title,
-                "privacy_level": "PUBLIC_TO_EVERYONE",
-                "disable_duet": False,
-                "disable_comment": False,
-                "disable_stitch": False,
-                "video_cover_timestamp_ms": 1000,
+    def _init_upload():
+        resp = requests.post(
+            f"{TIKTOK_API}/post/publish/video/init/",
+            headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json; charset=UTF-8"},
+            json={
+                "post_info": {
+                    "title": title,
+                    "privacy_level": "PUBLIC_TO_EVERYONE",
+                    "disable_duet": False,
+                    "disable_comment": False,
+                    "disable_stitch": False,
+                    "video_cover_timestamp_ms": 1000,
+                },
+                "source_info": {
+                    "source": "FILE_UPLOAD",
+                    "video_size": file_size,
+                    "chunk_size": file_size,
+                    "total_chunk_count": 1,
+                }
             },
-            "source_info": {
-                "source": "FILE_UPLOAD",
-                "video_size": file_size,
-                "chunk_size": file_size,
-                "total_chunk_count": 1,
-            }
-        },
-        timeout=30
-    )
-    init_resp.raise_for_status()
+            timeout=30
+        )
+        resp.raise_for_status()
+        return resp
+
+    init_resp = _retry(_init_upload)
     init_data = init_resp.json()["data"]
     publish_id = init_data["publish_id"]
     upload_url = init_data["upload_url"]

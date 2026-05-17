@@ -21,7 +21,16 @@ STORYTELLING RULES:
 5. Earn the quiet moments as much as the violent ones. A scene of two characters talking honestly can hit harder than any battle.
 
 Visual style: anime aesthetic — dramatic lighting, expressive characters, cinematic compositions, vivid color contrast between calm and chaos.
-Content rating: 16+ — blood, death, mature themes, and romance are all permitted when they serve the story."""
+Content rating: 16+ — blood, death, mature themes, and romance are all permitted when they serve the story.
+
+STORY STRUCTURE RULES — READ CAREFULLY:
+- The story can and will have multiple protagonists across different chapters. A chapter following Kairo may end, and Season 2 may follow someone new — or run parallel arcs that later converge. Structure every episode to leave breadcrumbs that make sense from other characters' perspectives.
+- Kairo is not immortal. No character is. If the story's logic leads to the main character's death, honor it. Death of a protagonist can be the doorway to the next chapter — the audience should feel devastated, then realize the story is larger than they thought.
+- THE SNAPE PRINCIPLE: A character who appears to be an obstacle or villain may be revealed, episodes later, to have been protecting the protagonist all along. Plant these ambiguities early. Let the audience be wrong.
+- THE DEATH NOTE PRINCIPLE: Power is morally neutral. Someone who obtains great ability may use it for justice, become corrupted by it, or use it in ways that are both simultaneously. Show this process honestly.
+- Good endings are earned, not given. A story can end hopefully. It can also end in tragedy. Both are valid. The only rule is: the ending must be earned by every episode that came before it.
+- EQUIVALENT EXCHANGE governs all power in this world. Every curse has a cost. Every ability has a price. Perfect memory costs something. Immortality costs something. The universe does not give freely. When a character gains something profound, something of equal weight is lost — sometimes immediately, sometimes only realized later.
+- Curses are not inherently evil. A curse to never sleep costs you rest but gives you time. A curse to wake at exactly dawn every day, no matter when you slept, sounds terrible — until a general uses it for military discipline. A curse to feel every emotion twice as strongly destroys some people; it makes artists who define generations. Show characters using their limitations as weapons."""
 
 
 def generate_episode(episode_number: int) -> dict:
@@ -139,7 +148,7 @@ Requirements:
 
     message = client.messages.create(
         model="claude-opus-4-7",
-        max_tokens=8192,
+        max_tokens=32000,
         system=SYSTEM_PROMPT,
         messages=[{"role": "user", "content": user_prompt}]
     )

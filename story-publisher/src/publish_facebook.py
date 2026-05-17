@@ -7,6 +7,19 @@ import requests
 GRAPH_API = "https://graph.facebook.com/v21.0"
 
 
+def _retry(fn, *args, max_attempts=3, **kwargs):
+    import time
+    for attempt in range(max_attempts):
+        try:
+            return fn(*args, **kwargs)
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            wait = 2 ** attempt
+            print(f"  Attempt {attempt+1} failed: {e}. Retrying in {wait}s...")
+            time.sleep(wait)
+
+
 def upload_to_facebook(video_path: Path, episode_data: dict) -> str:
     page_id = os.environ["FACEBOOK_PAGE_ID"]
     token = os.environ["FACEBOOK_ACCESS_TOKEN"]
@@ -25,16 +38,20 @@ def upload_to_facebook(video_path: Path, episode_data: dict) -> str:
     file_size = video_path.stat().st_size
 
     # Start resumable upload session
-    start_resp = requests.post(
-        f"{GRAPH_API}/{page_id}/videos",
-        data={
-            "upload_phase": "start",
-            "file_size": file_size,
-            "access_token": token,
-        },
-        timeout=30
-    )
-    start_resp.raise_for_status()
+    def _start_session():
+        resp = requests.post(
+            f"{GRAPH_API}/{page_id}/videos",
+            data={
+                "upload_phase": "start",
+                "file_size": file_size,
+                "access_token": token,
+            },
+            timeout=30
+        )
+        resp.raise_for_status()
+        return resp
+
+    start_resp = _retry(_start_session)
     session = start_resp.json()
     upload_session_id = session["upload_session_id"]
 

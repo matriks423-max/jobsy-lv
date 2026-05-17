@@ -50,6 +50,26 @@ def load_visual_style() -> dict:
     return json.loads(path.read_text()) if path.exists() else {}
 
 
+def load_caelum_city() -> dict:
+    path = BIBLE_DIR / "caelum_city.json"
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
+def load_chroniclers() -> dict:
+    path = BIBLE_DIR / "chroniclers.json"
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
+def load_curses() -> dict:
+    path = BIBLE_DIR / "curses.json"
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
+def load_crafting_arts() -> dict:
+    path = BIBLE_DIR / "crafting_arts.json"
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
 def load_future_hooks() -> dict:
     return json.loads((BIBLE_DIR / "future_hooks.json").read_text())
 
@@ -80,6 +100,10 @@ def build_context_prompt(episode_number: int) -> str:
     hooks = load_future_hooks()
     recent_episodes = load_recent_episodes(3)
     visual_state = load_character_visual_state()
+    caelum_city = load_caelum_city()
+    chroniclers = load_chroniclers()
+    curses = load_curses()
+    crafting_arts = load_crafting_arts()
 
     relevant_hooks = [
         h for h in hooks["hooks"]
@@ -140,7 +164,19 @@ ARION WORLD — STORY BIBLE CONTEXT FOR EPISODE {episode_number}
 === CURRENT CHARACTER PHYSICAL STATE ===
 (Injuries, healing wounds, equipment changes — reflect these in scene descriptions)
 {json.dumps(visual_state.get('characters', {}), indent=2)}
-
+{"" if not caelum_city else f"""
+=== CAELUM CITY — STREET LEVEL DETAIL ===
+{json.dumps(caelum_city, indent=2)}
+"""}{"" if not chroniclers else f"""
+=== THE CHRONICLERS — INTERNAL STRUCTURE ===
+{json.dumps(chroniclers, indent=2)}
+"""}{"" if not curses else f"""
+=== CURSE SYSTEM — EQUIVALENT EXCHANGE ===
+{json.dumps(curses, indent=2)}
+"""}{"" if not crafting_arts else f"""
+=== CRAFTING ARTS — ALCHEMY & BLACKSMITHING ===
+{json.dumps(crafting_arts, indent=2)}
+"""}
 === RELEVANT FUTURE HOOKS ===
 {json.dumps(relevant_hooks, indent=2)}
 

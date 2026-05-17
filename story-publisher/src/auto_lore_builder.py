@@ -46,8 +46,12 @@ def build_full_context() -> str:
     continents = load_json(BIBLE_DIR / "continents.json")
     techniques = load_json(BIBLE_DIR / "techniques.json")
     hooks = load_json(BIBLE_DIR / "future_hooks.json")
+    caelum = load_json(BIBLE_DIR / "caelum_city.json")
+    chroniclers = load_json(BIBLE_DIR / "chroniclers.json")
+    curses = load_json(BIBLE_DIR / "curses.json")
+    crafting = load_json(BIBLE_DIR / "crafting_arts.json")
 
-    return f"""
+    context = f"""
 ARION WORLD — CURRENT STORY BIBLE STATE
 
 UNIVERSE:
@@ -67,7 +71,33 @@ TECHNIQUES:
 
 FUTURE HOOKS:
 {json.dumps(hooks, indent=2)}
-""".strip()
+"""
+
+    if caelum:
+        context += f"""
+CAELUM CITY DETAIL:
+{json.dumps(caelum, indent=2)}
+"""
+
+    if chroniclers:
+        context += f"""
+CHRONICLERS FACTION:
+{json.dumps(chroniclers, indent=2)}
+"""
+
+    if curses:
+        context += f"""
+CURSE SYSTEM:
+{json.dumps(curses, indent=2)}
+"""
+
+    if crafting:
+        context += f"""
+CRAFTING ARTS:
+{json.dumps(crafting, indent=2)}
+"""
+
+    return context.strip()
 
 
 def run_lore_expansion(task_name: str, task_instruction: str) -> dict:
@@ -98,7 +128,7 @@ Target file: {task_name}"""
 
     message = client.messages.create(
         model="claude-opus-4-7",
-        max_tokens=8192,
+        max_tokens=32000,
         system=system,
         messages=[{"role": "user", "content": user_prompt}]
     )
@@ -120,8 +150,28 @@ def apply_update(task_name: str, updated_data: dict):
         "characters":   BIBLE_DIR / "characters.json",
     }
     path = file_map[task_name]
-    save_json(path, updated_data)
-    print(f"Updated: {path.name}")
+
+    # Validate that updated_data serialises cleanly before touching the file
+    try:
+        json_str = json.dumps(updated_data, indent=2)
+        json.loads(json_str)  # round-trip check
+    except (TypeError, ValueError) as e:
+        raise RuntimeError(f"Updated data for '{task_name}' failed JSON validation: {e}")
+
+    # Write a backup of the current file alongside it (if it exists)
+    backup_path = path.with_suffix(".json.bak")
+    if path.exists():
+        backup_path.write_text(path.read_text())
+
+    try:
+        path.write_text(json_str)
+        print(f"Updated: {path.name}")
+    except Exception as e:
+        # Restore from backup on failure
+        if backup_path.exists():
+            path.write_text(backup_path.read_text())
+            print(f"Save failed — restored {path.name} from backup.")
+        raise RuntimeError(f"Failed to save {path.name}: {e}") from e
 
 
 def main():
