@@ -84,3 +84,4 @@ Allow: /
 Allow: /episodes
 
 Sitemap: https://arionworld.com/sitemap.xml
+Host: arionworld.com
