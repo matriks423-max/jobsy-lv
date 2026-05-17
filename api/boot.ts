@@ -23,12 +23,17 @@ app.use(bodyLimit({ maxSize: 50 * 1024 * 1024 }));
 
 // Health check
 app.get("/health", async (c) => {
-  try {
-    await getDb().select().from(schema.users).limit(1);
-    return c.json({ status: "ok", db: "connected", timestamp: new Date().toISOString() });
-  } catch {
-    return c.json({ status: "error", db: "disconnected" }, 500);
-  }
+  const dbPromise = getDb()
+    .select()
+    .from(schema.users)
+    .limit(1)
+    .then(() => "connected")
+    .catch(() => "disconnected");
+  const timeout = new Promise<string>((resolve) =>
+    setTimeout(() => resolve("timeout"), 5000)
+  );
+  const db = await Promise.race([dbPromise, timeout]);
+  return c.json({ status: "ok", db, timestamp: new Date().toISOString() });
 });
 
 // Kimi OAuth callback (kept as fallback)
