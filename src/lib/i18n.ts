@@ -29,7 +29,7 @@ export const translations = {
       titleItalic: "darbojas",
       step1: "Ievieto sludinājumu",
       step1Desc:
-        "Vai meklē palīdzību, vai piedāvā savus pakalpojumus. Bez maksas pirmais sludinājums.",
+        "Vai meklē palīdzību, vai piedāvā savus pakalpojumus. Pirmie 2 sludinājumi bez maksas.",
       step2: "Saņem atbildes",
       step2Desc:
         "Citi lietotāji redz tavu sludinājumu un sazinās ar tevi pa e-pastu vai telefonu.",
@@ -48,9 +48,9 @@ export const translations = {
       emptyBtn: "Izveidot sludinājumu",
     },
     ctaBanner: {
-      title: "Tavs pirmais sludinājums ir bez maksas",
+      title: "Pirmie 2 sludinājumi bez maksas",
       titleItalic: "bez maksas",
-      subtitle: "Katrs nākamais — tikai €2. Publicēts uz 30 dienām.",
+      subtitle: "Sākot ar 3. — tikai €2. Aktīvs 30 dienas.",
       btn: "Izveidot sludinājumu",
     },
     footer: {
@@ -59,7 +59,7 @@ export const translations = {
       contact: "Kontakti",
       privacy: "Privātuma politika",
       terms: "Lietošanas noteikumi",
-      copyright: "© 2025 jobsy.lv",
+      copyright: "© 2026 jobsy.lv",
     },
     browse: {
       title: "Atrodi palīdzību vai darbu",
@@ -91,16 +91,25 @@ export const translations = {
         loginBtn: "Pieslēgties",
         email: "E-pasts",
         phone: "Tālrunis",
-        contactBtn: "Sazinīties",
+        contactBtn: "Sazināties",
+        opened: "Kontaktinformācija atvērta",
       },
+      share: {
+        title: "Kopīgot",
+        whatsapp: "WhatsApp",
+        copy: "Kopēt",
+        copied: "Saite nokopēta!",
+      },
+      notFound: "Sludinājums nav atrasts",
       related: "Līdzīgi sludinājumi",
       relatedItalic: "sludinājumi",
       report: "Ziņot par sludinājumu",
+      reportSent: "Paldies! Ziņojums nosūtīts.",
     },
     createPost: {
       title: "Izveidot sludinājumu",
       titleItalic: "sludinājumu",
-      freeBadge: "Tavs pirmais sludinājums ir bez maksas!",
+      freeBadge: "Pirmie 2 sludinājumi bez maksas!",
       paidBadge: "Nākamais sludinājums: €2",
       typeLabel: "Sludinājuma veids",
       typeNeed: "Vajag palīdzību",
@@ -119,7 +128,7 @@ export const translations = {
       whenPlaceholder: "Piemēram: Sestdienas pēcpusdienā",
       submitFree: "Publicēt bez maksas",
       submitPaid: "Turpināt uz maksājumu (€2)",
-      info: "Pirmais sludinājums bez maksas. Katrs nākamais — €2. Sludinājums aktīvs 30 dienas.",
+      info: "Pirmie 2 sludinājumi bez maksas. Sākot ar 3. — €2. Aktīvs 30 dienas.",
       privacy: "Privātuma politika",
       terms: "Lietošanas noteikumi",
     },
@@ -141,7 +150,7 @@ export const translations = {
     success: {
       title: "Sludinājums publicēts!",
       titleItalic: "publicēts",
-      freeSub: "Tavs pirmais sludinājums ir bez maksas un aktīvs 30 dienas.",
+      freeSub: "Sludinājums publicēts un aktīvs 30 dienas.",
       paidSub: "Maksājums saņemts. Sludinājums aktīvs 30 dienas.",
       viewPost: "Skatīt sludinājumu",
       myPosts: "Mani sludinājumi",
@@ -149,8 +158,8 @@ export const translations = {
     },
     login: {
       title: "Pieslēdzies, lai turpinātu",
-      subtitle: "Tikai ar Kimi — ātri un droši.",
-      btn: "Pieslēgties ar Kimi",
+      subtitle: "Pieslēdzies ar Google vai e-pastu — ātri un droši.",
+      btn: "Pieslēgties",
       terms: "Turpinot, tu piekrīti mūsu Lietošanas noteikumiem.",
     },
     categories: {
@@ -224,7 +233,7 @@ export const translations = {
       titleItalic: "работает",
       step1: "Размести объявление",
       step1Desc:
-        "Ищешь помощь или предлагаешь услуги. Первое объявление бесплатно.",
+        "Ищешь помощь или предлагаешь услуги. Первые 2 объявления бесплатно.",
       step2: "Получи отклики",
       step2Desc:
         "Другие пользователи видят твоё объявление и связываются по email или телефону.",
@@ -242,9 +251,9 @@ export const translations = {
       emptyBtn: "Разместить объявление",
     },
     ctaBanner: {
-      title: "Твоё первое объявление бесплатно",
+      title: "Первые 2 объявления бесплатно",
       titleItalic: "бесплатно",
-      subtitle: "Каждое следующее — всего €2. Публикуется на 30 дней.",
+      subtitle: "Начиная с 3-го — всего €2. Активно 30 дней.",
       btn: "Разместить объявление",
     },
     footer: {
@@ -253,7 +262,7 @@ export const translations = {
       contact: "Контакты",
       privacy: "Политика конфиденциальности",
       terms: "Условия использования",
-      copyright: "© 2025 jobsy.lv",
+      copyright: "© 2026 jobsy.lv",
     },
     browse: {
       title: "Найди помощь или работу",
@@ -286,15 +295,24 @@ export const translations = {
         email: "Email",
         phone: "Телефон",
         contactBtn: "Связаться",
+        opened: "Контактная информация открыта",
       },
+      share: {
+        title: "Поделиться",
+        whatsapp: "WhatsApp",
+        copy: "Копировать",
+        copied: "Ссылка скопирована!",
+      },
+      notFound: "Объявление не найдено",
       related: "Похожие объявления",
       relatedItalic: "объявления",
       report: "Пожаловаться",
+      reportSent: "Спасибо! Жалоба отправлена.",
     },
     createPost: {
       title: "Разместить объявление",
       titleItalic: "объявление",
-      freeBadge: "Твоё первое объявление бесплатно!",
+      freeBadge: "Первые 2 объявления бесплатно!",
       paidBadge: "Следующее объявление: €2",
       typeLabel: "Тип объявления",
       typeNeed: "Нужна помощь",
@@ -313,7 +331,7 @@ export const translations = {
       whenPlaceholder: "Например: В субботу днём",
       submitFree: "Опубликовать бесплатно",
       submitPaid: "Продолжить к оплате (€2)",
-      info: "Первое объявление бесплатно. Каждое следующее — €2. Объявление активно 30 дней.",
+      info: "Первые 2 объявления бесплатно. Начиная с 3-го — €2. Активно 30 дней.",
       privacy: "Политика конфиденциальности",
       terms: "Условия использования",
     },
@@ -335,7 +353,7 @@ export const translations = {
     success: {
       title: "Объявление опубликовано!",
       titleItalic: "опубликовано",
-      freeSub: "Твоё первое объявление бесплатно и активно 30 дней.",
+      freeSub: "Объявление опубликовано и активно 30 дней.",
       paidSub: "Оплата получена. Объявление активно 30 дней.",
       viewPost: "Смотреть объявление",
       myPosts: "Мои объявления",
@@ -343,8 +361,8 @@ export const translations = {
     },
     login: {
       title: "Войди, чтобы продолжить",
-      subtitle: "Только через Kimi — быстро и безопасно.",
-      btn: "Войти через Kimi",
+      subtitle: "Войди через Google или email — быстро и безопасно.",
+      btn: "Войти",
       terms: "Продолжая, ты соглашаешься с Условиями использования.",
     },
     categories: {
@@ -418,7 +436,7 @@ export const translations = {
       titleItalic: "works",
       step1: "Post your job",
       step1Desc:
-        "Whether you need help or offer your services. First post is free.",
+        "Whether you need help or offer your services. First 2 posts are free.",
       step2: "Get responses",
       step2Desc:
         "Other users see your post and reach out via email or phone.",
@@ -436,9 +454,9 @@ export const translations = {
       emptyBtn: "Create a post",
     },
     ctaBanner: {
-      title: "Your first post is free",
+      title: "First 2 posts are free",
       titleItalic: "free",
-      subtitle: "Each additional one — just €2. Posted for 30 days.",
+      subtitle: "From the 3rd post — just €2. Active for 30 days.",
       btn: "Create a post",
     },
     footer: {
@@ -447,7 +465,7 @@ export const translations = {
       contact: "Contact",
       privacy: "Privacy Policy",
       terms: "Terms of Service",
-      copyright: "© 2025 jobsy.lv",
+      copyright: "© 2026 jobsy.lv",
     },
     browse: {
       title: "Find help or work",
@@ -480,15 +498,24 @@ export const translations = {
         email: "Email",
         phone: "Phone",
         contactBtn: "Contact",
+        opened: "Contact info revealed",
       },
+      share: {
+        title: "Share",
+        whatsapp: "WhatsApp",
+        copy: "Copy link",
+        copied: "Link copied!",
+      },
+      notFound: "Post not found",
       related: "Similar posts",
       relatedItalic: "posts",
       report: "Report post",
+      reportSent: "Thanks! Report sent.",
     },
     createPost: {
       title: "Create a post",
       titleItalic: "post",
-      freeBadge: "Your first post is free!",
+      freeBadge: "First 2 posts are free!",
       paidBadge: "Next post: €2",
       typeLabel: "Post type",
       typeNeed: "Need Help",
@@ -507,7 +534,7 @@ export const translations = {
       whenPlaceholder: "e.g. Saturday afternoon",
       submitFree: "Post for free",
       submitPaid: "Continue to payment (€2)",
-      info: "First post is free. Each additional one — €2. Post is active for 30 days.",
+      info: "First 2 posts are free. From the 3rd — €2. Post active for 30 days.",
       privacy: "Privacy Policy",
       terms: "Terms of Service",
     },
@@ -529,7 +556,7 @@ export const translations = {
     success: {
       title: "Post published!",
       titleItalic: "published",
-      freeSub: "Your first post is free and active for 30 days.",
+      freeSub: "Post published and active for 30 days.",
       paidSub: "Payment received. Post is active for 30 days.",
       viewPost: "View post",
       myPosts: "My posts",
@@ -537,8 +564,8 @@ export const translations = {
     },
     login: {
       title: "Log in to continue",
-      subtitle: "Only via Kimi — fast and secure.",
-      btn: "Log in with Kimi",
+      subtitle: "Log in with Google or email — fast and secure.",
+      btn: "Log in",
       terms: "By continuing, you agree to our Terms of Service.",
     },
     categories: {

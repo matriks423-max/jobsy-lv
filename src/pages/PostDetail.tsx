@@ -71,7 +71,7 @@ export default function PostDetail() {
   );
 
   const contactMutation = trpc.posts.contact.useMutation({
-    onSuccess: () => toast("Kontaktinformācija atvērta", "success"),
+    onSuccess: () => toast(t(locale, "postDetail.contact.opened"), "success"),
     onError: (err) => toast(err.message, "error"),
   });
 
@@ -121,7 +121,7 @@ export default function PostDetail() {
       <div className="flex min-h-screen items-center justify-center noise-bg">
         <div className="text-center">
           <AlertTriangle className="mx-auto mb-4 h-12 w-12 text-ink-light" />
-          <p className="font-body text-lg text-ink-muted">Sludinājums nav atrasts</p>
+          <p className="font-body text-lg text-ink-muted">{t(locale, "postDetail.notFound")}</p>
           <Button onClick={() => navigate("/browse")} className="mt-4 rounded-xl border-2 border-ink bg-coral">
             <ArrowLeft className="mr-2 h-4 w-4" />
             {t(locale, "browse.title")}
@@ -151,9 +151,11 @@ export default function PostDetail() {
       window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${text}`, "_blank");
     } else if (platform === "facebook") {
       window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, "_blank");
+    } else if (platform === "whatsapp") {
+      window.open(`https://wa.me/?text=${text}%20${encodeURIComponent(url)}`, "_blank");
     } else if (platform === "copy") {
       navigator.clipboard.writeText(url);
-      toast("Saite nokopēta!", "success");
+      toast(t(locale, "postDetail.share.copied"), "success");
     }
     setShowShare(false);
   };
@@ -274,7 +276,7 @@ export default function PostDetail() {
                   </div>
                 )}
                 <div>
-                  <p className="font-body text-base font-bold text-ink">{profile?.name ?? "Unknown"}</p>
+                  <p className="font-body text-base font-bold text-ink">{profile?.name ?? "—"}</p>
                   <p className="font-body text-xs text-ink-muted">{t(locale, "postDetail.contact.title")}</p>
                 </div>
               </div>
@@ -349,9 +351,9 @@ export default function PostDetail() {
       <Dialog open={showShare} onOpenChange={setShowShare}>
         <DialogContent className="border-2 border-ink bg-white">
           <DialogHeader>
-            <DialogTitle className="font-display text-xl font-bold text-ink">Kopīgot</DialogTitle>
+            <DialogTitle className="font-display text-xl font-bold text-ink">{t(locale, "postDetail.share.title")}</DialogTitle>
           </DialogHeader>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <button onClick={() => handleShare("twitter")} className="flex flex-col items-center gap-2 rounded-xl border-2 border-ink bg-cream p-4 hover:bg-cream-dark">
               <Twitter className="h-6 w-6 text-ink" />
               <span className="font-body text-xs">Twitter</span>
@@ -360,9 +362,15 @@ export default function PostDetail() {
               <Facebook className="h-6 w-6 text-ink" />
               <span className="font-body text-xs">Facebook</span>
             </button>
+            <button onClick={() => handleShare("whatsapp")} className="flex flex-col items-center gap-2 rounded-xl border-2 border-ink bg-cream p-4 hover:bg-cream-dark">
+              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+              </svg>
+              <span className="font-body text-xs">{t(locale, "postDetail.share.whatsapp")}</span>
+            </button>
             <button onClick={() => handleShare("copy")} className="flex flex-col items-center gap-2 rounded-xl border-2 border-ink bg-cream p-4 hover:bg-cream-dark">
               <Link2 className="h-6 w-6 text-ink" />
-              <span className="font-body text-xs">Kopēt</span>
+              <span className="font-body text-xs">{t(locale, "postDetail.share.copy")}</span>
             </button>
           </div>
         </DialogContent>
@@ -377,7 +385,7 @@ export default function PostDetail() {
           {reportSent ? (
             <div className="flex flex-col items-center py-6">
               <CheckCircle className="mb-3 h-12 w-12 text-sage" />
-              <p className="font-body text-ink">Paldies! Ziņojums nosūtīts.</p>
+              <p className="font-body text-ink">{t(locale, "postDetail.reportSent")}</p>
             </div>
           ) : (
             <div className="space-y-4">

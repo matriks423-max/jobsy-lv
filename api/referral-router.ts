@@ -13,6 +13,7 @@ export const referralRouter = createRouter({
     return {
       referralCode: profile.referralCode,
       freePostCredits: profile.freePostCredits,
+      freePostUsed: profile.freePostUsed,
       referredBy: profile.referredBy,
     };
   }),

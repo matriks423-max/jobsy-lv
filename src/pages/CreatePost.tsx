@@ -119,6 +119,8 @@ export default function CreatePost() {
 
   const hasFreeCredits = referralInfo && referralInfo.freePostCredits > 0;
   const creditCount = referralInfo?.freePostCredits ?? 0;
+  const freePostUsed = referralInfo?.freePostUsed ?? false;
+  const showFreeBadge = !hasFreeCredits && !freePostUsed;
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -212,9 +214,13 @@ export default function CreatePost() {
                   <Gift className="h-3.5 w-3.5" />
                   {creditCount} bezmaksas sludinājumi no ieteikumiem
                 </span>
-              ) : (
+              ) : showFreeBadge ? (
                 <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-sage bg-sage-light px-3 py-1.5 font-body text-xs font-medium text-sage">
                   {t(locale, "createPost.freeBadge")}
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-ink-light bg-cream-dark px-3 py-1.5 font-body text-xs font-medium text-ink-muted">
+                  {t(locale, "createPost.paidBadge")}
                 </span>
               )
             )}
@@ -468,6 +474,8 @@ export default function CreatePost() {
               <Pencil className="mr-2 h-5 w-5" />
             ) : hasFreeCredits ? (
               <Gift className="mr-2 h-5 w-5" />
+            ) : showFreeBadge ? (
+              <Plus className="mr-2 h-5 w-5" />
             ) : (
               <Plus className="mr-2 h-5 w-5" />
             )}
@@ -475,7 +483,9 @@ export default function CreatePost() {
               ? "Saglabāt izmaiņas"
               : hasFreeCredits
               ? `Publicēt (izmantos ${creditCount} kredītu)`
-              : t(locale, "createPost.submitFree")}
+              : showFreeBadge
+              ? t(locale, "createPost.submitFree")
+              : t(locale, "createPost.submitPaid")}
           </Button>
         </div>
 
