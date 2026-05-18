@@ -24,6 +24,9 @@ TASKS = [
     ("hooks",        "Add 3 new long-range future hooks to future_hooks.json. Each should be subtle enough to plant in Episode 1-10 without being noticed, with a payoff planned for Episode 50-200."),
     ("world_detail", "Add to universe.json: 3 new named locations on the Known Continent with hidden truths, 2 new active mysteries, and expand the founding age key events with one specific detail that changes how the Great Betrayal is understood."),
     ("characters",   "Add one new supporting character to characters.json — someone who exists in Kairo's world from Episode 1 but whose significance only becomes clear later. Define their fatal flaw, what they want, what they fear, and one secret."),
+    ("curses",      "Expand curses.json — add 3 new named curses following the equivalent exchange principle. Each must have: name, description, the_cost (what the bearer loses), the_hidden_gift (what a clever person exploits from it), origin (how it's contracted), rarity, known_bearers. They must fit the world's tone — specific, not generic."),
+    ("crafting",    "Expand crafting_arts.json — add 1 new alchemy technique OR 1 new smithing technique (game-ready mechanics), AND add one new named practitioner with a specific secret connected to the main story. Follow the existing JSON structure exactly."),
+    ("city_detail", "Expand caelum_city.json — add 2-3 new named locations in the outer or inner districts of Caelum City. Each location needs: address/location, description, what makes it significant, a hidden truth, and a connection to at least one named character from characters.json."),
 ]
 
 
@@ -50,6 +53,8 @@ def build_full_context() -> str:
     chroniclers = load_json(BIBLE_DIR / "chroniclers.json")
     curses = load_json(BIBLE_DIR / "curses.json")
     crafting = load_json(BIBLE_DIR / "crafting_arts.json")
+    season1 = load_json(BIBLE_DIR / "season1_soil.json")
+    philosophy = load_json(BIBLE_DIR / "story_philosophy.json")
 
     context = f"""
 ARION WORLD — CURRENT STORY BIBLE STATE
@@ -95,6 +100,18 @@ CURSE SYSTEM:
         context += f"""
 CRAFTING ARTS:
 {json.dumps(crafting, indent=2)}
+"""
+
+    if season1:
+        context += f"""
+SEASON 1 SOIL:
+{json.dumps(season1, indent=2)}
+"""
+
+    if philosophy:
+        context += f"""
+STORY PHILOSOPHY:
+{json.dumps(philosophy, indent=2)}
 """
 
     return context.strip()
@@ -148,6 +165,9 @@ def apply_update(task_name: str, updated_data: dict):
         "world_detail": BIBLE_DIR / "universe.json",
         "factions":     BIBLE_DIR / "universe.json",
         "characters":   BIBLE_DIR / "characters.json",
+        "curses":      BIBLE_DIR / "curses.json",
+        "crafting":    BIBLE_DIR / "crafting_arts.json",
+        "city_detail": BIBLE_DIR / "caelum_city.json",
     }
     path = file_map[task_name]
 

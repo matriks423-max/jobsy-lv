@@ -25,6 +25,7 @@ These are required by the monthly token refresh workflow:
 - `TIKTOK_CLIENT_KEY` — from TikTok Developer Portal
 - `TIKTOK_CLIENT_SECRET` — from TikTok Developer Portal
 - `TIKTOK_REFRESH_TOKEN` — from TikTok OAuth flow
+- `DISCORD_WEBHOOK_URL` — (optional) from Discord channel → Edit → Integrations → Webhooks. Enables episode announcements via the weekly-publish workflow without hosting the bot.
 
 ## Nice to Have (after launch)
 
@@ -33,3 +34,35 @@ These are required by the monthly token refresh workflow:
 - [ ] **YouTube channel art**: Upload banner and profile picture that match the Arion World visual style
 - [ ] **Link in bio**: Set Instagram bio link to your website URL
 - [ ] **Discord roles**: Set up Watcher, Theorist, Supporter roles with channel access tiers
+
+## Discord Bot Deployment (free options)
+
+The bot needs to run 24/7. Three free options:
+
+### Option A — Railway.app (Recommended, easiest)
+1. Go to railway.app, sign in with GitHub
+2. New Project → Deploy from GitHub Repo → select matriks423-max/jobsy-lv
+3. Set Root Directory to `discord_bot`
+4. Add environment variables: DISCORD_BOT_TOKEN, DISCORD_ANNOUNCEMENT_CHANNEL_ID, CONTACT_EMAIL
+5. Set ARION_CONTENT_DIR to `/app/content` and mount a volume OR just remove the volume and have the bot fetch from GitHub raw content URLs instead
+6. Deploy — Railway free tier gives $5/month credit (enough for a lightweight bot)
+
+### Option B — Fly.io (Free tier, more control)
+1. Install flyctl: `curl -L https://fly.io/install.sh | sh`
+2. `cd discord_bot && fly launch`
+3. Set secrets: `fly secrets set DISCORD_BOT_TOKEN=xxx DISCORD_ANNOUNCEMENT_CHANNEL_ID=xxx`
+4. Deploy: `fly deploy`
+5. Free tier: 3 shared-CPU VMs, 256MB RAM each
+
+### Option C — Self-hosted (VPS or home server)
+```bash
+cd discord_bot
+cp .env.example .env
+# Fill in .env with your values
+docker-compose up -d
+```
+
+### GitHub Actions Webhook (alternative to always-on bot)
+Instead of 24/7 hosting, use a Discord webhook for episode announcements only.
+Add `DISCORD_WEBHOOK_URL` secret (from Discord channel → Edit → Integrations → Webhooks).
+The weekly-publish workflow can POST to this URL directly — no bot hosting needed for announcements.

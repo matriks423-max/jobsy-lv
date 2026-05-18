@@ -127,6 +127,19 @@ def run_pipeline():
     image_files = generate_all_images(episode_data, images_dir)
     print(f"{len(image_files)} images generated.")
 
+    # ── Step 3b: Generate and publish merch ──────────────────────
+    print("\nStep 3b — Generating merch from episode art...")
+    merch_products = []
+    try:
+        from publish_merch import publish_merch_for_episode
+        merch_products = publish_merch_for_episode(episode_data, image_files) or []
+        if merch_products:
+            print(f"  {len(merch_products)} merch product(s) created.")
+        else:
+            print("  Merch skipped (PRINTFUL_API_KEY not set or no suitable images).")
+    except Exception as e:
+        print(f"  Merch generation failed (non-fatal): {e}")
+
     # ── Step 4: Generate subtitles ────────────────────────────
     print("\nStep 4/7 — Generating subtitles + translations...")
     subtitle_files = generate_subtitles(episode_data, audio_files, subs_dir)
@@ -177,7 +190,7 @@ def run_pipeline():
 
     # ── Update website content ────────────────────────────────
     try:
-        update_website(episode_data, episode_number)
+        update_website(episode_data, episode_number, merch_products)
     except Exception as e:
         print(f"Website content update failed (non-fatal): {e}")
 

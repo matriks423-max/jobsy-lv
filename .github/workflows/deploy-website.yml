@@ -3,7 +3,9 @@ name: Arion World — Deploy Website
 on:
   # Runs after the weekly episode pipeline updates website content
   push:
-    branches: [main]
+    branches:
+      - main
+      - claude/automate-story-video-publishing-IjEvh
     paths:
       - 'website/**'
       - 'website/public/content/**'

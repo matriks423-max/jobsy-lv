@@ -70,6 +70,16 @@ def load_crafting_arts() -> dict:
     return json.loads(path.read_text()) if path.exists() else {}
 
 
+def load_season1_soil() -> dict:
+    path = BIBLE_DIR / "season1_soil.json"
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
+def load_story_philosophy() -> dict:
+    path = BIBLE_DIR / "story_philosophy.json"
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
 def load_future_hooks() -> dict:
     return json.loads((BIBLE_DIR / "future_hooks.json").read_text())
 
@@ -104,6 +114,8 @@ def build_context_prompt(episode_number: int) -> str:
     chroniclers = load_chroniclers()
     curses = load_curses()
     crafting_arts = load_crafting_arts()
+    story_philosophy = load_story_philosophy()
+    season1_soil = load_season1_soil()
 
     relevant_hooks = [
         h for h in hooks["hooks"]
@@ -179,7 +191,13 @@ ARION WORLD — STORY BIBLE CONTEXT FOR EPISODE {episode_number}
 """}
 === RELEVANT FUTURE HOOKS ===
 {json.dumps(relevant_hooks, indent=2)}
-
+{"" if not story_philosophy else f"""
+=== STORY STRUCTURE RULES (permanent laws of this world) ===
+{json.dumps(story_philosophy, indent=2)}
+"""}{"" if not season1_soil else f"""
+=== SEASON 1 BOARD STATE (character positions and knowledge gaps at story start) ===
+{json.dumps(season1_soil, indent=2) if episode_number <= 52 else "Reference season1_soil.json for original starting positions."}
+"""}
 === RECENT EPISODE SUMMARIES ===
 {json.dumps(recent_episodes, indent=2) if recent_episodes else "This is Episode 1 — no prior episodes."}
 """.strip()

@@ -187,7 +187,24 @@ def update_mysteries(episode_data: dict, current_episode: int):
     })
 
 
-def generate_all(episode_data: dict, current_episode: int):
+def update_merch(merch_products: list, current_episode: int):
+    """Add newly created merch products to the website merch page."""
+    if not merch_products:
+        return
+    existing = load_json(WEBSITE_CONTENT / "merch.json")
+    products = existing.get("products", [])
+    existing_urls = {p.get("url") for p in products}
+    for product in merch_products:
+        if isinstance(product, dict) and product.get("url") not in existing_urls:
+            products.append({"episode": current_episode, **product})
+    save_json(WEBSITE_CONTENT / "merch.json", {
+        "products": products,
+        "store_url": existing.get("store_url", ""),
+        "last_updated_episode": current_episode,
+    })
+
+
+def generate_all(episode_data: dict, current_episode: int, merch_products: list | None = None):
     """Run all website content updates for this episode."""
     print("Updating website content...")
     update_site_state(episode_data, current_episode)
@@ -195,4 +212,6 @@ def generate_all(episode_data: dict, current_episode: int):
     update_episodes(episode_data, current_episode)
     update_world(episode_data, current_episode)
     update_mysteries(episode_data, current_episode)
+    if merch_products:
+        update_merch(merch_products, current_episode)
     print(f"Website content updated through Episode {current_episode}.")

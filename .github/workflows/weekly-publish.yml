@@ -90,6 +90,34 @@ jobs:
           git pull --rebase origin HEAD || true
           git push origin HEAD
 
+      - name: Announce episode on Discord (optional)
+        if: env.DISCORD_WEBHOOK_URL != ''
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          EP_NUM=$(cat story-publisher/story_bible/.episode_counter)
+          # Read episode title from the latest episode file
+          TITLE=$(python3 -c "
+          import json, glob, os
+          files = sorted(glob.glob('story-publisher/story_bible/episodes/ep*.json'))
+          if files:
+              data = json.loads(open(files[-1]).read())
+              print(data.get('title', 'New Episode'))
+          else:
+              print('New Episode')
+          " 2>/dev/null || echo "New Episode")
+
+          curl -sS -X POST "$DISCORD_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"embeds\": [{
+                \"title\": \"🎬 Episode ${EP_NUM} is live!\",
+                \"description\": \"**${TITLE}**\n\nNew episode of Arion World just published.\",
+                \"color\": 15844367,
+                \"footer\": {\"text\": \"Arion World\"}
+              }]
+            }"
+
       - name: Upload episode artifacts
         if: always()
         uses: actions/upload-artifact@v4
