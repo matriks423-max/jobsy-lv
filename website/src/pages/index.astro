@@ -23,8 +23,8 @@ const siteState = loadJSON('site_state.json', {
 const characters = loadJSON('characters_public.json', { characters: [] });
 const episodes = loadJSON('episodes.json', { episodes: [] });
 
-const featuredCharacters = characters.characters.slice(0, 4);
-const recentEpisodes = episodes.episodes.slice(-3).reverse();
+const featuredCharacters = (characters.characters ?? []).slice(0, 4);
+const recentEpisodes = (episodes.episodes ?? []).slice(-3).reverse();
 
 const toneColors: Record<string, string> = {
   hopeful: 'from-gold/10',

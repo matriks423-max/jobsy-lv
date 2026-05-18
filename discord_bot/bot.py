@@ -54,7 +54,7 @@ else:
 logger.info("Content directory: %s", CONTENT_DIR)
 
 EPISODE_COUNTER_PATH = (
-    Path(__file__).parent.parent / "story-publisher" / "story_bible" / ".episode_counter"
+    Path(__file__).parent.parent / "story_bible" / ".episode_counter"
 )
 
 # ---------------------------------------------------------------------------
