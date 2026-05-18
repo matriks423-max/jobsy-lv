@@ -1,0 +1,135 @@
+name: Migrate — Copy Arion World to arion-world repo
+
+# Run this ONCE after creating https://github.com/matriks423-max/arion-world
+# Requires: ARION_WORLD_PAT secret (GitHub PAT with repo scope)
+#
+# Steps to use:
+#   1. Create PAT: github.com/settings/tokens → classic → tick "repo" → copy token
+#   2. Add secret: jobsy-lv Settings → Secrets → Actions → ARION_WORLD_PAT = <token>
+#   3. Go to Actions tab → "Migrate — Copy Arion World" → Run workflow
+#   4. Done! Then delete this workflow file and the secret.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  migrate:
+    name: Copy story-publisher to arion-world repo
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout jobsy-lv
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up destination repo
+        run: |
+          git config --global user.name "Migration Bot"
+          git config --global user.email "bot@arionworld.auto"
+
+          # Clone the empty arion-world repo
+          git clone https://x-access-token:${{ secrets.ARION_WORLD_PAT }}@github.com/matriks423-max/arion-world.git /tmp/arion-world-dest
+
+      - name: Copy all Arion World files
+        run: |
+          DEST=/tmp/arion-world-dest
+          SRC_PUBLISHER=${{ github.workspace }}/story-publisher
+          SRC_DISCORD=${{ github.workspace }}/discord_bot
+          SRC_WEBSITE=${{ github.workspace }}/website
+          SRC_WORKFLOWS=${{ github.workspace }}/.github/workflows
+
+          # ── src/ ──────────────────────────────────────────────────────────
+          mkdir -p $DEST/src
+          cp $SRC_PUBLISHER/src/*.py $DEST/src/
+
+          # ── story_bible/ ──────────────────────────────────────────────────
+          mkdir -p $DEST/story_bible/episodes
+          cp $SRC_PUBLISHER/story_bible/*.json $DEST/story_bible/
+          cp $SRC_PUBLISHER/story_bible/.episode_counter $DEST/story_bible/
+          touch $DEST/story_bible/episodes/.gitkeep
+
+          # ── assets/ ───────────────────────────────────────────────────────
+          mkdir -p $DEST/assets/music
+          touch $DEST/assets/music/.gitkeep
+
+          # ── discord_bot/ ──────────────────────────────────────────────────
+          mkdir -p $DEST/discord_bot
+          cp $SRC_DISCORD/bot.py $DEST/discord_bot/ 2>/dev/null || true
+          cp $SRC_DISCORD/Dockerfile $DEST/discord_bot/ 2>/dev/null || true
+          cp $SRC_DISCORD/docker-compose.yml $DEST/discord_bot/ 2>/dev/null || true
+          cp $SRC_DISCORD/requirements.txt $DEST/discord_bot/ 2>/dev/null || true
+          cp $SRC_DISCORD/.env.example $DEST/discord_bot/ 2>/dev/null || true
+
+          # ── website/ ──────────────────────────────────────────────────────
+          mkdir -p $DEST/website/src/components $DEST/website/src/pages $DEST/website/src/layouts $DEST/website/src/styles
+          mkdir -p $DEST/website/public/content
+          cp $SRC_WEBSITE/astro.config.mjs $DEST/website/ 2>/dev/null || true
+          cp $SRC_WEBSITE/package.json $DEST/website/ 2>/dev/null || true
+          cp $SRC_WEBSITE/tailwind.config.mjs $DEST/website/ 2>/dev/null || true
+          cp $SRC_WEBSITE/public/CNAME $DEST/website/public/ 2>/dev/null || true
+          cp $SRC_WEBSITE/public/robots.txt $DEST/website/public/ 2>/dev/null || true
+          cp $SRC_WEBSITE/public/content/merch.json $DEST/website/public/content/ 2>/dev/null || true
+          cp $SRC_WEBSITE/src/components/*.astro $DEST/website/src/components/ 2>/dev/null || true
+          cp $SRC_WEBSITE/src/pages/*.astro $DEST/website/src/pages/ 2>/dev/null || true
+          cp $SRC_WEBSITE/src/layouts/*.astro $DEST/website/src/layouts/ 2>/dev/null || true
+          cp $SRC_WEBSITE/src/styles/*.css $DEST/website/src/styles/ 2>/dev/null || true
+
+          # ── requirements.txt ─────────────────────────────────────────────
+          cp $SRC_PUBLISHER/requirements.txt $DEST/
+
+          # ── .env.example ─────────────────────────────────────────────────
+          cp $SRC_PUBLISHER/.env.example $DEST/ 2>/dev/null || true
+
+          # ── MANUAL_ACTIONS_REQUIRED.md ────────────────────────────────────
+          cp $SRC_PUBLISHER/MANUAL_ACTIONS_REQUIRED.md $DEST/ 2>/dev/null || true
+
+          # ── README.md ─────────────────────────────────────────────────────
+          # Use arion-world version (no story-publisher prefix)
+          cat > $DEST/README.md << 'READMEEOF'
+          # Arion World
+
+          Automated anime-style epic fantasy universe. A 1-hour episode generates and publishes every Monday. The lore expands autonomously every 5 hours. Zero manual work after initial setup.
+
+          See MANUAL_ACTIONS_REQUIRED.md for the full setup checklist.
+          READMEEOF
+
+          # ── .github/workflows/ ── strip story-publisher/ from paths ──────
+          mkdir -p $DEST/.github/workflows
+          for f in weekly-publish.yml auto-lore-build.yml deploy-website.yml monthly-token-refresh.yml; do
+            if [ -f "$SRC_WORKFLOWS/$f" ]; then
+              # Remove story-publisher/ prefixes from all paths in workflow files
+              sed 's|story-publisher/requirements\.txt|requirements.txt|g;
+                   s|story-publisher/src|src|g;
+                   s|story-publisher/story_bible|story_bible|g;
+                   s|story-publisher/output|output|g;
+                   s|story-publisher/\.token_state\.json|story_bible/.token_state.json|g' \
+                "$SRC_WORKFLOWS/$f" > "$DEST/.github/workflows/$f"
+            fi
+          done
+
+          # Fix: deploy-website.yml should only trigger on main in the new standalone repo
+          sed -i 's/claude\/automate-story-video-publishing-IjEvh/main/g' \
+            $DEST/.github/workflows/deploy-website.yml 2>/dev/null || true
+
+          echo "Files copied. Listing destination:"
+          find $DEST -not -path '*/.git/*' -type f | sort
+
+      - name: Commit and push to arion-world
+        run: |
+          cd /tmp/arion-world-dest
+
+          git add -A
+          git commit -m "feat: Arion World — complete automated story universe
+
+          Full pipeline: weekly 1-hour episode generation → narration → anime images →
+          subtitles (6 languages) → video + portrait trailer → YouTube/FB/Instagram/TikTok.
+          14-file story bible (races, continents, curses, alchemy, city texture, chroniclers).
+          Autonomous lore expansion every 5 hours. Equivalent exchange curse system.
+          Discord bot (disnake). Zero-investment Printful merch. Astro website."
+
+          git push -u origin main
+
+          echo "✓ arion-world repo populated successfully!"
+          echo "  https://github.com/matriks423-max/arion-world"
