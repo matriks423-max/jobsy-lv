@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { createRouter, publicQuery, authedQuery, adminQuery } from "./middleware";
 import {
   createPost,
+  getPostById,
   getPostWithProfile,
   listPostsWithProfiles,
   updatePost,
@@ -248,6 +249,16 @@ export const postsRouter = createRouter({
       limit: 50,
     });
   }),
+
+  getStatus: authedQuery
+    .input(z.object({ postId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const post = await getPostById(input.postId);
+      if (!post || post.userId !== ctx.user.id) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
+      }
+      return { status: post.status };
+    }),
 
   contact: authedQuery
     .input(z.object({ postId: z.number() }))
