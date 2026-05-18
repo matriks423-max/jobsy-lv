@@ -76,7 +76,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        display: ['Fraunces', 'serif'],
+        display: ['Playfair Display', 'serif'],
         body: ['Geist', 'system-ui', 'sans-serif'],
         mono: ['Geist Mono', 'ui-monospace', 'monospace'],
       },
