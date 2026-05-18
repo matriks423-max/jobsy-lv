@@ -423,7 +423,7 @@ export default function PostDetail() {
 
       {/* Image Gallery Lightbox */}
       {showGallery && images.length > 0 && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/80" onClick={() => setShowGallery(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75" onClick={() => setShowGallery(false)}>
           <div className="relative max-h-[80vh] max-w-[90vw]">
             <img src={images[galleryIndex]} alt="" className="max-h-[80vh] max-w-[90vw] rounded-2xl border-2 border-ink" />
             {images.length > 1 && (

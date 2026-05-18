@@ -24,6 +24,7 @@ import {
   User,
   LogOut,
   Globe,
+  Settings,
 } from "lucide-react";
 
 export default function Navbar() {
@@ -119,6 +120,10 @@ export default function Navbar() {
                 <DropdownMenuItem onClick={() => navigate("/create")}>
                   <Plus className="mr-2 h-4 w-4" />
                   {t(locale, "nav.createPost")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/settings")}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  {t(locale, "nav.settings")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={logout}>
                   <LogOut className="mr-2 h-4 w-4" />
