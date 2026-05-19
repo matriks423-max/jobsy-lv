@@ -11,6 +11,7 @@ import { createOAuthCallbackHandler } from "./kimi/auth";
 import { Paths } from "@contracts/constants";
 import { createCheckoutSession, handleStripeWebhook } from "./stripe";
 import { handleGoogleCallback } from "./email-auth";
+import { cronRouter } from "./cron-router";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
 import { mkdir, writeFile, readFile } from "fs/promises";
@@ -196,6 +197,17 @@ app.get("/uploads/*", async (c) => {
     return c.json({ error: "File not found" }, 404);
   }
 });
+
+// Apple Pay domain verification (required for Stripe Apple Pay)
+// Placeholder — returns 404 until you paste the real file content from:
+// Stripe Dashboard → Settings → Payment Methods → Apple Pay → Add domain → download file
+// Once you have the content, replace the empty string below with it and change the status to 200.
+app.get("/.well-known/apple-developer-merchantid-domain-association", (c) => {
+  return c.text("", 404);
+});
+
+// Cron jobs
+app.route("/api/cron", cronRouter);
 
 app.use("/api/trpc/*", async (c) => {
   return fetchRequestHandler({
