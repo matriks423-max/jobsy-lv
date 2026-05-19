@@ -107,13 +107,26 @@ def append_new_techniques(new_techniques: list[dict]):
         return
     path = BIBLE_DIR / "techniques.json"
     data = json.loads(path.read_text()) if path.exists() else {"techniques": []}
-    existing_names = {t["name"].lower() for t in data.get("techniques", [])}
+    existing = data.setdefault("techniques", [])
+    existing_names = {t["name"].lower() for t in existing}
+    # Determine next available ID
+    existing_ids = {t.get("id", "") for t in existing}
+    next_id = len(existing) + 1
     added = 0
     for tech in new_techniques:
-        if isinstance(tech, dict) and tech.get("name") and tech["name"].lower() not in existing_names:
-            data.setdefault("techniques", []).append(tech)
-            existing_names.add(tech["name"].lower())
-            added += 1
+        if not isinstance(tech, dict) or not tech.get("name"):
+            continue
+        if tech["name"].lower() in existing_names:
+            continue
+        # Assign a non-conflicting ID
+        while f"tech_{next_id:03d}" in existing_ids:
+            next_id += 1
+        tech["id"] = f"tech_{next_id:03d}"
+        existing.append(tech)
+        existing_names.add(tech["name"].lower())
+        existing_ids.add(tech["id"])
+        next_id += 1
+        added += 1
     if added:
         path.write_text(json.dumps(data, indent=2))
 

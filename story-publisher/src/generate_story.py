@@ -130,7 +130,24 @@ Generate a complete 30-minute episode as structured JSON with this exact format:
       "permanent_changes": ["Any permanent appearance change — new scar, lost limb, significantly aged"],
       "age_appearance_override": null
     }}
-  }}
+  }},
+
+  "new_techniques": [
+    {{
+      "id": "tech_XXX",
+      "name": "Technique name",
+      "branch": "Resonance Arts|Body Arts|Perception Arts|Essence Arts|Mind Arts|Craft Arts",
+      "tier": 1,
+      "first_demonstrated_by": "Character name",
+      "introduced_episode": {episode_number},
+      "description": "What it does — concrete enough to implement as a game ability",
+      "cost": "What it costs the user physically, mentally, or in resonance",
+      "visual_effect_tags": "SDXL tags for how this looks when used",
+      "game_mechanic_concept": "One sentence — how this would work as a game ability",
+      "how_to_learn": "How a character would learn or develop this technique",
+      "variations_known": []
+    }}
+  ]
 }}
 
 Requirements:
@@ -144,7 +161,7 @@ Requirements:
 - Plant exactly 3-4 new hooks — more room means more seeds
 - Structure the episode in three movements: establishment, escalation, consequence
 - The cliffhanger must be earned by everything that came before it — not a random shock, a logical detonation
-- Also output "new_techniques" — any named ability demonstrated this episode, structured for techniques.json"""
+- new_techniques: list any named technique demonstrated this episode. Use empty list [] if no new technique appears. Each entry must follow the schema shown above."""
 
     message = client.messages.create(
         model="claude-opus-4-7",
