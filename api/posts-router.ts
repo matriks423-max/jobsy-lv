@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { createRouter, publicQuery, authedQuery, adminQuery } from "./middleware";
 import {
   createPost,
+  getPostById,
   getPostWithProfile,
   listPostsWithProfiles,
   updatePost,
@@ -136,11 +137,10 @@ export const postsRouter = createRouter({
         });
         const insertId = Number((post as unknown as [{ insertId: bigint }])[0].insertId);
 
-        // Save images
         if (input.images && input.images.length > 0) {
-          for (const url of input.images) {
-            await getDb().insert(schema.postImages).values({ postId: insertId, url });
-          }
+          await getDb().insert(schema.postImages).values(
+            input.images.map((url, i) => ({ postId: insertId, url, sortOrder: i }))
+          );
         }
 
         await checkAndRewardReferralOnPost(ctx.user.id);
@@ -158,11 +158,10 @@ export const postsRouter = createRouter({
         await useFreePost(ctx.user.id);
         const insertId = Number((post as unknown as [{ insertId: bigint }])[0].insertId);
 
-        // Save images
         if (input.images && input.images.length > 0) {
-          for (const url of input.images) {
-            await getDb().insert(schema.postImages).values({ postId: insertId, url });
-          }
+          await getDb().insert(schema.postImages).values(
+            input.images.map((url, i) => ({ postId: insertId, url, sortOrder: i }))
+          );
         }
 
         await checkAndRewardReferralOnPost(ctx.user.id);
@@ -249,6 +248,16 @@ export const postsRouter = createRouter({
     });
   }),
 
+  getStatus: authedQuery
+    .input(z.object({ postId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const post = await getPostById(input.postId);
+      if (!post || post.userId !== ctx.user.id) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
+      }
+      return { status: post.status };
+    }),
+
   contact: authedQuery
     .input(z.object({ postId: z.number() }))
     .mutation(async ({ ctx, input }) => {
@@ -284,11 +293,15 @@ export const postsRouter = createRouter({
     .input(
       z.object({
         postId: z.number(),
-        reason: z.string(),
-        details: z.string().optional(),
+        reason: z.enum(["misleading", "offensive", "fraud", "other"]),
+        details: z.string().max(500).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const post = await getPostById(input.postId);
+      if (!post) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
+      }
       await createReport({
         postId: input.postId,
         reporterId: ctx.user.id,

@@ -98,10 +98,11 @@ export default function PostDetail() {
     { enabled: !!data?.post }
   );
 
-  // Mock images for now - in production we'd query postImages table
-  const images = data?.post ? [
-    // Would come from postImages table
-  ] : [];
+  const { data: imagesData } = trpc.posts.getImages.useQuery(
+    { postId },
+    { enabled: !isNaN(postId) }
+  );
+  const images = imagesData?.map((img) => img.url) ?? [];
 
   if (isLoading) {
     return (

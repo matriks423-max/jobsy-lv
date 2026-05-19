@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { env } from "./lib/env";
 import { getPostById, updatePost } from "./queries/posts";
-import { useFreePost, getProfileByUserId } from "./queries/profiles";
+import { useFreePost, getProfileByUserId, updateProfile } from "./queries/profiles";
 import { getReferralByReferredId, markReferralPostMade, markReferralRewarded } from "./queries/referrals";
 import { addFreePostCredit } from "./queries/profiles";
 
@@ -27,7 +27,7 @@ export async function createCheckoutSession(postId: number, userId: number) {
       metadata: { userId: String(userId) },
     });
     customerId = customer.id;
-    // Update profile with stripe customer id would need a new query - skipping for now
+    await updateProfile(userId, { stripeCustomerId: customerId });
   }
 
   const session = await stripe.checkout.sessions.create({
