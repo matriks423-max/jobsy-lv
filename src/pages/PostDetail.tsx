@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -87,6 +87,45 @@ export default function PostDetail() {
     },
     onError: (err) => toast(err.message, "error"),
   });
+
+  // JSON-LD structured data for Google Jobs
+  useEffect(() => {
+    if (!data?.post) return;
+    const post = data.post;
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.id = "job-posting-schema";
+    script.text = JSON.stringify({
+      "@context": "https://schema.org/",
+      "@type": "JobPosting",
+      title: post.title,
+      description: (post.description ?? "").slice(0, 500),
+      datePosted: new Date(post.createdAt).toISOString().split("T")[0],
+      validThrough: post.expiresAt
+        ? new Date(post.expiresAt).toISOString().split("T")[0]
+        : undefined,
+      jobLocation: {
+        "@type": "Place",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: post.city ?? "Latvija",
+          addressCountry: "LV",
+        },
+      },
+    });
+    document.head.appendChild(script);
+    return () => {
+      const existing = document.getElementById("job-posting-schema");
+      if (existing) document.head.removeChild(existing);
+    };
+  }, [data?.post]);
+
+  useEffect(() => {
+    if (!data?.post) return;
+    const prev = document.title;
+    document.title = `${data.post.title} — jobsy.lv`;
+    return () => { document.title = prev; };
+  }, [data?.post]);
 
   const { data: relatedPosts } = trpc.posts.list.useQuery(
     {
