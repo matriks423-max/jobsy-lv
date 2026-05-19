@@ -9,6 +9,7 @@ interface Props {
 
 const { title, description = 'Arion World — An epic anime-style fantasy story spanning broken timelines.', ogImage } = Astro.props;
 const siteTitle = title === 'Arion World' ? title : `${title} — Arion World`;
+const currentPath = Astro.url.pathname;
 ---
 
 <!doctype html>
@@ -41,11 +42,20 @@ const siteTitle = title === 'Arion World' ? title : `${title} — Arion World`;
           Arion World
         </a>
         <div class="flex items-center gap-8 text-sm tracking-wider uppercase text-text-muted">
-          <a href="/world" class="hover:text-text-primary transition-colors">World</a>
-          <a href="/characters" class="hover:text-text-primary transition-colors">Characters</a>
-          <a href="/episodes" class="hover:text-text-primary transition-colors">Episodes</a>
-          <a href="/mysteries" class="hover:text-text-primary transition-colors">Mysteries</a>
-          <a href="/merch" class="hover:text-text-primary transition-colors">Merch</a>
+          {[
+            ['/world', 'World'],
+            ['/characters', 'Characters'],
+            ['/episodes', 'Episodes'],
+            ['/mysteries', 'Mysteries'],
+            ['/merch', 'Merch'],
+          ].map(([href, label]) => (
+            <a
+              href={href}
+              class={`transition-colors ${currentPath.startsWith(href) ? 'text-gold' : 'hover:text-text-primary'}`}
+            >
+              {label}
+            </a>
+          ))}
           <a href="https://youtube.com/@ArionWorld" target="_blank" rel="noopener"
              class="text-gold hover:text-gold-bright transition-colors">▶ Watch</a>
         </div>
