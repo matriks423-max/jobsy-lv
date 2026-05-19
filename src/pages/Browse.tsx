@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router";
+import { useSearchParams, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { CATEGORIES, CITIES } from "@/lib/categories";
@@ -22,6 +22,7 @@ import {
   MapPin,
   ChevronLeft,
   ChevronRight,
+  Plus,
 } from "lucide-react";
 
 const PAGE_SIZE = 12;
@@ -36,6 +37,7 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 export default function Browse() {
+  const navigate = useNavigate();
   const { locale } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -241,6 +243,15 @@ export default function Browse() {
             </Button>
           </div>
         )}
+
+        {/* Mobile FAB — Post a Job */}
+        <button
+          onClick={() => navigate("/create")}
+          className="fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full border-2 border-ink bg-coral px-4 py-3 font-body text-sm font-medium text-ink shadow-card-coral transition hover:-translate-y-0.5 hover:bg-coral-hover md:hidden"
+        >
+          <Plus className="h-4 w-4" />
+          {t(locale, "nav.createPost")}
+        </button>
       </div>
     </div>
   );
