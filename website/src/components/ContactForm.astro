@@ -1,7 +1,9 @@
 ---
-// ContactForm.astro — Formspree-backed contact form for Arion World
-// Replace FORMSPREE_FORM_ID with your actual Formspree form ID.
-// See story-publisher/MANUAL_ACTIONS_REQUIRED.md for setup instructions.
+// ContactForm.astro — Formspree-backed contact form
+// Set FORMSPREE_FORM_ID env var in GitHub Actions / .env to wire this up.
+// If unset, the form renders but submission will 404 (safe fallback).
+const formId = import.meta.env.FORMSPREE_FORM_ID || 'FORMSPREE_FORM_ID';
+const formAction = `https://formspree.io/f/${formId}`;
 ---
 
 <section class="max-w-2xl mx-auto px-6 py-16">
@@ -14,7 +16,7 @@
 
   <form
     id="contact-form"
-    action="https://formspree.io/f/FORMSPREE_FORM_ID"
+    action={formAction}
     method="POST"
     novalidate
     class="space-y-6"

@@ -40,6 +40,9 @@ jobs:
 
       - name: Build Astro site
         working-directory: website
+        env:
+          FORMSPREE_FORM_ID: ${{ secrets.FORMSPREE_FORM_ID }}
+          CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
         run: npm run build
 
       - name: Upload Pages artifact
