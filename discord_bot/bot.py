@@ -61,17 +61,31 @@ EPISODE_COUNTER_PATH = (
 # JSON helpers
 # ---------------------------------------------------------------------------
 
+_WEBSITE_URL = os.environ.get("ARION_WEBSITE_URL", "").rstrip("/")
+
+
 def _load_json(filename: str, fallback=None):
+    # 1. Try local filesystem (works when running in the same repo)
     path = CONTENT_DIR / filename
-    if not path.exists():
-        logger.warning("Content file missing: %s", path)
-        return fallback
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception as e:
-        logger.error("Failed to read %s: %s", path, e)
-        return fallback
+    if path.exists():
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            logger.error("Failed to read local %s: %s", path, e)
+
+    # 2. Fallback: fetch from public website URL (works on Railway/Fly.io)
+    if _WEBSITE_URL:
+        import urllib.request
+        try:
+            url = f"{_WEBSITE_URL}/content/{filename}"
+            with urllib.request.urlopen(url, timeout=10) as resp:
+                return json.loads(resp.read())
+        except Exception as e:
+            logger.warning("Failed to fetch %s from website: %s", filename, e)
+
+    logger.warning("Content unavailable: %s", filename)
+    return fallback
 
 
 def _latest_episode_number() -> int:
