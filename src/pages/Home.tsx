@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
+import { CATEGORIES } from "@/lib/categories";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -18,19 +19,6 @@ import {
   Copy,
   Check,
 } from "lucide-react";
-
-const CATEGORIES_LV = [
-  "Mājsaimniecība",
-  "Pārvākšanās",
-  "Remonts",
-  "Dārzs",
-  "Auto",
-  "Bērnu pieskatīšana",
-  "Mājdzīvnieki",
-  "IT",
-  "Repetīcijas",
-  "Cits",
-];
 
 function AnimatedCounter({ target, duration = 1500 }: { target: number; duration?: number }) {
   const [count, setCount] = useState(0);
@@ -63,11 +51,12 @@ function AnimatedCounter({ target, duration = 1500 }: { target: number; duration
 }
 
 function MarqueeStrip() {
-  const items = CATEGORIES_LV.map((cat, i) => (
+  const { locale } = useLocale();
+  const items = CATEGORIES.map((cat, i) => (
     <span key={i} className="inline-flex items-center gap-3 whitespace-nowrap px-4">
       <Star className="h-4 w-4 fill-coral text-coral" />
       <span className="font-display text-lg font-bold italic text-mustard">
-        {cat}
+        {t(locale, `categories.${cat.key}` as never)}
       </span>
     </span>
   ));
