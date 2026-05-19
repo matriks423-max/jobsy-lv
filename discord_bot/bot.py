@@ -181,9 +181,9 @@ async def cmd_characters(ctx: commands.Context):
 @bot.command(name="mystery")
 async def cmd_mystery(ctx: commands.Context):
     """Post a random open mystery."""
-    data = _load_json("mysteries.json", {"mysteries": []})
-    mysteries = data.get("mysteries", [])
-    open_mysteries = [m for m in mysteries if m.get("status", "open") == "open"]
+    data = _load_json("mysteries.json", {"open": []})
+    # mysteries.json uses {"open": [...], "solved": [...]}
+    open_mysteries = data.get("open", data.get("mysteries", []))
 
     if not open_mysteries:
         await ctx.send("All mysteries are being kept in the shadows for now...")
@@ -191,7 +191,7 @@ async def cmd_mystery(ctx: commands.Context):
 
     mystery = random.choice(open_mysteries)
     question = mystery.get("question", mystery.get("title", "Unknown mystery"))
-    first_appeared = mystery.get("first_appeared_episode")
+    first_appeared = mystery.get("first_raised_episode", mystery.get("first_appeared_episode"))
     hint = mystery.get("hint", "")
 
     embed = disnake.Embed(
@@ -212,19 +212,16 @@ async def cmd_mystery(ctx: commands.Context):
 @bot.command(name="lore")
 async def cmd_lore(ctx: commands.Context):
     """Post a random lore fact about the world."""
-    data = _load_json("world_state.json", {"lore_facts": [], "factions": [], "locations": []})
+    # world_public.json uses factions_known / locations_known; overview is a lore string
+    data = _load_json("world_public.json", {"factions_known": [], "locations_known": []})
 
-    facts = data.get("lore_facts", [])
-    # Also pull from factions and locations as additional lore
-    factions = data.get("factions", [])
-    locations = data.get("locations", [])
+    factions = data.get("factions_known", data.get("factions", []))
+    locations = data.get("locations_known", data.get("locations", []))
 
     lore_pool = []
-    for fact in facts:
-        if isinstance(fact, str):
-            lore_pool.append(fact)
-        elif isinstance(fact, dict):
-            lore_pool.append(fact.get("text", fact.get("description", str(fact))))
+    overview = data.get("overview", "")
+    if overview:
+        lore_pool.append(overview)
 
     for f in factions:
         if isinstance(f, dict) and f.get("description"):
