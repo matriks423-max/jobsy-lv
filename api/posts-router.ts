@@ -9,10 +9,10 @@ import {
   updatePost,
   incrementViewCount,
   incrementContactCount,
-  expireOldPosts,
   deletePost,
   countUserPostsToday,
 } from "./queries/posts";
+import { maybeExpirePosts } from "./lib/expire-scheduler";
 import {
   getProfileByUserId,
   useFreePost,
@@ -50,7 +50,7 @@ export const postsRouter = createRouter({
         .optional()
     )
     .query(async ({ input }) => {
-      await expireOldPosts();
+      await maybeExpirePosts();
       const filters = {
         ...input,
         status: input?.status ?? "active",
@@ -63,7 +63,7 @@ export const postsRouter = createRouter({
   getById: publicQuery
     .input(z.object({ id: z.number() }))
     .query(async ({ input }) => {
-      await expireOldPosts();
+      await maybeExpirePosts();
       const result = await getPostWithProfile(input.id);
       if (!result) {
         throw new TRPCError({

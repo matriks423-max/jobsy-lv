@@ -7,6 +7,7 @@ import {
   text,
   timestamp,
   boolean,
+  index,
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
@@ -83,14 +84,20 @@ export const posts = mysqlTable("posts", {
     .defaultNow()
     .notNull()
     .$onUpdate(() => new Date()),
-});
+}, (table) => [
+  index("idx_posts_status_createdAt").on(table.status, table.createdAt),
+  index("idx_posts_userId_status").on(table.userId, table.status, table.createdAt),
+  index("idx_posts_expiresAt").on(table.expiresAt, table.status),
+]);
 
 export const contacts = mysqlTable("contacts", {
   id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
   postId: bigint("postId", { mode: "number", unsigned: true }).notNull(),
   fromUserId: bigint("fromUserId", { mode: "number", unsigned: true }).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
+}, (table) => [
+  index("idx_contacts_postId_fromUserId").on(table.postId, table.fromUserId),
+]);
 
 export const reports = mysqlTable("reports", {
   id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
@@ -100,7 +107,9 @@ export const reports = mysqlTable("reports", {
   details: text("details"),
   resolved: boolean("resolved").default(false).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
+}, (table) => [
+  index("idx_reports_resolved_createdAt").on(table.resolved, table.createdAt),
+]);
 
 export const referrals = mysqlTable("referrals", {
   id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
@@ -117,7 +126,9 @@ export const postImages = mysqlTable("postImages", {
   url: text("url").notNull(),
   sortOrder: int("sortOrder", { unsigned: true }).default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
+}, (table) => [
+  index("idx_postImages_postId").on(table.postId),
+]);
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;

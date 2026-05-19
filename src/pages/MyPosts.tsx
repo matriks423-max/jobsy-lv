@@ -19,43 +19,41 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
+  CreditCard,
 } from "lucide-react";
+
+type Tab = "active" | "pending" | "expired" | "all";
 
 export default function MyPosts() {
   const { locale } = useLocale();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: true });
   const { toast } = useToast();
-  const [tab, setTab] = useState<"active" | "expired" | "all">("active");
+  const [tab, setTab] = useState<Tab>("active");
 
   const { data, isLoading } = trpc.posts.myPosts.useQuery(undefined, {
     enabled: isAuthenticated,
   });
 
   const deleteMutation = trpc.posts.delete.useMutation({
-    onSuccess: () => {
-      toast("Sludinājums dzēsts", "success");
-    },
+    onSuccess: () => toast("Sludinājums dzēsts", "success"),
     onError: (err) => toast(err.message, "error"),
   });
 
   const filtered =
     data?.filter((item: PostWithProfile) => {
-      const post = item.post;
+      const { status } = item.post;
       if (tab === "all") return true;
-      if (tab === "active") return post.status === "active";
-      if (tab === "expired")
-        return post.status === "expired" || post.status === "closed" || post.status === "pending_payment";
+      if (tab === "active") return status === "active" || status === "pending_review";
+      if (tab === "pending") return status === "pending_payment";
+      if (tab === "expired") return status === "expired" || status === "closed" || status === "rejected";
       return true;
     }) ?? [];
 
-  const counts = {
-    active: data?.filter((item: PostWithProfile) => item.post.status === "active").length ?? 0,
-    expired:
-      data?.filter(
-        (item: PostWithProfile) =>
-          item.post.status === "expired" || item.post.status === "closed" || item.post.status === "pending_payment"
-      ).length ?? 0,
+  const counts: Record<Tab, number> = {
+    active: data?.filter((i: PostWithProfile) => i.post.status === "active" || i.post.status === "pending_review").length ?? 0,
+    pending: data?.filter((i: PostWithProfile) => i.post.status === "pending_payment").length ?? 0,
+    expired: data?.filter((i: PostWithProfile) => ["expired", "closed", "rejected"].includes(i.post.status)).length ?? 0,
     all: data?.length ?? 0,
   };
 
@@ -63,11 +61,21 @@ export default function MyPosts() {
     switch (status) {
       case "active":
         return { label: t(locale, "myPosts.statusActive"), bg: "bg-sage-light", text: "text-sage", border: "border-sage", icon: CheckCircle };
+      case "pending_review":
+        return { label: t(locale, "myPosts.statusPending"), bg: "bg-mustard-light", text: "text-ink", border: "border-mustard", icon: Clock };
       case "pending_payment":
         return { label: t(locale, "myPosts.statusPending"), bg: "bg-mustard-light", text: "text-ink", border: "border-mustard", icon: Clock };
       default:
         return { label: t(locale, "myPosts.statusExpired"), bg: "bg-cream-dark", text: "text-ink-light", border: "border-ink-light", icon: AlertCircle };
     }
+  };
+
+  const tabs: Tab[] = ["active", "pending", "expired", "all"];
+  const tabLabel: Record<Tab, string> = {
+    active: t(locale, "myPosts.tabActive"),
+    pending: t(locale, "myPosts.tabPending"),
+    expired: t(locale, "myPosts.tabExpired"),
+    all: t(locale, "myPosts.tabAll"),
   };
 
   return (
@@ -86,8 +94,8 @@ export default function MyPosts() {
         </div>
 
         {/* Tabs */}
-        <div className="mb-6 flex gap-2">
-          {(["active", "expired", "all"] as const).map((tVal) => (
+        <div className="mb-6 flex flex-wrap gap-2">
+          {tabs.map((tVal) => (
             <button
               key={tVal}
               onClick={() => setTab(tVal)}
@@ -97,10 +105,12 @@ export default function MyPosts() {
                   : "border-ink-light bg-white text-ink-muted hover:border-ink hover:text-ink"
               }`}
             >
-              {tVal === "active" ? t(locale, "myPosts.tabActive") : tVal === "expired" ? t(locale, "myPosts.tabExpired") : t(locale, "myPosts.tabAll")}
-              <span className={`rounded-full px-2 py-0.5 text-xs ${tab === tVal ? "bg-ink text-cream" : "bg-cream-dark text-ink-muted"}`}>
-                {counts[tVal]}
-              </span>
+              {tabLabel[tVal]}
+              {counts[tVal] > 0 && (
+                <span className={`rounded-full px-2 py-0.5 text-xs ${tab === tVal ? "bg-ink text-cream" : "bg-cream-dark text-ink-muted"}`}>
+                  {counts[tVal]}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -118,12 +128,17 @@ export default function MyPosts() {
               const post = item.post;
               const status = getStatusConfig(post.status);
               const StatusIcon = status.icon;
+              const isPendingPayment = post.status === "pending_payment";
               return (
                 <div
                   key={post.id}
                   className="flex items-center gap-4 rounded-2xl border-2 border-ink bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:shadow-float"
                 >
-                  <div className={`h-16 w-1.5 rounded-full ${post.status === "active" ? "bg-sage" : post.status === "pending_payment" ? "bg-mustard" : "bg-ink-light"}`} />
+                  <div className={`h-16 w-1.5 rounded-full ${
+                    post.status === "active" ? "bg-sage"
+                    : post.status === "pending_payment" || post.status === "pending_review" ? "bg-mustard"
+                    : "bg-ink-light"
+                  }`} />
 
                   <div className="flex-1 min-w-0">
                     <div className="mb-1 flex flex-wrap items-center gap-2">
@@ -144,20 +159,38 @@ export default function MyPosts() {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="hidden flex-col items-end sm:flex">
-                      <span className="flex items-center gap-1 font-mono text-xs text-ink-light">
-                        <Eye className="h-3 w-3" /> {post.viewCount}
-                      </span>
-                      <span className="flex items-center gap-1 font-mono text-xs text-ink-light">
-                        <MessageSquare className="h-3 w-3" /> {post.contactCount}
-                      </span>
-                    </div>
+                    {!isPendingPayment && (
+                      <div className="hidden flex-col items-end sm:flex">
+                        <span className="flex items-center gap-1 font-mono text-xs text-ink-light">
+                          <Eye className="h-3 w-3" /> {post.viewCount}
+                        </span>
+                        <span className="flex items-center gap-1 font-mono text-xs text-ink-light">
+                          <MessageSquare className="h-3 w-3" /> {post.contactCount}
+                        </span>
+                      </div>
+                    )}
                     <div className="flex gap-1">
-                      <Link to={`/edit/${post.id}`}>
-                        <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title="Labot">
-                          <Pencil className="h-4 w-4" />
-                        </button>
-                      </Link>
+                      {isPendingPayment ? (
+                        <Link to={`/payment?postId=${post.id}`}>
+                          <button className="flex items-center gap-1.5 rounded-lg border-2 border-mustard bg-mustard-light px-3 py-2 font-body text-xs font-medium text-ink hover:bg-mustard">
+                            <CreditCard className="h-4 w-4" />
+                            {t(locale, "myPosts.completePayment")}
+                          </button>
+                        </Link>
+                      ) : (
+                        <>
+                          <Link to={`/edit/${post.id}`}>
+                            <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title="Labot">
+                              <Pencil className="h-4 w-4" />
+                            </button>
+                          </Link>
+                          <Link to={`/post/${post.id}`}>
+                            <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title="Skatīt">
+                              <ArrowRight className="h-4 w-4" />
+                            </button>
+                          </Link>
+                        </>
+                      )}
                       <button
                         onClick={() => {
                           if (confirm("Vai tiešām dzēst?")) {
@@ -169,11 +202,6 @@ export default function MyPosts() {
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
-                      <Link to={`/post/${post.id}`}>
-                        <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title="Skatīt">
-                          <ArrowRight className="h-4 w-4" />
-                        </button>
-                      </Link>
                     </div>
                   </div>
                 </div>
