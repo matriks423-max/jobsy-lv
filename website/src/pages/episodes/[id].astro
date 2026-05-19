@@ -7,13 +7,15 @@ export async function getStaticPaths() {
   const path = join(process.cwd(), 'public/content/episodes.json');
   if (!existsSync(path)) return [];
   const data = JSON.parse(readFileSync(path, 'utf-8'));
-  return (data.episodes ?? []).map((ep: any) => ({
+  const episodes: any[] = data.episodes ?? [];
+  const epNums = new Set(episodes.map((e: any) => e.episode_number));
+  return episodes.map((ep: any) => ({
     params: { id: String(ep.episode_number) },
-    props: { ep },
+    props: { ep, hasNext: epNums.has(ep.episode_number + 1) },
   }));
 }
 
-const { ep } = Astro.props;
+const { ep, hasNext } = Astro.props;
 const epNum = ep.episode_number;
 
 // Load mysteries so we can show ones raised this episode
@@ -108,9 +110,11 @@ const raisedThisEp = [...mysteriesData.open, ...mysteriesData.solved].filter(
         </a>
       )}
       <span class="flex-1"></span>
-      <a href={`/episodes/${epNum + 1}`} class="text-sm tracking-widest uppercase text-text-dim hover:text-gold transition-colors">
-        Episode {epNum + 1} →
-      </a>
+      {hasNext && (
+        <a href={`/episodes/${epNum + 1}`} class="text-sm tracking-widest uppercase text-text-dim hover:text-gold transition-colors">
+          Episode {epNum + 1} →
+        </a>
+      )}
     </div>
 
   </div>

@@ -110,6 +110,7 @@ def build_context_prompt(episode_number: int) -> str:
     hooks = load_future_hooks()
     recent_episodes = load_recent_episodes(3)
     visual_state = load_character_visual_state()
+    visual_style = load_visual_style()
     caelum_city = load_caelum_city()
     chroniclers = load_chroniclers()
     curses = load_curses()
@@ -172,6 +173,9 @@ ARION WORLD — STORY BIBLE CONTEXT FOR EPISODE {episode_number}
 
 === MAIN CHARACTERS ===
 {json.dumps(characters['main_cast'], indent=2)}
+
+=== VISUAL STYLE (anime art direction — apply to all image_prompts) ===
+{json.dumps(visual_style, indent=2)}
 
 === CURRENT CHARACTER PHYSICAL STATE ===
 (Injuries, healing wounds, equipment changes — reflect these in scene descriptions)
