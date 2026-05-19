@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       run_number:
-        description: 'Task index to run (0=races, 1=continents, 2=techniques, 3=factions, 4=hooks, 5=world, 6=characters)'
+        description: 'Task index to run (0=races, 1=continents, 2=techniques, 3=factions, 4=hooks, 5=world_detail, 6=characters, 7=curses, 8=crafting, 9=city_detail)'
         required: false
         default: 'auto'
 
@@ -61,9 +61,9 @@ jobs:
           if git diff --staged --quiet; then
             echo "No lore changes to commit."
           else
-            TASK_NAMES=(races continents techniques factions hooks world_detail characters)
+            TASK_NAMES=(races continents techniques factions hooks world_detail characters curses crafting city_detail)
             RUN_NUM=${{ steps.run_num.outputs.run_number }}
-            TASK=${TASK_NAMES[$((RUN_NUM % 7))]}
+            TASK=${TASK_NAMES[$((RUN_NUM % 10))]}
             git commit -m "lore(auto): expand ${TASK} — run #${RUN_NUM}"
             git pull --rebase origin HEAD || true
             git push origin HEAD

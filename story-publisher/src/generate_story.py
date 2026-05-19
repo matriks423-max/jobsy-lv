@@ -1,7 +1,7 @@
 import json
 import os
 import anthropic
-from story_bible import build_context_prompt, get_episode_number, load_future_hooks, update_future_hooks
+from story_bible import build_context_prompt, get_episode_number, load_future_hooks, update_future_hooks, append_new_techniques
 
 
 SYSTEM_PROMPT = """You are the lead writer for Arion World — a 16+ epic anime-style fantasy series with blood, romance, and death where nobody is safe and nothing is predetermined.
@@ -172,5 +172,8 @@ Requirements:
         hooks["meta"]["total_hooks"] = len(hooks["hooks"])
         hooks["meta"]["revealed_hooks"] = sum(1 for h in hooks["hooks"] if h["revealed"])
         update_future_hooks(hooks)
+
+    # Persist any new named techniques demonstrated this episode
+    append_new_techniques(episode_data.get("new_techniques", []))
 
     return episode_data

@@ -101,6 +101,23 @@ def update_future_hooks(updated_hooks: dict):
     path.write_text(json.dumps(updated_hooks, indent=2))
 
 
+def append_new_techniques(new_techniques: list[dict]):
+    """Add newly demonstrated techniques from an episode into techniques.json."""
+    if not new_techniques:
+        return
+    path = BIBLE_DIR / "techniques.json"
+    data = json.loads(path.read_text()) if path.exists() else {"techniques": []}
+    existing_names = {t["name"].lower() for t in data.get("techniques", [])}
+    added = 0
+    for tech in new_techniques:
+        if isinstance(tech, dict) and tech.get("name") and tech["name"].lower() not in existing_names:
+            data.setdefault("techniques", []).append(tech)
+            existing_names.add(tech["name"].lower())
+            added += 1
+    if added:
+        path.write_text(json.dumps(data, indent=2))
+
+
 def build_context_prompt(episode_number: int) -> str:
     universe = load_universe()
     characters = load_characters()
