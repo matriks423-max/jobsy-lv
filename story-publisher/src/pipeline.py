@@ -190,7 +190,7 @@ def run_pipeline():
 
     # ── Update website content ────────────────────────────────
     try:
-        update_website(episode_data, episode_number, merch_products)
+        update_website(episode_data, episode_number, merch_products, results)
     except Exception as e:
         print(f"Website content update failed (non-fatal): {e}")
 

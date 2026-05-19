@@ -58,7 +58,7 @@ const raisedThisEp = [...mysteriesData.open, ...mysteriesData.solved].filter(
     <div class="lore-card mb-12 text-center">
       <p class="text-text-dim text-xs tracking-widest uppercase mb-4">Watch this episode</p>
       <a
-        href="https://youtube.com/@ArionWorld"
+        href={ep.youtube_url || "https://youtube.com/@ArionWorld"}
         target="_blank"
         rel="noopener"
         class="inline-block px-8 py-3 bg-gold text-void font-display tracking-widest uppercase text-sm hover:bg-gold-bright transition-colors"

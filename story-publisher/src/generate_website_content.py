@@ -98,20 +98,30 @@ def update_characters(episode_data: dict, current_episode: int):
     })
 
 
-def update_episodes(episode_data: dict, current_episode: int):
+def update_episodes(episode_data: dict, current_episode: int, publish_results: dict | None = None):
     """Add this episode to the public episode list."""
     existing = load_json(WEBSITE_CONTENT / "episodes.json")
     episodes = existing.get("episodes", [])
 
-    episodes.append({
+    entry: dict = {
         "episode_number": current_episode,
         "title": episode_data.get("title", ""),
         "logline": episode_data.get("logline", ""),
         "summary": episode_data.get("episode_summary", ""),
         "cliffhanger": episode_data.get("cliffhanger", ""),
         "major_death": bool(episode_data.get("character_deaths")),
-    })
+    }
 
+    if publish_results:
+        yt = publish_results.get("youtube", "")
+        if yt and not str(yt).startswith("FAILED"):
+            yt_str = str(yt).strip()
+            # youtube publisher returns video_id — build full URL
+            if not yt_str.startswith("http"):
+                yt_str = f"https://youtube.com/watch?v={yt_str}"
+            entry["youtube_url"] = yt_str
+
+    episodes.append(entry)
     save_json(WEBSITE_CONTENT / "episodes.json", {"episodes": episodes})
 
 
@@ -204,12 +214,17 @@ def update_merch(merch_products: list, current_episode: int):
     })
 
 
-def generate_all(episode_data: dict, current_episode: int, merch_products: list | None = None):
+def generate_all(
+    episode_data: dict,
+    current_episode: int,
+    merch_products: list | None = None,
+    publish_results: dict | None = None,
+):
     """Run all website content updates for this episode."""
     print("Updating website content...")
     update_site_state(episode_data, current_episode)
     update_characters(episode_data, current_episode)
-    update_episodes(episode_data, current_episode)
+    update_episodes(episode_data, current_episode, publish_results)
     update_world(episode_data, current_episode)
     update_mysteries(episode_data, current_episode)
     if merch_products:
