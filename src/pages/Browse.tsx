@@ -4,7 +4,6 @@ import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { CATEGORIES, CITIES } from "@/lib/categories";
 import { trpc } from "@/providers/trpc";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -14,16 +13,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import PostCard from "@/components/PostCard";
-import type { PostWithProfile } from "@/types/post";
 import {
   Search,
   X,
-  SlidersHorizontal,
   MapPin,
   ChevronLeft,
   ChevronRight,
   Plus,
+  LayoutList,
+  Map,
 } from "lucide-react";
+import JobMap from "@/components/JobMap";
 
 const PAGE_SIZE = 12;
 
@@ -50,6 +50,7 @@ export default function Browse() {
   const [category, setCategory] = useState(searchParams.get("category") ?? "all");
   const [city, setCity] = useState(searchParams.get("city") ?? "all");
   const [page, setPage] = useState(Number(searchParams.get("page") ?? "0"));
+  const [viewMode, setViewMode] = useState<"list" | "map">("list");
 
   const { data, isLoading } = trpc.posts.list.useQuery({
     type: type === "all" ? undefined : type,
@@ -94,9 +95,33 @@ export default function Browse() {
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="mb-4 font-display text-3xl font-bold text-ink md:text-4xl">
-            {t(locale, "browse.title")}
-          </h1>
+          <div className="mb-4 flex items-center justify-between">
+            <h1 className="font-display text-3xl font-bold text-ink md:text-4xl">
+              {t(locale, "browse.title")}
+            </h1>
+            {/* List / Map toggle */}
+            <div className="flex overflow-hidden rounded-xl border-2 border-ink">
+              <button
+                onClick={() => setViewMode("list")}
+                className={`flex items-center gap-1.5 px-3 py-2 font-body text-sm font-medium transition ${
+                  viewMode === "list" ? "bg-ink text-cream" : "bg-white text-ink hover:bg-cream"
+                }`}
+              >
+                <LayoutList className="h-4 w-4" />
+                <span className="hidden sm:inline">{t(locale, "browse.viewList")}</span>
+              </button>
+              <button
+                onClick={() => setViewMode("map")}
+                className={`flex items-center gap-1.5 px-3 py-2 font-body text-sm font-medium transition ${
+                  viewMode === "map" ? "bg-ink text-cream" : "bg-white text-ink hover:bg-cream"
+                }`}
+              >
+                <Map className="h-4 w-4" />
+                <span className="hidden sm:inline">{t(locale, "browse.viewMap")}</span>
+              </button>
+            </div>
+          </div>
+          {/* search input — keep as-is */}
           <div className="relative">
             <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-muted" />
             <Input
@@ -197,50 +222,61 @@ export default function Browse() {
         )}
 
         {/* Results */}
-        {isLoading ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-48 animate-pulse-skeleton rounded-2xl border-2 border-ink bg-cream-dark" />
-            ))}
-          </div>
-        ) : posts.length > 0 ? (
+        {viewMode === "list" ? (
           <>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {posts.map((item: PostWithProfile) => (
-                <PostCard key={item.post.id} post={item.post} profile={item.profile} />
-              ))}
-            </div>
-
+            {isLoading ? (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="h-48 animate-pulse rounded-2xl border-2 border-ink bg-white" />
+                ))}
+              </div>
+            ) : posts.length === 0 ? (
+              <div className="py-20 text-center">
+                <p className="font-body text-lg text-ink-muted">{t(locale, "browse.noResults")}</p>
+                <button onClick={clearFilters} className="mt-4 font-body text-sm text-coral hover:underline">
+                  {t(locale, "browse.clear")}
+                </button>
+              </div>
+            ) : (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {posts.map(({ post, profile }) => (
+                  <PostCard key={post.id} post={post} profile={profile} />
+                ))}
+              </div>
+            )}
             {/* Pagination */}
-            <div className="mt-8 flex items-center justify-center gap-4">
-              <button
-                onClick={() => setPage((p) => Math.max(0, p - 1))}
-                disabled={page === 0}
-                className="flex items-center gap-1 rounded-xl border-2 border-ink bg-white px-4 py-2 font-body text-sm font-medium text-ink disabled:opacity-40 hover:bg-cream-dark"
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Iepriekšējie
-              </button>
-              <span className="font-body text-sm text-ink-muted">
-                Lapa {page + 1}
-              </span>
-              <button
-                onClick={() => setPage((p) => p + 1)}
-                disabled={!hasMore}
-                className="flex items-center gap-1 rounded-xl border-2 border-ink bg-white px-4 py-2 font-body text-sm font-medium text-ink disabled:opacity-40 hover:bg-cream-dark"
-              >
-                Nākamie
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
+            {(page > 0 || hasMore) && (
+              <div className="mt-8 flex items-center justify-center gap-4">
+                <button
+                  onClick={() => setPage((p) => Math.max(0, p - 1))}
+                  disabled={page === 0}
+                  className="flex items-center gap-1 rounded-xl border-2 border-ink px-4 py-2 font-body text-sm font-medium disabled:opacity-40"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  {t(locale, "browse.prev")}
+                </button>
+                <span className="font-mono text-sm text-ink-muted">{page + 1}</span>
+                <button
+                  onClick={() => setPage((p) => p + 1)}
+                  disabled={!hasMore}
+                  className="flex items-center gap-1 rounded-xl border-2 border-ink px-4 py-2 font-body text-sm font-medium disabled:opacity-40"
+                >
+                  {t(locale, "browse.next")}
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            )}
           </>
         ) : (
-          <div className="flex flex-col items-center py-20">
-            <SlidersHorizontal className="mb-4 h-12 w-12 text-ink-light" />
-            <p className="font-body text-lg text-ink-muted">{t(locale, "browse.empty")}</p>
-            <Button onClick={clearFilters} variant="outline" className="mt-4 rounded-xl border-2 border-ink">
-              {t(locale, "browse.clear")}
-            </Button>
+          <div className="mb-6">
+            {isLoading ? (
+              <div className="h-[520px] animate-pulse rounded-2xl border-2 border-ink bg-white" />
+            ) : (
+              <JobMap posts={posts} />
+            )}
+            <p className="mt-3 font-body text-sm text-ink-muted">
+              {t(locale, "browse.mapShowing", { count: posts.filter(({ post }) => post.city && post.city !== "other").length })}
+            </p>
           </div>
         )}
 
