@@ -42,7 +42,7 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r story-publisher/requirements.txt
 
-      - name: Run publishing pipeline
+      - name: Generate episode (story + voice + images + video + trailer)
         if: ${{ inputs.dry_run != 'true' }}
         working-directory: story-publisher/src
         env:
@@ -50,20 +50,48 @@ jobs:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
           REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
+          DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
+        run: python pipeline.py --mode generate
+
+      - name: Upload trailer to GitHub Releases (public URL for Instagram)
+        if: ${{ inputs.dry_run != 'true' }}
+        id: upload_trailer
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          EP_NUM=$(cat story-publisher/story_bible/.episode_counter)
+          TAG="ep-${EP_NUM}-trailer"
+          TRAILER=$(find story-publisher/output/ep$(printf '%03d' $EP_NUM) -name "*_trailer.mp4" | head -1)
+          if [ -z "$TRAILER" ]; then
+            echo "trailer_url=" >> $GITHUB_OUTPUT
+            echo "No trailer found — Instagram will be skipped"
+            exit 0
+          fi
+          # Delete release if it already exists (idempotent re-runs)
+          gh release delete "$TAG" --yes 2>/dev/null || true
+          gh release create "$TAG" \
+            --title "Episode ${EP_NUM} — Trailer" \
+            --notes "Auto-generated trailer for Episode ${EP_NUM}" \
+            --prerelease \
+            "$TRAILER"
+          URL="https://github.com/${{ github.repository }}/releases/download/${TAG}/$(basename $TRAILER)"
+          echo "trailer_url=${URL}" >> $GITHUB_OUTPUT
+          echo "Trailer uploaded: ${URL}"
+
+      - name: Publish to all platforms
+        if: ${{ inputs.dry_run != 'true' }}
+        working-directory: story-publisher/src
+        env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
           FACEBOOK_ACCESS_TOKEN: ${{ secrets.FACEBOOK_ACCESS_TOKEN }}
           INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+          TRAILER_PUBLIC_URL: ${{ steps.upload_trailer.outputs.trailer_url }}
           TIKTOK_ACCESS_TOKEN: ${{ secrets.TIKTOK_ACCESS_TOKEN }}
-          # TRAILER_PUBLIC_URL is intentionally unset here.
-          # Instagram publishing will fail gracefully (pipeline.py catches the RuntimeError).
-          # To enable Instagram, add an upload-trailer step before this step that
-          # uploads the trailer to a public URL and sets TRAILER_PUBLIC_URL.
-          # See MANUAL_ACTIONS_REQUIRED.md for setup instructions.
-          DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
-        run: python pipeline.py
+          PRINTFUL_API_KEY: ${{ secrets.PRINTFUL_API_KEY }}
+        run: python pipeline.py --mode publish
 
       - name: Run story generation only (dry run)
         if: ${{ inputs.dry_run == 'true' }}

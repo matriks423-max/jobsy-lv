@@ -234,5 +234,170 @@ def run_pipeline():
         sys.exit(1)
 
 
+def run_generate_only():
+    """
+    Steps 1-6 only: generate story, voice, images, subtitles, video, trailer.
+    Writes story data and media to disk — does NOT publish anywhere.
+    Used by weekly-publish.yml --mode generate so the trailer can be uploaded
+    to GitHub Releases before publishing starts.
+    """
+    episode_number = get_episode_number()
+    print(f"\n{'='*60}")
+    print(f"  ARION WORLD — Episode {episode_number} — GENERATE PHASE")
+    print(f"{'='*60}\n")
+
+    episode_dir = WORK_DIR / f"ep{episode_number:03d}"
+    audio_dir = episode_dir / "audio"
+    images_dir = episode_dir / "images"
+    subs_dir = episode_dir / "subtitles"
+    video_path = episode_dir / f"arion_world_ep{episode_number:03d}.mp4"
+    trailer_path = episode_dir / f"arion_world_ep{episode_number:03d}_trailer.mp4"
+
+    episode_data_path = episode_dir / "episode_data.json"
+
+    print("Step 1/6 — Generating episode script with Claude...")
+    episode_data = generate_episode(episode_number)
+    episode_dir.mkdir(parents=True, exist_ok=True)
+    episode_data_path.write_text(json.dumps(episode_data, indent=2))
+    print(f"Episode '{episode_data['title']}' generated. {len(episode_data['scenes'])} scenes.")
+
+    print("\nStep 2/6 — Generating narration audio with ElevenLabs...")
+    audio_files = generate_narration(episode_data, audio_dir)
+
+    print("\nStep 3/6 — Generating scene images with Replicate SDXL...")
+    image_files = generate_all_images(episode_data, images_dir)
+
+    print("\nStep 4/6 — Generating subtitles + translations...")
+    subtitle_files = generate_subtitles(episode_data, audio_files, subs_dir)
+    en_srt = subtitle_files.get("EN")
+
+    print("\nStep 5/6 — Assembling 1-hour video with FFmpeg...")
+    music = find_background_music()
+    assemble_video(episode_data, image_files, audio_files, video_path, music)
+
+    print("\nStep 6/6 — Creating 2-minute portrait trailer...")
+    create_portrait_trailer(video_path, trailer_path, subtitle_file=en_srt)
+
+    # Write trailer path to a well-known file for the publish phase to read
+    (episode_dir / "trailer_path.txt").write_text(str(trailer_path))
+    print(f"\nGenerate phase complete. Trailer: {trailer_path}")
+    print("Upload the trailer to GitHub Releases, then run --mode publish")
+
+
+def run_publish_only():
+    """
+    Steps 7+: publish to platforms, update website, save to bible.
+    Reads episode_data.json and media from disk (written by run_generate_only).
+    TRAILER_PUBLIC_URL must be set in the environment before calling this.
+    """
+    episode_number = get_episode_number()
+    episode_dir = WORK_DIR / f"ep{episode_number:03d}"
+    episode_data_path = episode_dir / "episode_data.json"
+
+    if not episode_data_path.exists():
+        print(f"ERROR: {episode_data_path} not found. Run --mode generate first.")
+        sys.exit(1)
+
+    episode_data = json.loads(episode_data_path.read_text())
+    video_path = episode_dir / f"arion_world_ep{episode_number:03d}.mp4"
+    trailer_path = episode_dir / f"arion_world_ep{episode_number:03d}_trailer.mp4"
+    subs_dir = episode_dir / "subtitles"
+
+    # Reconstruct subtitle_files dict from disk
+    subtitle_files = {}
+    if subs_dir.exists():
+        for srt in subs_dir.glob("*.srt"):
+            lang = srt.stem.split("_")[-1].upper()
+            subtitle_files[lang] = srt
+
+    images_dir = episode_dir / "images"
+    image_files = sorted(images_dir.glob("*.png")) if images_dir.exists() else []
+    merch_products = []
+
+    print(f"\n{'='*60}")
+    print(f"  ARION WORLD — Episode {episode_number} — PUBLISH PHASE")
+    print(f"{'='*60}\n")
+
+    # Merch (uses existing images from generate phase)
+    try:
+        from publish_merch import publish_merch_for_episode
+        merch_products = publish_merch_for_episode(episode_data, image_files) or []
+        if merch_products:
+            print(f"Merch: {len(merch_products)} product(s) created.")
+    except Exception as e:
+        print(f"Merch generation failed (non-fatal): {e}")
+
+    results = {}
+
+    try:
+        print("→ YouTube (full video + subtitles)...")
+        results["youtube"] = upload_to_youtube(video_path, episode_data, subtitle_files)
+    except Exception as e:
+        print(f"✗ YouTube failed: {e}")
+        results["youtube"] = f"FAILED: {e}"
+
+    try:
+        print("→ Facebook (full video)...")
+        results["facebook"] = upload_to_facebook(video_path, episode_data)
+    except Exception as e:
+        print(f"✗ Facebook failed: {e}")
+        results["facebook"] = f"FAILED: {e}"
+
+    try:
+        print("→ Instagram Reels (trailer)...")
+        results["instagram"] = upload_reel_to_instagram(trailer_path, episode_data)
+    except Exception as e:
+        print(f"✗ Instagram failed: {e}")
+        results["instagram"] = f"FAILED: {e}"
+
+    try:
+        print("→ TikTok (trailer)...")
+        results["tiktok"] = upload_to_tiktok(trailer_path, episode_data)
+    except Exception as e:
+        print(f"✗ TikTok failed: {e}")
+        results["tiktok"] = f"FAILED: {e}"
+
+    try:
+        update_website(episode_data, episode_number, merch_products, results)
+    except Exception as e:
+        print(f"Website content update failed (non-fatal): {e}")
+
+    visual_updates = episode_data.get("character_visual_state_updates", {})
+    if visual_updates:
+        try:
+            _apply_visual_state_updates(episode_number, visual_updates)
+        except Exception as e:
+            print(f"Visual state update failed (non-fatal): {e}")
+
+    save_episode(episode_number, {
+        "episode_number": episode_number,
+        "title": episode_data["title"],
+        "logline": episode_data["logline"],
+        "summary": episode_data["episode_summary"],
+        "cliffhanger": episode_data["cliffhanger"],
+        "character_updates": episode_data.get("character_state_updates", {}),
+        "hooks_planted": [h["id"] for h in episode_data.get("new_hooks_planted", [])],
+        "hooks_paid_off": episode_data.get("hooks_paid_off", []),
+        "publish_results": results,
+    })
+    increment_episode_number()
+
+    failed = [p for p, r in results.items() if str(r).startswith("FAILED")]
+    print(f"\nEpisode {episode_number} publish complete.")
+    if failed:
+        print(f"WARNING: {len(failed)} platform(s) failed: {', '.join(failed)}")
+        sys.exit(1)
+
+
 if __name__ == "__main__":
-    run_pipeline()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mode", choices=["full", "generate", "publish"], default="full")
+    args = parser.parse_args()
+
+    if args.mode == "generate":
+        run_generate_only()
+    elif args.mode == "publish":
+        run_publish_only()
+    else:
+        run_pipeline()
