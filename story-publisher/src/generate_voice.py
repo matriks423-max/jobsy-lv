@@ -1,4 +1,5 @@
 import os
+import subprocess
 import time
 from pathlib import Path
 import requests
@@ -32,7 +33,10 @@ def generate_narration(episode_data: dict, output_dir: Path) -> list[Path]:
                     'whispered': 'In a low voice, ', 'angry': 'With barely contained fury, ',
                     'desperate': 'Desperately, ', 'cold': 'Coldly, ', 'quiet': 'Quietly, '
                 }.get(tone, '')
-                narration_text += f"\n\n{tone_prefix}{line['character']}: — {line['line']}"
+                character = line.get('character', 'Unknown')
+                spoken = line.get('line', '')
+                if spoken:
+                    narration_text += f"\n\n{tone_prefix}{character}: — {spoken}"
 
         payload = {
             "text": narration_text,
@@ -60,7 +64,6 @@ def generate_narration(episode_data: dict, output_dir: Path) -> list[Path]:
 
 
 def get_voice_duration_seconds(audio_path: Path) -> float:
-    import subprocess
     result = subprocess.run(
         ["ffprobe", "-v", "error", "-show_entries", "format=duration",
          "-of", "default=noprint_wrappers=1:nokey=1", str(audio_path)],

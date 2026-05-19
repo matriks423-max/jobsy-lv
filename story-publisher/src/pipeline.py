@@ -24,8 +24,6 @@ from pathlib import Path
 # Ensure src/ is on path when running from repo root
 sys.path.insert(0, str(Path(__file__).parent))
 
-import json as _json
-
 from generate_story import generate_episode
 from generate_voice import generate_narration
 from generate_images import generate_all_images
@@ -52,7 +50,7 @@ def _apply_visual_state_updates(episode_number: int, updates: dict):
     if not state_path.exists():
         return
 
-    state = _json.loads(state_path.read_text())
+    state = json.loads(state_path.read_text())
     chars = state.setdefault("characters", {})
 
     for char_name, changes in updates.items():
@@ -89,7 +87,7 @@ def _apply_visual_state_updates(episode_number: int, updates: dict):
             c["age_appearance"] = override
 
     state["episode_last_updated"] = episode_number
-    state_path.write_text(_json.dumps(state, indent=2))
+    state_path.write_text(json.dumps(state, indent=2))
 
 
 def find_background_music() -> Path | None:

@@ -254,7 +254,7 @@ def _pick_striking_images(image_files: list[Path], episode_data: dict, count: in
                 score += 8
             if "battle" in plot_sig or "fight" in plot_sig:
                 score += 6
-            characters = scene.get("characters_present", [])
+            characters = scene.get("characters_in_scene", [])
             score += min(len(characters), 5)  # up to 5 points for character count
         scores.append((score, img_path))
 
