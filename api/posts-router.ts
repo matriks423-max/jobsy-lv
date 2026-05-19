@@ -27,6 +27,7 @@ import {
 import { addFreePostCredit } from "./queries/profiles";
 import { createCheckoutSession } from "./stripe";
 import { moderateContent, softFlagCheck } from "./lib/moderation";
+import { sendPostPublished } from "./lib/email";
 
 const FREE_FIRST_POST = true;
 const MAX_POSTS_PER_DAY = 5;
@@ -145,6 +146,9 @@ export const postsRouter = createRouter({
         }
 
         await checkAndRewardReferralOnPost(ctx.user.id);
+        if (!needsReview && profile.email) {
+          void sendPostPublished(profile.email, input.title, insertId);
+        }
         return { postId: insertId, requiresPayment: false, needsReview };
       }
 
@@ -167,6 +171,9 @@ export const postsRouter = createRouter({
         }
 
         await checkAndRewardReferralOnPost(ctx.user.id);
+        if (!needsReview && profile.email) {
+          void sendPostPublished(profile.email, input.title, insertId);
+        }
         return { postId: insertId, requiresPayment: false, needsReview };
       }
 
