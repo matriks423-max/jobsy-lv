@@ -206,7 +206,7 @@ def update_merch(merch_products: list, current_episode: int):
     existing_urls = {p.get("url") for p in products}
     for product in merch_products:
         if isinstance(product, dict) and product.get("url") not in existing_urls:
-            products.append({"episode": current_episode, **product})
+            products.append({"episode_number": current_episode, **product})
     save_json(WEBSITE_CONTENT / "merch.json", {
         "products": products,
         "store_url": existing.get("store_url", ""),

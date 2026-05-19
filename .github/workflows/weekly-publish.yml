@@ -119,7 +119,7 @@ jobs:
           git push origin HEAD
 
       - name: Announce episode on Discord (optional)
-        if: env.DISCORD_WEBHOOK_URL != ''
+        if: ${{ secrets.DISCORD_WEBHOOK_URL != '' }}
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
