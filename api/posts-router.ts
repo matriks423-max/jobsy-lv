@@ -11,6 +11,7 @@ import {
   expireOldPosts,
   deletePost,
   countUserPostsToday,
+  setPostFilled,
 } from "./queries/posts";
 import {
   getProfileByUserId,
@@ -238,6 +239,18 @@ export const postsRouter = createRouter({
       }
 
       await deletePost(input.id);
+      return { success: true };
+    }),
+
+  setFilled: authedQuery
+    .input(z.object({ postId: z.number(), filled: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      const result = await getPostWithProfile(input.postId);
+      if (!result) throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
+      if (result.post.userId !== ctx.user.id) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Not your post" });
+      }
+      await setPostFilled(input.postId, input.filled);
       return { success: true };
     }),
 

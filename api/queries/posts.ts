@@ -116,6 +116,13 @@ export async function incrementContactCount(id: number) {
     .where(eq(schema.posts.id, id));
 }
 
+export async function setPostFilled(id: number, filled: boolean) {
+  await getDb()
+    .update(schema.posts)
+    .set({ filled, updatedAt: new Date() })
+    .where(eq(schema.posts.id, id));
+}
+
 export async function expireOldPosts() {
   const now = new Date();
   await getDb()
