@@ -147,11 +147,13 @@ export default function Home() {
                 label: t(locale, "hero.statsActive"),
               },
               {
-                value: (stats?.needPosts ?? 0) + (stats?.offerPosts ?? 0),
-                label: t(locale, "hero.statsHelpers"),
+                value: stats?.users ?? 0,
+                label: t(locale, "hero.statsUsers"),
               },
-              { value: 8, label: t(locale, "hero.statsCities") },
-              { value: 10, label: t(locale, "hero.statsCategories") },
+              {
+                value: stats?.categories ?? 0,
+                label: t(locale, "hero.statsCategories"),
+              },
             ].map((stat, i) => (
               <div key={i} className="flex items-center gap-2">
                 <div className="text-center">
@@ -162,7 +164,7 @@ export default function Home() {
                     {stat.label}
                   </div>
                 </div>
-                {i < 3 && (
+                {i < 2 && (
                   <span className="hidden text-ink-light md:inline">•</span>
                 )}
               </div>

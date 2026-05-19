@@ -23,6 +23,7 @@ export const translations = {
       statsHelpers: "Atrasti palīgi",
       statsCities: "Pilsētas",
       statsCategories: "Kategorijas",
+      statsUsers: "Reģistrēti lietotāji",
     },
     howItWorks: {
       title: "Kā tas darbojas?",
@@ -247,6 +248,7 @@ export const translations = {
       statsHelpers: "Найдено помощников",
       statsCities: "Города",
       statsCategories: "Категории",
+      statsUsers: "Зарегистрированных пользователей",
     },
     howItWorks: {
       title: "Как это работает?",
@@ -470,6 +472,7 @@ export const translations = {
       statsHelpers: "Helpers Found",
       statsCities: "Cities",
       statsCategories: "Categories",
+      statsUsers: "Registered users",
     },
     howItWorks: {
       title: "How it works",

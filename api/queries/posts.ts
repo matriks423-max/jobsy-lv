@@ -145,6 +145,21 @@ export async function countPostsByType(type: "need" | "offer") {
   return result[0]?.count ?? 0;
 }
 
+export async function countUsers() {
+  const result = await getDb()
+    .select({ count: sql<number>`count(*)` })
+    .from(schema.users);
+  return result[0]?.count ?? 0;
+}
+
+export async function countCategories() {
+  const result = await getDb()
+    .select({ count: sql<number>`count(distinct ${schema.posts.category})` })
+    .from(schema.posts)
+    .where(eq(schema.posts.status, "active"));
+  return result[0]?.count ?? 0;
+}
+
 export async function deletePost(id: number) {
   await getDb()
     .delete(schema.posts)
