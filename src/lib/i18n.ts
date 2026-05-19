@@ -78,6 +78,7 @@ export const translations = {
       empty: "Nekas nav atrasts. Mēģini citus filtrus.",
       loadMore: "Ielādēt vēl",
       loading: "Ielādē...",
+      viewPost: "Skatīt",
     },
     postDetail: {
       breadcrumbHome: "Sākums",
@@ -302,6 +303,7 @@ export const translations = {
       empty: "Ничего не найдено. Попробуй другие фильтры.",
       loadMore: "Загрузить ещё",
       loading: "Загрузка...",
+      viewPost: "Смотреть",
     },
     postDetail: {
       breadcrumbHome: "Главная",
@@ -526,6 +528,7 @@ export const translations = {
       empty: "Nothing found. Try different filters.",
       loadMore: "Load more",
       loading: "Loading...",
+      viewPost: "View",
     },
     postDetail: {
       breadcrumbHome: "Home",
