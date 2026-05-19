@@ -43,6 +43,7 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Eye,
 } from "lucide-react";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -257,6 +258,23 @@ export default function PostDetail() {
 
         {/* Title & Description */}
         <h1 className="mb-6 font-display text-3xl font-bold text-ink md:text-4xl">{post.title}</h1>
+        <div className="mb-4 flex flex-wrap items-center gap-3">
+          {data.post.viewCount > 0 && (
+            <span className="inline-flex items-center gap-1 font-body text-sm text-ink-muted">
+              <Eye className="h-4 w-4" />
+              {data.post.viewCount} {t(locale, "postDetail.views")}
+            </span>
+          )}
+          <span className={`inline-flex items-center gap-1 rounded-full border-2 px-3 py-0.5 font-body text-xs font-medium ${
+            data.post.filled
+              ? "border-sage bg-sage-light text-sage"
+              : "border-ink bg-cream text-ink"
+          }`}>
+            {data.post.filled
+              ? `✓ ${t(locale, "postDetail.statusFilled")}`
+              : `● ${t(locale, "postDetail.statusOpen")}`}
+          </span>
+        </div>
         {post.description && (
           <p className="mb-8 whitespace-pre-wrap font-body text-base leading-relaxed text-ink-muted">
             {post.description}

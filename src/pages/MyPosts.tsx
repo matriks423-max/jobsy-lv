@@ -39,6 +39,11 @@ export default function MyPosts() {
     onError: (err) => toast(err.message, "error"),
   });
 
+  const utils = trpc.useUtils();
+  const setFilledMutation = trpc.posts.setFilled.useMutation({
+    onSuccess: () => utils.posts.myPosts.invalidate(),
+  });
+
   const filtered =
     data?.filter((item: PostWithProfile) => {
       const post = item.post;
@@ -153,6 +158,20 @@ export default function MyPosts() {
                       </span>
                     </div>
                     <div className="flex gap-1">
+                      {post.status === "active" && (
+                        <button
+                          onClick={() => setFilledMutation.mutate({ postId: post.id, filled: !post.filled })}
+                          disabled={setFilledMutation.isPending}
+                          title={post.filled ? t(locale, "myPosts.markOpen") : t(locale, "myPosts.markFilled")}
+                          className={`rounded-lg border-2 px-2 py-2 font-body text-xs font-medium transition ${
+                            post.filled
+                              ? "border-sage bg-sage-light text-sage hover:bg-sage"
+                              : "border-ink-light bg-white text-ink-muted hover:border-ink hover:text-ink"
+                          }`}
+                        >
+                          {post.filled ? "✓" : "○"}
+                        </button>
+                      )}
                       <Link to={`/edit/${post.id}`}>
                         <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title="Labot">
                           <Pencil className="h-4 w-4" />
