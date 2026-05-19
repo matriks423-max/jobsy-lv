@@ -12,10 +12,7 @@ Check them off as you complete them.
 - [ ] **Contact email**: Create contact@arionworld.com (or use Gmail: arionworld.contact@gmail.com). Set as GitHub Secret `CONTACT_EMAIL` and update ChatWidget.astro
 - [ ] **Formspree**: Create free account at formspree.io, create form, copy Form ID → replace `FORMSPREE_FORM_ID` in website/src/components/ContactForm.astro
 - [ ] **Website URL**: Once domain is set up, add GitHub Secret `ARION_WEBSITE_URL` (e.g. https://arionworld.com)
-- [ ] **Instagram TRAILER_PUBLIC_URL**: Instagram requires a public URL for video upload. Options:
-  - Easy: Use `transfer.sh` (add a workflow step: `curl -F "file=@$TRAILER" https://transfer.sh/trailer.mp4`)
-  - Better: Set up Cloudflare R2 (free 10GB/month) and add `R2_ACCESS_KEY`, `R2_SECRET_KEY` secrets
-  - For now: Instagram will show FAILED in pipeline results but everything else publishes fine
+- [x] **Instagram TRAILER_PUBLIC_URL**: ✅ SOLVED — the pipeline now uploads the trailer to a GitHub Release before publishing. The public release asset URL is passed automatically as `TRAILER_PUBLIC_URL`. No cloud storage setup needed. Requires the repo to be public (which it is).
 
 ## Additional GitHub Secrets Needed
 
