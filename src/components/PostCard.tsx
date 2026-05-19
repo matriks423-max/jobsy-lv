@@ -17,6 +17,7 @@ import {
   MapPin,
   Calendar,
   Wallet,
+  Eye,
 } from "lucide-react";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -56,6 +57,12 @@ export default function PostCard({ post }: PostCardProps) {
           isNeed ? "bg-need" : "bg-sage"
         }`}
       />
+
+      {post.filled && (
+        <div className="absolute right-3 top-3 z-10 rounded-full border-2 border-ink bg-sage px-2.5 py-0.5 font-body text-xs font-medium text-ink">
+          ✓ {t(locale, "postDetail.statusFilled")}
+        </div>
+      )}
 
       <div className="flex flex-1 flex-col p-5 pl-6">
         {/* Top row */}
@@ -107,6 +114,12 @@ export default function PostCard({ post }: PostCardProps) {
             <span className="inline-flex items-center gap-1 font-body text-sm text-ink-muted">
               <Calendar className="h-3.5 w-3.5" />
               {post.whenText}
+            </span>
+          )}
+          {post.viewCount > 0 && (
+            <span className="inline-flex items-center gap-1 font-mono text-xs text-ink-light">
+              <Eye className="h-3 w-3" />
+              {post.viewCount}
             </span>
           )}
           <span className="ml-auto font-mono text-xs text-ink-light">

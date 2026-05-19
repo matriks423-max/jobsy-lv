@@ -92,6 +92,7 @@ export const translations = {
       published: "Publicēts {date}",
       budget: "Budžets",
       when: "Termiņš",
+      statusFilled: "Palīgs atrasts",
       contact: {
         title: "Sazināties",
         locked: "Pieslēdzies, lai redzētu kontaktinformāciju",
@@ -323,6 +324,7 @@ export const translations = {
       published: "Опубликовано {date}",
       budget: "Бюджет",
       when: "Срок",
+      statusFilled: "Помощник найден",
       contact: {
         title: "Связаться",
         locked: "Войди, чтобы увидеть контактную информацию",
@@ -554,6 +556,7 @@ export const translations = {
       published: "Posted {date}",
       budget: "Budget",
       when: "When",
+      statusFilled: "Helper found",
       contact: {
         title: "Get in touch",
         locked: "Log in to see contact details",
