@@ -86,7 +86,13 @@ export async function listPostsWithProfiles(filters?: {
   offset?: number;
 }) {
   const posts = await listPosts(filters);
-  const profiles = await getDb().select().from(schema.profiles);
+  if (posts.length === 0) return [];
+
+  const userIds = [...new Set(posts.map((p) => p.userId))];
+  const profiles = await getDb()
+    .select()
+    .from(schema.profiles)
+    .where(inArray(schema.profiles.userId, userIds));
   const profileMap = new Map(profiles.map((p) => [p.userId, p]));
 
   return posts.map((post) => ({
