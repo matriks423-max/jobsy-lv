@@ -34,5 +34,11 @@ export const env = {
 
   siteUrl: optional("SITE_URL") ?? "http://localhost:3000",
   postingFeeCents: parseInt(process.env.POSTING_FEE_CENTS ?? "200"),
+
+  // Email (Resend) — optional in dev, required in production for email features
+  resendApiKey: optional("RESEND_API_KEY"),
+
+  // Cron secret — required in production (any value, keep secret)
+  cronSecret: optional("CRON_SECRET"),
 };
 

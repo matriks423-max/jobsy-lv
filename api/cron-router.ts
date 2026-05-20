@@ -8,7 +8,9 @@ export const cronRouter = new Hono();
 
 cronRouter.get("/reminders", async (c) => {
   const secret = c.req.header("x-cron-secret");
-  if (secret !== process.env.CRON_SECRET) {
+  const expected = process.env.CRON_SECRET;
+  // Guard: reject if secret is missing, empty, or doesn't match
+  if (!expected || !secret || secret !== expected) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
