@@ -26,11 +26,22 @@ jobs:
 
       - name: Set up destination repo
         run: |
+          set -e
           git config --global user.name "Migration Bot"
           git config --global user.email "bot@arionworld.auto"
 
-          # Clone the destination repo
+          # Verify PAT works
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token ${{ secrets.ARION_WORLD_PAT }}" \
+            https://api.github.com/repos/matriks423-max/arion-word)
+          echo "Repo API status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "ERROR: Cannot access arion-word repo. Check ARION_WORLD_PAT secret."
+            exit 1
+          fi
+
           git clone https://x-access-token:${{ secrets.ARION_WORLD_PAT }}@github.com/matriks423-max/arion-word.git /tmp/arion-world-dest
+          echo "Cloned successfully"
 
       - name: Copy all Arion World files
         run: |
@@ -130,20 +141,36 @@ jobs:
           echo "Files copied. Listing destination:"
           find $DEST -not -path '*/.git/*' -type f | sort
 
-      - name: Commit and push to arion-world
+      - name: Commit and push to arion-word
         run: |
+          set -e
           cd /tmp/arion-world-dest
 
           git add -A
+          STAGED=$(git diff --cached --name-only | wc -l)
+          echo "Files staged: $STAGED"
+
+          if [ "$STAGED" -eq "0" ]; then
+            echo "ERROR: No files were staged — something went wrong with the copy step."
+            exit 1
+          fi
+
           git commit -m "feat: Arion World — complete automated story universe
 
-          Full pipeline: weekly 1-hour episode generation → narration → anime images →
-          subtitles (6 languages) → video + portrait trailer → YouTube/FB/Instagram/TikTok.
-          14-file story bible (races, continents, curses, alchemy, city texture, chroniclers).
-          Autonomous lore expansion every 5 hours. Equivalent exchange curse system.
-          Discord bot (disnake). Zero-investment Printful merch. Astro website."
+Full pipeline: weekly 1-hour episode generation → narration → anime images →
+subtitles (6 languages) → video + portrait trailer → YouTube/FB/Instagram/TikTok.
+14-file story bible (races, continents, curses, alchemy, city texture, chroniclers).
+Autonomous lore expansion every 5 hours. Equivalent exchange curse system.
+Discord bot (disnake). Zero-investment Printful merch. Astro website."
 
-          git push -u origin main
+          # --force handles the case where GitHub initialised the repo with a README
+          git push --force -u origin main
 
+          echo ""
           echo "✓ arion-word repo populated successfully!"
           echo "  https://github.com/matriks423-max/arion-word"
+          echo ""
+          echo "Next steps:"
+          echo "  1. Delete ARION_WORLD_PAT secret from jobsy-lv"
+          echo "  2. Revoke the token at github.com/settings/tokens"
+          echo "  3. Enable GitHub Pages in arion-word repo settings"
