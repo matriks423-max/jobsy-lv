@@ -55,7 +55,7 @@ export default function Browse() {
   const [page, setPage] = useState(Number(searchParams.get("page") ?? "0"));
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
 
-  const { data, isLoading } = trpc.posts.list.useQuery({
+  const listInput = {
     type: type === "all" ? undefined : type,
     category: category === "all" ? undefined : category,
     city: city === "all" ? undefined : city,
@@ -64,6 +64,16 @@ export default function Browse() {
     search: debouncedSearch || undefined,
     limit: PAGE_SIZE,
     offset: page * PAGE_SIZE,
+  } as const;
+
+  const { data, isLoading } = trpc.posts.list.useQuery(listInput);
+
+  const { data: totalCount } = trpc.posts.count.useQuery({
+    type: listInput.type,
+    category: listInput.category,
+    city: listInput.city,
+    status: listInput.status,
+    search: listInput.search,
   });
 
   // Set page title
@@ -145,7 +155,9 @@ export default function Browse() {
             />
           </div>
           <p className="mt-2 font-body text-sm text-ink-muted">
-            {t(locale, "browse.showing", { count: posts.length })}
+            {totalCount !== undefined
+              ? t(locale, "browse.showing", { count: totalCount })
+              : t(locale, "browse.showing", { count: posts.length })}
           </p>
         </div>
 

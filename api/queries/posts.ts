@@ -168,6 +168,32 @@ export async function expireOldPosts() {
     );
 }
 
+export async function countPosts(filters?: {
+  type?: "need" | "offer";
+  category?: string;
+  city?: string;
+  status?: string;
+  search?: string;
+  userId?: number;
+}) {
+  const where = [];
+  if (filters?.type) where.push(eq(schema.posts.type, filters.type));
+  if (filters?.category) where.push(eq(schema.posts.category, filters.category));
+  if (filters?.city) where.push(eq(schema.posts.city, filters.city));
+  if (filters?.status) where.push(eq(schema.posts.status, filters.status as "pending_payment" | "active" | "closed" | "expired" | "rejected"));
+  if (filters?.userId) where.push(eq(schema.posts.userId, filters.userId));
+  if (filters?.search) {
+    where.push(
+      sql`(${schema.posts.title} LIKE ${"%" + filters.search + "%"} OR ${schema.posts.description} LIKE ${"%" + filters.search + "%"})`
+    );
+  }
+  const result = await getDb()
+    .select({ count: sql<number>`count(*)` })
+    .from(schema.posts)
+    .where(where.length > 0 ? and(...where) : undefined);
+  return result[0]?.count ?? 0;
+}
+
 export async function countActivePosts() {
   const result = await getDb()
     .select({ count: sql<number>`count(*)` })

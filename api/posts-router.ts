@@ -15,6 +15,7 @@ import {
   deletePost,
   countUserPostsToday,
   setPostFilled,
+  countPosts,
 } from "./queries/posts";
 import {
   getProfileByUserId,
@@ -66,6 +67,23 @@ export const postsRouter = createRouter({
         offset: input?.offset ?? 0,
       };
       return listPostsWithProfiles(filters);
+    }),
+
+  count: publicQuery
+    .input(
+      z.object({
+        type: postTypeEnum.optional(),
+        category: z.string().optional(),
+        city: z.string().optional(),
+        status: z.string().optional(),
+        search: z.string().optional(),
+      }).optional()
+    )
+    .query(async ({ input }) => {
+      return countPosts({
+        ...input,
+        status: input?.status ?? "active",
+      });
     }),
 
   getById: publicQuery
