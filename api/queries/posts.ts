@@ -21,13 +21,24 @@ export async function getPostWithProfile(id: number) {
   const post = await getPostById(id);
   if (!post) return null;
 
-  const profileRows = await getDb()
-    .select()
-    .from(schema.profiles)
-    .where(eq(schema.profiles.userId, post.userId))
-    .limit(1);
+  const [profileRows, imageRows] = await Promise.all([
+    getDb()
+      .select()
+      .from(schema.profiles)
+      .where(eq(schema.profiles.userId, post.userId))
+      .limit(1),
+    getDb()
+      .select()
+      .from(schema.postImages)
+      .where(eq(schema.postImages.postId, id))
+      .orderBy(schema.postImages.sortOrder),
+  ]);
 
-  return { post, profile: profileRows.at(0) };
+  return {
+    post,
+    profile: profileRows.at(0),
+    images: imageRows.map((img) => img.url),
+  };
 }
 
 export async function listPosts(filters?: {

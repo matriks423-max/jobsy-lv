@@ -327,6 +327,7 @@ app.get("/robots.txt", (c) => {
     "Disallow: /edit/",
     "Disallow: /payment",
     "Disallow: /success",
+    "Disallow: /uploads/",
     "",
     "Sitemap: https://jobsy.lv/sitemap.xml",
   ].join("\n");

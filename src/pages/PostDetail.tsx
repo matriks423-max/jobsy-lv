@@ -138,10 +138,7 @@ export default function PostDetail() {
     { enabled: !!data?.post }
   );
 
-  // Mock images for now - in production we'd query postImages table
-  const images = data?.post ? [
-    // Would come from postImages table
-  ] : [];
+  const images = data?.images ?? [];
 
   if (isLoading) {
     return (
