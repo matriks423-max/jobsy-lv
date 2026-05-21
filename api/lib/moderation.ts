@@ -81,18 +81,27 @@ const BANNED_PATTERNS = {
 // Combine all into single array
 const ALL_BANNED_WORDS: string[] = Object.values(BANNED_PATTERNS).flat();
 
-// Pre-compile regexes for performance
-const compiledPatterns = ALL_BANNED_WORDS.map((word) => ({
-  word,
-  regex: new RegExp(`\\b${word}\\b`, "i"),
-}));
+// Check if text contains a word. Uses simple includes() for non-ASCII patterns
+// (like Cyrillic) because JavaScript \b word boundaries only work with ASCII chars.
+function textContains(text: string, word: string): boolean {
+  const idx = text.indexOf(word);
+  if (idx === -1) return false;
+  // For ASCII words: verify we're at a word boundary to avoid partial matches
+  const isAscii = /^[\x00-\x7F]+$/.test(word);
+  if (!isAscii) return true; // Non-ASCII: accept substring match (pattern is specific enough)
+  // ASCII: check surrounding chars are not word chars
+  const before = idx === 0 ? "" : text[idx - 1];
+  const after = idx + word.length >= text.length ? "" : text[idx + word.length];
+  const notBoundaryChar = /[a-z0-9]/;
+  return !notBoundaryChar.test(before) && !notBoundaryChar.test(after);
+}
 
 export function moderateContent(title: string, description: string = ""): ModerationResult {
   const text = `${title} ${description}`.toLowerCase();
   const flaggedWords: string[] = [];
 
-  for (const { word, regex } of compiledPatterns) {
-    if (regex.test(text)) {
+  for (const word of ALL_BANNED_WORDS) {
+    if (textContains(text, word)) {
       flaggedWords.push(word);
     }
   }
