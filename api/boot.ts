@@ -185,11 +185,15 @@ app.post("/api/upload", async (c) => {
 
     const url = `/uploads/${filename}`;
 
-    await getDb().insert(schema.postImages).values({
-      postId: Number(postId),
-      url,
-      sortOrder: 0,
-    });
+    // Only insert into postImages if we have a real post ID (not 0 = new post not yet created)
+    const realPostId = Number(postId);
+    if (realPostId > 0) {
+      await getDb().insert(schema.postImages).values({
+        postId: realPostId,
+        url,
+        sortOrder: 0,
+      });
+    }
 
     return c.json({ url, success: true });
   } catch (err: unknown) {

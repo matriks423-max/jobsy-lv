@@ -1,4 +1,4 @@
-import { eq, and, desc, sql, gte, lte, inArray } from "drizzle-orm";
+import { eq, and, desc, asc, sql, gte, lte, inArray } from "drizzle-orm";
 import * as schema from "@db/schema";
 import type { InsertPost } from "@db/schema";
 import { getDb } from "./connection";
@@ -75,15 +75,22 @@ export async function listPosts(filters?: {
     );
   }
 
-  const query = getDb()
+  const orderBy = (() => {
+    switch (filters?.sort) {
+      case "oldest": return asc(schema.posts.createdAt);
+      case "budget_asc": return asc(schema.posts.budgetText);
+      case "budget_desc": return desc(schema.posts.budgetText);
+      default: return desc(schema.posts.createdAt);
+    }
+  })();
+
+  return getDb()
     .select()
     .from(schema.posts)
     .where(where.length > 0 ? and(...where) : undefined)
-    .orderBy(desc(schema.posts.createdAt))
+    .orderBy(orderBy)
     .limit(filters?.limit ?? 50)
     .offset(filters?.offset ?? 0);
-
-  return query;
 }
 
 export async function listPostsWithProfiles(filters?: {

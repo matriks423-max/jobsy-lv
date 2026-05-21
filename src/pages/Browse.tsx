@@ -49,6 +49,9 @@ export default function Browse() {
   );
   const [category, setCategory] = useState(searchParams.get("category") ?? "all");
   const [city, setCity] = useState(searchParams.get("city") ?? "all");
+  const [sort, setSort] = useState<"newest" | "oldest">(
+    (searchParams.get("sort") as never) ?? "newest"
+  );
   const [page, setPage] = useState(Number(searchParams.get("page") ?? "0"));
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
 
@@ -56,6 +59,7 @@ export default function Browse() {
     type: type === "all" ? undefined : type,
     category: category === "all" ? undefined : category,
     city: city === "all" ? undefined : city,
+    sort,
     status: "active",
     search: debouncedSearch || undefined,
     limit: PAGE_SIZE,
@@ -68,15 +72,17 @@ export default function Browse() {
     if (type !== "all") params.set("type", type);
     if (category !== "all") params.set("category", category);
     if (city !== "all") params.set("city", city);
+    if (sort !== "newest") params.set("sort", sort);
     if (debouncedSearch) params.set("search", debouncedSearch);
     if (page > 0) params.set("page", String(page));
     setSearchParams(params, { replace: true });
-  }, [type, category, city, debouncedSearch, page]);
+  }, [type, category, city, sort, debouncedSearch, page]);
 
   const clearFilters = () => {
     setType("all");
     setCategory("all");
     setCity("all");
+    setSort("newest");
     setSearch("");
     setPage(0);
   };
@@ -180,6 +186,16 @@ export default function Browse() {
                   {t(locale, `cities.${c}` as never)}
                 </SelectItem>
               ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={sort} onValueChange={(v) => { setSort(v as "newest" | "oldest"); setPage(0); }}>
+            <SelectTrigger className="w-[140px] rounded-xl border-2 border-ink bg-white font-body">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="border-2 border-ink">
+              <SelectItem value="newest">{t(locale, "browse.sortNewest")}</SelectItem>
+              <SelectItem value="oldest">{t(locale, "browse.sortOldest")}</SelectItem>
             </SelectContent>
           </Select>
 

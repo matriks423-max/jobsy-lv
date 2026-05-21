@@ -45,6 +45,7 @@ export const postsRouter = createRouter({
           city: z.string().optional(),
           status: z.string().optional(),
           search: z.string().optional(),
+          sort: z.enum(["newest", "oldest", "budget_asc", "budget_desc"]).optional(),
           limit: z.number().min(1).max(50).optional(),
           offset: z.number().min(0).optional(),
         })
