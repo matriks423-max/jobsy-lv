@@ -233,13 +233,13 @@ export default function PostDetail() {
             <button
               onClick={() => setShowShare(true)}
               className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark"
-              title="Kopīgot"
+              title={t(locale, "postDetail.share.title")}
             >
               <Share2 className="h-4 w-4" />
             </button>
             {isOwner && (
               <Link to={`/edit/${post.id}`}>
-                <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title="Labot">
+                <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title={t(locale, "nav.myPosts")}>
                   <Pencil className="h-4 w-4" />
                 </button>
               </Link>
@@ -448,16 +448,16 @@ export default function PostDetail() {
                 onChange={(e) => setReportReason(e.target.value)}
                 className="w-full rounded-xl border-2 border-ink-light bg-white p-3 font-body text-sm focus:border-coral"
               >
-                <option value="">Izvēlies iemeslu...</option>
-                <option value="misleading">Maldinoša informācija</option>
-                <option value="offensive">Aizskarošs saturs</option>
-                <option value="fraud">Krāpšana</option>
-                <option value="other">Cits</option>
+                <option value="">{t(locale, "postDetail.reportPlaceholder")}</option>
+                <option value="misleading">{t(locale, "postDetail.reportMisleading")}</option>
+                <option value="offensive">{t(locale, "postDetail.reportOffensive")}</option>
+                <option value="fraud">{t(locale, "postDetail.reportFraud")}</option>
+                <option value="other">{t(locale, "postDetail.reportOther")}</option>
               </select>
               <textarea
                 value={reportDetails}
                 onChange={(e) => setReportDetails(e.target.value)}
-                placeholder="Papildu informācija (neobligāti)"
+                placeholder={t(locale, "postDetail.reportDetailsPlaceholder")}
                 className="min-h-[100px] w-full resize-y rounded-xl border-2 border-ink-light bg-white p-3 font-body text-sm focus:border-coral"
               />
               <Button
@@ -468,7 +468,7 @@ export default function PostDetail() {
                 disabled={!reportReason || reportMutation.isPending}
                 className="w-full rounded-xl border-2 border-ink bg-coral font-body font-medium text-ink hover:bg-coral-hover"
               >
-                {reportMutation.isPending ? "..." : "Nosūtīt"}
+                {reportMutation.isPending ? t(locale, "postDetail.reportSubmitting") : t(locale, "postDetail.reportSubmit")}
               </Button>
             </div>
           )}

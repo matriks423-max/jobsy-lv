@@ -49,11 +49,11 @@ export default function Payment() {
         setError(data.error);
         setProcessing(false);
       } else {
-        setError("Stripe nav pieejams. Simulējam...");
+        setError(t(locale, "payment.stripeUnavailable"));
         setTimeout(() => completeMutation.mutate({ postId }), 1000);
       }
     } catch {
-      setError("Stripe savienojums neizdevās. Simulējam maksājumu...");
+      setError(t(locale, "payment.stripeError"));
       setTimeout(() => {
         completeMutation.mutate({ postId });
       }, 1500);
@@ -77,7 +77,7 @@ export default function Payment() {
             className="mb-4 flex items-center gap-1 font-body text-sm text-ink-muted hover:text-ink"
           >
             <ArrowLeft className="h-4 w-4" />
-            Atpakaļ
+            {t(locale, "payment.back")}
           </button>
 
           <div className="mb-6 text-center">
@@ -110,11 +110,11 @@ export default function Payment() {
             ) : (
               <CreditCard className="mr-2 h-5 w-5" />
             )}
-            {processing ? "Ielādē..." : t(locale, "payment.payBtn")}
+            {processing ? t(locale, "payment.loading") : t(locale, "payment.payBtn")}
           </Button>
 
           <p className="mt-4 text-center font-body text-xs text-ink-light">
-            Maksājumu apstrādā Stripe. Tava karte netiek saglabāta.
+            {t(locale, "payment.stripeNote")}
           </p>
         </CardContent>
       </Card>

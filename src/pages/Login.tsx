@@ -3,6 +3,8 @@ import { Link, useSearchParams } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useLocale } from "@/lib/locale-context";
+import { t } from "@/lib/i18n";
 
 import { trpc } from "@/providers/trpc";
 import { useToast } from "@/hooks/useToast";
@@ -26,14 +28,16 @@ function getGoogleOAuthUrl(referralCode?: string) {
 }
 
 export default function Login() {
+  const { locale } = useLocale();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
     const prev = document.title;
-    document.title = "Pieslēgties — jobsy.lv";
+    document.title = t(locale, "login.pageTitle") + " — jobsy.lv";
     return () => { document.title = prev; };
-  }, []);
+  }, [locale]);
+
   // Auto-switch to register when referral code is in URL
   const urlRef = searchParams.get("ref") ?? "";
   const [mode, setMode] = useState<"login" | "register">(urlRef ? "register" : "login");
@@ -46,9 +50,7 @@ export default function Login() {
 
   const loginMutation = trpc.emailAuth.login.useMutation({
     onSuccess: () => {
-      // Set cookie via API response header - actually we need the server to set it
-      // The tRPC mutation doesn't automatically set cookies. We need a different approach.
-      toast("Pieslēgšanās veiksmīga!", "success");
+      toast(t(locale, "login.toastSuccess"), "success");
       window.location.href = "/";
     },
     onError: (err) => {
@@ -58,7 +60,7 @@ export default function Login() {
 
   const registerMutation = trpc.emailAuth.register.useMutation({
     onSuccess: () => {
-      toast("Reģistrācija veiksmīga!", "success");
+      toast(t(locale, "login.toastRegisterSuccess"), "success");
       window.location.href = "/";
     },
     onError: (err) => {
@@ -68,9 +70,9 @@ export default function Login() {
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!email.includes("@")) newErrors.email = "Nepareizs e-pasts";
-    if (password.length < 8) newErrors.password = "Parole pārāk īsa (min 8 zīmes)";
-    if (mode === "register" && name.length < 2) newErrors.name = "Vārds pārāk īss";
+    if (!email.includes("@")) newErrors.email = t(locale, "login.errorEmail");
+    if (password.length < 8) newErrors.password = t(locale, "login.errorPassword");
+    if (mode === "register" && name.length < 2) newErrors.name = t(locale, "login.errorName");
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -92,7 +94,7 @@ export default function Login() {
       <div className="w-full max-w-md">
         <Link to="/" className="mb-6 inline-flex items-center gap-2 font-body text-sm text-ink-muted hover:text-ink">
           <ArrowLeft className="h-4 w-4" />
-          Atpakaļ
+          {t(locale, "login.back")}
         </Link>
 
         <Card className="border-2 border-ink bg-white shadow-float">
@@ -105,7 +107,7 @@ export default function Login() {
                   mode === "login" ? "bg-coral text-ink" : "text-ink-muted hover:text-ink"
                 }`}
               >
-                Pieslēgties
+                {t(locale, "login.loginTab")}
               </button>
               <button
                 onClick={() => setMode("register")}
@@ -113,7 +115,7 @@ export default function Login() {
                   mode === "register" ? "bg-coral text-ink" : "text-ink-muted hover:text-ink"
                 }`}
               >
-                Reģistrēties
+                {t(locale, "login.registerTab")}
               </button>
             </div>
 
@@ -130,11 +132,11 @@ export default function Login() {
                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                   </svg>
-                  {mode === "login" ? "Pieslēgties ar Google" : "Reģistrēties ar Google"}
+                  {mode === "login" ? t(locale, "login.googleLogin") : t(locale, "login.googleRegister")}
                 </button>
                 <div className="mb-4 flex items-center gap-3">
                   <div className="h-px flex-1 bg-ink-light" />
-                  <span className="font-body text-xs text-ink-light">vai ar e-pastu</span>
+                  <span className="font-body text-xs text-ink-light">{t(locale, "login.orEmail")}</span>
                   <div className="h-px flex-1 bg-ink-light" />
                 </div>
               </>
@@ -144,11 +146,11 @@ export default function Login() {
             <div className="space-y-4">
               {mode === "register" && (
                 <div>
-                  <label className="mb-1 block font-body text-sm font-medium text-ink">Vārds</label>
+                  <label className="mb-1 block font-body text-sm font-medium text-ink">{t(locale, "login.nameLabel")}</label>
                   <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Tavs vārds"
+                    placeholder={t(locale, "login.namePlaceholder")}
                     className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-coral"
                   />
                   {errors.name && <p className="mt-1 font-body text-xs text-need">{errors.name}</p>}
@@ -156,25 +158,25 @@ export default function Login() {
               )}
 
               <div>
-                <label className="mb-1 block font-body text-sm font-medium text-ink">E-pasts</label>
+                <label className="mb-1 block font-body text-sm font-medium text-ink">{t(locale, "login.emailLabel")}</label>
                 <Input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tavs@epasts.lv"
+                  placeholder={t(locale, "login.emailPlaceholder")}
                   className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-coral"
                 />
                 {errors.email && <p className="mt-1 font-body text-xs text-need">{errors.email}</p>}
               </div>
 
               <div>
-                <label className="mb-1 block font-body text-sm font-medium text-ink">Parole</label>
+                <label className="mb-1 block font-body text-sm font-medium text-ink">{t(locale, "login.passwordLabel")}</label>
                 <div className="relative">
                   <Input
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder={mode === "register" ? "Min. 8 zīmes" : "Tava parole"}
+                    placeholder={mode === "register" ? t(locale, "login.passwordPlaceholderMin") : t(locale, "login.passwordPlaceholderLogin")}
                     className="h-12 rounded-xl border-2 border-ink-light bg-white font-body pr-10 focus:border-coral"
                   />
                   <button
@@ -193,13 +195,13 @@ export default function Login() {
                   <label className="mb-1 block font-body text-sm font-medium text-ink">
                     <span className="flex items-center gap-1">
                       <Gift className="h-3.5 w-3.5 text-coral" />
-                      Ieteikuma kods (neobligāts)
+                      {t(locale, "login.referralLabel")}
                     </span>
                   </label>
                   <Input
                     value={referralCode}
                     onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                    placeholder="Piemēram: ABC123"
+                    placeholder={t(locale, "login.referralPlaceholder")}
                     className="h-12 rounded-xl border-2 border-ink-light bg-white font-body uppercase focus:border-coral"
                   />
                 </div>
@@ -217,7 +219,7 @@ export default function Login() {
                 ) : (
                   <UserPlus className="mr-2 h-5 w-5" />
                 )}
-                {mode === "login" ? "Pieslēgties" : "Reģistrēties"}
+                {mode === "login" ? t(locale, "login.submitLogin") : t(locale, "login.submitRegister")}
               </Button>
             </div>
           </CardContent>
