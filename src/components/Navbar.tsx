@@ -25,6 +25,7 @@ import {
   LogOut,
   Globe,
   Settings,
+  Shield,
 } from "lucide-react";
 
 export default function Navbar() {
@@ -125,6 +126,12 @@ export default function Navbar() {
                   <Settings className="mr-2 h-4 w-4" />
                   {t(locale, "nav.settings")}
                 </DropdownMenuItem>
+                {user.role === "admin" && (
+                  <DropdownMenuItem onClick={() => navigate("/admin")}>
+                    <Shield className="mr-2 h-4 w-4 text-coral" />
+                    Admin
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onClick={logout}>
                   <LogOut className="mr-2 h-4 w-4" />
                   {t(locale, "nav.logout")}

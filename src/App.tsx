@@ -18,6 +18,7 @@ import Terms from "./pages/Terms";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
 import Category from "./pages/Category";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 export default function App() {
@@ -52,6 +53,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/kategorija/:slug" element={<Category />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

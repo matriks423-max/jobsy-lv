@@ -399,6 +399,7 @@ app.get("/robots.txt", (c) => {
     "Disallow: /payment",
     "Disallow: /success",
     "Disallow: /uploads/",
+    "Disallow: /admin",
     "",
     "Sitemap: https://jobsy.lv/sitemap.xml",
     "Feed: https://jobsy.lv/feed.xml",
