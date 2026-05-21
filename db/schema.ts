@@ -8,6 +8,7 @@ import {
   timestamp,
   boolean,
   index,
+  uniqueIndex,
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
@@ -100,7 +101,10 @@ export const contacts = mysqlTable("contacts", {
   postId: bigint("postId", { mode: "number", unsigned: true }).notNull(),
   fromUserId: bigint("fromUserId", { mode: "number", unsigned: true }).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
+}, (table) => [
+  // Unique constraint prevents duplicate contacts from race conditions + speeds up hasContacted()
+  uniqueIndex("idx_contacts_post_user").on(table.postId, table.fromUserId),
+]);
 
 export const reports = mysqlTable("reports", {
   id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
@@ -110,7 +114,10 @@ export const reports = mysqlTable("reports", {
   details: text("details"),
   resolved: boolean("resolved").default(false).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
+}, (table) => [
+  // Admin panel filters unresolved reports; index speeds up that query
+  index("idx_reports_resolved").on(table.resolved),
+]);
 
 export const referrals = mysqlTable("referrals", {
   id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
