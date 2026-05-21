@@ -105,6 +105,11 @@ export const translations = {
         contactBtn: "Sazināties",
         opened: "Kontaktinformācija atvērta",
       },
+      interest: {
+        btn: "Esmu ieinteresēts",
+        done: "Interese izteikta ✓",
+        toast: "Saimnieks saņems paziņojumu!",
+      },
       share: {
         title: "Kopīgot",
         whatsapp: "WhatsApp",
@@ -418,6 +423,11 @@ export const translations = {
         contactBtn: "Связаться",
         opened: "Контактная информация открыта",
       },
+      interest: {
+        btn: "Я заинтересован",
+        done: "Интерес выражен ✓",
+        toast: "Владелец получит уведомление!",
+      },
       share: {
         title: "Поделиться",
         whatsapp: "WhatsApp",
@@ -730,6 +740,11 @@ export const translations = {
         phone: "Phone",
         contactBtn: "Contact",
         opened: "Contact info revealed",
+      },
+      interest: {
+        btn: "I'm interested",
+        done: "Interest sent ✓",
+        toast: "The poster will be notified!",
       },
       share: {
         title: "Share",

@@ -23,6 +23,8 @@ import {
   useFreePostCredit,
 } from "./queries/profiles";
 import { createContact, hasContacted, createReport } from "./queries/reports";
+import { hasInterested, createInterest } from "./queries/interests";
+import { sendInterestNotification } from "./lib/email";
 import {
   getReferralByReferredId,
   markReferralPostMade,
@@ -334,6 +336,31 @@ export const postsRouter = createRouter({
     .query(async ({ input }) => {
       const { getImagesByPostId } = await import("./queries/images");
       return getImagesByPostId(input.postId);
+    }),
+
+  expressInterest: authedQuery
+    .input(z.object({ postId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const postResult = await getPostWithProfile(input.postId);
+      if (!postResult) throw new TRPCError({ code: "NOT_FOUND", message: "Sludinājums nav atrasts" });
+      if (postResult.post.userId === ctx.user.id) throw new TRPCError({ code: "FORBIDDEN", message: "Nevar izteikt interesi par savu sludinājumu" });
+
+      const already = await hasInterested(input.postId, ctx.user.id);
+      if (!already) {
+        await createInterest(input.postId, ctx.user.id);
+        const helperProfile = await getProfileByUserId(ctx.user.id);
+        const helperName = helperProfile?.name ?? "Kāds";
+        if (postResult.profile?.email) {
+          void sendInterestNotification(postResult.profile.email, helperName, postResult.post.title, input.postId);
+        }
+      }
+      return { success: true, already };
+    }),
+
+  hasInterested: authedQuery
+    .input(z.object({ postId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      return { interested: await hasInterested(input.postId, ctx.user.id) };
     }),
 
   report: authedQuery

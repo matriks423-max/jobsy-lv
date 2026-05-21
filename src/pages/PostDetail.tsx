@@ -76,6 +76,18 @@ export default function PostDetail() {
     onError: (err) => toast(err.message, "error"),
   });
 
+  const { data: interestData, refetch: refetchInterest } = trpc.posts.hasInterested.useQuery(
+    { postId },
+    { enabled: isAuthenticated && !isNaN(postId) }
+  );
+  const interestMutation = trpc.posts.expressInterest.useMutation({
+    onSuccess: (res) => {
+      if (!res.already) toast(t(locale, "postDetail.interest.toast"), "success");
+      refetchInterest();
+    },
+    onError: (err) => toast(err.message, "error"),
+  });
+
   const reportMutation = trpc.posts.report.useMutation({
     onSuccess: () => {
       setReportSent(true);
@@ -334,6 +346,23 @@ export default function PostDetail() {
                   <p className="font-body text-xs text-ink-muted">{t(locale, "postDetail.contact.title")}</p>
                 </div>
               </div>
+
+              {/* Express Interest — only on "need" posts for non-owners */}
+              {post.type === "need" && !isOwner && (
+                <button
+                  onClick={() => interestMutation.mutate({ postId })}
+                  disabled={interestMutation.isPending || interestData?.interested}
+                  className={`mb-4 flex w-full items-center justify-center gap-2 rounded-xl border-2 px-4 py-3 font-body text-sm font-medium transition ${
+                    interestData?.interested
+                      ? "border-sage bg-sage-light text-sage"
+                      : "border-ink bg-white text-ink hover:bg-cream-dark"
+                  }`}
+                >
+                  {interestData?.interested
+                    ? t(locale, "postDetail.interest.done")
+                    : t(locale, "postDetail.interest.btn")}
+                </button>
+              )}
 
               {contactMutation.data ? (
                 <div className="space-y-3">

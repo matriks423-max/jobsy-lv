@@ -128,6 +128,15 @@ export const referrals = mysqlTable("referrals", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
+export const interests = mysqlTable("interests", {
+  id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
+  postId: bigint("postId", { mode: "number", unsigned: true }).notNull(),
+  fromUserId: bigint("fromUserId", { mode: "number", unsigned: true }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => [
+  uniqueIndex("idx_interests_post_user").on(table.postId, table.fromUserId),
+]);
+
 export const postImages = mysqlTable("postImages", {
   id: int("id", { unsigned: true }).autoincrement().primaryKey(),
   postId: int("postId", { unsigned: true }).notNull(),
@@ -150,5 +159,7 @@ export type Report = typeof reports.$inferSelect;
 export type InsertReport = typeof reports.$inferInsert;
 export type Referral = typeof referrals.$inferSelect;
 export type InsertReferral = typeof referrals.$inferInsert;
+export type Interest = typeof interests.$inferSelect;
+export type InsertInterest = typeof interests.$inferInsert;
 export type PostImage = typeof postImages.$inferSelect;
 export type InsertPostImage = typeof postImages.$inferInsert;
