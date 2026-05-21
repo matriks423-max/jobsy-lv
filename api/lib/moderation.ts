@@ -99,16 +99,6 @@ export function moderateContent(title: string, description: string = ""): Modera
 
   if (flaggedWords.length > 0) {
     // Determine category
-    const categories = new Set<string>();
-    for (const word of flaggedWords) {
-      for (const [cat, words] of Object.entries(BANNED_PATTERNS)) {
-        if (words.includes(word.toLowerCase())) {
-          categories.add(cat);
-        }
-      }
-    }
-
-    const catList = Array.from(categories).join(", ");
     return {
       allowed: false,
       reason: `Saturs nav atļauts. Sludinājums pārkāpj Lietošanas noteikumus.`,

@@ -350,6 +350,11 @@ export const postsRouter = createRouter({
         });
       }
 
+      // Idempotent: if already active (webhook already fired), skip to avoid duplicate email
+      if (postResult.post.status === "active") {
+        return { success: true, alreadyActive: true };
+      }
+
       await updatePost(input.postId, {
         status: "active",
         paidAt: new Date(),
@@ -364,7 +369,7 @@ export const postsRouter = createRouter({
         void sendPostPublished(profile.email, postResult.post.title, input.postId);
       }
 
-      return { success: true };
+      return { success: true, alreadyActive: false };
     }),
 
   // === ADMIN ONLY ===

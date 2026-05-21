@@ -2,12 +2,15 @@ import { useEffect } from "react";
 import { useSearchParams, Link } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
+import { trpc } from "@/providers/trpc";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight, Plus, FileText } from "lucide-react";
 
 export default function Success() {
   const { locale } = useLocale();
   const [searchParams] = useSearchParams();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const prev = document.title;
@@ -16,6 +19,16 @@ export default function Success() {
   }, [locale]);
   const postId = searchParams.get("post");
   const isFree = searchParams.get("free") === "true";
+
+  // Safety net: activate post if Stripe webhook hasn't fired yet.
+  // The mutation is idempotent — if already active it returns early without sending another email.
+  const completePayment = trpc.posts.completePayment.useMutation();
+  useEffect(() => {
+    if (!isFree && postId && isAuthenticated) {
+      completePayment.mutate({ postId: Number(postId) });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 noise-bg">
