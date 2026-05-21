@@ -22,6 +22,17 @@ const app = new Hono<{ Bindings: HttpBindings }>();
 
 app.use(bodyLimit({ maxSize: 50 * 1024 * 1024 }));
 
+// www → canonical redirect (prevents duplicate-content SEO penalty)
+app.use("*", async (c, next) => {
+  const host = c.req.header("host") ?? "";
+  if (host.startsWith("www.")) {
+    const url = new URL(c.req.url);
+    url.hostname = host.replace(/^www\./, "");
+    return c.redirect(url.toString(), 301);
+  }
+  return next();
+});
+
 // Health check
 app.get("/health", async (c) => {
   const dbPromise = getDb()
