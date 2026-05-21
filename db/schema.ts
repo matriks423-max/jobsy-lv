@@ -39,6 +39,7 @@ export const profiles = mysqlTable("profiles", {
   phone: varchar("phone", { length: 50 }),
   city: varchar("city", { length: 100 }),
   avatarUrl: text("avatarUrl"),
+  phoneVerified: boolean("phoneVerified").default(false).notNull(),
   freePostUsed: boolean("freePostUsed").default(false).notNull(),
   freePostCredits: int("freePostCredits", { unsigned: true }).default(0).notNull(),
   referralCode: varchar("referralCode", { length: 20 }).unique(),

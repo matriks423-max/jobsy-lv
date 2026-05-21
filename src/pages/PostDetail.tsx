@@ -45,6 +45,7 @@ import {
   ChevronRight,
   Eye,
   Star,
+  ShieldCheck,
 } from "lucide-react";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -371,7 +372,15 @@ export default function PostDetail() {
                   </div>
                 )}
                 <div>
-                  <p className="font-body text-base font-bold text-ink">{profile?.name ?? "—"}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-body text-base font-bold text-ink">{profile?.name ?? "—"}</p>
+                    {profile?.phoneVerified && (
+                      <span className="inline-flex items-center gap-0.5 rounded-full border border-sage bg-sage-light px-2 py-0.5 font-body text-[10px] font-medium text-sage">
+                        <ShieldCheck className="h-3 w-3" />
+                        {t(locale, "settings.verified")}
+                      </span>
+                    )}
+                  </div>
                   <p className="font-body text-xs text-ink-muted">{t(locale, "postDetail.contact.title")}</p>
                 </div>
               </div>

@@ -15,6 +15,7 @@ import {
   CheckCircle,
   Palette,
   Edit3,
+  ShieldCheck,
 } from "lucide-react";
 
 const THEMES: { value: Theme; labelKey: string; preview: string }[] = [
@@ -32,6 +33,8 @@ export default function Settings() {
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
   const [saved, setSaved] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
 
   const utils = trpc.useUtils();
 
@@ -42,9 +45,28 @@ export default function Settings() {
   const updateMutation = trpc.profile.update.useMutation({
     onSuccess: () => {
       setSaved(true);
+      setOtpSent(false);
       toast(t(locale, "settings.saved"), "success");
       utils.profile.me.invalidate();
       setTimeout(() => setSaved(false), 3000);
+    },
+    onError: (err) => toast(err.message, "error"),
+  });
+
+  const sendOtpMutation = trpc.profile.sendPhoneOtp.useMutation({
+    onSuccess: () => {
+      setOtpSent(true);
+      toast(t(locale, "settings.otpSent"), "success");
+    },
+    onError: (err) => toast(err.message, "error"),
+  });
+
+  const verifyOtpMutation = trpc.profile.verifyPhoneOtp.useMutation({
+    onSuccess: () => {
+      setOtpSent(false);
+      setOtpCode("");
+      toast(t(locale, "settings.phoneVerified"), "success");
+      utils.profile.me.invalidate();
     },
     onError: (err) => toast(err.message, "error"),
   });
@@ -67,6 +89,9 @@ export default function Settings() {
       </div>
     );
   }
+
+  const phoneChanged = phone !== (profile?.phone ?? "");
+  const canVerify = !!phone && !phoneChanged && !profile?.phoneVerified;
 
   return (
     <div className="min-h-screen px-4 py-8 noise-bg">
@@ -91,7 +116,7 @@ export default function Settings() {
             </div>
           ) : (
             <div className="space-y-4">
-              {/* Name — editable */}
+              {/* Name */}
               <div>
                 <label className="mb-2 flex items-center gap-1.5 font-body text-sm font-bold text-ink">
                   <Edit3 className="h-3.5 w-3.5 text-coral" />
@@ -120,22 +145,62 @@ export default function Settings() {
                 </div>
               </div>
 
-              {/* Phone — editable */}
+              {/* Phone */}
               <div>
                 <label className="mb-2 flex items-center gap-1.5 font-body text-sm font-bold text-ink">
                   <Phone className="h-3.5 w-3.5 text-coral" />
                   {t(locale, "settings.phone")}
+                  {profile?.phoneVerified && (
+                    <span className="ml-1 inline-flex items-center gap-1 rounded-full border border-sage bg-sage-light px-2 py-0.5 font-body text-[10px] font-medium text-sage">
+                      <ShieldCheck className="h-3 w-3" />
+                      {t(locale, "settings.verified")}
+                    </span>
+                  )}
                 </label>
                 <Input
                   type="tel"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => { setPhone(e.target.value); setOtpSent(false); setOtpCode(""); }}
                   placeholder="+371 2X XXX XXX"
                   className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-coral"
                 />
                 <p className="mt-1 font-body text-xs text-ink-light">
                   {t(locale, "settings.phoneHint")}
                 </p>
+
+                {/* Verify button — shown after saving phone, if not yet verified */}
+                {canVerify && !otpSent && (
+                  <button
+                    onClick={() => sendOtpMutation.mutate({ phone })}
+                    disabled={sendOtpMutation.isPending}
+                    className="mt-2 inline-flex items-center gap-1.5 rounded-lg border-2 border-ink bg-mustard-light px-4 py-2 font-body text-sm font-medium text-ink hover:bg-mustard-light/70"
+                  >
+                    {sendOtpMutation.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ShieldCheck className="h-3.5 w-3.5" />}
+                    {t(locale, "settings.verifyPhone")}
+                  </button>
+                )}
+
+                {/* OTP input */}
+                {otpSent && (
+                  <div className="mt-3 flex gap-2">
+                    <Input
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={6}
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
+                      placeholder="_ _ _ _ _ _"
+                      className="h-12 w-36 rounded-xl border-2 border-ink bg-white text-center font-mono text-lg tracking-widest focus:border-coral"
+                    />
+                    <Button
+                      onClick={() => verifyOtpMutation.mutate({ phone, code: otpCode })}
+                      disabled={otpCode.length !== 6 || verifyOtpMutation.isPending}
+                      className="h-12 rounded-xl border-2 border-ink bg-sage px-4 font-body font-medium text-ink hover:bg-sage/80 disabled:opacity-50"
+                    >
+                      {verifyOtpMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : t(locale, "settings.otpConfirm")}
+                    </Button>
+                  </div>
+                )}
               </div>
 
               <Button

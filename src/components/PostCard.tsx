@@ -18,6 +18,7 @@ import {
   Calendar,
   Wallet,
   Eye,
+  ShieldCheck,
 } from "lucide-react";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -38,7 +39,7 @@ interface PostCardProps {
   profile?: Profile | null;
 }
 
-export default function PostCard({ post }: PostCardProps) {
+export default function PostCard({ post, profile }: PostCardProps) {
   const { locale } = useLocale();
 
   const category = CATEGORIES.find((c) => c.key === post.category);
@@ -120,6 +121,11 @@ export default function PostCard({ post }: PostCardProps) {
             <span className="inline-flex items-center gap-1 font-mono text-xs text-ink-light">
               <Eye className="h-3 w-3" />
               {post.viewCount}
+            </span>
+          )}
+          {profile?.phoneVerified && (
+            <span className="inline-flex items-center gap-0.5 rounded-full border border-sage bg-sage-light px-1.5 py-0.5 font-body text-[10px] font-medium text-sage">
+              <ShieldCheck className="h-3 w-3" />
             </span>
           )}
           <span className="ml-auto font-mono text-xs text-ink-light">
