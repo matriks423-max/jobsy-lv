@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -5,6 +6,12 @@ import { ArrowLeft, FileText } from "lucide-react";
 
 export default function Terms() {
   const { locale } = useLocale();
+
+  useEffect(() => {
+    const prev = document.title;
+    document.title = "Lietošanas noteikumi — jobsy.lv";
+    return () => { document.title = prev; };
+  }, []);
 
   const sections = [
     {

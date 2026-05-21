@@ -100,6 +100,7 @@ export async function listPostsWithProfiles(filters?: {
   status?: string;
   search?: string;
   userId?: number;
+  sort?: "newest" | "oldest" | "budget_asc" | "budget_desc";
   limit?: number;
   offset?: number;
 }) {

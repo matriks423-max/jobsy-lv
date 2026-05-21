@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
 import CookieBanner from "@/components/CookieBanner";
+import ScrollToTop from "@/components/ScrollToTop";
 import Home from "./pages/Home";
 import Browse from "./pages/Browse";
 import PostDetail from "./pages/PostDetail";
@@ -34,6 +35,7 @@ export default function App() {
             },
           }}
         />
+        <ScrollToTop />
         <Navbar />
         <main className="flex-1">
           <Routes>

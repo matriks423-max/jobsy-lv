@@ -94,9 +94,16 @@ app.get("/api/oauth/google/callback", async (c) => {
 // Stripe Checkout
 app.post("/api/checkout", async (c) => {
   try {
+    const { authenticateRequest } = await import("./kimi/auth");
+    let user;
+    try {
+      user = await authenticateRequest(c.req.raw.headers);
+    } catch {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
     const body = await c.req.json();
-    const { postId, userId } = body;
-    const result = await createCheckoutSession(Number(postId), Number(userId));
+    const { postId } = body;
+    const result = await createCheckoutSession(Number(postId), user.id);
     return c.json(result);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Checkout failed";

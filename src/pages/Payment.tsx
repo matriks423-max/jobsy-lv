@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -16,6 +16,12 @@ export default function Payment() {
 
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const prev = document.title;
+    document.title = t(locale, "payment.title") + " — jobsy.lv";
+    return () => { document.title = prev; };
+  }, [locale]);
 
   const completeMutation = trpc.posts.completePayment.useMutation({
     onSuccess: () => {

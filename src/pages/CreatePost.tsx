@@ -67,6 +67,12 @@ export default function CreatePost() {
     { enabled: isEditing && !isNaN(postId) }
   );
 
+  useEffect(() => {
+    const prev = document.title;
+    document.title = (isEditing ? "Rediģēt sludinājumu" : t(locale, "nav.createPost")) + " — jobsy.lv";
+    return () => { document.title = prev; };
+  }, [locale, isEditing]);
+
   // Populate form when editing
   useEffect(() => {
     if (isEditing && existingPost) {

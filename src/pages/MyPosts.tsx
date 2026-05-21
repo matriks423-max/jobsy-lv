@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -27,6 +27,12 @@ export default function MyPosts() {
   const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: true });
   const { toast } = useToast();
   const [tab, setTab] = useState<"active" | "expired" | "all">("active");
+
+  useEffect(() => {
+    const prev = document.title;
+    document.title = t(locale, "nav.myPosts") + " — jobsy.lv";
+    return () => { document.title = prev; };
+  }, [locale]);
 
   const { data, isLoading } = trpc.posts.myPosts.useQuery(undefined, {
     enabled: isAuthenticated,

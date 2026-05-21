@@ -348,6 +348,12 @@ export const postsRouter = createRouter({
 
       await checkAndRewardReferralOnPost(ctx.user.id);
 
+      // Send post published email (fallback path when Stripe redirects back without webhook)
+      const profile = await getProfileByUserId(ctx.user.id);
+      if (profile?.email) {
+        void sendPostPublished(profile.email, postResult.post.title, input.postId);
+      }
+
       return { success: true };
     }),
 
@@ -412,7 +418,12 @@ export const postsRouter = createRouter({
   approvePost: adminQuery
     .input(z.object({ postId: z.number() }))
     .mutation(async ({ input }) => {
+      const postResult = await getPostWithProfile(input.postId);
       await updatePost(input.postId, { status: "active" });
+      // Notify the post author that their post passed review
+      if (postResult?.profile?.email) {
+        void sendPostPublished(postResult.profile.email, postResult.post.title, input.postId);
+      }
       return { success: true };
     }),
 

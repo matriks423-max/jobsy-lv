@@ -45,6 +45,12 @@ export default function Settings() {
   });
 
   useEffect(() => {
+    const prev = document.title;
+    document.title = t(locale, "nav.settings") + " — jobsy.lv";
+    return () => { document.title = prev; };
+  }, [locale]);
+
+  useEffect(() => {
     if (profile?.phone) setPhone(profile.phone);
   }, [profile]);
 

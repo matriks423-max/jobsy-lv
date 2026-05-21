@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSearchParams, Link } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -7,6 +8,12 @@ import { CheckCircle, ArrowRight, Plus, FileText } from "lucide-react";
 export default function Success() {
   const { locale } = useLocale();
   const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const prev = document.title;
+    document.title = t(locale, "success.title") + " — jobsy.lv";
+    return () => { document.title = prev; };
+  }, [locale]);
   const postId = searchParams.get("post");
   const isFree = searchParams.get("free") === "true";
 

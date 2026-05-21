@@ -30,7 +30,7 @@ export const translations = {
       titleItalic: "darbojas",
       step1: "Ievieto sludinājumu",
       step1Desc:
-        "Vai meklē palīdzību, vai piedāvā savus pakalpojumus. Pirmie 2 sludinājumi bez maksas.",
+        "Vai meklē palīdzību, vai piedāvā savus pakalpojumus. Pirmais sludinājums bez maksas.",
       step2: "Saņem atbildes",
       step2Desc:
         "Citi lietotāji redz tavu sludinājumu un sazinās ar tevi pa e-pastu vai telefonu.",
@@ -49,9 +49,9 @@ export const translations = {
       emptyBtn: "Izveidot sludinājumu",
     },
     ctaBanner: {
-      title: "Pirmie 2 sludinājumi bez maksas",
+      title: "Pirmais sludinājums bez maksas",
       titleItalic: "bez maksas",
-      subtitle: "Sākot ar 3. — tikai €2. Aktīvs 30 dienas.",
+      subtitle: "Sākot ar 2. — tikai €2. Aktīvs 30 dienas.",
       btn: "Izveidot sludinājumu",
     },
     footer: {
@@ -120,7 +120,7 @@ export const translations = {
     createPost: {
       title: "Izveidot sludinājumu",
       titleItalic: "sludinājumu",
-      freeBadge: "Pirmie 2 sludinājumi bez maksas!",
+      freeBadge: "Pirmais sludinājums bez maksas!",
       paidBadge: "Nākamais sludinājums: €2",
       typeLabel: "Sludinājuma veids",
       typeNeed: "Vajag palīdzību",
@@ -139,7 +139,7 @@ export const translations = {
       whenPlaceholder: "Piemēram: Sestdienas pēcpusdienā",
       submitFree: "Publicēt bez maksas",
       submitPaid: "Turpināt uz maksājumu (€2)",
-      info: "Pirmie 2 sludinājumi bez maksas. Sākot ar 3. — €2. Aktīvs 30 dienas.",
+      info: "Pirmais sludinājums bez maksas. Sākot ar 2. — €2. Aktīvs 30 dienas.",
       privacy: "Privātuma politika",
       terms: "Lietošanas noteikumi",
     },
@@ -267,7 +267,7 @@ export const translations = {
       titleItalic: "работает",
       step1: "Размести объявление",
       step1Desc:
-        "Ищешь помощь или предлагаешь услуги. Первые 2 объявления бесплатно.",
+        "Ищешь помощь или предлагаешь услуги. Первое объявление бесплатно.",
       step2: "Получи отклики",
       step2Desc:
         "Другие пользователи видят твоё объявление и связываются по email или телефону.",
@@ -285,9 +285,9 @@ export const translations = {
       emptyBtn: "Разместить объявление",
     },
     ctaBanner: {
-      title: "Первые 2 объявления бесплатно",
+      title: "Первое объявление бесплатно",
       titleItalic: "бесплатно",
-      subtitle: "Начиная с 3-го — всего €2. Активно 30 дней.",
+      subtitle: "Начиная со 2-го — всего €2. Активно 30 дней.",
       btn: "Разместить объявление",
     },
     footer: {
@@ -356,7 +356,7 @@ export const translations = {
     createPost: {
       title: "Разместить объявление",
       titleItalic: "объявление",
-      freeBadge: "Первые 2 объявления бесплатно!",
+      freeBadge: "Первое объявление бесплатно!",
       paidBadge: "Следующее объявление: €2",
       typeLabel: "Тип объявления",
       typeNeed: "Нужна помощь",
@@ -375,7 +375,7 @@ export const translations = {
       whenPlaceholder: "Например: В субботу днём",
       submitFree: "Опубликовать бесплатно",
       submitPaid: "Продолжить к оплате (€2)",
-      info: "Первые 2 объявления бесплатно. Начиная с 3-го — €2. Активно 30 дней.",
+      info: "Первое объявление бесплатно. Начиная со 2-го — €2. Активно 30 дней.",
       privacy: "Политика конфиденциальности",
       terms: "Условия использования",
     },
@@ -503,7 +503,7 @@ export const translations = {
       titleItalic: "works",
       step1: "Post your job",
       step1Desc:
-        "Whether you need help or offer your services. First 2 posts are free.",
+        "Whether you need help or offer your services. First post is free.",
       step2: "Get responses",
       step2Desc:
         "Other users see your post and reach out via email or phone.",
@@ -521,9 +521,9 @@ export const translations = {
       emptyBtn: "Create a post",
     },
     ctaBanner: {
-      title: "First 2 posts are free",
+      title: "First post is free",
       titleItalic: "free",
-      subtitle: "From the 3rd post — just €2. Active for 30 days.",
+      subtitle: "From the 2nd post — just €2. Active for 30 days.",
       btn: "Create a post",
     },
     footer: {
@@ -592,7 +592,7 @@ export const translations = {
     createPost: {
       title: "Create a post",
       titleItalic: "post",
-      freeBadge: "First 2 posts are free!",
+      freeBadge: "First post is free!",
       paidBadge: "Next post: €2",
       typeLabel: "Post type",
       typeNeed: "Need Help",
@@ -611,7 +611,7 @@ export const translations = {
       whenPlaceholder: "e.g. Saturday afternoon",
       submitFree: "Post for free",
       submitPaid: "Continue to payment (€2)",
-      info: "First 2 posts are free. From the 3rd — €2. Post active for 30 days.",
+      info: "First post is free. From the 2nd — €2. Post active for 30 days.",
       privacy: "Privacy Policy",
       terms: "Terms of Service",
     },
