@@ -35,15 +35,15 @@ app.use("*", async (c, next) => {
 
 // Security headers
 app.use("*", async (c, next) => {
-  await next();
-  c.res.headers.set("X-Content-Type-Options", "nosniff");
-  c.res.headers.set("X-Frame-Options", "DENY");
-  c.res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  c.res.headers.set("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
-  // Only apply HSTS on the custom domain (not localhost/Railway dev URLs)
   const host = c.req.header("host") ?? "";
+  await next();
+  c.header("X-Content-Type-Options", "nosniff");
+  c.header("X-Frame-Options", "DENY");
+  c.header("Referrer-Policy", "strict-origin-when-cross-origin");
+  c.header("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+  // Only apply HSTS on the custom domain (not localhost/Railway dev URLs)
   if (host === "jobsy.lv" || host === "www.jobsy.lv") {
-    c.res.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    c.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
   }
 });
 
