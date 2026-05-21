@@ -97,108 +97,110 @@ export default function Category() {
 
   const posts = data ?? [];
   const hasMore = posts.length === PAGE_SIZE;
-  const catName = catInfo ? t(locale, `categories.${catInfo.key}`) : "";
+  const catName = catInfo ? t(locale, `categories.${catInfo.key}` as never) : "";
 
   if (!catInfo) return null;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      {/* Breadcrumb */}
-      <nav className="mb-4 flex items-center gap-2 text-sm text-[var(--muted)]">
-        <Link to="/" className="hover:text-[var(--ink)]">
-          {t(locale, "postDetail.breadcrumbHome")}
-        </Link>
-        <span>/</span>
-        <Link to="/browse" className="hover:text-[var(--ink)]">
-          {t(locale, "postDetail.breadcrumbPosts")}
-        </Link>
-        <span>/</span>
-        <span className="text-[var(--ink)]">{catName}</span>
-      </nav>
+    <div className="min-h-screen px-4 py-8 noise-bg">
+      <div className="mx-auto max-w-6xl">
+        {/* Breadcrumb */}
+        <nav className="mb-4 flex items-center gap-2 font-body text-sm text-ink-muted">
+          <Link to="/" className="hover:text-ink">
+            {t(locale, "postDetail.breadcrumbHome")}
+          </Link>
+          <span>/</span>
+          <Link to="/browse" className="hover:text-ink">
+            {t(locale, "postDetail.breadcrumbPosts")}
+          </Link>
+          <span>/</span>
+          <span className="text-ink">{catName}</span>
+        </nav>
 
-      {/* SEO heading */}
-      <div className="mb-8">
-        <h1 className="font-display text-3xl font-bold text-[var(--ink)] md:text-4xl">
-          {seo?.heading ?? catName}
-        </h1>
-        {seo?.description && (
-          <p className="mt-2 max-w-2xl text-[var(--muted)]">{seo.description}</p>
-        )}
-      </div>
-
-      {/* Post grid */}
-      {isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-48 animate-pulse rounded-2xl bg-[var(--ink)]/5"
-            />
-          ))}
+        {/* SEO heading */}
+        <div className="mb-8">
+          <h1 className="font-display text-3xl font-bold text-ink md:text-4xl">
+            {seo?.heading ?? catName}
+          </h1>
+          {seo?.description && (
+            <p className="mt-2 max-w-2xl font-body text-base text-ink-muted">
+              {seo.description}
+            </p>
+          )}
         </div>
-      ) : posts.length === 0 ? (
-        <div className="py-16 text-center">
-          <p className="text-lg text-[var(--muted)]">
-            {t(locale, "browse.empty")}
+
+        {/* Post grid */}
+        {isLoading ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-48 animate-pulse rounded-2xl border-2 border-ink bg-white"
+              />
+            ))}
+          </div>
+        ) : posts.length === 0 ? (
+          <div className="py-20 text-center">
+            <p className="font-body text-lg text-ink-muted">
+              {t(locale, "browse.noResults")}
+            </p>
+            <Link
+              to="/create"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl border-2 border-ink bg-coral px-6 py-3 font-body text-sm font-medium text-ink hover:bg-coral-hover"
+            >
+              <Plus className="h-4 w-4" />
+              {t(locale, "myPosts.newPost")}
+            </Link>
+          </div>
+        ) : (
+          <>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {posts.map(({ post, profile }) => (
+                <PostCard key={post.id} post={post} profile={profile} />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {(page > 0 || hasMore) && (
+              <div className="mt-8 flex items-center justify-center gap-4">
+                <button
+                  onClick={() => setPage((p) => Math.max(0, p - 1))}
+                  disabled={page === 0}
+                  className="flex items-center gap-1 rounded-xl border-2 border-ink px-4 py-2 font-body text-sm font-medium disabled:opacity-40"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  {t(locale, "browse.prev")}
+                </button>
+                <span className="font-mono text-sm text-ink-muted">{page + 1}</span>
+                <button
+                  onClick={() => setPage((p) => p + 1)}
+                  disabled={!hasMore}
+                  className="flex items-center gap-1 rounded-xl border-2 border-ink px-4 py-2 font-body text-sm font-medium disabled:opacity-40"
+                >
+                  {t(locale, "browse.next")}
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* CTA */}
+        <div className="mt-12 rounded-2xl border-2 border-ink bg-cream-dark p-8 text-center">
+          <p className="font-display text-xl font-bold text-ink">
+            {t(locale, "category.ctaHeading", { cat: catName.toLowerCase() })}
+          </p>
+          <p className="mt-1 font-body text-sm text-ink-muted">
+            {t(locale, "category.ctaSubtitle")}
           </p>
           <Link
             to="/create"
-            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[var(--ink)] px-6 py-3 text-[var(--cream)] hover:opacity-80"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl border-2 border-ink bg-coral px-6 py-3 font-body text-sm font-medium text-ink hover:bg-coral-hover"
           >
             <Plus className="h-4 w-4" />
-            {t(locale, "myPosts.newPost")}
+            {t(locale, "nav.createPost")}
           </Link>
         </div>
-      ) : (
-        <>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {posts.map(({ post, profile }) => (
-              <PostCard key={post.id} post={post} profile={profile} />
-            ))}
-          </div>
-
-          {/* Pagination */}
-          {(page > 0 || hasMore) && (
-            <div className="mt-8 flex items-center justify-center gap-3">
-              <button
-                onClick={() => setPage((p) => Math.max(0, p - 1))}
-                disabled={page === 0}
-                className="flex items-center gap-1 rounded-xl border border-[var(--ink)]/20 px-4 py-2 text-sm disabled:opacity-40"
-              >
-                <ChevronLeft className="h-4 w-4" />
-                {t(locale, "browse.prev")}
-              </button>
-              <span className="text-sm text-[var(--muted)]">
-                {t(locale, "browse.loadMore")}
-              </span>
-              <button
-                onClick={() => setPage((p) => p + 1)}
-                disabled={!hasMore}
-                className="flex items-center gap-1 rounded-xl border border-[var(--ink)]/20 px-4 py-2 text-sm disabled:opacity-40"
-              >
-                {t(locale, "browse.next")}
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
-          )}
-        </>
-      )}
-
-      {/* CTA */}
-      <div className="mt-12 rounded-2xl bg-[var(--ink)]/5 p-6 text-center">
-        <p className="font-display text-xl font-semibold text-[var(--ink)]">
-          {t(locale, "category.ctaHeading", { cat: catName.toLowerCase() })}
-        </p>
-        <p className="mt-1 text-sm text-[var(--muted)]">
-          {t(locale, "category.ctaSubtitle")}
-        </p>
-        <Link
-          to="/create"
-          className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[var(--ink)] px-6 py-3 text-sm font-medium text-[var(--cream)] hover:opacity-80"
-        >
-          <Plus className="h-4 w-4" />
-          {t(locale, "nav.createPost")}
-        </Link>
       </div>
     </div>
   );
