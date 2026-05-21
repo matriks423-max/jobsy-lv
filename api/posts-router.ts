@@ -197,6 +197,13 @@ export const postsRouter = createRouter({
 
       const insertId = Number((post as unknown as [{ insertId: bigint }])[0].insertId);
 
+      // Save images for paid post as well
+      if (input.images && input.images.length > 0) {
+        for (const url of input.images) {
+          await getDb().insert(schema.postImages).values({ postId: insertId, url, sortOrder: 0 });
+        }
+      }
+
       try {
         const checkout = await createCheckoutSession(insertId, ctx.user.id);
         return { postId: insertId, requiresPayment: true, checkoutUrl: checkout.url };
