@@ -401,6 +401,7 @@ app.get("/robots.txt", (c) => {
     "Disallow: /uploads/",
     "",
     "Sitemap: https://jobsy.lv/sitemap.xml",
+    "Feed: https://jobsy.lv/feed.xml",
   ].join("\n");
   return c.text(content, 200, { "Content-Type": "text/plain; charset=utf-8" });
 });
@@ -456,6 +457,46 @@ app.get("/sitemap.xml", async (c) => {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}
 </urlset>`;
   return c.text(xml, 200, { "Content-Type": "application/xml; charset=utf-8" });
+});
+
+// RSS feed — latest active posts
+app.get("/feed.xml", async (c) => {
+  const base = "https://jobsy.lv";
+  const now = new Date().toUTCString();
+
+  let items = "";
+  try {
+    const { listPosts } = await import("./queries/posts");
+    const posts = await listPosts({ status: "active", limit: 50, sort: "newest" });
+    items = posts.map((p) => {
+      const title = escHtml(p.title);
+      const link = `${base}/post/${p.id}`;
+      const desc = escHtml((p.description ?? "").substring(0, 200));
+      const pubDate = new Date(p.createdAt).toUTCString();
+      return `
+    <item>
+      <title>${title}</title>
+      <link>${link}</link>
+      <guid isPermaLink="true">${link}</guid>
+      <description>${desc}</description>
+      <pubDate>${pubDate}</pubDate>
+    </item>`;
+    }).join("");
+  } catch { /* ignore — return empty feed */ }
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>jobsy.lv — Jaunākie sludinājumi</title>
+    <link>${base}</link>
+    <description>Jaunākie palīdzības un pakalpojumu sludinājumi Latvijā</description>
+    <language>lv</language>
+    <lastBuildDate>${now}</lastBuildDate>
+    <atom:link href="${base}/feed.xml" rel="self" type="application/rss+xml"/>
+    ${items}
+  </channel>
+</rss>`;
+  return c.text(xml, 200, { "Content-Type": "application/rss+xml; charset=utf-8" });
 });
 
 // Apple Pay domain verification (required for Stripe Apple Pay)
