@@ -162,6 +162,14 @@ app.post("/api/webhook", async (c) => {
 // Image upload — HARDCENED
 app.post("/api/upload", async (c) => {
   try {
+    // Auth check — only authenticated users may upload
+    const { authenticateRequest } = await import("./kimi/auth");
+    try {
+      await authenticateRequest(c.req.raw.headers);
+    } catch {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
     const formData = await c.req.formData();
     const file = formData.get("file") as File | null;
     const postId = formData.get("postId") as string | null;
@@ -268,6 +276,16 @@ app.get("/uploads/*", async (c) => {
   }
 });
 
+/** Escape HTML special chars to prevent XSS in server-rendered meta tags */
+function escHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
+
 // SEO: bot prerender for /post/:id — serves OG meta tags to social crawlers
 const BOT_UA = /facebookexternalhit|twitterbot|slackbot|linkedinbot|whatsapp|telegrambot|googlebot|bingbot|discordbot|embedly/i;
 
@@ -284,10 +302,13 @@ app.get("/post/:id", async (c, next) => {
     if (!result) return next();
 
     const { post, profile } = result;
-    const title = `${post.title} — jobsy.lv`;
-    const desc = post.description?.substring(0, 160) ?? "Atrodi palīdzību vai piedāvā darbus Latvijā.";
+    const rawTitle = `${post.title} — jobsy.lv`;
+    const rawDesc = post.description?.substring(0, 160) ?? "Atrodi palīdzību vai piedāvā darbus Latvijā.";
+    const title = escHtml(rawTitle);
+    const desc = escHtml(rawDesc);
     const url = `https://jobsy.lv/post/${postId}`;
     const image = `https://jobsy.lv/og-image.png`;
+    const authorName = escHtml(profile?.name ?? "Anonīms");
 
     const html = `<!DOCTYPE html>
 <html lang="lv">
@@ -308,7 +329,7 @@ app.get("/post/:id", async (c, next) => {
 <link rel="canonical" href="${url}"/>
 <script>window.location.replace("${url}")</script>
 </head>
-<body><p>${title}</p><p>${desc}</p><p>Autors: ${profile?.name ?? "Anonīms"}</p></body>
+<body><p>${title}</p><p>${desc}</p><p>Autors: ${authorName}</p></body>
 </html>`;
     return c.html(html, 200);
   } catch {
