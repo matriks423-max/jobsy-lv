@@ -226,15 +226,23 @@ export default function Navbar() {
                       <p className="font-body text-sm font-medium text-ink">
                         {user.name}
                       </p>
-                      <button
-                        onClick={() => {
-                          logout();
-                          setMobileOpen(false);
-                        }}
-                        className="font-body text-xs text-ink-light hover:text-coral"
-                      >
-                        {t(locale, "nav.logout")}
-                      </button>
+                      <div className="flex gap-3">
+                        <button
+                          onClick={() => { navigate("/settings"); setMobileOpen(false); }}
+                          className="font-body text-xs text-ink-light hover:text-ink"
+                        >
+                          {t(locale, "nav.settings")}
+                        </button>
+                        <button
+                          onClick={() => {
+                            logout();
+                            setMobileOpen(false);
+                          }}
+                          className="font-body text-xs text-ink-light hover:text-coral"
+                        >
+                          {t(locale, "nav.logout")}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ) : (

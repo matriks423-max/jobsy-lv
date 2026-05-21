@@ -1,8 +1,15 @@
+import { useEffect } from "react";
 import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
+  useEffect(() => {
+    const prev = document.title;
+    document.title = "404 — jobsy.lv";
+    return () => { document.title = prev; };
+  }, []);
+
   return (
     <div className="flex min-h-screen items-center justify-center px-4 noise-bg">
       <div className="text-center">

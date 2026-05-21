@@ -14,6 +14,7 @@ import { handleGoogleCallback } from "./email-auth";
 import { cronRouter } from "./cron-router";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
+import { eq } from "drizzle-orm";
 import { mkdir, writeFile, readFile } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
@@ -69,14 +70,47 @@ app.get(Paths.oauthCallback, createOAuthCallbackHandler());
 app.get("/api/oauth/google/callback", async (c) => {
   try {
     const code = c.req.query("code");
+    const stateRaw = c.req.query("state") ?? "";
     const error = c.req.query("error");
 
     if (error || !code) {
       return c.redirect("/login?error=google_denied", 302);
     }
 
+    // Decode optional referral code from state
+    let referralCode: string | null = null;
+    try {
+      const stateObj = JSON.parse(atob(stateRaw));
+      referralCode = stateObj?.ref ?? null;
+    } catch {
+      // State may be the old plain-redirectUri format — ignore
+    }
+
     const redirectUri = `${env.siteUrl}/api/oauth/google/callback`;
-    const { token } = await handleGoogleCallback(code, redirectUri);
+    const { token, user } = await handleGoogleCallback(code, redirectUri);
+
+    // Apply referral if provided (safe to call on existing users — referrals.referredId is unique)
+    if (referralCode && user?.id) {
+      const { getReferralByReferredId } = await import("./queries/referrals");
+      const existing = await getReferralByReferredId(user.id);
+      if (!existing) {
+        const referrerRows = await getDb()
+          .select({ userId: schema.profiles.userId })
+          .from(schema.profiles)
+          .where(eq(schema.profiles.referralCode, referralCode.toUpperCase()))
+          .limit(1);
+        if (referrerRows.length && referrerRows[0].userId !== user.id) {
+          await getDb().insert(schema.referrals).values({
+            referrerId: referrerRows[0].userId,
+            referredId: user.id,
+          } as any).catch(() => {}); // ignore duplicate key on race
+          await getDb()
+            .update(schema.profiles)
+            .set({ referredBy: referrerRows[0].userId })
+            .where(eq(schema.profiles.userId, user.id));
+        }
+      }
+    }
 
     const cookieOpts = getSessionCookieOptions(c.req.raw.headers);
     setCookie(c, "jobsy_session", token, {

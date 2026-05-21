@@ -8,10 +8,11 @@ import { trpc } from "@/providers/trpc";
 import { useToast } from "@/hooks/useToast";
 import { ArrowLeft, Mail, UserPlus, Loader2, Gift, Eye, EyeOff } from "lucide-react";
 
-function getGoogleOAuthUrl() {
+function getGoogleOAuthUrl(referralCode?: string) {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? "";
   const redirectUri = `${window.location.origin}/api/oauth/google/callback`;
-  const state = btoa(redirectUri);
+  // Encode redirectUri + optional referral code in state
+  const state = btoa(JSON.stringify({ redirectUri, ref: referralCode || null }));
 
   const url = new URL("https://accounts.google.com/o/oauth2/v2/auth");
   url.searchParams.set("client_id", clientId);
@@ -120,7 +121,7 @@ export default function Login() {
             {hasGoogle && (
               <>
                 <button
-                  onClick={() => { window.location.href = getGoogleOAuthUrl(); }}
+                  onClick={() => { window.location.href = getGoogleOAuthUrl(referralCode || undefined); }}
                   className="mb-4 flex h-12 w-full items-center justify-center gap-3 rounded-xl border-2 border-ink bg-white font-body text-sm font-medium text-ink transition hover:-translate-y-0.5 hover:bg-cream-dark hover:shadow-card"
                 >
                   <svg className="h-5 w-5" viewBox="0 0 24 24">
