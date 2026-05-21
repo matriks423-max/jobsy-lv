@@ -42,7 +42,7 @@ export default function MyPosts() {
 
   const deleteMutation = trpc.posts.delete.useMutation({
     onSuccess: () => {
-      toast("Sludinājums dzēsts", "success");
+      toast(t(locale, "createPost.toastDeleted"), "success");
       utils.posts.myPosts.invalidate();
     },
     onError: (err) => toast(err.message, "error"),

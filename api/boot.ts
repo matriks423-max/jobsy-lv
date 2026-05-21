@@ -159,15 +159,33 @@ app.post("/api/webhook", async (c) => {
   }
 });
 
-// Image upload — HARDCENED
+// In-memory upload rate limiter: max 10 uploads per 5-minute window per user
+const uploadRateMap = new Map<number, { count: number; windowStart: number }>();
+const UPLOAD_RATE_LIMIT = 10;
+const UPLOAD_RATE_WINDOW_MS = 5 * 60 * 1000;
+
+// Image upload — HARDENED
 app.post("/api/upload", async (c) => {
   try {
     // Auth check — only authenticated users may upload
     const { authenticateRequest } = await import("./kimi/auth");
+    let uploadUser: { id: number };
     try {
-      await authenticateRequest(c.req.raw.headers);
+      uploadUser = await authenticateRequest(c.req.raw.headers);
     } catch {
       return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    // Rate limit: max 10 uploads per 5 minutes per user
+    const now = Date.now();
+    const rateEntry = uploadRateMap.get(uploadUser.id);
+    if (rateEntry && now - rateEntry.windowStart < UPLOAD_RATE_WINDOW_MS) {
+      if (rateEntry.count >= UPLOAD_RATE_LIMIT) {
+        return c.json({ error: "Too many uploads. Try again later." }, 429);
+      }
+      uploadRateMap.set(uploadUser.id, { count: rateEntry.count + 1, windowStart: rateEntry.windowStart });
+    } else {
+      uploadRateMap.set(uploadUser.id, { count: 1, windowStart: now });
     }
 
     const formData = await c.req.formData();

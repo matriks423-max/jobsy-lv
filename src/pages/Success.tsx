@@ -5,7 +5,7 @@ import { t } from "@/lib/i18n";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, ArrowRight, Plus, FileText } from "lucide-react";
+import { CheckCircle, Clock, ArrowRight, Plus, FileText } from "lucide-react";
 
 export default function Success() {
   const { locale } = useLocale();
@@ -19,6 +19,7 @@ export default function Success() {
   }, [locale]);
   const postId = searchParams.get("post");
   const isFree = searchParams.get("free") === "true";
+  const isReview = searchParams.get("review") === "true";
 
   // Safety net: activate post if Stripe webhook hasn't fired yet.
   // The mutation is idempotent — if already active it returns early without sending another email.
@@ -33,16 +34,20 @@ export default function Success() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4 noise-bg">
       <div className="w-full max-w-lg rounded-3xl border-2 border-ink bg-white p-8 text-center shadow-float md:p-12">
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border-2 border-ink bg-sage-light">
-          <CheckCircle className="h-10 w-10 text-sage" />
+        <div className={`mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border-2 border-ink ${isReview ? "bg-mustard-light" : "bg-sage-light"}`}>
+          {isReview
+            ? <Clock className="h-10 w-10 text-ink-muted" />
+            : <CheckCircle className="h-10 w-10 text-sage" />}
         </div>
 
         <h1 className="mb-4 font-display text-3xl font-bold text-ink">
-          {t(locale, "success.title")}
+          {isReview ? t(locale, "success.reviewTitle") : t(locale, "success.title")}
         </h1>
 
         <p className="mb-8 font-body text-ink-muted">
-          {isFree
+          {isReview
+            ? t(locale, "success.reviewSub")
+            : isFree
             ? t(locale, "success.freeSub")
             : t(locale, "success.paidSub")}
         </p>

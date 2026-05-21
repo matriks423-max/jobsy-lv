@@ -99,7 +99,8 @@ export default function CreatePost() {
       } else if (data.requiresPayment) {
         navigate(`/payment?postId=${data.postId}`);
       } else {
-        navigate(`/success?post=${data.postId}&free=true`);
+        const reviewParam = data.needsReview ? "&review=true" : "";
+        navigate(`/success?post=${data.postId}&free=true${reviewParam}`);
       }
     },
     onError: (err) => {
