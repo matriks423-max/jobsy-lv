@@ -44,22 +44,22 @@ export default function MyPosts() {
     onSuccess: () => utils.posts.myPosts.invalidate(),
   });
 
+  const INACTIVE_STATUSES = ["expired", "closed", "pending_payment", "pending_review", "rejected"] as const;
+
   const filtered =
     data?.filter((item: PostWithProfile) => {
       const post = item.post;
       if (tab === "all") return true;
       if (tab === "active") return post.status === "active";
-      if (tab === "expired")
-        return post.status === "expired" || post.status === "closed" || post.status === "pending_payment";
+      if (tab === "expired") return (INACTIVE_STATUSES as readonly string[]).includes(post.status);
       return true;
     }) ?? [];
 
   const counts = {
     active: data?.filter((item: PostWithProfile) => item.post.status === "active").length ?? 0,
     expired:
-      data?.filter(
-        (item: PostWithProfile) =>
-          item.post.status === "expired" || item.post.status === "closed" || item.post.status === "pending_payment"
+      data?.filter((item: PostWithProfile) =>
+        (INACTIVE_STATUSES as readonly string[]).includes(item.post.status)
       ).length ?? 0,
     all: data?.length ?? 0,
   };
@@ -70,6 +70,10 @@ export default function MyPosts() {
         return { label: t(locale, "myPosts.statusActive"), bg: "bg-sage-light", text: "text-sage", border: "border-sage", icon: CheckCircle };
       case "pending_payment":
         return { label: t(locale, "myPosts.statusPending"), bg: "bg-mustard-light", text: "text-ink", border: "border-mustard", icon: Clock };
+      case "pending_review":
+        return { label: "Tiek pārskatīts", bg: "bg-mustard-light", text: "text-ink", border: "border-mustard", icon: Clock };
+      case "rejected":
+        return { label: "Noraidīts", bg: "bg-need-light", text: "text-need", border: "border-need", icon: AlertCircle };
       default:
         return { label: t(locale, "myPosts.statusExpired"), bg: "bg-cream-dark", text: "text-ink-light", border: "border-ink-light", icon: AlertCircle };
     }

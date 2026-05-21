@@ -79,7 +79,6 @@ export async function authenticateRequest(headers: Headers) {
     }
   }
 
-  console.warn("[auth] No valid session found.");
   throw Errors.forbidden("Invalid authentication token.");
 }
 
