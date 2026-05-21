@@ -57,6 +57,26 @@ $verifyResp = Invoke-RestMethod -Method POST `
   -Headers @{ "Authorization" = "Bearer re_JRrZBDBd_K6gpXLsWRCsevF5j4XXJShWk"; "Content-Type" = "application/json" }
 Write-Host "  Resend verify response: $($verifyResp | ConvertTo-Json -Compress)" -ForegroundColor Gray
 
+# --- www → jobsy.lv redirect via Cloudflare Page Rule ---
+Write-Host "`n==> Setting up www.jobsy.lv → jobsy.lv redirect rule..." -ForegroundColor Cyan
+# Check for existing page rule
+$pageRules = (Invoke-RestMethod -Uri "$CF_API/zones/$ZONE_ID/pagerules?status=active" -Headers $headers).result
+$wwwRule = $pageRules | Where-Object { $_.targets[0].constraint.value -like "www.jobsy.lv*" }
+$ruleBody = @{
+  targets = @(@{ target = "url"; constraint = @{ operator = "matches"; value = "www.jobsy.lv/*" } })
+  actions = @(@{ id = "forwarding_url"; value = @{ url = 'https://jobsy.lv/$1'; status_code = 301 } })
+  status = "active"
+  priority = 1
+} | ConvertTo-Json -Depth 10
+if ($wwwRule) {
+  Invoke-RestMethod -Method PUT -Uri "$CF_API/zones/$ZONE_ID/pagerules/$($wwwRule.id)" -Headers $headers -Body $ruleBody | Out-Null
+  Write-Host "  Updated www redirect Page Rule" -ForegroundColor Green
+} else {
+  Invoke-RestMethod -Method POST -Uri "$CF_API/zones/$ZONE_ID/pagerules" -Headers $headers -Body $ruleBody | Out-Null
+  Write-Host "  Created www redirect Page Rule (www.jobsy.lv/* -> https://jobsy.lv/`$1)" -ForegroundColor Green
+}
+
 Write-Host "`n==> Done! Propagation takes 1-10 minutes." -ForegroundColor Green
 Write-Host "Then check Resend domain status at: https://resend.com/domains" -ForegroundColor White
 Write-Host "Cloudflare DNS: https://dash.cloudflare.com/ddd95b1cb7bd51f21e1fd5beaa564f1c/jobsy.lv/dns/records" -ForegroundColor White
+Write-Host "Cloudflare Page Rules: https://dash.cloudflare.com/ddd95b1cb7bd51f21e1fd5beaa564f1c/jobsy.lv/rules/page-rules" -ForegroundColor White
