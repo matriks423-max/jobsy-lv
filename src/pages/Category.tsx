@@ -146,7 +146,7 @@ export default function Category() {
             className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[var(--ink)] px-6 py-3 text-[var(--cream)] hover:opacity-80"
           >
             <Plus className="h-4 w-4" />
-            Pievienot sludinājumu
+            {t(locale, "myPosts.newPost")}
           </Link>
         </div>
       ) : (
@@ -187,17 +187,17 @@ export default function Category() {
       {/* CTA */}
       <div className="mt-12 rounded-2xl bg-[var(--ink)]/5 p-6 text-center">
         <p className="font-display text-xl font-semibold text-[var(--ink)]">
-          Vajad palīdzību ar <em>{catName.toLowerCase()}</em>?
+          {t(locale, "category.ctaHeading", { cat: catName.toLowerCase() })}
         </p>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Publicē sludinājumu — pirmais bez maksas.
+          {t(locale, "category.ctaSubtitle")}
         </p>
         <Link
           to="/create"
           className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[var(--ink)] px-6 py-3 text-sm font-medium text-[var(--cream)] hover:opacity-80"
         >
           <Plus className="h-4 w-4" />
-          Publicēt sludinājumu
+          {t(locale, "nav.createPost")}
         </Link>
       </div>
     </div>

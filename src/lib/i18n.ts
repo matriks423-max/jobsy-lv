@@ -270,6 +270,10 @@ export const translations = {
       stripeError: "Stripe savienojums neizdevās. Simulējam maksājumu...",
       stripeNote: "Maksājumu apstrādā Stripe. Tava karte netiek saglabāta.",
     },
+    category: {
+      ctaHeading: "Vajag palīdzību ar {cat}?",
+      ctaSubtitle: "Publicē sludinājumu — pirmais bez maksas.",
+    },
     cookie: {
       message: "Mēs izmantojam sīkdatnes, lai uzlabotu lietošanas pieredzi.",
       learnMore: "Uzzināt vairāk",
@@ -573,6 +577,10 @@ export const translations = {
       stripeError: "Ошибка подключения Stripe. Симулируем оплату...",
       stripeNote: "Оплата обрабатывается Stripe. Карта не сохраняется.",
     },
+    category: {
+      ctaHeading: "Нужна помощь с {cat}?",
+      ctaSubtitle: "Разместите объявление — первое бесплатно.",
+    },
     cookie: {
       message: "Мы используем куки для улучшения работы сайта.",
       learnMore: "Подробнее",
@@ -875,6 +883,10 @@ export const translations = {
       stripeUnavailable: "Stripe unavailable. Simulating...",
       stripeError: "Stripe connection failed. Simulating payment...",
       stripeNote: "Payment processed by Stripe. Your card is not saved.",
+    },
+    category: {
+      ctaHeading: "Need help with {cat}?",
+      ctaSubtitle: "Post a listing — the first one is free.",
     },
     cookie: {
       message: "We use cookies to improve your experience.",
