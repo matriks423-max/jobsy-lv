@@ -3,6 +3,15 @@ import { Resend } from "resend";
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = "jobsy.lv <noreply@jobsy.lv>";
 
+function escHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 export async function sendPostPublished(
   to: string,
   postTitle: string,
@@ -10,6 +19,8 @@ export async function sendPostPublished(
 ): Promise<void> {
   try {
     const postUrl = `https://jobsy.lv/post/${postId}`;
+    const safeTitle = escHtml(postTitle);
+    const safeUrl = escHtml(postUrl);
     await resend.emails.send({
       from: FROM,
       to,
@@ -20,9 +31,9 @@ export async function sendPostPublished(
           <hr style="border: 2px solid #1A1208; margin: 16px 0 32px;" />
           <h2 style="font-size: 22px; color: #1A1208; margin-bottom: 16px;">Tavs sludinājums ir publicēts!</h2>
           <p style="color: #4A3728; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
-            <strong>${postTitle}</strong> tagad ir redzams visiem jobsy.lv apmeklētājiem. Sludinājums būs aktīvs 30 dienas.
+            <strong>${safeTitle}</strong> tagad ir redzams visiem jobsy.lv apmeklētājiem. Sludinājums būs aktīvs 30 dienas.
           </p>
-          <a href="${postUrl}" style="display: inline-block; background: #E8512A; color: #FAF6F0; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 15px; border: 2px solid #1A1208;">
+          <a href="${safeUrl}" style="display: inline-block; background: #E8512A; color: #FAF6F0; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 15px; border: 2px solid #1A1208;">
             Skatīt sludinājumu →
           </a>
           <p style="color: #8A7060; font-size: 13px; margin-top: 32px;">© 2026 jobsy.lv</p>
@@ -41,6 +52,8 @@ export async function sendExpiryReminder(
 ): Promise<void> {
   try {
     const postUrl = `https://jobsy.lv/post/${postId}`;
+    const safeTitle = escHtml(postTitle);
+    const safeUrl = escHtml(postUrl);
     await resend.emails.send({
       from: FROM,
       to,
@@ -51,9 +64,9 @@ export async function sendExpiryReminder(
           <hr style="border: 2px solid #1A1208; margin: 16px 0 32px;" />
           <h2 style="font-size: 22px; color: #1A1208; margin-bottom: 16px;">Sludinājums beidzas drīz</h2>
           <p style="color: #4A3728; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
-            Tavs sludinājums <strong>${postTitle}</strong> beidzas pēc 3 dienām. Ja palīgs vēl nav atrasts, apsver publicēt jaunu sludinājumu.
+            Tavs sludinājums <strong>${safeTitle}</strong> beidzas pēc 3 dienām. Ja palīgs vēl nav atrasts, apsver publicēt jaunu sludinājumu.
           </p>
-          <a href="${postUrl}" style="display: inline-block; background: #E8512A; color: #FAF6F0; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 15px; border: 2px solid #1A1208;">
+          <a href="${safeUrl}" style="display: inline-block; background: #E8512A; color: #FAF6F0; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 15px; border: 2px solid #1A1208;">
             Skatīt sludinājumu →
           </a>
           <p style="color: #8A7060; font-size: 13px; margin-top: 32px;">© 2026 jobsy.lv</p>
