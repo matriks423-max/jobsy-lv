@@ -16,6 +16,7 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
+import Category from "./pages/Category";
 import NotFound from "./pages/NotFound";
 
 export default function App() {
@@ -48,6 +49,7 @@ export default function App() {
             <Route path="/terms" element={<Terms />} />
             <Route path="/login" element={<Login />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/kategorija/:slug" element={<Category />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

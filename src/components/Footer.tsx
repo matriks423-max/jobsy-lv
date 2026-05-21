@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
+import { CATEGORIES } from "@/lib/categories";
 
 export default function Footer() {
   const { locale, setLocale } = useLocale();
@@ -8,6 +9,19 @@ export default function Footer() {
   return (
     <footer className="border-t-2 border-ink bg-cream-dark noise-bg">
       <div className="mx-auto max-w-7xl px-4 py-12 lg:px-6">
+        {/* Category links for SEO internal linking */}
+        <div className="mb-8 grid grid-cols-2 gap-2 border-b border-ink-light pb-8 sm:grid-cols-5">
+          {CATEGORIES.map((cat) => (
+            <Link
+              key={cat.key}
+              to={`/kategorija/${cat.key}`}
+              className="font-body text-sm text-ink-muted hover:text-ink"
+            >
+              {t(locale, `categories.${cat.key}`)}
+            </Link>
+          ))}
+        </div>
+
         <div className="grid gap-8 md:grid-cols-4">
           {/* Logo + tagline */}
           <div>

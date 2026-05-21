@@ -198,6 +198,60 @@ app.get("/uploads/*", async (c) => {
   }
 });
 
+// SEO: robots.txt
+app.get("/robots.txt", (c) => {
+  const content = [
+    "User-agent: *",
+    "Allow: /",
+    "Disallow: /api/",
+    "Disallow: /my-posts",
+    "Disallow: /settings",
+    "Disallow: /create",
+    "Disallow: /edit/",
+    "Disallow: /payment",
+    "Disallow: /success",
+    "",
+    "Sitemap: https://jobsy.lv/sitemap.xml",
+  ].join("\n");
+  return c.text(content, 200, { "Content-Type": "text/plain; charset=utf-8" });
+});
+
+// SEO: sitemap.xml — static pages + category landing pages
+app.get("/sitemap.xml", async (c) => {
+  const base = "https://jobsy.lv";
+  const now = new Date().toISOString().split("T")[0];
+  const staticPages = [
+    { loc: "/", priority: "1.0", changefreq: "daily" },
+    { loc: "/browse", priority: "0.9", changefreq: "hourly" },
+    { loc: "/login", priority: "0.3", changefreq: "monthly" },
+    { loc: "/privacy", priority: "0.2", changefreq: "monthly" },
+    { loc: "/terms", priority: "0.2", changefreq: "monthly" },
+  ];
+  const categories = [
+    "household", "moving", "repairs", "garden", "auto",
+    "childcare", "pets", "it", "tutoring", "other",
+  ];
+  const catPages = categories.map((slug) => ({
+    loc: `/kategorija/${slug}`,
+    priority: "0.8",
+    changefreq: "daily",
+  }));
+
+  const allPages = [...staticPages, ...catPages];
+  const urls = allPages.map((p) => `
+  <url>
+    <loc>${base}${p.loc}</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>${p.changefreq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`).join("");
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}
+</urlset>`;
+  return c.text(xml, 200, { "Content-Type": "application/xml; charset=utf-8" });
+});
+
 // Apple Pay domain verification (required for Stripe Apple Pay)
 // Placeholder — returns 404 until you paste the real file content from:
 // Stripe Dashboard → Settings → Payment Methods → Apple Pay → Add domain → download file
