@@ -7,6 +7,7 @@ import {
   text,
   timestamp,
   boolean,
+  index,
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
@@ -85,7 +86,14 @@ export const posts = mysqlTable("posts", {
     .defaultNow()
     .notNull()
     .$onUpdate(() => new Date()),
-});
+}, (table) => [
+  // Indexes for common query patterns
+  index("idx_posts_status_created").on(table.status, table.createdAt),
+  index("idx_posts_status_category").on(table.status, table.category),
+  index("idx_posts_status_city").on(table.status, table.city),
+  index("idx_posts_user").on(table.userId),
+  index("idx_posts_expires").on(table.status, table.expiresAt),
+]);
 
 export const contacts = mysqlTable("contacts", {
   id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
@@ -119,7 +127,9 @@ export const postImages = mysqlTable("postImages", {
   url: text("url").notNull(),
   sortOrder: int("sortOrder", { unsigned: true }).default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
+}, (table) => [
+  index("idx_post_images_post").on(table.postId),
+]);
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
