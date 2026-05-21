@@ -20,6 +20,13 @@ const requireAuth = t.middleware(async (opts) => {
     });
   }
 
+  if (ctx.user.role === "banned") {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Tavs konts ir aizliegts.",
+    });
+  }
+
   return next({ ctx: { ...ctx, user: ctx.user } });
 });
 
