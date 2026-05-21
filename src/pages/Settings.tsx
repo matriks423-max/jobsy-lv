@@ -14,6 +14,7 @@ import {
   Loader2,
   CheckCircle,
   Palette,
+  Edit3,
 } from "lucide-react";
 
 const THEMES: { value: Theme; labelKey: string; preview: string }[] = [
@@ -29,6 +30,7 @@ export default function Settings() {
   const { toast } = useToast();
 
   const [phone, setPhone] = useState("");
+  const [name, setName] = useState("");
   const [saved, setSaved] = useState(false);
 
   const utils = trpc.useUtils();
@@ -55,6 +57,7 @@ export default function Settings() {
 
   useEffect(() => {
     if (profile?.phone) setPhone(profile.phone);
+    if (profile?.name) setName(profile.name);
   }, [profile]);
 
   if (!isAuthenticated) {
@@ -88,6 +91,21 @@ export default function Settings() {
             </div>
           ) : (
             <div className="space-y-4">
+              {/* Name — editable */}
+              <div>
+                <label className="mb-2 flex items-center gap-1.5 font-body text-sm font-bold text-ink">
+                  <Edit3 className="h-3.5 w-3.5 text-coral" />
+                  {t(locale, "settings.name")}
+                </label>
+                <Input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder={t(locale, "settings.namePlaceholder")}
+                  className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-coral"
+                />
+              </div>
+
               {/* Email — read only */}
               <div>
                 <label className="mb-2 flex items-center gap-1.5 font-body text-sm font-bold text-ink">
@@ -121,7 +139,7 @@ export default function Settings() {
               </div>
 
               <Button
-                onClick={() => updateMutation.mutate({ phone })}
+                onClick={() => updateMutation.mutate({ phone, name: name || undefined })}
                 disabled={updateMutation.isPending || saved}
                 className="h-12 w-full rounded-xl border-2 border-ink bg-coral font-body font-medium text-ink hover:bg-coral-hover"
               >
