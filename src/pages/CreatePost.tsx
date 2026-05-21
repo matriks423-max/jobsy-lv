@@ -216,13 +216,13 @@ export default function CreatePost() {
         <div className="mb-8 flex items-start justify-between">
           <div>
             <h1 className="mb-3 font-display text-3xl font-bold text-ink md:text-4xl">
-              {isEditing ? "Labot sludinājumu" : t(locale, "createPost.title")}
+              {isEditing ? t(locale, "createPost.editTitle") : t(locale, "createPost.title")}
             </h1>
             {!isEditing && (
               hasFreeCredits ? (
                 <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-sage bg-sage-light px-3 py-1.5 font-body text-xs font-medium text-sage">
                   <Gift className="h-3.5 w-3.5" />
-                  {creditCount} bezmaksas sludinājumi no ieteikumiem
+                  {t(locale, "createPost.creditBadge", { count: creditCount })}
                 </span>
               ) : showFreeBadge ? (
                 <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-sage bg-sage-light px-3 py-1.5 font-body text-xs font-medium text-sage">
@@ -242,7 +242,7 @@ export default function CreatePost() {
               className="h-10 rounded-xl border-2 border-need text-need hover:bg-need-light"
             >
               <Trash2 className="mr-1 h-4 w-4" />
-              Dzēst
+              {t(locale, "createPost.deleteBtn")}
             </Button>
           )}
         </div>
@@ -365,7 +365,7 @@ export default function CreatePost() {
           {/* Image Upload */}
           <div className="mb-6">
             <label className="mb-2 block font-body text-sm font-bold text-ink">
-              Attēli ({images.length}/5)
+              {t(locale, "createPost.imagesLabel")} ({images.length}/5)
             </label>
             <div className="flex flex-wrap gap-3">
               {images.map((img, idx) => (
@@ -398,7 +398,7 @@ export default function CreatePost() {
                     <>
                       <ImagePlus className="h-6 w-6 text-ink-muted" />
                       <span className="mt-1 text-[10px] text-ink-muted">
-                        Pievienot
+                        {t(locale, "createPost.imagesAdd")}
                       </span>
                     </>
                   )}
@@ -490,7 +490,7 @@ export default function CreatePost() {
               <Plus className="mr-2 h-5 w-5" />
             )}
             {isEditing
-              ? "Saglabāt izmaiņas"
+              ? t(locale, "createPost.submitSave")
               : hasFreeCredits
               ? `Publicēt (izmantos ${creditCount} kredītu)`
               : showFreeBadge
@@ -531,11 +531,11 @@ export default function CreatePost() {
         <DialogContent className="border-2 border-ink bg-white">
           <DialogHeader>
             <DialogTitle className="font-display text-xl font-bold text-ink">
-              Dzēst sludinājumu?
+              {t(locale, "createPost.deleteTitle")}
             </DialogTitle>
           </DialogHeader>
           <p className="font-body text-sm text-ink-muted">
-            Šo darbību nevar atcelt. Sludinājums tiks dzēsts uz visiem laikiem.
+            {t(locale, "createPost.deleteDesc")}
           </p>
           <div className="flex gap-3">
             <Button
@@ -543,7 +543,7 @@ export default function CreatePost() {
               onClick={() => setShowDeleteDialog(false)}
               className="flex-1 rounded-xl border-2 border-ink"
             >
-              Atcelt
+              {t(locale, "createPost.deleteCancel")}
             </Button>
             <Button
               onClick={() => {
@@ -553,7 +553,7 @@ export default function CreatePost() {
               className="flex-1 rounded-xl border-2 border-need bg-need-light font-body text-need hover:bg-need"
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              Dzēst
+              {t(locale, "createPost.deleteConfirm")}
             </Button>
           </div>
         </DialogContent>
