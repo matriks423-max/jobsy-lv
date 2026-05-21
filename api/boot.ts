@@ -271,6 +271,50 @@ app.get("/post/:id", async (c, next) => {
   }
 });
 
+// SEO: bot prerender for /kategorija/:slug — serves meta description to crawlers
+const CATEGORY_SEO: Record<string, { heading: string; desc: string }> = {
+  household: { heading: "Mājsaimniecības darbi Latvijā", desc: "Atrodi palīgus mājsaimniecībai — tīrīšanai, mazgāšanai, veļai un citiem ikdienas darbiem visā Latvijā." },
+  moving:    { heading: "Pārvākšanās palīdzība Latvijā", desc: "Pieejami pārvākšanās pakalpojumi Rīgā un visā Latvijā. Kraušanas, transporta un iesaiņošanas palīgi." },
+  repairs:   { heading: "Remontdarbi Latvijā", desc: "Atrodi remontdarbiniekus elektriskiem, santehnikas, apdares un citiem remontdarbiem Latvijā." },
+  garden:    { heading: "Dārza darbi Latvijā", desc: "Dārznieki, zāles pļāvēji un dārza palīgi visā Latvijā. Atrodi palīgu savam dārzam." },
+  auto:      { heading: "Auto pakalpojumi Latvijā", desc: "Auto remonta, mazgāšanas un citi automobiļu pakalpojumi Rīgā un visā Latvijā." },
+  childcare: { heading: "Bērnu pieskatīšana Latvijā", desc: "Aukles un bērnu pieskatīšanas pakalpojumi visā Latvijā. Uzticami palīgi ģimenēm." },
+  pets:      { heading: "Mājdzīvnieku kopšana Latvijā", desc: "Mājdzīvnieku pieskatīšana, pastaiga un kopšana Rīgā un visā Latvijā." },
+  it:        { heading: "IT pakalpojumi Latvijā", desc: "Datorspeciālisti, web izstrādātāji un IT atbalsts privātpersonām un uzņēmumiem Latvijā." },
+  tutoring:  { heading: "Repetīcijas un apmācība Latvijā", desc: "Repetitori mācību priekšmetos, valodās un citās jomās bērniem un pieaugušajiem Latvijā." },
+  other:     { heading: "Citi pakalpojumi Latvijā", desc: "Dažādi palīdzības un pakalpojumu sludinājumi, kas neietilpst citās kategorijās." },
+};
+
+app.get("/kategorija/:slug", async (c, next) => {
+  const ua = c.req.header("user-agent") ?? "";
+  if (!BOT_UA.test(ua)) return next();
+
+  const slug = c.req.param("slug");
+  const seo = CATEGORY_SEO[slug];
+  if (!seo) return next();
+
+  const url = `https://jobsy.lv/kategorija/${slug}`;
+  const title = `${seo.heading} — jobsy.lv`;
+  const html = `<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8"/>
+<title>${title}</title>
+<meta name="description" content="${seo.desc}"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="${url}"/>
+<meta property="og:title" content="${title}"/>
+<meta property="og:description" content="${seo.desc}"/>
+<meta property="og:image" content="https://jobsy.lv/og-image.png"/>
+<meta property="og:locale" content="lv_LV"/>
+<link rel="canonical" href="${url}"/>
+<script>window.location.replace("${url}")</script>
+</head>
+<body><h1>${title}</h1><p>${seo.desc}</p></body>
+</html>`;
+  return c.html(html, 200);
+});
+
 // SEO: robots.txt
 app.get("/robots.txt", (c) => {
   const content = [
