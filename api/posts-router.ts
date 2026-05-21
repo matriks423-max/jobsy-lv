@@ -416,17 +416,25 @@ export const postsRouter = createRouter({
       if (input.action === "delete") {
         await deletePost(report[0].postId);
       } else if (input.action === "ban") {
-        // Ban the post owner
         const post = await getDb()
           .select()
           .from(schema.posts)
           .where(eq(schema.posts.id, report[0].postId))
           .limit(1);
         if (post.length) {
+          const userId = post[0].userId;
           await getDb()
             .update(schema.users)
             .set({ role: "banned" })
-            .where(eq(schema.users.id, post[0].userId));
+            .where(eq(schema.users.id, userId));
+          // Delete all posts by banned user
+          const userPosts = await getDb()
+            .select({ id: schema.posts.id })
+            .from(schema.posts)
+            .where(eq(schema.posts.userId, userId));
+          for (const p of userPosts) {
+            await deletePost(p.id);
+          }
         }
       }
 
