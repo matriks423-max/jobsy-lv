@@ -200,6 +200,12 @@ export async function countCategories() {
 }
 
 export async function deletePost(id: number) {
+  // Delete related records first (no FK cascade in schema)
+  await Promise.all([
+    getDb().delete(schema.postImages).where(eq(schema.postImages.postId, id)),
+    getDb().delete(schema.contacts).where(eq(schema.contacts.postId, id)),
+    getDb().delete(schema.reports).where(eq(schema.reports.postId, id)),
+  ]);
   await getDb()
     .delete(schema.posts)
     .where(eq(schema.posts.id, id));
