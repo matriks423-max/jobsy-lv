@@ -78,9 +78,9 @@ export default function MyPosts() {
       case "pending_payment":
         return { label: t(locale, "myPosts.statusPending"), bg: "bg-mustard-light", text: "text-ink", border: "border-mustard", icon: Clock };
       case "pending_review":
-        return { label: "Tiek pārskatīts", bg: "bg-mustard-light", text: "text-ink", border: "border-mustard", icon: Clock };
+        return { label: t(locale, "myPosts.statusReview"), bg: "bg-mustard-light", text: "text-ink", border: "border-mustard", icon: Clock };
       case "rejected":
-        return { label: "Noraidīts", bg: "bg-need-light", text: "text-need", border: "border-need", icon: AlertCircle };
+        return { label: t(locale, "myPosts.statusRejected"), bg: "bg-need-light", text: "text-need", border: "border-need", icon: AlertCircle };
       default:
         return { label: t(locale, "myPosts.statusExpired"), bg: "bg-cream-dark", text: "text-ink-light", border: "border-ink-light", icon: AlertCircle };
     }
@@ -190,7 +190,7 @@ export default function MyPosts() {
                       </Link>
                       <button
                         onClick={() => {
-                          if (confirm("Vai tiešām dzēst?")) {
+                          if (confirm(t(locale, "myPosts.confirmDelete"))) {
                             deleteMutation.mutate({ id: post.id });
                           }
                         }}

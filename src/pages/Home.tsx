@@ -79,6 +79,10 @@ export default function Home() {
   const [activeFilter, setActiveFilter] = useState<"all" | "need" | "offer">("all");
   const [copied, setCopied] = useState(false);
 
+  useEffect(() => {
+    document.title = "jobsy.lv — Atrodi palīdzību vai piedāvā darbu";
+  }, []);
+
   const { data: stats } = trpc.stats.get.useQuery();
   const { data: posts, isLoading } = trpc.posts.list.useQuery(
     {
