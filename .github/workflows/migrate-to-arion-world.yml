@@ -29,8 +29,8 @@ jobs:
           git config --global user.name "Migration Bot"
           git config --global user.email "bot@arionworld.auto"
 
-          # Clone the empty arion-world repo
-          git clone https://x-access-token:${{ secrets.ARION_WORLD_PAT }}@github.com/matriks423-max/arion-world.git /tmp/arion-world-dest
+          # Clone the destination repo
+          git clone https://x-access-token:${{ secrets.ARION_WORLD_PAT }}@github.com/matriks423-max/arion-word.git /tmp/arion-world-dest
 
       - name: Copy all Arion World files
         run: |
@@ -63,18 +63,30 @@ jobs:
           cp $SRC_DISCORD/.env.example $DEST/discord_bot/ 2>/dev/null || true
 
           # ── website/ ──────────────────────────────────────────────────────
-          mkdir -p $DEST/website/src/components $DEST/website/src/pages $DEST/website/src/layouts $DEST/website/src/styles
+          mkdir -p $DEST/website/src/components $DEST/website/src/pages/episodes $DEST/website/src/pages/characters
+          mkdir -p $DEST/website/src/layouts $DEST/website/src/styles
           mkdir -p $DEST/website/public/content
           cp $SRC_WEBSITE/astro.config.mjs $DEST/website/ 2>/dev/null || true
           cp $SRC_WEBSITE/package.json $DEST/website/ 2>/dev/null || true
+          cp $SRC_WEBSITE/package-lock.json $DEST/website/ 2>/dev/null || true
           cp $SRC_WEBSITE/tailwind.config.mjs $DEST/website/ 2>/dev/null || true
+          cp $SRC_WEBSITE/tsconfig.json $DEST/website/ 2>/dev/null || true
+          # Public assets
           cp $SRC_WEBSITE/public/CNAME $DEST/website/public/ 2>/dev/null || true
           cp $SRC_WEBSITE/public/robots.txt $DEST/website/public/ 2>/dev/null || true
-          cp $SRC_WEBSITE/public/content/merch.json $DEST/website/public/content/ 2>/dev/null || true
+          cp $SRC_WEBSITE/public/sitemap.xml $DEST/website/public/ 2>/dev/null || true
+          cp $SRC_WEBSITE/public/favicon.svg $DEST/website/public/ 2>/dev/null || true
+          cp $SRC_WEBSITE/public/noise.svg $DEST/website/public/ 2>/dev/null || true
+          # Content JSONs (all of them)
+          cp $SRC_WEBSITE/public/content/*.json $DEST/website/public/content/ 2>/dev/null || true
+          # Components + layouts + styles
           cp $SRC_WEBSITE/src/components/*.astro $DEST/website/src/components/ 2>/dev/null || true
-          cp $SRC_WEBSITE/src/pages/*.astro $DEST/website/src/pages/ 2>/dev/null || true
           cp $SRC_WEBSITE/src/layouts/*.astro $DEST/website/src/layouts/ 2>/dev/null || true
           cp $SRC_WEBSITE/src/styles/*.css $DEST/website/src/styles/ 2>/dev/null || true
+          # Pages (root + dynamic sub-pages)
+          cp $SRC_WEBSITE/src/pages/*.astro $DEST/website/src/pages/ 2>/dev/null || true
+          cp $SRC_WEBSITE/src/pages/episodes/*.astro $DEST/website/src/pages/episodes/ 2>/dev/null || true
+          cp $SRC_WEBSITE/src/pages/characters/*.astro $DEST/website/src/pages/characters/ 2>/dev/null || true
 
           # ── requirements.txt ─────────────────────────────────────────────
           cp $SRC_PUBLISHER/requirements.txt $DEST/
@@ -82,8 +94,10 @@ jobs:
           # ── .env.example ─────────────────────────────────────────────────
           cp $SRC_PUBLISHER/.env.example $DEST/ 2>/dev/null || true
 
-          # ── MANUAL_ACTIONS_REQUIRED.md ────────────────────────────────────
+          # ── MANUAL_ACTIONS_REQUIRED.md + checklist ───────────────────────
           cp $SRC_PUBLISHER/MANUAL_ACTIONS_REQUIRED.md $DEST/ 2>/dev/null || true
+          cp ${{ github.workspace }}/SETUP_CHECKLIST.html $DEST/ 2>/dev/null || true
+          cp ${{ github.workspace }}/ARION_PROGRESS.html $DEST/ 2>/dev/null || true
 
           # ── README.md ─────────────────────────────────────────────────────
           # Use arion-world version (no story-publisher prefix)
@@ -131,5 +145,5 @@ jobs:
 
           git push -u origin main
 
-          echo "✓ arion-world repo populated successfully!"
-          echo "  https://github.com/matriks423-max/arion-world"
+          echo "✓ arion-word repo populated successfully!"
+          echo "  https://github.com/matriks423-max/arion-word"
