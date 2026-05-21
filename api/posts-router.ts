@@ -1,5 +1,8 @@
 import { z } from "zod";
+import { eq, desc } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
+import { getDb } from "./queries/connection";
+import * as schema from "@db/schema";
 import { createRouter, publicQuery, authedQuery, adminQuery } from "./middleware";
 import {
   createPost,
@@ -434,10 +437,6 @@ export const postsRouter = createRouter({
       return { success: true };
     }),
 });
-
-import { getDb } from "./queries/connection";
-import * as schema from "@db/schema";
-import { eq, desc } from "drizzle-orm";
 
 async function checkAndRewardReferralOnPost(userId: number) {
   const referral = await getReferralByReferredId(userId);
