@@ -69,7 +69,7 @@ export default function CreatePost() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = (isEditing ? "Rediģēt sludinājumu" : t(locale, "nav.createPost")) + " — jobsy.lv";
+    document.title = (isEditing ? t(locale, "createPost.editPageTitle") : t(locale, "nav.createPost")) + " — jobsy.lv";
     return () => { document.title = prev; };
   }, [locale, isEditing]);
 
@@ -119,7 +119,7 @@ export default function CreatePost() {
 
   const deleteMutation = trpc.posts.delete.useMutation({
     onSuccess: () => {
-      toast("Sludinājums dzēsts", "success");
+      toast(t(locale, "createPost.toastDeleted"), "success");
       navigate("/my-posts");
     },
     onError: (err) => {
@@ -134,10 +134,10 @@ export default function CreatePost() {
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!category) newErrors.category = "Kategorija ir obligāta";
-    if (title.length < 5) newErrors.title = "Nosaukums pārāk īss (min 5 zīmes)";
-    if (title.length > 80) newErrors.title = "Nosaukums pārāk garš (max 80 zīmes)";
-    if (description.length > 500) newErrors.description = "Apraksts pārāk garš (max 500 zīmes)";
+    if (!category) newErrors.category = t(locale, "createPost.errorCategory");
+    if (title.length < 5) newErrors.title = t(locale, "createPost.errorTitleShort");
+    if (title.length > 80) newErrors.title = t(locale, "createPost.errorTitleLong");
+    if (description.length > 500) newErrors.description = t(locale, "createPost.errorDescLong");
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -168,7 +168,7 @@ export default function CreatePost() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (images.length >= 5) {
-      toast("Maksimums 5 attēli", "error");
+      toast(t(locale, "createPost.toastMaxImages"), "error");
       return;
     }
 
@@ -185,12 +185,12 @@ export default function CreatePost() {
       const data = await res.json();
       if (data.url) {
         setImages((prev) => [...prev, data.url]);
-        toast("Attēls augšupielādēts", "success");
+        toast(t(locale, "createPost.toastImageUploaded"), "success");
       } else {
-        toast(data.error || "Augšupielāde neizdevās", "error");
+        toast(data.error || t(locale, "createPost.toastUploadFailed"), "error");
       }
     } catch {
-      toast("Augšupielāde neizdevās", "error");
+      toast(t(locale, "createPost.toastUploadFailed"), "error");
     } finally {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = "";
@@ -299,7 +299,7 @@ export default function CreatePost() {
                   errors.category ? "border-need" : "border-ink-light"
                 } bg-white font-body focus:border-coral`}
               >
-                <SelectValue placeholder="Izvēlies..." />
+                <SelectValue placeholder={t(locale, "createPost.selectPlaceholder")} />
               </SelectTrigger>
               <SelectContent className="border-2 border-ink">
                 {CATEGORIES.map((c) => (
@@ -422,7 +422,7 @@ export default function CreatePost() {
               </label>
               <Select value={city} onValueChange={setCity}>
                 <SelectTrigger className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-coral">
-                  <SelectValue placeholder="Izvēlies..." />
+                  <SelectValue placeholder={t(locale, "createPost.selectPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent className="border-2 border-ink">
                   {CITIES.map((c) => (
@@ -492,7 +492,7 @@ export default function CreatePost() {
             {isEditing
               ? t(locale, "createPost.submitSave")
               : hasFreeCredits
-              ? `Publicēt (izmantos ${creditCount} kredītu)`
+              ? t(locale, "createPost.submitCredit", { count: creditCount })
               : showFreeBadge
               ? t(locale, "createPost.submitFree")
               : t(locale, "createPost.submitPaid")}
