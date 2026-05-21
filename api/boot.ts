@@ -209,6 +209,54 @@ app.get("/uploads/*", async (c) => {
   }
 });
 
+// SEO: bot prerender for /post/:id — serves OG meta tags to social crawlers
+const BOT_UA = /facebookexternalhit|twitterbot|slackbot|linkedinbot|whatsapp|telegrambot|googlebot|bingbot|discordbot|embedly/i;
+
+app.get("/post/:id", async (c, next) => {
+  const ua = c.req.header("user-agent") ?? "";
+  if (!BOT_UA.test(ua)) return next();
+
+  const postId = Number(c.req.param("id"));
+  if (isNaN(postId)) return next();
+
+  try {
+    const { getPostWithProfile } = await import("./queries/posts");
+    const result = await getPostWithProfile(postId);
+    if (!result) return next();
+
+    const { post, profile } = result;
+    const title = `${post.title} — jobsy.lv`;
+    const desc = post.description?.substring(0, 160) ?? "Atrodi palīdzību vai piedāvā darbus Latvijā.";
+    const url = `https://jobsy.lv/post/${postId}`;
+    const image = `https://jobsy.lv/og-image.png`;
+
+    const html = `<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8"/>
+<title>${title}</title>
+<meta name="description" content="${desc}"/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="${url}"/>
+<meta property="og:title" content="${title}"/>
+<meta property="og:description" content="${desc}"/>
+<meta property="og:image" content="${image}"/>
+<meta property="og:locale" content="lv_LV"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="${title}"/>
+<meta name="twitter:description" content="${desc}"/>
+<meta name="twitter:image" content="${image}"/>
+<link rel="canonical" href="${url}"/>
+<script>window.location.replace("${url}")</script>
+</head>
+<body><p>${title}</p><p>${desc}</p><p>Autors: ${profile?.name ?? "Anonīms"}</p></body>
+</html>`;
+    return c.html(html, 200);
+  } catch {
+    return next();
+  }
+});
+
 // SEO: robots.txt
 app.get("/robots.txt", (c) => {
   const content = [
@@ -248,11 +296,28 @@ app.get("/sitemap.xml", async (c) => {
     changefreq: "daily",
   }));
 
-  const allPages = [...staticPages, ...catPages];
+  // Include active posts in sitemap
+  let postPages: { loc: string; priority: string; changefreq: string; lastmod: string }[] = [];
+  try {
+    const { listPosts } = await import("./queries/posts");
+    const activePosts = await listPosts({ status: "active", limit: 500 });
+    postPages = activePosts.map((p) => ({
+      loc: `/post/${p.id}`,
+      priority: "0.7",
+      changefreq: "weekly",
+      lastmod: p.updatedAt.toISOString().split("T")[0],
+    }));
+  } catch { /* ignore — sitemap still works without posts */ }
+
+  const allPages = [
+    ...staticPages.map((p) => ({ ...p, lastmod: now })),
+    ...catPages.map((p) => ({ ...p, lastmod: now })),
+    ...postPages,
+  ];
   const urls = allPages.map((p) => `
   <url>
     <loc>${base}${p.loc}</loc>
-    <lastmod>${now}</lastmod>
+    <lastmod>${p.lastmod}</lastmod>
     <changefreq>${p.changefreq}</changefreq>
     <priority>${p.priority}</priority>
   </url>`).join("");
