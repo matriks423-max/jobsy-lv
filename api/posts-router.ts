@@ -75,7 +75,7 @@ export const postsRouter = createRouter({
       if (!result) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Post not found",
+          message: "Sludinājums nav atrasts",
         });
       }
       await incrementViewCount(input.id);
@@ -115,7 +115,7 @@ export const postsRouter = createRouter({
       if (postsToday >= MAX_POSTS_PER_DAY) {
         throw new TRPCError({
           code: "TOO_MANY_REQUESTS",
-          message: `Max ${MAX_POSTS_PER_DAY} posts per day reached`,
+          message: `Dienā atļauts publicēt max ${MAX_POSTS_PER_DAY} sludinājumus`,
         });
       }
 
@@ -123,7 +123,7 @@ export const postsRouter = createRouter({
       if (!profile) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Profile not found",
+          message: "Profils nav atrasts",
         });
       }
 
@@ -218,10 +218,10 @@ export const postsRouter = createRouter({
     .mutation(async ({ ctx, input }) => {
       const postResult = await getPostWithProfile(input.id);
       if (!postResult) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
+        throw new TRPCError({ code: "NOT_FOUND", message: "Sludinājums nav atrasts" });
       }
       if (postResult.post.userId !== ctx.user.id) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Not your post" });
+        throw new TRPCError({ code: "FORBIDDEN", message: "Šis sludinājums nepieder tev" });
       }
 
       // Moderate updated content
@@ -245,10 +245,10 @@ export const postsRouter = createRouter({
     .mutation(async ({ ctx, input }) => {
       const postResult = await getPostWithProfile(input.id);
       if (!postResult) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
+        throw new TRPCError({ code: "NOT_FOUND", message: "Sludinājums nav atrasts" });
       }
       if (postResult.post.userId !== ctx.user.id) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Not your post" });
+        throw new TRPCError({ code: "FORBIDDEN", message: "Šis sludinājums nepieder tev" });
       }
 
       await deletePost(input.id);
@@ -259,9 +259,9 @@ export const postsRouter = createRouter({
     .input(z.object({ postId: z.number(), filled: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
       const result = await getPostWithProfile(input.postId);
-      if (!result) throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
+      if (!result) throw new TRPCError({ code: "NOT_FOUND", message: "Sludinājums nav atrasts" });
       if (result.post.userId !== ctx.user.id) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Not your post" });
+        throw new TRPCError({ code: "FORBIDDEN", message: "Šis sludinājums nepieder tev" });
       }
       await setPostFilled(input.postId, input.filled);
       return { success: true };
@@ -282,7 +282,7 @@ export const postsRouter = createRouter({
     .mutation(async ({ ctx, input }) => {
       const postResult = await getPostWithProfile(input.postId);
       if (!postResult) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
+        throw new TRPCError({ code: "NOT_FOUND", message: "Sludinājums nav atrasts" });
       }
 
       const alreadyContacted = await hasContacted(input.postId, ctx.user.id);
@@ -331,12 +331,12 @@ export const postsRouter = createRouter({
     .mutation(async ({ ctx, input }) => {
       const postResult = await getPostWithProfile(input.postId);
       if (!postResult) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
+        throw new TRPCError({ code: "NOT_FOUND", message: "Sludinājums nav atrasts" });
       }
       if (postResult.post.userId !== ctx.user.id) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "Not your post",
+          message: "Šis sludinājums nepieder tev",
         });
       }
 
@@ -377,7 +377,7 @@ export const postsRouter = createRouter({
         .limit(1);
       
       if (!report.length) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Report not found" });
+        throw new TRPCError({ code: "NOT_FOUND", message: "Ziņojums nav atrasts" });
       }
 
       if (input.action === "delete") {

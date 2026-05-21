@@ -38,14 +38,15 @@ export default function MyPosts() {
     enabled: isAuthenticated,
   });
 
+  const utils = trpc.useUtils();
+
   const deleteMutation = trpc.posts.delete.useMutation({
     onSuccess: () => {
       toast("Sludinājums dzēsts", "success");
+      utils.posts.myPosts.invalidate();
     },
     onError: (err) => toast(err.message, "error"),
   });
-
-  const utils = trpc.useUtils();
   const setFilledMutation = trpc.posts.setFilled.useMutation({
     onSuccess: () => utils.posts.myPosts.invalidate(),
   });

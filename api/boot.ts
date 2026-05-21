@@ -254,7 +254,12 @@ app.post("/api/upload", async (c) => {
 // Serve uploaded files
 app.get("/uploads/*", async (c) => {
   const filepath = c.req.path;
-  const filePathOnDisk = path.join(process.cwd(), filepath);
+  const uploadsBase = path.join(process.cwd(), "uploads");
+  const filePathOnDisk = path.resolve(process.cwd(), filepath.replace(/^\//, ""));
+  // Guard against path traversal
+  if (!filePathOnDisk.startsWith(uploadsBase + path.sep) && !filePathOnDisk.startsWith(uploadsBase + "/")) {
+    return c.json({ error: "Forbidden" }, 403);
+  }
   try {
     const data = await readFile(filePathOnDisk);
     const ext = path.extname(filePathOnDisk).toLowerCase();

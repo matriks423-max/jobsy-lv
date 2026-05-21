@@ -115,7 +115,7 @@ export const emailAuthRouter = createRouter({
     .mutation(async ({ ctx, input }) => {
       const existing = await findUserByEmail(input.email);
       if (existing) {
-        throw new TRPCError({ code: "CONFLICT", message: "Email already registered" });
+        throw new TRPCError({ code: "CONFLICT", message: "Šis e-pasts jau ir reģistrēts" });
       }
 
       const passwordHash = await bcrypt.hash(input.password, 12);
@@ -178,12 +178,12 @@ export const emailAuthRouter = createRouter({
     .mutation(async ({ ctx, input }) => {
       const user = await findUserByEmail(input.email);
       if (!user || !user.passwordHash) {
-        throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid email or password" });
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Nepareizs e-pasts vai parole" });
       }
 
       const valid = await bcrypt.compare(input.password, user.passwordHash);
       if (!valid) {
-        throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid email or password" });
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Nepareizs e-pasts vai parole" });
       }
 
       await getDb()

@@ -28,17 +28,17 @@ export const referralRouter = createRouter({
 
       // Can't refer yourself
       if (profile.referralCode?.toUpperCase() === input.code.toUpperCase()) {
-        throw new TRPCError({ code: "BAD_REQUEST", message: "Can't use your own code" });
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Nevar izmantot savu kodu" });
       }
 
       // Already referred
       if (profile.referredBy) {
-        throw new TRPCError({ code: "BAD_REQUEST", message: "Already referred" });
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Ieteikuma kods jau izmantots" });
       }
 
       const referrer = await getProfileByReferralCode(input.code.toUpperCase());
       if (!referrer) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Invalid referral code" });
+        throw new TRPCError({ code: "NOT_FOUND", message: "Kods nav atrasts" });
       }
 
       await setReferredBy(ctx.user.id, referrer.userId);

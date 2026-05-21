@@ -190,7 +190,7 @@ export default function Category() {
           Vajad palīdzību ar <em>{catName.toLowerCase()}</em>?
         </p>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Publicē sludinājumu — pirmie 2 bez maksas.
+          Publicē sludinājumu — pirmais bez maksas.
         </p>
         <Link
           to="/create"

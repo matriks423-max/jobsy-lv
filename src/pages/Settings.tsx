@@ -31,6 +31,8 @@ export default function Settings() {
   const [phone, setPhone] = useState("");
   const [saved, setSaved] = useState(false);
 
+  const utils = trpc.useUtils();
+
   const { data: profile, isLoading } = trpc.profile.me.useQuery(undefined, {
     enabled: isAuthenticated,
   });
@@ -39,6 +41,7 @@ export default function Settings() {
     onSuccess: () => {
       setSaved(true);
       toast(t(locale, "settings.saved"), "success");
+      utils.profile.me.invalidate();
       setTimeout(() => setSaved(false), 3000);
     },
     onError: (err) => toast(err.message, "error"),

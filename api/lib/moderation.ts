@@ -111,7 +111,7 @@ export function moderateContent(title: string, description: string = ""): Modera
     const catList = Array.from(categories).join(", ");
     return {
       allowed: false,
-      reason: `Prohibited content detected (${catList}). Your post violates our Terms of Service.`,
+      reason: `Saturs nav atļauts. Sludinājums pārkāpj Lietošanas noteikumus.`,
       flaggedWords,
     };
   }
@@ -129,7 +129,7 @@ export function moderateContent(title: string, description: string = ""): Modera
     if (pattern.test(text)) {
       return {
         allowed: false,
-        reason: "Prohibited content detected. Disguised characters are not allowed.",
+        reason: "Saturs nav atļauts. Aizliegti rakstzīmju triki.",
         flaggedWords: ["disguised_content"],
       };
     }
