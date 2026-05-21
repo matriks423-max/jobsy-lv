@@ -51,7 +51,10 @@ export const postsRouter = createRouter({
         .optional()
     )
     .query(async ({ input }) => {
-      await expireOldPosts();
+      // Run expiry in background — failure must not block the list query
+      expireOldPosts().catch((err) =>
+        console.error("[expireOldPosts] failed:", err?.message ?? err)
+      );
       const filters = {
         ...input,
         status: input?.status ?? "active",
@@ -64,7 +67,9 @@ export const postsRouter = createRouter({
   getById: publicQuery
     .input(z.object({ id: z.number() }))
     .query(async ({ input }) => {
-      await expireOldPosts();
+      expireOldPosts().catch((err) =>
+        console.error("[expireOldPosts] failed:", err?.message ?? err)
+      );
       const result = await getPostWithProfile(input.id);
       if (!result) {
         throw new TRPCError({
@@ -262,7 +267,9 @@ export const postsRouter = createRouter({
     }),
 
   myPosts: authedQuery.query(async ({ ctx }) => {
-    await expireOldPosts();
+    expireOldPosts().catch((err) =>
+      console.error("[expireOldPosts] failed:", err?.message ?? err)
+    );
     return listPostsWithProfiles({
       userId: ctx.user.id,
       limit: 50,
