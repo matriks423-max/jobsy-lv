@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql, gte, count } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
@@ -499,6 +499,88 @@ export const postsRouter = createRouter({
     .input(z.object({ postId: z.number() }))
     .mutation(async ({ input }) => {
       await updatePost(input.postId, { status: "rejected" });
+      return { success: true };
+    }),
+
+  adminStats: adminQuery.query(async () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const [totalUsers, totalPosts, activePosts, postsToday, usersToday, paidPosts, pendingCount, reportsCount] =
+      await Promise.all([
+        getDb().select({ c: count() }).from(schema.users).then((r) => r[0]?.c ?? 0),
+        getDb().select({ c: count() }).from(schema.posts).then((r) => r[0]?.c ?? 0),
+        getDb().select({ c: count() }).from(schema.posts).where(eq(schema.posts.status, "active")).then((r) => r[0]?.c ?? 0),
+        getDb().select({ c: count() }).from(schema.posts).where(gte(schema.posts.createdAt, today)).then((r) => r[0]?.c ?? 0),
+        getDb().select({ c: count() }).from(schema.users).where(gte(schema.users.createdAt, today)).then((r) => r[0]?.c ?? 0),
+        getDb().select({ c: count() }).from(schema.posts).where(eq(schema.posts.wasFree, false)).then((r) => r[0]?.c ?? 0),
+        getDb().select({ c: count() }).from(schema.posts).where(eq(schema.posts.status, "pending_review")).then((r) => r[0]?.c ?? 0),
+        getDb().select({ c: count() }).from(schema.reports).where(eq(schema.reports.resolved, false)).then((r) => r[0]?.c ?? 0),
+      ]);
+
+    return { totalUsers, totalPosts, activePosts, postsToday, usersToday, paidPosts, pendingCount, reportsCount };
+  }),
+
+  listUsers: adminQuery
+    .input(z.object({ search: z.string().optional(), limit: z.number().default(50), offset: z.number().default(0) }))
+    .query(async ({ input }) => {
+      const rows = await getDb()
+        .select({
+          id: schema.users.id,
+          email: schema.users.email,
+          name: schema.users.name,
+          role: schema.users.role,
+          authMethod: schema.users.authMethod,
+          createdAt: schema.users.createdAt,
+          lastSignInAt: schema.users.lastSignInAt,
+        })
+        .from(schema.users)
+        .where(input.search ? sql`${schema.users.email} LIKE ${"%" + input.search + "%"} OR ${schema.users.name} LIKE ${"%" + input.search + "%"}` : undefined)
+        .orderBy(desc(schema.users.createdAt))
+        .limit(input.limit)
+        .offset(input.offset);
+      return rows;
+    }),
+
+  setUserRole: adminQuery
+    .input(z.object({ userId: z.number(), role: z.enum(["user", "banned", "admin"]) }))
+    .mutation(async ({ input }) => {
+      await getDb().update(schema.users).set({ role: input.role }).where(eq(schema.users.id, input.userId));
+      if (input.role === "banned") {
+        const userPosts = await getDb().select({ id: schema.posts.id }).from(schema.posts).where(eq(schema.posts.userId, input.userId));
+        for (const p of userPosts) await deletePost(p.id);
+      }
+      return { success: true };
+    }),
+
+  listAllPosts: adminQuery
+    .input(z.object({ status: z.string().optional(), limit: z.number().default(50), offset: z.number().default(0) }))
+    .query(async ({ input }) => {
+      const rows = await getDb()
+        .select({
+          id: schema.posts.id,
+          title: schema.posts.title,
+          status: schema.posts.status,
+          type: schema.posts.type,
+          category: schema.posts.category,
+          city: schema.posts.city,
+          userId: schema.posts.userId,
+          wasFree: schema.posts.wasFree,
+          viewCount: schema.posts.viewCount,
+          createdAt: schema.posts.createdAt,
+        })
+        .from(schema.posts)
+        .where(input.status ? eq(schema.posts.status, input.status as any) : undefined)
+        .orderBy(desc(schema.posts.createdAt))
+        .limit(input.limit)
+        .offset(input.offset);
+      return rows;
+    }),
+
+  adminDeletePost: adminQuery
+    .input(z.object({ postId: z.number() }))
+    .mutation(async ({ input }) => {
+      await deletePost(input.postId);
       return { success: true };
     }),
 });
