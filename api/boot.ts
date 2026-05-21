@@ -31,7 +31,7 @@ app.get("/health", async (c) => {
     .then(() => "connected")
     .catch(() => "disconnected");
   const timeout = new Promise<string>((resolve) =>
-    setTimeout(() => resolve("timeout"), 5000)
+    setTimeout(() => resolve("timeout"), 10000)
   );
   const db = await Promise.race([dbPromise, timeout]);
   return c.json({ status: "ok", db, timestamp: new Date().toISOString() });
