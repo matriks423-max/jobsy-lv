@@ -137,6 +137,19 @@ export const interests = mysqlTable("interests", {
   uniqueIndex("idx_interests_post_user").on(table.postId, table.fromUserId),
 ]);
 
+export const reviews = mysqlTable("reviews", {
+  id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
+  postId: bigint("postId", { mode: "number", unsigned: true }).notNull(),
+  reviewerId: bigint("reviewerId", { mode: "number", unsigned: true }).notNull(),
+  revieweeId: bigint("revieweeId", { mode: "number", unsigned: true }).notNull(),
+  stars: int("stars", { unsigned: true }).notNull(),
+  comment: text("comment"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => [
+  uniqueIndex("idx_reviews_post_reviewer_reviewee").on(table.postId, table.reviewerId, table.revieweeId),
+  index("idx_reviews_reviewee").on(table.revieweeId),
+]);
+
 export const postImages = mysqlTable("postImages", {
   id: int("id", { unsigned: true }).autoincrement().primaryKey(),
   postId: int("postId", { unsigned: true }).notNull(),
@@ -163,3 +176,5 @@ export type Interest = typeof interests.$inferSelect;
 export type InsertInterest = typeof interests.$inferInsert;
 export type PostImage = typeof postImages.$inferSelect;
 export type InsertPostImage = typeof postImages.$inferInsert;
+export type Review = typeof reviews.$inferSelect;
+export type InsertReview = typeof reviews.$inferInsert;

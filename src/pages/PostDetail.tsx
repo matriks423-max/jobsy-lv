@@ -44,6 +44,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
+  Star,
 } from "lucide-react";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -97,6 +98,34 @@ export default function PostDetail() {
         setReportReason("");
         setReportDetails("");
       }, 2000);
+    },
+    onError: (err) => toast(err.message, "error"),
+  });
+
+  const [reviewStars, setReviewStars] = useState(0);
+  const [reviewHover, setReviewHover] = useState(0);
+  const [reviewComment, setReviewComment] = useState("");
+
+  // revieweeId when leaving a review: non-owners review the post owner
+  const revieweeId = data?.post?.userId;
+  const isOwnerEarly = isAuthenticated && user?.id === data?.post?.userId;
+  const canLeaveReview = isAuthenticated && !isOwnerEarly && !!data?.post?.filled && !!interestData?.interested;
+
+  const { data: myReview, refetch: refetchMyReview } = trpc.posts.myReviewForPost.useQuery(
+    { postId, revieweeId: revieweeId ?? 0 },
+    { enabled: !!canLeaveReview && !!revieweeId }
+  );
+
+  const { data: postReviews, refetch: refetchPostReviews } = trpc.posts.postReviews.useQuery(
+    { postId },
+    { enabled: !isNaN(postId) }
+  );
+
+  const reviewMutation = trpc.posts.leaveReview.useMutation({
+    onSuccess: () => {
+      toast(t(locale, "postDetail.review.submitted"), "success");
+      refetchMyReview();
+      refetchPostReviews();
     },
     onError: (err) => toast(err.message, "error"),
   });
@@ -412,6 +441,79 @@ export default function PostDetail() {
           <button onClick={() => setShowReport(true)} className="mb-10 font-body text-sm text-ink-light underline hover:text-need">
             {t(locale, "postDetail.report")}
           </button>
+        )}
+
+        {/* Leave a Review — shown to interested parties after post is filled */}
+        {canLeaveReview && (
+          <div className="mb-10 rounded-3xl border-2 border-ink bg-cream-dark p-8">
+            <h3 className="mb-4 font-display text-xl font-bold text-ink">{t(locale, "postDetail.review.title")}</h3>
+            {myReview ? (
+              <div className="space-y-2">
+                <div className="flex gap-1">
+                  {[1,2,3,4,5].map((s) => (
+                    <Star key={s} className={`h-6 w-6 ${s <= myReview.stars ? "fill-mustard text-mustard" : "text-ink-light"}`} />
+                  ))}
+                </div>
+                {myReview.comment && <p className="font-body text-sm text-ink-muted">{myReview.comment}</p>}
+                <p className="font-body text-xs text-ink-light">{t(locale, "postDetail.review.submitted")}</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex gap-1">
+                  {[1,2,3,4,5].map((s) => (
+                    <button
+                      key={s}
+                      onMouseEnter={() => setReviewHover(s)}
+                      onMouseLeave={() => setReviewHover(0)}
+                      onClick={() => setReviewStars(s)}
+                      className="p-0.5"
+                    >
+                      <Star className={`h-8 w-8 transition ${s <= (reviewHover || reviewStars) ? "fill-mustard text-mustard" : "text-ink-light"}`} />
+                    </button>
+                  ))}
+                </div>
+                <textarea
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  placeholder={t(locale, "postDetail.review.placeholder")}
+                  rows={3}
+                  className="w-full rounded-xl border-2 border-ink bg-white p-3 font-body text-sm text-ink placeholder:text-ink-light focus:outline-none"
+                />
+                <Button
+                  onClick={() => reviewMutation.mutate({ postId, revieweeId: revieweeId!, stars: reviewStars, comment: reviewComment || undefined })}
+                  disabled={reviewStars === 0 || reviewMutation.isPending}
+                  className="h-12 rounded-xl border-2 border-ink bg-coral px-6 font-body font-medium text-ink hover:bg-coral-hover disabled:opacity-50"
+                >
+                  {t(locale, "postDetail.review.submit")}
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Reviews for this post */}
+        {postReviews && postReviews.length > 0 && (
+          <div className="mb-10">
+            <h3 className="mb-4 font-display text-xl font-bold text-ink">{t(locale, "postDetail.review.reviewsTitle")}</h3>
+            <div className="space-y-4">
+              {postReviews.map((r) => (
+                <div key={r.id} className="rounded-2xl border-2 border-ink bg-cream-dark p-5">
+                  <div className="mb-2 flex items-center justify-between">
+                    <p className="font-body text-sm font-bold text-ink">{r.reviewerName ?? "—"}</p>
+                    <div className="flex gap-0.5">
+                      {[1,2,3,4,5].map((s) => (
+                        <Star key={s} className={`h-4 w-4 ${s <= r.stars ? "fill-mustard text-mustard" : "text-ink-light"}`} />
+                      ))}
+                    </div>
+                  </div>
+                  {r.comment && <p className="font-body text-sm text-ink-muted">{r.comment}</p>}
+                  <p className="mt-2 font-mono text-xs text-ink-light">
+                    {new Date(r.createdAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
 
         {/* Related Posts */}

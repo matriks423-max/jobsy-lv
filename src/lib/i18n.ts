@@ -110,6 +110,13 @@ export const translations = {
         done: "Interese izteikta ✓",
         toast: "Saimnieks saņems paziņojumu!",
       },
+      review: {
+        title: "Atstāt novērtējumu",
+        placeholder: "Raksti komentāru (neobligāti)...",
+        submit: "Nosūtīt novērtējumu",
+        submitted: "Novērtējums saglabāts!",
+        reviewsTitle: "Novērtējumi",
+      },
       share: {
         title: "Kopīgot",
         whatsapp: "WhatsApp",
@@ -428,6 +435,13 @@ export const translations = {
         done: "Интерес выражен ✓",
         toast: "Владелец получит уведомление!",
       },
+      review: {
+        title: "Оставить отзыв",
+        placeholder: "Напишите комментарий (необязательно)...",
+        submit: "Отправить отзыв",
+        submitted: "Отзыв сохранён!",
+        reviewsTitle: "Отзывы",
+      },
       share: {
         title: "Поделиться",
         whatsapp: "WhatsApp",
@@ -745,6 +759,13 @@ export const translations = {
         btn: "I'm interested",
         done: "Interest sent ✓",
         toast: "The poster will be notified!",
+      },
+      review: {
+        title: "Leave a review",
+        placeholder: "Write a comment (optional)...",
+        submit: "Submit review",
+        submitted: "Review saved!",
+        reviewsTitle: "Reviews",
       },
       share: {
         title: "Share",

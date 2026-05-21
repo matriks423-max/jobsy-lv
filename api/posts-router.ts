@@ -583,6 +583,91 @@ export const postsRouter = createRouter({
       await deletePost(input.postId);
       return { success: true };
     }),
+
+  leaveReview: authedQuery
+    .input(z.object({
+      postId: z.number(),
+      revieweeId: z.number(),
+      stars: z.number().min(1).max(5),
+      comment: z.string().max(500).optional(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const post = await getDb()
+        .select({ userId: schema.posts.userId, filled: schema.posts.filled })
+        .from(schema.posts)
+        .where(eq(schema.posts.id, input.postId))
+        .limit(1)
+        .then((r) => r[0]);
+      if (!post) throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
+      if (!post.filled) throw new TRPCError({ code: "BAD_REQUEST", message: "Post not filled yet" });
+
+      const reviewerId = ctx.user.id;
+      // Post owner can review someone who expressed interest; interested party can review post owner
+      const isPostOwner = post.userId === reviewerId;
+      const isRevieweePostOwner = input.revieweeId === post.userId;
+      if (!isPostOwner && !isRevieweePostOwner) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Not eligible to leave this review" });
+      }
+      if (reviewerId === input.revieweeId) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Cannot review yourself" });
+      }
+
+      await getDb().insert(schema.reviews).values({
+        postId: input.postId,
+        reviewerId,
+        revieweeId: input.revieweeId,
+        stars: input.stars,
+        comment: input.comment,
+      }).onDuplicateKeyUpdate({ set: { stars: input.stars, comment: input.comment } });
+
+      return { success: true };
+    }),
+
+  postReviews: publicQuery
+    .input(z.object({ postId: z.number() }))
+    .query(async ({ input }) => {
+      const rows = await getDb()
+        .select({
+          id: schema.reviews.id,
+          reviewerId: schema.reviews.reviewerId,
+          revieweeId: schema.reviews.revieweeId,
+          stars: schema.reviews.stars,
+          comment: schema.reviews.comment,
+          createdAt: schema.reviews.createdAt,
+          reviewerName: schema.users.name,
+        })
+        .from(schema.reviews)
+        .leftJoin(schema.users, eq(schema.reviews.reviewerId, schema.users.id))
+        .where(eq(schema.reviews.postId, input.postId))
+        .orderBy(desc(schema.reviews.createdAt));
+      return rows;
+    }),
+
+  userRating: publicQuery
+    .input(z.object({ userId: z.number() }))
+    .query(async ({ input }) => {
+      const rows = await getDb()
+        .select({ stars: schema.reviews.stars })
+        .from(schema.reviews)
+        .where(eq(schema.reviews.revieweeId, input.userId));
+      if (rows.length === 0) return { avg: null, count: 0 };
+      const avg = rows.reduce((s, r) => s + r.stars, 0) / rows.length;
+      return { avg: Math.round(avg * 10) / 10, count: rows.length };
+    }),
+
+  myReviewForPost: authedQuery
+    .input(z.object({ postId: z.number(), revieweeId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const row = await getDb()
+        .select()
+        .from(schema.reviews)
+        .where(
+          sql`${schema.reviews.postId} = ${input.postId} AND ${schema.reviews.reviewerId} = ${ctx.user.id} AND ${schema.reviews.revieweeId} = ${input.revieweeId}`
+        )
+        .limit(1)
+        .then((r) => r[0] ?? null);
+      return row;
+    }),
 });
 
 async function checkAndRewardReferralOnPost(userId: number) {
