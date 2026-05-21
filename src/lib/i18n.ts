@@ -191,6 +191,7 @@ export const translations = {
       empty: "Vēl nav sludinājumu. Izveido pirmo!",
       emptyBtn: "Izveidot sludinājumu",
       confirmDelete: "Vai tiešām dzēst?",
+      expires: "Beidzas",
     },
     success: {
       title: "Sludinājums publicēts!",
@@ -498,6 +499,7 @@ export const translations = {
       empty: "Объявлений пока нет. Создай первое!",
       emptyBtn: "Разместить объявление",
       confirmDelete: "Удалить объявление?",
+      expires: "Истекает",
     },
     success: {
       title: "Объявление опубликовано!",
@@ -805,6 +807,7 @@ export const translations = {
       empty: "No posts yet. Create your first!",
       emptyBtn: "Create a post",
       confirmDelete: "Delete this post?",
+      expires: "Expires",
     },
     success: {
       title: "Post published!",

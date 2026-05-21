@@ -155,7 +155,7 @@ export default function MyPosts() {
                       {t(locale, "postDetail.published", {
                         date: new Date(post.createdAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB"),
                       })}
-                      {post.expiresAt && ` • Beidzas ${new Date(post.expiresAt).toLocaleDateString()}`}
+                      {post.expiresAt && ` • ${t(locale, "myPosts.expires")} ${new Date(post.expiresAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}`}
                     </p>
                   </div>
 
@@ -184,7 +184,7 @@ export default function MyPosts() {
                         </button>
                       )}
                       <Link to={`/edit/${post.id}`}>
-                        <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title="Labot">
+                        <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title={t(locale, "createPost.editTitle")}>
                           <Pencil className="h-4 w-4" />
                         </button>
                       </Link>
@@ -195,12 +195,12 @@ export default function MyPosts() {
                           }
                         }}
                         className="rounded-lg border-2 border-need bg-need-light p-2 text-need hover:bg-need hover:text-white"
-                        title="Dzēst"
+                        title={t(locale, "createPost.deleteBtn")}
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
                       <Link to={`/post/${post.id}`}>
-                        <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title="Skatīt">
+                        <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title={t(locale, "browse.viewPost")}>
                           <ArrowRight className="h-4 w-4" />
                         </button>
                       </Link>
