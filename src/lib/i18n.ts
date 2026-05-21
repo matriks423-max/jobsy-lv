@@ -192,6 +192,8 @@ export const translations = {
       emptyBtn: "Izveidot sludinājumu",
       confirmDelete: "Vai tiešām dzēst?",
       expires: "Beidzas",
+      toastFilled: "Atzīmēts kā aizpildīts",
+      toastOpen: "Atzīmēts kā atvērts",
     },
     success: {
       title: "Sludinājums publicēts!",
@@ -500,6 +502,8 @@ export const translations = {
       emptyBtn: "Разместить объявление",
       confirmDelete: "Удалить объявление?",
       expires: "Истекает",
+      toastFilled: "Отмечено как закрытое",
+      toastOpen: "Отмечено как открытое",
     },
     success: {
       title: "Объявление опубликовано!",
@@ -808,6 +812,8 @@ export const translations = {
       emptyBtn: "Create a post",
       confirmDelete: "Delete this post?",
       expires: "Expires",
+      toastFilled: "Marked as filled",
+      toastOpen: "Marked as open",
     },
     success: {
       title: "Post published!",

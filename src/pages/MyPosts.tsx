@@ -48,7 +48,14 @@ export default function MyPosts() {
     onError: (err) => toast(err.message, "error"),
   });
   const setFilledMutation = trpc.posts.setFilled.useMutation({
-    onSuccess: () => utils.posts.myPosts.invalidate(),
+    onSuccess: (_data, variables) => {
+      utils.posts.myPosts.invalidate();
+      toast(
+        variables.filled ? t(locale, "myPosts.toastFilled") : t(locale, "myPosts.toastOpen"),
+        "success"
+      );
+    },
+    onError: (err) => toast(err.message, "error"),
   });
 
   const INACTIVE_STATUSES = ["expired", "closed", "pending_payment", "pending_review", "rejected"] as const;
