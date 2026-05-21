@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router";
+import { useState, useEffect } from "react";
+import { Link, useSearchParams } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,14 +25,21 @@ function getGoogleOAuthUrl() {
 }
 
 export default function Login() {
-  
-  
   const { toast } = useToast();
-  const [mode, setMode] = useState<"login" | "register">("login");
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const prev = document.title;
+    document.title = "Pieslēgties — jobsy.lv";
+    return () => { document.title = prev; };
+  }, []);
+  // Auto-switch to register when referral code is in URL
+  const urlRef = searchParams.get("ref") ?? "";
+  const [mode, setMode] = useState<"login" | "register">(urlRef ? "register" : "login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [referralCode, setReferralCode] = useState("");
+  const [referralCode, setReferralCode] = useState(urlRef);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 

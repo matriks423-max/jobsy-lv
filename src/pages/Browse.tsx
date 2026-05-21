@@ -66,6 +66,13 @@ export default function Browse() {
     offset: page * PAGE_SIZE,
   });
 
+  // Set page title
+  useEffect(() => {
+    const prev = document.title;
+    document.title = t(locale, "browse.title") + " — jobsy.lv";
+    return () => { document.title = prev; };
+  }, [locale]);
+
   // Sync URL params
   useEffect(() => {
     const params = new URLSearchParams();

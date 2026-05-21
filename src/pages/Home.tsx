@@ -328,7 +328,8 @@ export default function Home() {
                     </div>
                     <button
                       onClick={() => {
-                        navigator.clipboard.writeText(referralInfo.referralCode ?? "");
+                        const refUrl = `https://jobsy.lv/login?ref=${referralInfo.referralCode ?? ""}`;
+                        navigator.clipboard.writeText(refUrl);
                         setCopied(true);
                         setTimeout(() => setCopied(false), 2000);
                       }}
