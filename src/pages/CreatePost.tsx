@@ -79,6 +79,10 @@ export default function CreatePost() {
       setRegion(p.region ?? "");
       setBudgetText(p.budgetText ?? "");
       setWhenText(p.whenText ?? "");
+      // Restore existing images
+      if (existingPost.images && existingPost.images.length > 0) {
+        setImages(existingPost.images);
+      }
     }
   }, [isEditing, existingPost]);
 
@@ -150,7 +154,7 @@ export default function CreatePost() {
     if (isEditing) {
       updateMutation.mutate({ id: postId, ...data });
     } else {
-      createMutation.mutate(data);
+      createMutation.mutate({ ...data, images: images.length > 0 ? images : undefined });
     }
   };
 
