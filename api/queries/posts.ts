@@ -130,15 +130,21 @@ export async function setPostFilled(id: number, filled: boolean) {
     .where(eq(schema.posts.id, id));
 }
 
+// Throttle: run expiry at most once per 5 minutes per process
+let lastExpireRun = 0;
+const EXPIRE_INTERVAL_MS = 5 * 60 * 1000;
+
 export async function expireOldPosts() {
-  const now = new Date();
+  const now = Date.now();
+  if (now - lastExpireRun < EXPIRE_INTERVAL_MS) return;
+  lastExpireRun = now;
   await getDb()
     .update(schema.posts)
     .set({ status: "expired" })
     .where(
       and(
         eq(schema.posts.status, "active"),
-        lte(schema.posts.expiresAt, now)
+        lte(schema.posts.expiresAt, new Date(now))
       )
     );
 }
