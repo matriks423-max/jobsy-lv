@@ -518,12 +518,16 @@ app.get("/feed.xml", async (c) => {
   return c.text(xml, 200, { "Content-Type": "application/rss+xml; charset=utf-8" });
 });
 
-// Apple Pay domain verification (required for Stripe Apple Pay)
-// Placeholder — returns 404 until you paste the real file content from:
-// Stripe Dashboard → Settings → Payment Methods → Apple Pay → Add domain → download file
-// Once you have the content, replace the empty string below with it and change the status to 200.
-app.get("/.well-known/apple-developer-merchantid-domain-association", (c) => {
-  return c.text("", 404);
+// Apple Pay domain verification
+app.get("/.well-known/apple-developer-merchantid-domain-association", async (c) => {
+  const { readFileSync } = await import("fs");
+  const { join } = await import("path");
+  try {
+    const file = readFileSync(join(process.cwd(), "public", "apple-developer-merchantid-domain-association"));
+    return new Response(file, { headers: { "Content-Type": "application/octet-stream" } });
+  } catch {
+    return c.text("Not found", 404);
+  }
 });
 
 // Cron jobs
