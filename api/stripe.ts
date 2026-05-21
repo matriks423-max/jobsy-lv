@@ -1,9 +1,10 @@
 import Stripe from "stripe";
 import { env } from "./lib/env";
 import { getPostById, updatePost } from "./queries/posts";
-import { useFreePost, getProfileByUserId } from "./queries/profiles";
+import { getProfileByUserId } from "./queries/profiles";
 import { getReferralByReferredId, markReferralPostMade, markReferralRewarded } from "./queries/referrals";
 import { addFreePostCredit } from "./queries/profiles";
+import { sendPostPublished } from "./lib/email";
 
 const stripe = env.stripeSecretKey ? new Stripe(env.stripeSecretKey, { apiVersion: "2026-04-22.dahlia" }) : null;
 
@@ -76,7 +77,12 @@ export async function handleStripeWebhook(body: string, signature: string) {
           paidAt: new Date(),
           stripePaymentId: session.payment_intent as string,
         });
-        await useFreePost(Number(userId));
+
+        // Send post published email
+        const profile = await getProfileByUserId(Number(userId));
+        if (profile?.email) {
+          void sendPostPublished(profile.email, post.title, post.id);
+        }
 
         // Check referral reward
         await checkAndRewardReferral(Number(userId));
