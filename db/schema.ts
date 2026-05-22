@@ -21,6 +21,9 @@ export const users = mysqlTable("users", {
   passwordHash: varchar("passwordHash", { length: 255 }),
   authMethod: mysqlEnum("authMethod", ["kimi", "google", "email"]).default("email").notNull(),
   role: mysqlEnum("role", ["user", "admin", "banned"]).default("user").notNull(),
+  plan: mysqlEnum("plan", ["free", "business"]).default("free").notNull(),
+  stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 255 }),
+  planExpiresAt: timestamp("planExpiresAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt")
     .defaultNow()
@@ -45,6 +48,13 @@ export const profiles = mysqlTable("profiles", {
   referralCode: varchar("referralCode", { length: 20 }).unique(),
   referredBy: bigint("referredBy", { mode: "number", unsigned: true }),
   stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
+  companyName: varchar("companyName", { length: 255 }),
+  companyLogo: varchar("companyLogo", { length: 512 }),
+  companyWebsite: varchar("companyWebsite", { length: 512 }),
+  companyDescription: text("companyDescription"),
+  monthlyPostCount: int("monthlyPostCount", { unsigned: true }).default(0).notNull(),
+  monthlyPostReset: varchar("monthlyPostReset", { length: 10 }),
+  freeBoostsRemaining: int("freeBoostsRemaining", { unsigned: true }).default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt")
     .defaultNow()
@@ -83,6 +93,9 @@ export const posts = mysqlTable("posts", {
   contactCount: int("contactCount", { unsigned: true }).default(0).notNull(),
   filled: boolean("filled").default(false).notNull(),
   reminderSent: boolean("reminderSent").default(false).notNull(),
+  boostType: mysqlEnum("boostType", ["none", "bump", "featured", "urgent"]).default("none").notNull(),
+  boostExpiresAt: timestamp("boostExpiresAt"),
+  boostStripeSessionId: varchar("boostStripeSessionId", { length: 255 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt")
     .defaultNow()
@@ -175,6 +188,18 @@ export const postImages = mysqlTable("postImages", {
   index("idx_post_images_post").on(table.postId),
 ]);
 
+export const socialQueue = mysqlTable("socialQueue", {
+  id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
+  postId: bigint("postId", { mode: "number", unsigned: true }).notNull(),
+  boostType: mysqlEnum("boostType", ["bump", "featured"]).notNull(),
+  status: mysqlEnum("status", ["pending", "posted", "failed"]).default("pending").notNull(),
+  scheduledAt: timestamp("scheduledAt").defaultNow().notNull(),
+  postedAt: timestamp("postedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => [
+  index("idx_social_queue_status").on(table.status),
+]);
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Profile = typeof profiles.$inferSelect;
@@ -195,3 +220,5 @@ export type Review = typeof reviews.$inferSelect;
 export type InsertReview = typeof reviews.$inferInsert;
 export type SavedSearch = typeof savedSearches.$inferSelect;
 export type InsertSavedSearch = typeof savedSearches.$inferInsert;
+export type SocialQueue = typeof socialQueue.$inferSelect;
+export type InsertSocialQueue = typeof socialQueue.$inferInsert;
