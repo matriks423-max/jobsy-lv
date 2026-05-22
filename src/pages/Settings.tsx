@@ -18,6 +18,8 @@ import {
   ShieldCheck,
   Bell,
   Trash2,
+  Building2,
+  CreditCard,
 } from "lucide-react";
 
 const THEMES: { value: Theme; labelKey: string; preview: string }[] = [
@@ -37,8 +39,19 @@ export default function Settings() {
   const [saved, setSaved] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpCode, setOtpCode] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [companyWebsite, setCompanyWebsite] = useState("");
+  const [companyDescription, setCompanyDescription] = useState("");
 
   const utils = trpc.useUtils();
+
+  const { data: subStatus } = trpc.subscription.status.useQuery(undefined, { enabled: isAuthenticated ?? false });
+  const upgradeMutation = trpc.subscription.createCheckout.useMutation({
+    onSuccess: ({ url }) => { if (url) window.location.href = url; },
+  });
+  const portalMutation = trpc.subscription.createPortal.useMutation({
+    onSuccess: ({ url }) => { if (url) window.location.href = url; },
+  });
 
   const { data: savedSearches } = trpc.savedSearches.list.useQuery(undefined, { enabled: isAuthenticated });
   const deleteSearchMutation = trpc.savedSearches.delete.useMutation({
@@ -88,6 +101,11 @@ export default function Settings() {
   useEffect(() => {
     if (profile?.phone) setPhone(profile.phone);
     if (profile?.name) setName(profile.name);
+    if (profile) {
+      setCompanyName(profile.companyName ?? "");
+      setCompanyWebsite(profile.companyWebsite ?? "");
+      setCompanyDescription(profile.companyDescription ?? "");
+    }
   }, [profile]);
 
   if (!isAuthenticated) {
@@ -256,6 +274,104 @@ export default function Settings() {
                 </li>
               ))}
             </ul>
+          )}
+        </div>
+
+        {/* Business Plan */}
+        <div className="mb-6 rounded-2xl border-2 border-ink bg-white p-6">
+          <div className="mb-4 flex items-center gap-2">
+            <Building2 className="h-5 w-5 text-coral" />
+            <h2 className="font-display text-xl font-bold text-ink">
+              {t(locale, "settings.businessProfile")}
+            </h2>
+          </div>
+
+          {/* Plan status */}
+          <div className={`mb-4 rounded-xl border-2 px-4 py-3 ${subStatus?.plan === "business" ? "border-sage bg-sage/10" : "border-ink-light bg-cream-dark"}`}>
+            <p className="font-body text-sm font-bold text-ink">
+              {subStatus?.plan === "business"
+                ? t(locale, "settings.currentPlanBusiness")
+                : t(locale, "settings.currentPlanFree")}
+            </p>
+            {subStatus?.plan === "free" && (
+              <p className="mt-0.5 font-body text-xs text-ink-muted">
+                {subStatus.monthlyPostCount}/10 {locale === "lv" ? "sludinājumi šomēnes" : locale === "ru" ? "объявлений в месяц" : "posts this month"}
+              </p>
+            )}
+            {subStatus?.plan === "business" && (
+              <p className="mt-0.5 font-body text-xs text-ink-muted">
+                {subStatus.freeBoostsRemaining} {locale === "lv" ? "bezmaksas boost atlikuši" : locale === "ru" ? "бесплатных boost осталось" : "free boosts remaining"}
+              </p>
+            )}
+          </div>
+
+          {/* Business-only: company fields */}
+          {subStatus?.plan === "business" && (
+            <div className="mb-4 space-y-3">
+              <div>
+                <label className="mb-1 block font-body text-xs font-medium text-ink">
+                  {t(locale, "settings.companyName")}
+                </label>
+                <input
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-ink outline-none focus:border-ink"
+                  placeholder={locale === "lv" ? "Uzņēmuma nosaukums" : locale === "ru" ? "Название компании" : "Company name"}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block font-body text-xs font-medium text-ink">
+                  {t(locale, "settings.companyWebsite")}
+                </label>
+                <input
+                  value={companyWebsite}
+                  onChange={(e) => setCompanyWebsite(e.target.value)}
+                  type="url"
+                  className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-ink outline-none focus:border-ink"
+                  placeholder="https://..."
+                />
+              </div>
+              <div>
+                <label className="mb-1 block font-body text-xs font-medium text-ink">
+                  {t(locale, "settings.companyDescription")}
+                </label>
+                <textarea
+                  value={companyDescription}
+                  onChange={(e) => setCompanyDescription(e.target.value)}
+                  rows={3}
+                  maxLength={300}
+                  className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-ink outline-none focus:border-ink resize-none"
+                />
+              </div>
+              <button
+                onClick={() => updateMutation.mutate({ companyName, companyWebsite, companyDescription })}
+                disabled={updateMutation.isPending}
+                className="rounded-xl border-2 border-ink bg-ink px-4 py-2 font-body text-sm text-cream hover:opacity-80 transition"
+              >
+                {t(locale, "settings.save")}
+              </button>
+            </div>
+          )}
+
+          {/* Upgrade / Manage */}
+          {subStatus?.plan === "business" ? (
+            <button
+              onClick={() => portalMutation.mutate()}
+              disabled={portalMutation.isPending}
+              className="flex items-center gap-2 rounded-xl border-2 border-ink-light bg-white px-4 py-2 font-body text-sm text-ink-muted hover:border-ink hover:text-ink transition"
+            >
+              <CreditCard className="h-4 w-4" />
+              {t(locale, "settings.manageBilling")}
+            </button>
+          ) : (
+            <button
+              onClick={() => upgradeMutation.mutate()}
+              disabled={upgradeMutation.isPending}
+              className="flex items-center gap-2 rounded-xl border-2 border-ink bg-coral px-4 py-2 font-body text-sm font-semibold text-ink hover:opacity-90 transition"
+            >
+              <Building2 className="h-4 w-4" />
+              {t(locale, "settings.upgradeToBusiness")}
+            </button>
           )}
         </div>
 

@@ -14,6 +14,9 @@ export const profileRouter = createRouter({
       phone: profile.phone ?? null,
       phoneVerified: profile.phoneVerified,
       avatarUrl: profile.avatarUrl ?? null,
+      companyName: profile.companyName ?? null,
+      companyWebsite: profile.companyWebsite ?? null,
+      companyDescription: profile.companyDescription ?? null,
     };
   }),
 
@@ -21,8 +24,11 @@ export const profileRouter = createRouter({
     .input(z.object({
       phone: z.string().max(50).optional(),
       name: z.string().min(1).max(100).optional(),
+      companyName: z.string().max(255).optional(),
+      companyWebsite: z.string().max(512).optional().or(z.literal("")),
+      companyDescription: z.string().max(300).optional(),
     }))
-    .mutation(async ({ ctx, input }: { ctx: { user: { id: number } }; input: { phone?: string; name?: string } }) => {
+    .mutation(async ({ ctx, input }: { ctx: { user: { id: number } }; input: { phone?: string; name?: string; companyName?: string; companyWebsite?: string; companyDescription?: string } }) => {
       const updates: Record<string, unknown> = {};
       if (input.phone !== undefined) {
         updates.phone = input.phone || null;
@@ -30,6 +36,9 @@ export const profileRouter = createRouter({
         updates.phoneVerified = false;
       }
       if (input.name !== undefined) updates.name = input.name;
+      if (input.companyName !== undefined) updates.companyName = input.companyName;
+      if (input.companyWebsite !== undefined) updates.companyWebsite = input.companyWebsite;
+      if (input.companyDescription !== undefined) updates.companyDescription = input.companyDescription;
       await updateProfile(ctx.user.id, updates as any);
       return { success: true };
     }),
