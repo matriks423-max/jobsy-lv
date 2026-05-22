@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { useTheme, type Theme } from "@/lib/theme-context";
 import { t } from "@/lib/i18n";
@@ -33,6 +34,7 @@ export default function Settings() {
   const { theme, setTheme } = useTheme();
   const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: true });
   const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
@@ -97,6 +99,18 @@ export default function Settings() {
     document.title = t(locale, "nav.settings") + " — jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
+
+  // Handle Stripe redirect params
+  useEffect(() => {
+    if (searchParams.get("subscribed") === "true") {
+      toast("Apsveicam! Business abonements aktivizēts 🎉", "success");
+      setSearchParams({}, { replace: true });
+    } else if (searchParams.get("canceled") === "true") {
+      toast("Maksājums atcelts.", "info");
+      setSearchParams({}, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (profile?.phone) setPhone(profile.phone);

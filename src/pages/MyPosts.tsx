@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { trpc } from "@/providers/trpc";
@@ -32,12 +32,22 @@ export default function MyPosts() {
   const [tab, setTab] = useState<"active" | "expired" | "all">("active");
   const [boostingPostId, setBoostingPostId] = useState<number | null>(null);
   const { data: subStatus } = trpc.subscription.status.useQuery(undefined, { enabled: isAuthenticated ?? false });
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     const prev = document.title;
     document.title = t(locale, "nav.myPosts") + " — jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
+
+  // Handle Stripe boost redirect
+  useEffect(() => {
+    if (searchParams.get("boosted") === "true") {
+      toast("Boost aktivizēts! 🔝", "success");
+      setSearchParams({}, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { data, isLoading } = trpc.posts.myPosts.useQuery(undefined, {
     enabled: isAuthenticated,
