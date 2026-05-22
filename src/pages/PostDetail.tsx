@@ -217,7 +217,7 @@ export default function PostDetail() {
     );
   }
 
-  const { post, profile } = data;
+  const { post, profile, isBusiness } = data;
   const category = CATEGORIES.find((c) => c.key === post.category);
   const CategoryIcon = category ? iconMap[category.icon] : MoreHorizontal;
   const isOwner = isAuthenticated && user?.id === post.userId;
@@ -394,6 +394,11 @@ export default function PostDetail() {
                       <span className="inline-flex items-center gap-0.5 rounded-full border border-sage bg-sage-light px-2 py-0.5 font-body text-[10px] font-medium text-sage">
                         <ShieldCheck className="h-3 w-3" />
                         {t(locale, "settings.verified")}
+                      </span>
+                    )}
+                    {isBusiness && (
+                      <span className="inline-flex items-center gap-0.5 rounded-full border border-ink bg-ink px-1.5 py-0.5 font-mono text-[10px] font-bold text-cream">
+                        🏢
                       </span>
                     )}
                   </div>

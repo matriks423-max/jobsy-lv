@@ -21,7 +21,7 @@ export async function getPostWithProfile(id: number) {
   const post = await getPostById(id);
   if (!post) return null;
 
-  const [profileRows, imageRows] = await Promise.all([
+  const [profileRows, imageRows, userRows] = await Promise.all([
     getDb()
       .select()
       .from(schema.profiles)
@@ -32,12 +32,18 @@ export async function getPostWithProfile(id: number) {
       .from(schema.postImages)
       .where(eq(schema.postImages.postId, id))
       .orderBy(schema.postImages.sortOrder),
+    getDb()
+      .select({ plan: schema.users.plan })
+      .from(schema.users)
+      .where(eq(schema.users.id, post.userId))
+      .limit(1),
   ]);
 
   return {
     post,
     profile: profileRows.at(0),
     images: imageRows.map((img) => img.url),
+    isBusiness: userRows.at(0)?.plan === "business",
   };
 }
 
@@ -110,17 +116,25 @@ export async function listPostsWithProfiles(filters?: {
   const posts = await listPosts(filters);
   if (posts.length === 0) return [];
 
-  // Only fetch profiles for the users who authored these posts
+  // Fetch profiles and user plans for the authors of these posts
   const userIds = [...new Set(posts.map((p) => p.userId))];
-  const profiles = await getDb()
-    .select()
-    .from(schema.profiles)
-    .where(inArray(schema.profiles.userId, userIds));
+  const [profiles, users] = await Promise.all([
+    getDb()
+      .select()
+      .from(schema.profiles)
+      .where(inArray(schema.profiles.userId, userIds)),
+    getDb()
+      .select({ id: schema.users.id, plan: schema.users.plan })
+      .from(schema.users)
+      .where(inArray(schema.users.id, userIds)),
+  ]);
   const profileMap = new Map(profiles.map((p) => [p.userId, p]));
+  const planMap = new Map(users.map((u) => [u.id, u.plan]));
 
   return posts.map((post) => ({
     post,
     profile: profileMap.get(post.userId),
+    isBusiness: planMap.get(post.userId) === "business",
   }));
 }
 
@@ -142,13 +156,24 @@ export async function getFeaturedPosts(limit = 6) {
   if (posts.length === 0) return [];
 
   const userIds = [...new Set(posts.map((p) => p.userId))];
-  const profiles = await getDb()
-    .select()
-    .from(schema.profiles)
-    .where(inArray(schema.profiles.userId, userIds));
+  const [profiles, users] = await Promise.all([
+    getDb()
+      .select()
+      .from(schema.profiles)
+      .where(inArray(schema.profiles.userId, userIds)),
+    getDb()
+      .select({ id: schema.users.id, plan: schema.users.plan })
+      .from(schema.users)
+      .where(inArray(schema.users.id, userIds)),
+  ]);
   const profileMap = new Map(profiles.map((p) => [p.userId, p]));
+  const planMap = new Map(users.map((u) => [u.id, u.plan]));
 
-  return posts.map((post) => ({ post, profile: profileMap.get(post.userId) }));
+  return posts.map((post) => ({
+    post,
+    profile: profileMap.get(post.userId),
+    isBusiness: planMap.get(post.userId) === "business",
+  }));
 }
 
 export async function updatePost(id: number, data: Partial<InsertPost>) {
