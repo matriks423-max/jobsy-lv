@@ -582,6 +582,28 @@ export const postsRouter = createRouter({
       return { success: true };
     }),
 
+  socialQueue: adminQuery
+    .input(z.object({ status: z.enum(["pending", "posted", "failed"]).optional(), limit: z.number().default(50) }))
+    .query(async ({ input }) => {
+      const rows = await getDb()
+        .select({
+          id: schema.socialQueue.id,
+          postId: schema.socialQueue.postId,
+          boostType: schema.socialQueue.boostType,
+          status: schema.socialQueue.status,
+          scheduledAt: schema.socialQueue.scheduledAt,
+          postedAt: schema.socialQueue.postedAt,
+          createdAt: schema.socialQueue.createdAt,
+          postTitle: schema.posts.title,
+        })
+        .from(schema.socialQueue)
+        .leftJoin(schema.posts, eq(schema.posts.id, schema.socialQueue.postId))
+        .where(input.status ? eq(schema.socialQueue.status, input.status) : undefined)
+        .orderBy(desc(schema.socialQueue.createdAt))
+        .limit(input.limit);
+      return rows;
+    }),
+
   leaveReview: authedQuery
     .input(z.object({
       postId: z.number(),

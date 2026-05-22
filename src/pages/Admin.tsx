@@ -7,10 +7,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   CheckCircle, XCircle, Trash2, ShieldOff, AlertTriangle,
   FileText, Flag, Loader2, LayoutDashboard, Users, List,
-  Eye, ShieldCheck, Ban, UserCheck, Search, Phone,
+  Eye, ShieldCheck, Ban, UserCheck, Search, Phone, Share2,
 } from "lucide-react";
 
-type AdminTab = "overview" | "users" | "posts" | "pending" | "reports";
+type AdminTab = "overview" | "users" | "posts" | "pending" | "reports" | "queue";
 
 const STATUS_OPTIONS = ["", "active", "pending_review", "pending_payment", "expired", "rejected", "closed"] as const;
 const STATUS_LABELS: Record<string, string> = {
@@ -49,6 +49,8 @@ export default function Admin() {
   const { data: reports, isLoading: reportsLoading } = trpc.posts.listReports.useQuery(undefined, { enabled: isAuthenticated && user?.role === "admin" });
   const { data: users, isLoading: usersLoading } = trpc.posts.listUsers.useQuery({ search: userSearch || undefined, limit: 50 }, { enabled: isAuthenticated && user?.role === "admin" });
   const { data: allPosts, isLoading: postsLoading } = trpc.posts.listAllPosts.useQuery({ status: postStatus || undefined, limit: 50 }, { enabled: isAuthenticated && user?.role === "admin" });
+  const [queueStatus, setQueueStatus] = useState<"pending" | "posted" | "failed" | "">("");
+  const { data: socialQueueData, isLoading: queueLoading } = trpc.posts.socialQueue.useQuery({ status: queueStatus || undefined, limit: 100 }, { enabled: isAuthenticated && user?.role === "admin" });
 
   const approveMutation = trpc.posts.approvePost.useMutation({
     onSuccess: () => { toast("Approved", "success"); utils.posts.pendingReview.invalidate(); utils.posts.adminStats.invalidate(); },
@@ -88,6 +90,7 @@ export default function Admin() {
     { key: "posts", label: "Posts", icon: <List className="h-4 w-4" /> },
     { key: "pending", label: "Review", icon: <FileText className="h-4 w-4" />, badge: stats?.pendingCount },
     { key: "reports", label: "Reports", icon: <Flag className="h-4 w-4" />, badge: stats?.reportsCount },
+    { key: "queue", label: "Social Queue", icon: <Share2 className="h-4 w-4" /> },
   ];
 
   return (
@@ -337,6 +340,56 @@ export default function Admin() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* ── SOCIAL QUEUE ── */}
+        {tab === "queue" && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="font-display text-xl font-bold text-ink">Social Queue</h2>
+              <div className="flex gap-2">
+                {(["", "pending", "posted", "failed"] as const).map((s) => (
+                  <button key={s} onClick={() => setQueueStatus(s)}
+                    className={`rounded-full border-2 px-3 py-1 font-body text-xs font-medium transition ${
+                      queueStatus === s ? "border-ink bg-coral text-ink" : "border-ink-light bg-white text-ink-muted hover:border-ink"
+                    }`}>
+                    {s === "" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {queueLoading ? (
+              <div className="space-y-2">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-14 rounded-xl" />)}</div>
+            ) : !socialQueueData?.length ? (
+              <div className="rounded-2xl border-2 border-ink-light bg-white p-8 text-center">
+                <Share2 className="mx-auto mb-3 h-8 w-8 text-ink-light" />
+                <p className="font-body text-sm text-ink-muted">No queue items{queueStatus ? ` with status "${queueStatus}"` : ""}.</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {socialQueueData.map((item) => (
+                  <div key={item.id} className="flex items-center gap-3 rounded-xl border-2 border-ink-light bg-white px-4 py-3">
+                    <span className="text-lg">{item.boostType === "bump" ? "🔝" : "⭐"}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="truncate font-body text-sm font-medium text-ink">
+                        #{item.postId} — {item.postTitle ?? "unknown"}
+                      </p>
+                      <p className="font-mono text-xs text-ink-muted">
+                        {item.boostType} · queued {new Date(item.createdAt).toLocaleString()}
+                      </p>
+                    </div>
+                    <span className={`rounded-full border-2 px-2.5 py-0.5 font-mono text-xs font-bold ${
+                      item.status === "pending" ? "border-mustard bg-mustard-light text-ink" :
+                      item.status === "posted" ? "border-sage bg-sage-light text-sage" :
+                      "border-need bg-need-light text-need"
+                    }`}>
+                      {item.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
