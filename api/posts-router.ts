@@ -498,14 +498,14 @@ export const postsRouter = createRouter({
 
     const [
       totalUsers, totalPosts, activePosts, postsToday, usersToday,
-      paidPosts, pendingCount, reportsCount, totalInterests, totalReviews, verifiedPhones,
+      businessUsers, pendingCount, reportsCount, totalInterests, totalReviews, verifiedPhones,
     ] = await Promise.all([
       getDb().select({ c: count() }).from(schema.users).then((r) => r[0]?.c ?? 0),
       getDb().select({ c: count() }).from(schema.posts).then((r) => r[0]?.c ?? 0),
       getDb().select({ c: count() }).from(schema.posts).where(eq(schema.posts.status, "active")).then((r) => r[0]?.c ?? 0),
       getDb().select({ c: count() }).from(schema.posts).where(gte(schema.posts.createdAt, today)).then((r) => r[0]?.c ?? 0),
       getDb().select({ c: count() }).from(schema.users).where(gte(schema.users.createdAt, today)).then((r) => r[0]?.c ?? 0),
-      getDb().select({ c: count() }).from(schema.posts).where(eq(schema.posts.wasFree, false)).then((r) => r[0]?.c ?? 0),
+      getDb().select({ c: count() }).from(schema.users).where(eq(schema.users.plan, "business")).then((r) => r[0]?.c ?? 0),
       getDb().select({ c: count() }).from(schema.posts).where(eq(schema.posts.status, "pending_review")).then((r) => r[0]?.c ?? 0),
       getDb().select({ c: count() }).from(schema.reports).where(eq(schema.reports.resolved, false)).then((r) => r[0]?.c ?? 0),
       getDb().select({ c: count() }).from(schema.interests).then((r) => r[0]?.c ?? 0),
@@ -513,7 +513,7 @@ export const postsRouter = createRouter({
       getDb().select({ c: count() }).from(schema.profiles).where(eq(schema.profiles.phoneVerified, true)).then((r) => r[0]?.c ?? 0),
     ]);
 
-    return { totalUsers, totalPosts, activePosts, postsToday, usersToday, paidPosts, pendingCount, reportsCount, totalInterests, totalReviews, verifiedPhones };
+    return { totalUsers, totalPosts, activePosts, postsToday, usersToday, businessUsers, pendingCount, reportsCount, totalInterests, totalReviews, verifiedPhones };
   }),
 
   listUsers: adminQuery
@@ -528,6 +528,7 @@ export const postsRouter = createRouter({
           authMethod: schema.users.authMethod,
           createdAt: schema.users.createdAt,
           lastSignInAt: schema.users.lastSignInAt,
+          plan: schema.users.plan,
           phoneVerified: schema.profiles.phoneVerified,
           postCount: sql<number>`(SELECT COUNT(*) FROM ${schema.posts} WHERE ${schema.posts.userId} = ${schema.users.id})`,
         })

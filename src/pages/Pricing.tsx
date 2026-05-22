@@ -1,9 +1,10 @@
 import { useEffect } from "react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/useToast";
 import { Check, ChevronDown } from "lucide-react";
 
 const BOOST_FEATURES = [
@@ -15,6 +16,8 @@ const BOOST_FEATURES = [
 export default function Pricing() {
   const { locale } = useLocale();
   const { isAuthenticated } = useAuth();
+  const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { data: status } = trpc.subscription.status.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -34,6 +37,14 @@ export default function Pricing() {
     document.title = t(locale, "pricing.title") + " — jobsy.lv";
     return () => { document.title = "jobsy.lv"; };
   }, [locale]);
+
+  useEffect(() => {
+    if (searchParams.get("canceled") === "true") {
+      toast("Maksājums atcelts.", "info");
+      setSearchParams({}, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const FREE_FEATURES = [
     t(locale, "pricing.freePostsPerMonth"),

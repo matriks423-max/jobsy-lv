@@ -135,7 +135,7 @@ export default function Admin() {
                 { label: "Posts Today", value: stats?.postsToday, color: "text-mustard" },
                 { label: "Signups Today", value: stats?.usersToday, color: "text-coral" },
                 { label: "Total Posts", value: stats?.totalPosts, color: "text-ink" },
-                { label: "Paid Posts", value: stats?.paidPosts, color: "text-sage" },
+                { label: "Business Users", value: stats?.businessUsers, color: "text-sage" },
                 { label: "Pending Review", value: stats?.pendingCount, color: "text-mustard" },
                 { label: "Open Reports", value: stats?.reportsCount, color: "text-need" },
               ].map((s) => (
@@ -182,6 +182,7 @@ export default function Admin() {
                       <p className="font-body text-sm font-bold text-ink truncate">{u.email}</p>
                       {u.role === "admin" && <span className="rounded bg-coral px-1.5 py-0.5 font-mono text-[10px] font-bold text-ink">ADMIN</span>}
                       {u.role === "banned" && <span className="rounded bg-need-light px-1.5 py-0.5 font-mono text-[10px] font-bold text-need">BANNED</span>}
+                      {u.plan === "business" && <span className="rounded bg-mustard-light px-1.5 py-0.5 font-mono text-[10px] font-bold text-ink">🏢 BUSINESS</span>}
                     </div>
                     <p className="font-mono text-xs text-ink-muted">
                       #{u.id} · {u.name ?? "—"} · {u.authMethod} · joined {new Date(u.createdAt).toLocaleDateString()} · {u.postCount ?? 0} posts

@@ -4,7 +4,7 @@ import { getPostById, updatePost } from "./queries/posts";
 import { getProfileByUserId, updateProfile } from "./queries/profiles";
 import { getReferralByReferredId, markReferralPostMade, markReferralRewarded } from "./queries/referrals";
 import { addFreePostCredit } from "./queries/profiles";
-import { sendPostPublished, sendPaymentFailed } from "./lib/email";
+import { sendPostPublished, sendPaymentFailed, sendBusinessWelcome } from "./lib/email";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
 import { eq } from "drizzle-orm";
@@ -197,6 +197,15 @@ export async function handleStripeWebhook(body: string, signature: string) {
     const userId = sub.metadata?.userId;
     if (userId && sub.status === "active") {
       await activateBusinessPlan(Number(userId), sub.id);
+      // Send welcome email only on first activation
+      if (event.type === "customer.subscription.created") {
+        try {
+          const customer = await stripe.customers.retrieve(sub.customer as string) as Stripe.Customer;
+          if (customer.email) void sendBusinessWelcome(customer.email);
+        } catch (err) {
+          console.error("[stripe] welcome email customer lookup failed:", err);
+        }
+      }
     }
   }
 

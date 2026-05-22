@@ -114,6 +114,39 @@ export async function sendSearchAlert(
   }
 }
 
+export async function sendBusinessWelcome(to: string): Promise<void> {
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to,
+      subject: "Laipni lūdzam jobsy.lv Business! 🏢",
+      html: `
+        <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; background: #FAF6F0; padding: 40px 32px;">
+          <h1 style="font-size: 28px; color: #1A1208; margin-bottom: 8px;">jobsy<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#E8512A;margin-left:2px;vertical-align:middle;"></span></h1>
+          <hr style="border: 2px solid #1A1208; margin: 16px 0 32px;" />
+          <h2 style="font-size: 22px; color: #1A1208; margin-bottom: 16px;">Business abonements aktivizēts 🎉</h2>
+          <p style="color: #4A3728; font-size: 16px; line-height: 1.6; margin-bottom: 16px;">
+            Paldies, ka izvēlējies <strong>jobsy.lv Business</strong>! Tev tagad ir pieejams:
+          </p>
+          <ul style="color: #4A3728; font-size: 15px; line-height: 2; padding-left: 20px; margin-bottom: 24px;">
+            <li>✅ Neierobežoti sludinājumi</li>
+            <li>✅ 🏢 Business badge uz visiem sludinājumiem</li>
+            <li>✅ Uzņēmuma profils (nosaukums, mājaslapa, apraksts)</li>
+            <li>✅ 2 bezmaksas Featured boost katru mēnesi</li>
+            <li>✅ Sludinājumu analītika</li>
+          </ul>
+          <a href="https://jobsy.lv/settings" style="display: inline-block; background: #E8512A; color: #FAF6F0; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 15px; border: 2px solid #1A1208;">
+            Pārvaldīt profilu →
+          </a>
+          <p style="color: #8A7060; font-size: 13px; margin-top: 32px;">Abonementa pārvaldīšana: <a href="https://jobsy.lv/settings" style="color:#E8512A;">jobsy.lv/settings</a><br/>© 2026 jobsy.lv</p>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("[email] sendBusinessWelcome failed:", err);
+  }
+}
+
 export async function sendPaymentFailed(to: string): Promise<void> {
   try {
     await resend.emails.send({
