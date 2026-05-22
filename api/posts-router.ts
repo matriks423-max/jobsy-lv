@@ -19,8 +19,6 @@ import {
 } from "./queries/posts";
 import {
   getProfileByUserId,
-  useFreePost,
-  useFreePostCredit,
   updateProfile,
 } from "./queries/profiles";
 import { createContact, hasContacted, createReport } from "./queries/reports";
@@ -36,7 +34,6 @@ import { createCheckoutSession } from "./stripe";
 import { moderateContent, softFlagCheck } from "./lib/moderation";
 import { sendPostPublished } from "./lib/email";
 
-const FREE_FIRST_POST = true;
 const MAX_POSTS_PER_DAY = 5;
 
 const postTypeEnum = z.enum(["need", "offer"]);
