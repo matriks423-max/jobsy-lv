@@ -36,6 +36,7 @@ import { moderateContent, softFlagCheck } from "./lib/moderation";
 import { sendPostPublished } from "./lib/email";
 
 const FREE_FIRST_POST = true;
+const FREE_POSTS_LIMIT = 2;
 const MAX_POSTS_PER_DAY = 5;
 
 const postTypeEnum = z.enum(["need", "offer"]);
@@ -154,7 +155,7 @@ export const postsRouter = createRouter({
 
       // Priority: free post credits > first free post > paid
       const hasFreeCredits = profile.freePostCredits > 0;
-      const canUseFreePost = FREE_FIRST_POST && !profile.freePostUsed;
+      const canUseFreePost = FREE_FIRST_POST && profile.freePostsUsed < FREE_POSTS_LIMIT;
 
       if (hasFreeCredits) {
         await useFreePostCredit(ctx.user.id);

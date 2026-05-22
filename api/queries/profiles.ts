@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import * as schema from "@db/schema";
 import type { InsertProfile } from "@db/schema";
 import { getDb } from "./connection";
@@ -31,7 +31,7 @@ export async function updateProfile(userId: number, data: Partial<InsertProfile>
 export async function useFreePost(userId: number) {
   await getDb()
     .update(schema.profiles)
-    .set({ freePostUsed: true, updatedAt: new Date() })
+    .set({ freePostsUsed: sql`freePostsUsed + 1`, updatedAt: new Date() })
     .where(eq(schema.profiles.userId, userId));
 }
 

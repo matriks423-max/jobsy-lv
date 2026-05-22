@@ -155,7 +155,7 @@ cronRouter.get("/backup", async (c) => {
         userId: schema.profiles.userId,
         phone: schema.profiles.phone,
         phoneVerified: schema.profiles.phoneVerified,
-        freePostUsed: schema.profiles.freePostUsed,
+        freePostsUsed: schema.profiles.freePostsUsed,
         freePostCredits: schema.profiles.freePostCredits,
       }).from(schema.profiles),
     ]);
