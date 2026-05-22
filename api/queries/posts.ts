@@ -1,4 +1,4 @@
-import { eq, and, desc, asc, sql, gte, lte, inArray } from "drizzle-orm";
+import { eq, and, desc, asc, sql, gte, lte, inArray, gt } from "drizzle-orm";
 import * as schema from "@db/schema";
 import type { InsertPost } from "@db/schema";
 import { getDb } from "./connection";
@@ -75,7 +75,7 @@ export async function listPosts(filters?: {
     );
   }
 
-  const orderBy = (() => {
+  const baseOrder = (() => {
     switch (filters?.sort) {
       case "oldest": return asc(schema.posts.createdAt);
       case "budget_asc": return asc(schema.posts.budgetText);
@@ -88,7 +88,10 @@ export async function listPosts(filters?: {
     .select()
     .from(schema.posts)
     .where(where.length > 0 ? and(...where) : undefined)
-    .orderBy(orderBy)
+    .orderBy(
+      sql`(${schema.posts.boostType} = 'bump' AND ${schema.posts.boostExpiresAt} > NOW()) DESC`,
+      baseOrder
+    )
     .limit(filters?.limit ?? 50)
     .offset(filters?.offset ?? 0);
 }
@@ -119,6 +122,33 @@ export async function listPostsWithProfiles(filters?: {
     post,
     profile: profileMap.get(post.userId),
   }));
+}
+
+export async function getFeaturedPosts(limit = 6) {
+  const now = new Date();
+  const posts = await getDb()
+    .select()
+    .from(schema.posts)
+    .where(
+      and(
+        eq(schema.posts.status, "active"),
+        eq(schema.posts.boostType, "featured"),
+        gt(schema.posts.boostExpiresAt, now)
+      )
+    )
+    .orderBy(desc(schema.posts.boostExpiresAt))
+    .limit(limit);
+
+  if (posts.length === 0) return [];
+
+  const userIds = [...new Set(posts.map((p) => p.userId))];
+  const profiles = await getDb()
+    .select()
+    .from(schema.profiles)
+    .where(inArray(schema.profiles.userId, userIds));
+  const profileMap = new Map(profiles.map((p) => [p.userId, p]));
+
+  return posts.map((post) => ({ post, profile: profileMap.get(post.userId) }));
 }
 
 export async function updatePost(id: number, data: Partial<InsertPost>) {

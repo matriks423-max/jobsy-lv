@@ -16,6 +16,7 @@ import {
   countUserPostsToday,
   setPostFilled,
   countPosts,
+  getFeaturedPosts,
 } from "./queries/posts";
 import {
   getProfileByUserId,
@@ -68,6 +69,10 @@ export const postsRouter = createRouter({
       };
       return listPostsWithProfiles(filters);
     }),
+
+  featuredPosts: publicQuery.query(async () => {
+    return getFeaturedPosts(6);
+  }),
 
   count: publicQuery
     .input(
