@@ -5,89 +5,208 @@ import { getProfileByUserId, updateProfile } from "./queries/profiles";
 import { getReferralByReferredId, markReferralPostMade, markReferralRewarded } from "./queries/referrals";
 import { addFreePostCredit } from "./queries/profiles";
 import { sendPostPublished } from "./lib/email";
+import { getDb } from "./queries/connection";
+import * as schema from "@db/schema";
+import { eq } from "drizzle-orm";
 
-const stripe = env.stripeSecretKey ? new Stripe(env.stripeSecretKey, { apiVersion: "2026-04-22.dahlia" }) : null;
+const stripe = env.stripeSecretKey
+  ? new Stripe(env.stripeSecretKey, { apiVersion: "2026-04-22.dahlia" })
+  : null;
 
-export async function createCheckoutSession(postId: number, userId: number) {
-  if (!stripe) {
-    throw new Error("Stripe not configured");
-  }
+// ── Helpers ──────────────────────────────────────────────────────────────────
 
-  const post = await getPostById(postId);
-  if (!post || post.userId !== userId) {
-    throw new Error("Invalid post");
-  }
-
+async function ensureStripeCustomer(userId: number): Promise<string | undefined> {
   const profile = await getProfileByUserId(userId);
-  let customerId = profile?.stripeCustomerId ?? undefined;
+  if (profile?.stripeCustomerId) return profile.stripeCustomerId;
+  if (!stripe || !profile?.email) return undefined;
+  const customer = await stripe.customers.create({
+    email: profile.email,
+    name: profile.name ?? undefined,
+    metadata: { userId: String(userId) },
+  });
+  await updateProfile(userId, { stripeCustomerId: customer.id });
+  return customer.id;
+}
 
-  if (!customerId && profile?.email) {
-    const customer = await stripe.customers.create({
-      email: profile.email,
-      name: profile.name ?? undefined,
-      metadata: { userId: String(userId) },
-    });
-    customerId = customer.id;
-    // Persist customer ID so future checkouts reuse the same Stripe customer
-    await updateProfile(userId, { stripeCustomerId: customerId });
+export async function applyBoostToPost(
+  postId: number,
+  boostType: "bump" | "featured" | "urgent",
+  sessionId: string
+) {
+  const boostExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  await updatePost(postId, { boostType, boostExpiresAt, boostStripeSessionId: sessionId });
+  if (boostType === "bump" || boostType === "featured") {
+    await getDb().insert(schema.socialQueue).values({ postId, boostType });
   }
+}
 
+export async function activateBusinessPlan(userId: number, subscriptionId: string) {
+  await getDb()
+    .update(schema.users)
+    .set({ plan: "business", stripeSubscriptionId: subscriptionId, planExpiresAt: null })
+    .where(eq(schema.users.id, userId));
+  await updateProfile(userId, { freeBoostsRemaining: 2 });
+}
+
+export async function deactivateBusinessPlan(userId: number) {
+  await getDb()
+    .update(schema.users)
+    .set({ plan: "free", stripeSubscriptionId: null })
+    .where(eq(schema.users.id, userId));
+  await updateProfile(userId, { freeBoostsRemaining: 0 });
+}
+
+// ── Checkout sessions ─────────────────────────────────────────────────────────
+
+/** Legacy one-time post payment — kept for backward compat with pending_payment posts */
+export async function createCheckoutSession(postId: number, userId: number) {
+  if (!stripe) throw new Error("Stripe not configured");
+  const post = await getPostById(postId);
+  if (!post || post.userId !== userId) throw new Error("Invalid post");
+  const customerId = await ensureStripeCustomer(userId);
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     currency: "eur",
-    line_items: [
-      {
-        price_data: {
-          currency: "eur",
-          product_data: {
-            name: "jobsy.lv — sludinājuma publikācija (30 dienas)",
-          },
-          unit_amount: env.postingFeeCents,
-        },
-        quantity: 1,
+    line_items: [{
+      price_data: {
+        currency: "eur",
+        product_data: { name: "jobsy.lv — sludinājuma publikācija (30 dienas)" },
+        unit_amount: env.postingFeeCents,
       },
-    ],
+      quantity: 1,
+    }],
     metadata: { postId: String(postId), userId: String(userId) },
     success_url: `${env.siteUrl}/success?post=${postId}`,
     cancel_url: `${env.siteUrl}/create?canceled=true&post=${postId}`,
     customer: customerId,
   });
-
   await updatePost(postId, { stripeSessionId: session.id });
-
   return { url: session.url, sessionId: session.id };
 }
 
-export async function handleStripeWebhook(body: string, signature: string) {
-  if (!stripe || !env.stripeWebhookSecret) {
-    throw new Error("Stripe webhook not configured");
-  }
+/** Business subscription checkout */
+export async function createSubscriptionCheckout(userId: number) {
+  if (!stripe || !env.stripeBusinessPriceId) throw new Error("Stripe subscription not configured");
+  const customerId = await ensureStripeCustomer(userId);
+  const session = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    currency: "eur",
+    line_items: [{ price: env.stripeBusinessPriceId, quantity: 1 }],
+    subscription_data: { metadata: { userId: String(userId) } },
+    metadata: { userId: String(userId), type: "subscription" },
+    success_url: `${env.siteUrl}/settings?subscribed=true`,
+    cancel_url: `${env.siteUrl}/pricing?canceled=true`,
+    customer: customerId,
+  });
+  return { url: session.url };
+}
 
+/** Stripe Customer Portal — self-serve cancel/update */
+export async function createBillingPortal(userId: number) {
+  if (!stripe) throw new Error("Stripe not configured");
+  const profile = await getProfileByUserId(userId);
+  if (!profile?.stripeCustomerId) throw new Error("No Stripe customer found");
+  const session = await stripe.billingPortal.sessions.create({
+    customer: profile.stripeCustomerId,
+    return_url: `${env.siteUrl}/settings`,
+  });
+  return { url: session.url };
+}
+
+/** Boost one-time checkout */
+export async function createBoostCheckout(
+  postId: number,
+  userId: number,
+  boostType: "bump" | "featured" | "urgent"
+) {
+  if (!stripe) throw new Error("Stripe not configured");
+  const post = await getPostById(postId);
+  if (!post || post.userId !== userId) throw new Error("Invalid post");
+  const customerId = await ensureStripeCustomer(userId);
+  const BOOST_CENTS = { bump: 100, featured: 200, urgent: 50 } as const;
+  const BOOST_NAMES = {
+    bump: "Bump to top (7 days)",
+    featured: "Featured placement (7 days)",
+    urgent: "Urgent badge (7 days)",
+  } as const;
+  const session = await stripe.checkout.sessions.create({
+    mode: "payment",
+    currency: "eur",
+    line_items: [{
+      price_data: {
+        currency: "eur",
+        product_data: { name: `jobsy.lv — ${BOOST_NAMES[boostType]}` },
+        unit_amount: BOOST_CENTS[boostType],
+      },
+      quantity: 1,
+    }],
+    metadata: { type: "boost", postId: String(postId), userId: String(userId), boostType },
+    success_url: `${env.siteUrl}/my-posts?boosted=true`,
+    cancel_url: `${env.siteUrl}/my-posts`,
+    customer: customerId,
+  });
+  return { url: session.url };
+}
+
+// ── Webhook handler ───────────────────────────────────────────────────────────
+
+export async function handleStripeWebhook(body: string, signature: string) {
+  if (!stripe || !env.stripeWebhookSecret) throw new Error("Stripe webhook not configured");
   const event = stripe.webhooks.constructEvent(body, signature, env.stripeWebhookSecret);
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
-    const postId = session.metadata?.postId;
-    const userId = session.metadata?.userId;
+    const type = session.metadata?.type;
 
-    if (postId && userId) {
-      const post = await getPostById(Number(postId));
-      if (post && post.stripeSessionId === session.id) {
-        await updatePost(post.id, {
-          status: "active",
-          paidAt: new Date(),
-          stripePaymentId: session.payment_intent as string,
-        });
-
-        // Send post published email
-        const profile = await getProfileByUserId(Number(userId));
-        if (profile?.email) {
-          void sendPostPublished(profile.email, post.title, post.id);
-        }
-
-        // Check referral reward
-        await checkAndRewardReferral(Number(userId));
+    if (type === "boost") {
+      // Boost payment completed
+      const postId = Number(session.metadata?.postId);
+      const boostType = session.metadata?.boostType as "bump" | "featured" | "urgent";
+      if (postId && boostType) {
+        await applyBoostToPost(postId, boostType, session.id);
       }
+    } else if (type !== "subscription") {
+      // Legacy post payment (no type field = old flow)
+      const postId = session.metadata?.postId;
+      const userId = session.metadata?.userId;
+      if (postId && userId) {
+        const post = await getPostById(Number(postId));
+        if (post && post.stripeSessionId === session.id) {
+          await updatePost(post.id, {
+            status: "active",
+            paidAt: new Date(),
+            stripePaymentId: session.payment_intent as string,
+          });
+          const profile = await getProfileByUserId(Number(userId));
+          if (profile?.email) void sendPostPublished(profile.email, post.title, post.id);
+          await checkAndRewardReferral(Number(userId));
+        }
+      }
+    }
+  }
+
+  if (event.type === "customer.subscription.created" || event.type === "customer.subscription.updated") {
+    const sub = event.data.object as Stripe.Subscription;
+    const userId = sub.metadata?.userId;
+    if (userId && sub.status === "active") {
+      await activateBusinessPlan(Number(userId), sub.id);
+    }
+  }
+
+  if (event.type === "customer.subscription.deleted") {
+    const sub = event.data.object as Stripe.Subscription;
+    const userId = sub.metadata?.userId;
+    if (userId) await deactivateBusinessPlan(Number(userId));
+  }
+
+  if (event.type === "invoice.payment_succeeded") {
+    const invoice = event.data.object as Stripe.Invoice;
+    const sub = invoice.subscription;
+    if (sub && typeof sub === "string") {
+      // Renewal: reset free boosts for this subscriber
+      const subObj = await stripe.subscriptions.retrieve(sub);
+      const userId = subObj.metadata?.userId;
+      if (userId) await updateProfile(Number(userId), { freeBoostsRemaining: 2 });
     }
   }
 
@@ -97,11 +216,7 @@ export async function handleStripeWebhook(body: string, signature: string) {
 export async function checkAndRewardReferral(userId: number) {
   const referral = await getReferralByReferredId(userId);
   if (!referral || referral.postMade || referral.rewarded) return;
-
-  // Mark that the referred user made a post
   await markReferralPostMade(userId);
-
-  // Give referrer a free post credit
   await addFreePostCredit(referral.referrerId);
   await markReferralRewarded(userId);
 }
