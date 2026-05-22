@@ -24,7 +24,7 @@ export default function BoostPicker({ postId, isBusiness, freeBoostsRemaining, o
   const applyMutation = trpc.boost.apply.useMutation({
     onSuccess: (data) => {
       if (data.free) {
-        toast("Boost aktivizēts!", "success");
+        toast(t(locale, "boost.activated"), "success");
         onClose();
       } else if (data.checkoutUrl) {
         window.location.href = data.checkoutUrl;

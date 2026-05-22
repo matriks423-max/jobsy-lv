@@ -343,6 +343,7 @@ export const translations = {
       boosted: "Boosted",
       expires: "Beidzas",
       selectBoost: "Izvēlieties boost",
+      activated: "Boost aktivizēts!",
     },
     upgrade: {
       title: "Mēneša limits sasniegts",
@@ -737,6 +738,7 @@ export const translations = {
       boosted: "Boosted",
       expires: "Истекает",
       selectBoost: "Выберите boost",
+      activated: "Boost активирован!",
     },
     upgrade: {
       title: "Достигнут месячный лимит",
@@ -1131,6 +1133,7 @@ export const translations = {
       boosted: "Boosted",
       expires: "Expires",
       selectBoost: "Select boost",
+      activated: "Boost activated!",
     },
     upgrade: {
       title: "Monthly limit reached",
