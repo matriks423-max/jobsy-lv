@@ -24,7 +24,15 @@ import {
   Gift,
   Copy,
   Check,
+  Home as HomeIcon,
+  Truck,
+  Wrench,
+  Flower2,
+  Baby,
+  Monitor,
 } from "lucide-react";
+import { motion } from "framer-motion";
+import SeasonalParticles from "@/components/SeasonalParticles";
 
 // Fix Leaflet default icon paths in Vite
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
@@ -82,12 +90,28 @@ function MarqueeStrip() {
   );
 }
 
+const QUICK_CATEGORIES = [
+  { key: "repairs",   Icon: Wrench    },
+  { key: "it",        Icon: Monitor   },
+  { key: "garden",    Icon: Flower2   },
+  { key: "moving",    Icon: Truck     },
+  { key: "household", Icon: HomeIcon  },
+  { key: "childcare", Icon: Baby      },
+] as const;
+
 export default function Home() {
   const { locale } = useLocale();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [activeFilter, setActiveFilter] = useState<"all" | "need" | "offer">("all");
   const [copied, setCopied] = useState(false);
+  const [heroSearch, setHeroSearch] = useState("");
+
+  const handleHeroSearch = (e: { preventDefault(): void }) => {
+    e.preventDefault();
+    const q = heroSearch.trim();
+    navigate(q ? `/browse?search=${encodeURIComponent(q)}` : "/browse");
+  };
 
   useEffect(() => {
     document.title = "jobsy.lv — Atrodi palīdzību vai piedāvā darbu";
@@ -111,70 +135,116 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative flex min-h-[90vh] flex-col items-center justify-center px-4 pb-16 pt-20 text-center noise-bg">
-        {/* Decorative elements */}
+      <section
+        className="relative flex min-h-[90vh] flex-col items-center justify-center overflow-hidden px-4 pb-16 pt-20 text-center"
+        style={{
+          background: 'linear-gradient(to bottom, var(--season-hero-from, #FBF6EE), var(--season-hero-to, #F5F1E8))',
+        }}
+      >
+        {/* Seasonal particles */}
+        <SeasonalParticles />
+
+        {/* Decorative shapes */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <Star className="absolute left-[10%] top-[15%] h-4 w-4 text-mustard opacity-30" />
-          <div className="absolute right-[15%] top-[20%] h-6 w-6 rounded-full border-2 border-coral opacity-30" />
-          <div className="absolute bottom-[25%] left-[20%] h-3 w-3 rotate-45 border-2 border-sage opacity-30" />
+          <Star className="absolute left-[10%] top-[15%] h-4 w-4 opacity-20" style={{ color: 'var(--mustard)' }} />
+          <div className="absolute right-[15%] top-[20%] h-6 w-6 rounded-full border-2 opacity-20" style={{ borderColor: 'var(--coral)' }} />
+          <div className="absolute bottom-[25%] left-[20%] h-3 w-3 rotate-45 border-2 opacity-20" style={{ borderColor: 'var(--sage)' }} />
         </div>
 
-        <div className="relative z-10 mx-auto max-w-3xl">
-          <h1 className="mb-6 font-display text-5xl font-bold leading-tight text-ink md:text-7xl">
-            {t(locale, "hero.title")}
-          </h1>
-          <p className="mx-auto mb-10 max-w-xl font-body text-lg text-ink-muted">
-            {t(locale, "hero.subtitle")}
-          </p>
+        <div className="relative z-10 mx-auto w-full max-w-3xl">
+          {/* Headline — word-by-word reveal */}
+          <motion.h1 className="mb-6 font-display text-5xl font-bold leading-tight text-ink md:text-7xl">
+            {t(locale, "hero.title").split(" ").map((word, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08, duration: 0.4, ease: "easeOut" }}
+                className="mr-[0.2em] inline-block"
+              >
+                {word}
+              </motion.span>
+            ))}
+          </motion.h1>
 
-          <div className="flex flex-wrap justify-center gap-4">
+          {/* Subtitle */}
+          <motion.p
+            className="mx-auto mb-8 max-w-xl font-body text-lg text-ink-muted"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.55, duration: 0.4 }}
+          >
+            {t(locale, "hero.subtitle")}
+          </motion.p>
+
+          {/* Search bar */}
+          <motion.form
+            onSubmit={handleHeroSearch}
+            className="mb-6 flex gap-2"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.4 }}
+          >
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-muted" />
+              <input
+                type="text"
+                value={heroSearch}
+                onChange={(e) => setHeroSearch(e.target.value)}
+                placeholder={t(locale, "hero.searchPlaceholder")}
+                className="h-14 w-full rounded-xl border-2 border-ink bg-white pl-12 pr-4 font-body text-base text-ink placeholder:text-ink-light focus:border-coral focus:outline-none transition-colors"
+              />
+            </div>
             <Button
-              onClick={() => navigate("/browse?type=need")}
-              className="h-14 rounded-xl border-2 border-ink bg-coral px-8 font-body text-base font-medium text-ink hover:-translate-y-1 hover:bg-coral-hover hover:shadow-card-coral"
+              type="submit"
+              className="h-14 shrink-0 rounded-xl border-2 border-ink bg-coral px-6 font-body font-medium text-ink hover:-translate-y-0.5 hover:bg-coral-hover"
             >
-              <Search className="mr-2 h-5 w-5" />
-              {t(locale, "hero.btnNeed")}
+              {t(locale, "hero.searchBtn")} →
             </Button>
-            <Button
-              onClick={() => navigate("/browse?type=offer")}
-              className="h-14 rounded-xl border-2 border-ink bg-mustard px-8 font-body text-base font-medium text-ink hover:-translate-y-1 hover:shadow-card-mustard"
-            >
-              <Plus className="mr-2 h-5 w-5" />
-              {t(locale, "hero.btnOffer")}
-            </Button>
-          </div>
+          </motion.form>
+
+          {/* Category quick-links */}
+          <motion.div
+            className="mb-10 flex flex-wrap justify-center gap-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.85, duration: 0.4 }}
+          >
+            {QUICK_CATEGORIES.map(({ key, Icon }) => (
+              <Link
+                key={key}
+                to={`/browse?category=${key}`}
+                className="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-white px-4 py-2 font-body text-sm font-medium text-ink transition-all hover:-translate-y-0.5 hover:bg-coral-light"
+              >
+                <Icon className="h-3.5 w-3.5" />
+                {t(locale, `categories.${key}` as never)}
+              </Link>
+            ))}
+          </motion.div>
 
           {/* Stats */}
-          <div className="mt-12 flex flex-wrap justify-center gap-6 md:gap-10">
+          <motion.div
+            className="flex flex-wrap justify-center gap-6 md:gap-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.0, duration: 0.4 }}
+          >
             {[
-              {
-                value: stats?.activePosts ?? 0,
-                label: t(locale, "hero.statsActive"),
-              },
-              {
-                value: stats?.users ?? 0,
-                label: t(locale, "hero.statsUsers"),
-              },
-              {
-                value: stats?.categories ?? 0,
-                label: t(locale, "hero.statsCategories"),
-              },
+              { value: stats?.activePosts ?? 0, label: t(locale, "hero.statsActive") },
+              { value: stats?.users ?? 0,        label: t(locale, "hero.statsUsers") },
+              { value: stats?.categories ?? 0,   label: t(locale, "hero.statsCategories") },
             ].map((stat, i) => (
               <div key={i} className="flex items-center gap-2">
                 <div className="text-center">
                   <div className="font-display text-3xl font-bold text-coral">
                     <AnimatedCounter target={stat.value} />
                   </div>
-                  <div className="font-body text-xs text-ink-muted">
-                    {stat.label}
-                  </div>
+                  <div className="font-body text-xs text-ink-muted">{stat.label}</div>
                 </div>
-                {i < 2 && (
-                  <span className="hidden text-ink-light md:inline">•</span>
-                )}
+                {i < 2 && <span className="hidden text-ink-light md:inline">•</span>}
               </div>
             ))}
-          </div>
+          </motion.div>
         </div>
 
         {/* Scroll indicator */}
