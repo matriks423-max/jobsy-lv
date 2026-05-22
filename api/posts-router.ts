@@ -17,22 +17,16 @@ import {
   setPostFilled,
   countPosts,
 } from "./queries/posts";
-import {
-  getProfileByUserId,
-  useFreePost,
-  useFreePostCredit,
-} from "./queries/profiles";
+import { getProfileByUserId } from "./queries/profiles";
 import { createContact, hasContacted, createReport } from "./queries/reports";
 import { hasInterested, createInterest } from "./queries/interests";
 import { sendInterestNotification } from "./lib/email";
 import { atomicRewardReferral } from "./queries/referrals";
 import { addFreePostCredit } from "./queries/profiles";
-import { createCheckoutSession } from "./stripe";
+import { createBoostCheckoutSession } from "./stripe";
 import { moderateContent, softFlagCheck } from "./lib/moderation";
 import { sendPostPublished } from "./lib/email";
 
-const FREE_FIRST_POST = true;
-const FREE_POSTS_LIMIT = 2;
 const MAX_POSTS_PER_DAY = 5;
 
 const postTypeEnum = z.enum(["need", "offer"]);
@@ -149,84 +143,26 @@ export const postsRouter = createRouter({
 
       const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-      // Atomic priority: credits first, then built-in free slots, then paid.
-      // useFreePostCredit / useFreePost both use conditional UPDATE — safe under concurrency.
-      const creditConsumed = await useFreePostCredit(ctx.user.id);
-
-      if (creditConsumed) {
-        const post = await createPost({
-          ...input,
-          userId: ctx.user.id,
-          status: needsReview ? "pending_review" : "active",
-          wasFree: true,
-          expiresAt,
-        });
-        const insertId = Number((post as unknown as [{ insertId: bigint }])[0].insertId);
-
-        // Save images
-        if (input.images && input.images.length > 0) {
-          for (const url of input.images) {
-            await getDb().insert(schema.postImages).values({ postId: insertId, url });
-          }
-        }
-
-        await checkAndRewardReferralOnPost(ctx.user.id);
-        if (!needsReview && profile.email) {
-          void sendPostPublished(profile.email, input.title, insertId);
-        }
-        return { postId: insertId, requiresPayment: false, needsReview };
-      }
-
-      const freeSlotConsumed = FREE_FIRST_POST && await useFreePost(ctx.user.id, FREE_POSTS_LIMIT);
-
-      if (freeSlotConsumed) {
-        const post = await createPost({
-          ...input,
-          userId: ctx.user.id,
-          status: needsReview ? "pending_review" : "active",
-          wasFree: true,
-          expiresAt,
-        });
-        const insertId = Number((post as unknown as [{ insertId: bigint }])[0].insertId);
-
-        // Save images
-        if (input.images && input.images.length > 0) {
-          for (const url of input.images) {
-            await getDb().insert(schema.postImages).values({ postId: insertId, url });
-          }
-        }
-
-        await checkAndRewardReferralOnPost(ctx.user.id);
-        if (!needsReview && profile.email) {
-          void sendPostPublished(profile.email, input.title, insertId);
-        }
-        return { postId: insertId, requiresPayment: false, needsReview };
-      }
-
-      // Paid post
       const post = await createPost({
         ...input,
         userId: ctx.user.id,
-        status: "pending_payment",
-        wasFree: false,
+        status: needsReview ? "pending_review" : "active",
+        wasFree: true,
         expiresAt,
       });
-
       const insertId = Number((post as unknown as [{ insertId: bigint }])[0].insertId);
 
-      // Save images for paid post as well
       if (input.images && input.images.length > 0) {
         for (const url of input.images) {
-          await getDb().insert(schema.postImages).values({ postId: insertId, url, sortOrder: 0 });
+          await getDb().insert(schema.postImages).values({ postId: insertId, url });
         }
       }
 
-      try {
-        const checkout = await createCheckoutSession(insertId, ctx.user.id);
-        return { postId: insertId, requiresPayment: true, checkoutUrl: checkout.url };
-      } catch {
-        return { postId: insertId, requiresPayment: true, checkoutUrl: `/payment?postId=${insertId}` };
+      await checkAndRewardReferralOnPost(ctx.user.id);
+      if (!needsReview && profile.email) {
+        void sendPostPublished(profile.email, input.title, insertId);
       }
+      return { postId: insertId, requiresPayment: false, needsReview };
     }),
 
   update: authedQuery
@@ -292,6 +228,17 @@ export const postsRouter = createRouter({
       }
       await setPostFilled(input.postId, input.filled);
       return { success: true };
+    }),
+
+  boost: authedQuery
+    .input(z.object({ postId: z.number(), boostDays: z.union([z.literal(7), z.literal(14), z.literal(30)]) }))
+    .mutation(async ({ ctx, input }) => {
+      const postResult = await getPostWithProfile(input.postId);
+      if (!postResult) throw new TRPCError({ code: "NOT_FOUND", message: "Sludinājums nav atrasts" });
+      if (postResult.post.userId !== ctx.user.id) throw new TRPCError({ code: "FORBIDDEN", message: "Šis sludinājums nepieder tev" });
+      if (postResult.post.status !== "active") throw new TRPCError({ code: "BAD_REQUEST", message: "Sludinājums nav aktīvs" });
+      const checkout = await createBoostCheckoutSession(input.postId, ctx.user.id, input.boostDays);
+      return { checkoutUrl: checkout.url };
     }),
 
   myPosts: authedQuery.query(async ({ ctx }) => {

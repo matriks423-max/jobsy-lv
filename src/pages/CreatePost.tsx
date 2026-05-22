@@ -28,7 +28,6 @@ import {
   Plus,
   Loader2,
   Info,
-  Gift,
   ImagePlus,
   X,
   Trash2,
@@ -57,10 +56,6 @@ export default function CreatePost() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
-
-  const { data: referralInfo } = trpc.referral.me.useQuery(undefined, {
-    enabled: isAuthenticated,
-  });
 
   const { data: existingPost } = trpc.posts.getById.useQuery(
     { id: postId },
@@ -94,14 +89,8 @@ export default function CreatePost() {
 
   const createMutation = trpc.posts.create.useMutation({
     onSuccess: (data) => {
-      if (data.requiresPayment && data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
-      } else if (data.requiresPayment) {
-        navigate(`/payment?postId=${data.postId}`);
-      } else {
-        const reviewParam = data.needsReview ? "&review=true" : "";
-        navigate(`/success?post=${data.postId}&free=true${reviewParam}`);
-      }
+      const reviewParam = data.needsReview ? "&review=true" : "";
+      navigate(`/success?post=${data.postId}${reviewParam}`);
     },
     onError: (err) => {
       toast(err.message, "error");
@@ -127,11 +116,6 @@ export default function CreatePost() {
       toast(err.message, "error");
     },
   });
-
-  const hasFreeCredits = referralInfo && referralInfo.freePostCredits > 0;
-  const creditCount = referralInfo?.freePostCredits ?? 0;
-  const freePostsUsed = referralInfo?.freePostsUsed ?? 0;
-  const showFreeBadge = !hasFreeCredits && freePostsUsed < 2;
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -220,20 +204,9 @@ export default function CreatePost() {
               {isEditing ? t(locale, "createPost.editTitle") : t(locale, "createPost.title")}
             </h1>
             {!isEditing && (
-              hasFreeCredits ? (
-                <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-sage bg-sage-light px-3 py-1.5 font-body text-xs font-medium text-sage">
-                  <Gift className="h-3.5 w-3.5" />
-                  {t(locale, "createPost.creditBadge", { count: creditCount })}
-                </span>
-              ) : showFreeBadge ? (
-                <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-sage bg-sage-light px-3 py-1.5 font-body text-xs font-medium text-sage">
-                  {t(locale, "createPost.freeBadge")}
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-ink-light bg-cream-dark px-3 py-1.5 font-body text-xs font-medium text-ink-muted">
-                  {t(locale, "createPost.paidBadge")}
-                </span>
-              )
+              <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-sage bg-sage-light px-3 py-1.5 font-body text-xs font-medium text-sage">
+                {t(locale, "createPost.freeBadge")}
+              </span>
             )}
           </div>
           {isEditing && (
@@ -483,20 +456,10 @@ export default function CreatePost() {
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
             ) : isEditing ? (
               <Pencil className="mr-2 h-5 w-5" />
-            ) : hasFreeCredits ? (
-              <Gift className="mr-2 h-5 w-5" />
-            ) : showFreeBadge ? (
-              <Plus className="mr-2 h-5 w-5" />
             ) : (
               <Plus className="mr-2 h-5 w-5" />
             )}
-            {isEditing
-              ? t(locale, "createPost.submitSave")
-              : hasFreeCredits
-              ? t(locale, "createPost.submitCredit", { count: creditCount })
-              : showFreeBadge
-              ? t(locale, "createPost.submitFree")
-              : t(locale, "createPost.submitPaid")}
+            {isEditing ? t(locale, "createPost.submitSave") : t(locale, "createPost.submitFree")}
           </Button>
         </div>
 

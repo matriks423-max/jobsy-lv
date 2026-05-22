@@ -20,6 +20,8 @@ import {
   Clock,
   AlertCircle,
   Heart,
+  Zap,
+  X,
 } from "lucide-react";
 
 export default function MyPosts() {
@@ -28,6 +30,7 @@ export default function MyPosts() {
   const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: true });
   const { toast } = useToast();
   const [tab, setTab] = useState<"active" | "expired" | "all">("active");
+  const [boostingPostId, setBoostingPostId] = useState<number | null>(null);
 
   useEffect(() => {
     const prev = document.title;
@@ -57,6 +60,18 @@ export default function MyPosts() {
       );
     },
     onError: (err) => toast(err.message, "error"),
+  });
+
+  const boostMutation = trpc.posts.boost.useMutation({
+    onSuccess: (data) => {
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      }
+    },
+    onError: (err) => {
+      toast(err.message, "error");
+      setBoostingPostId(null);
+    },
   });
 
   const INACTIVE_STATUSES = ["expired", "closed", "pending_payment", "pending_review", "rejected"] as const;
@@ -155,6 +170,12 @@ export default function MyPosts() {
                         <StatusIcon className="h-3 w-3" />
                         {status.label}
                       </span>
+                      {post.boostedUntil && new Date(post.boostedUntil) > new Date() && (
+                        <span className="flex items-center gap-1 rounded border border-mustard bg-mustard-light px-2 py-0.5 font-mono text-[10px] font-medium uppercase text-ink">
+                          <Zap className="h-3 w-3" />
+                          {t(locale, "myPosts.boosted")}
+                        </span>
+                      )}
                       <span className="font-body text-xs text-ink-muted">{t(locale, `categories.${post.category}` as never)}</span>
                     </div>
                     <h3 className="truncate font-body text-base font-bold text-ink">{post.title}</h3>
@@ -182,6 +203,27 @@ export default function MyPosts() {
                       )}
                     </div>
                     <div className="flex gap-1">
+                      {post.status === "active" && boostingPostId === post.id ? (
+                        <div className="flex items-center gap-1">
+                          {([7, 14, 30] as const).map((days) => (
+                            <button
+                              key={days}
+                              onClick={() => boostMutation.mutate({ postId: post.id, boostDays: days })}
+                              disabled={boostMutation.isPending}
+                              className="rounded-lg border-2 border-coral bg-coral-light px-2 py-1 font-body text-xs font-medium text-ink hover:bg-coral disabled:opacity-50"
+                            >
+                              {days}d €{days === 7 ? "0.99" : days === 14 ? "1.99" : "2.99"}
+                            </button>
+                          ))}
+                          <button
+                            onClick={() => setBoostingPostId(null)}
+                            className="rounded-lg border-2 border-ink-light p-1.5 text-ink-muted hover:border-ink"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ) : (
+                        <>
                       {post.status === "active" && (
                         <button
                           onClick={() => setFilledMutation.mutate({ postId: post.id, filled: !post.filled })}
@@ -194,6 +236,15 @@ export default function MyPosts() {
                           }`}
                         >
                           {post.filled ? "✓" : "○"}
+                        </button>
+                      )}
+                      {post.status === "active" && (
+                        <button
+                          onClick={() => setBoostingPostId(post.id)}
+                          title={t(locale, "myPosts.boost")}
+                          className="rounded-lg border-2 border-coral bg-white p-2 text-coral hover:bg-coral-light"
+                        >
+                          <Zap className="h-4 w-4" />
                         </button>
                       )}
                       <Link to={`/edit/${post.id}`}>
@@ -217,6 +268,8 @@ export default function MyPosts() {
                           <ArrowRight className="h-4 w-4" />
                         </button>
                       </Link>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>

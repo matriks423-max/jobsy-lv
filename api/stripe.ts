@@ -58,6 +58,30 @@ export async function createCheckoutSession(postId: number, userId: number) {
   return { url: session.url, sessionId: session.id };
 }
 
+const BOOST_PRICES_CENTS: Record<number, number> = { 7: 99, 14: 199, 30: 299 };
+
+export async function createBoostCheckoutSession(postId: number, userId: number, boostDays: number) {
+  if (!stripe) throw new Error("Stripe not configured");
+  if (!BOOST_PRICES_CENTS[boostDays]) throw new Error("Invalid boost duration");
+
+  const session = await stripe.checkout.sessions.create({
+    mode: "payment",
+    line_items: [{
+      price_data: {
+        currency: "eur",
+        product_data: { name: `jobsy.lv — izcelšana (${boostDays} dienas)` },
+        unit_amount: BOOST_PRICES_CENTS[boostDays],
+      },
+      quantity: 1,
+    }],
+    metadata: { type: "boost", postId: String(postId), userId: String(userId), boostDays: String(boostDays) },
+    success_url: `${env.siteUrl}/my-posts?boosted=1`,
+    cancel_url: `${env.siteUrl}/my-posts`,
+  });
+
+  return { url: session.url };
+}
+
 export async function handleStripeWebhook(body: string, signature: string) {
   if (!stripe || !env.stripeWebhookSecret) {
     throw new Error("Stripe webhook not configured");
@@ -70,9 +94,15 @@ export async function handleStripeWebhook(body: string, signature: string) {
     const postId = session.metadata?.postId;
     const userId = session.metadata?.userId;
 
+    if (session.metadata?.type === "boost" && postId) {
+      const boostDays = Number(session.metadata.boostDays);
+      const boostedUntil = new Date(Date.now() + boostDays * 24 * 60 * 60 * 1000);
+      await updatePost(Number(postId), { boostedUntil });
+      return { received: true };
+    }
+
     if (postId && userId) {
       const post = await getPostById(Number(postId));
-      // Guard: correct session id AND not already active (idempotent, prevents double email)
       if (post && post.stripeSessionId === session.id && post.status !== "active") {
         await updatePost(post.id, {
           status: "active",

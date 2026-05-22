@@ -82,6 +82,7 @@ export const posts = mysqlTable("posts", {
   viewCount: int("viewCount", { unsigned: true }).default(0).notNull(),
   contactCount: int("contactCount", { unsigned: true }).default(0).notNull(),
   filled: boolean("filled").default(false).notNull(),
+  boostedUntil: timestamp("boostedUntil"),
   reminderSent: boolean("reminderSent").default(false).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt")

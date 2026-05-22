@@ -75,12 +75,15 @@ export async function listPosts(filters?: {
     );
   }
 
-  const orderBy = (() => {
+  const now = new Date();
+  const boostFirst = sql`CASE WHEN ${schema.posts.boostedUntil} IS NOT NULL AND ${schema.posts.boostedUntil} > ${now} THEN 0 ELSE 1 END`;
+
+  const orderClauses = (() => {
     switch (filters?.sort) {
-      case "oldest": return asc(schema.posts.createdAt);
-      case "budget_asc": return asc(schema.posts.budgetText);
-      case "budget_desc": return desc(schema.posts.budgetText);
-      default: return desc(schema.posts.createdAt);
+      case "oldest": return [asc(schema.posts.createdAt)];
+      case "budget_asc": return [asc(schema.posts.budgetText)];
+      case "budget_desc": return [desc(schema.posts.budgetText)];
+      default: return [boostFirst, desc(schema.posts.createdAt)];
     }
   })();
 
@@ -88,7 +91,7 @@ export async function listPosts(filters?: {
     .select()
     .from(schema.posts)
     .where(where.length > 0 ? and(...where) : undefined)
-    .orderBy(orderBy)
+    .orderBy(...orderClauses)
     .limit(filters?.limit ?? 50)
     .offset(filters?.offset ?? 0);
 }
