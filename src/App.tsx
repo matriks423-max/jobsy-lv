@@ -13,6 +13,7 @@ import CreatePost from "./pages/CreatePost";
 import MyPosts from "./pages/MyPosts";
 import Success from "./pages/Success";
 import Payment from "./pages/Payment";
+import Pricing from "./pages/Pricing";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Login from "./pages/Login";
@@ -48,6 +49,7 @@ export default function App() {
             <Route path="/my-posts" element={<MyPosts />} />
             <Route path="/success" element={<Success />} />
             <Route path="/payment" element={<Payment />} />
+            <Route path="/pricing" element={<Pricing />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/login" element={<Login />} />

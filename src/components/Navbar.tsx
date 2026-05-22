@@ -53,6 +53,12 @@ export default function Navbar() {
           >
             {t(locale, "nav.browse")}
           </Link>
+          <Link
+            to="/pricing"
+            className="font-body text-sm font-medium text-ink-muted hover:text-ink"
+          >
+            {t(locale, "nav.pricing")}
+          </Link>
           {isAuthenticated && (
             <Link
               to="/my-posts"
@@ -178,6 +184,13 @@ export default function Navbar() {
                   className="rounded-lg border-2 border-ink bg-white px-4 py-3 font-body font-medium text-ink"
                 >
                   {t(locale, "nav.browse")}
+                </Link>
+                <Link
+                  to="/pricing"
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-lg border-2 border-ink bg-white px-4 py-3 font-body font-medium text-ink"
+                >
+                  {t(locale, "nav.pricing")}
                 </Link>
                 {isAuthenticated && (
                   <Link
