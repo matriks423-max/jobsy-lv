@@ -192,8 +192,8 @@ export default function Home() {
           <div className="mx-auto max-w-6xl">
             <h2 className="mb-6 font-display text-2xl font-bold text-ink">✨ Featured</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {featuredPosts.map(({ post, profile }) => (
-                <PostCard key={`hf-${post.id}`} post={post} profile={profile} />
+              {featuredPosts.map(({ post, profile, isBusiness }) => (
+                <PostCard key={`hf-${post.id}`} post={post} profile={profile} isBusiness={isBusiness} />
               ))}
             </div>
           </div>
@@ -325,7 +325,7 @@ export default function Home() {
           ) : posts && posts.length > 0 ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {posts.map((item: PostWithProfile) => (
-                <PostCard key={item.post.id} post={item.post} profile={item.profile} />
+                <PostCard key={item.post.id} post={item.post} profile={item.profile} isBusiness={item.isBusiness} />
               ))}
             </div>
           ) : (
