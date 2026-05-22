@@ -4,7 +4,7 @@ import { getPostById, updatePost } from "./queries/posts";
 import { getProfileByUserId, updateProfile } from "./queries/profiles";
 import { getReferralByReferredId, markReferralPostMade, markReferralRewarded } from "./queries/referrals";
 import { addFreePostCredit } from "./queries/profiles";
-import { sendPostPublished } from "./lib/email";
+import { sendPostPublished, sendPaymentFailed } from "./lib/email";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
 import { eq } from "drizzle-orm";
@@ -214,6 +214,22 @@ export async function handleStripeWebhook(body: string, signature: string) {
       const subObj = await stripe.subscriptions.retrieve(sub);
       const userId = subObj.metadata?.userId;
       if (userId) await updateProfile(Number(userId), { freeBoostsRemaining: 2 });
+    }
+  }
+
+  if (event.type === "invoice.payment_failed") {
+    // Do NOT downgrade — Stripe will retry. Just notify the user.
+    const invoice = event.data.object as Stripe.Invoice;
+    const customerId = typeof invoice.customer === "string" ? invoice.customer : null;
+    if (customerId) {
+      try {
+        const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer;
+        if (customer.email) {
+          void sendPaymentFailed(customer.email);
+        }
+      } catch (err) {
+        console.error("[stripe] invoice.payment_failed customer lookup failed:", err);
+      }
     }
   }
 
