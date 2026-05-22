@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -33,16 +33,23 @@ export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
-    <nav className="sticky top-0 z-50 border-b-2 border-ink bg-cream noise-bg">
+    <nav className={`sticky top-0 z-50 border-b-2 border-ink bg-cream noise-bg transition-all duration-300${scrolled ? ' navbar-scrolled' : ''}`}>
       <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 lg:px-6">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-1">
           <span className="font-display text-2xl font-bold italic text-ink">
             jobsy
           </span>
-          <span className="inline-block h-2 w-2 rounded-full bg-coral" />
+          <span className="inline-block h-2 w-2 rounded-full" style={{ background: 'var(--coral)' }} />
         </Link>
 
         {/* Desktop Nav */}
