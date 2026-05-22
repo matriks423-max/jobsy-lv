@@ -95,6 +95,8 @@ export default function Home() {
   const { data: referralInfo } = trpc.referral.me.useQuery(undefined, {
     enabled: isAuthenticated,
   });
+  const { data: featuredData } = trpc.posts.featuredPosts.useQuery();
+  const featuredPosts = (featuredData ?? []).slice(0, 3);
 
   return (
     <div className="min-h-screen">
@@ -173,6 +175,20 @@ export default function Home() {
 
       {/* Marquee */}
       <MarqueeStrip />
+
+      {/* Featured Posts */}
+      {featuredPosts.length > 0 && (
+        <section className="px-4 py-8">
+          <div className="mx-auto max-w-6xl">
+            <h2 className="mb-6 font-display text-2xl font-bold text-ink">✨ Featured</h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {featuredPosts.map(({ post, profile }) => (
+                <PostCard key={`hf-${post.id}`} post={post} profile={profile} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* How It Works */}
       <section className="bg-cream-dark px-4 py-20 noise-bg">

@@ -37,9 +37,10 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 interface PostCardProps {
   post: Post;
   profile?: Profile | null;
+  isBusiness?: boolean;
 }
 
-export default function PostCard({ post, profile }: PostCardProps) {
+export default function PostCard({ post, profile, isBusiness }: PostCardProps) {
   const { locale } = useLocale();
 
   const category = CATEGORIES.find((c) => c.key === post.category);
@@ -126,6 +127,21 @@ export default function PostCard({ post, profile }: PostCardProps) {
           {profile?.phoneVerified && (
             <span className="inline-flex items-center gap-0.5 rounded-full border border-sage bg-sage-light px-1.5 py-0.5 font-body text-[10px] font-medium text-sage">
               <ShieldCheck className="h-3 w-3" />
+            </span>
+          )}
+          {isBusiness && (
+            <span className="inline-flex items-center gap-0.5 rounded-full border border-ink bg-ink px-1.5 py-0.5 font-mono text-[10px] font-bold text-cream">
+              🏢
+            </span>
+          )}
+          {post.boostType === "featured" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date() && (
+            <span className="inline-flex items-center gap-0.5 rounded-full border border-coral bg-coral/10 px-1.5 py-0.5 font-mono text-[10px] text-coral">
+              ⭐
+            </span>
+          )}
+          {post.boostType === "urgent" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date() && (
+            <span className="inline-flex items-center gap-0.5 rounded-full border border-red-400 bg-red-50 px-1.5 py-0.5 font-mono text-[10px] font-bold text-red-600 uppercase">
+              {locale === "lv" ? "Steidzams" : locale === "ru" ? "Срочно" : "Urgent"}
             </span>
           )}
           <span className="ml-auto font-mono text-xs text-ink-light">

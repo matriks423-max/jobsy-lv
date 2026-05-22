@@ -75,6 +75,8 @@ export default function Browse() {
   } as const;
 
   const { data, isLoading } = trpc.posts.list.useQuery(listInput);
+  const { data: featuredData } = trpc.posts.featuredPosts.useQuery();
+  const featuredPosts = featuredData ?? [];
 
   const { data: totalCount } = trpc.posts.count.useQuery({
     type: listInput.type,
@@ -324,6 +326,21 @@ export default function Browse() {
             <button onClick={() => setShowSaveAlert(false)} className="text-ink-muted hover:text-ink">
               <X className="h-4 w-4" />
             </button>
+          </div>
+        )}
+
+        {/* Featured Posts */}
+        {featuredPosts.length > 0 && (
+          <div className="mb-8">
+            <h2 className="mb-3 font-display text-lg font-bold text-ink">
+              {t(locale, "browse.featured")}
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {featuredPosts.map(({ post, profile }) => (
+                <PostCard key={`featured-${post.id}`} post={post} profile={profile} />
+              ))}
+            </div>
+            <div className="mt-4 border-b-2 border-ink-light" />
           </div>
         )}
 
