@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { PostWithProfile } from "@/types/post";
+import BoostPicker from "@/components/BoostPicker";
 import {
   Plus,
   Eye,
@@ -20,6 +21,7 @@ import {
   Clock,
   AlertCircle,
   Heart,
+  Zap,
 } from "lucide-react";
 
 export default function MyPosts() {
@@ -28,6 +30,8 @@ export default function MyPosts() {
   const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: true });
   const { toast } = useToast();
   const [tab, setTab] = useState<"active" | "expired" | "all">("active");
+  const [boostingPostId, setBoostingPostId] = useState<number | null>(null);
+  const { data: subStatus } = trpc.subscription.status.useQuery(undefined, { enabled: isAuthenticated ?? false });
 
   useEffect(() => {
     const prev = document.title;
@@ -156,6 +160,11 @@ export default function MyPosts() {
                         {status.label}
                       </span>
                       <span className="font-body text-xs text-ink-muted">{t(locale, `categories.${post.category}` as never)}</span>
+                      {post.boostType !== "none" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date() && (
+                        <span className="flex items-center gap-0.5 rounded-full border border-coral bg-coral/10 px-1.5 py-0.5 font-mono text-[10px] text-coral">
+                          <Zap className="h-2.5 w-2.5" /> {t(locale, "boost.boosted")}
+                        </span>
+                      )}
                     </div>
                     <h3 className="truncate font-body text-base font-bold text-ink">{post.title}</h3>
                     <p className="font-body text-xs text-ink-muted">
@@ -196,6 +205,13 @@ export default function MyPosts() {
                           {post.filled ? "✓" : "○"}
                         </button>
                       )}
+                      <button
+                        onClick={() => setBoostingPostId(post.id)}
+                        className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark"
+                        title={t(locale, "boost.title")}
+                      >
+                        <Zap className="h-4 w-4" />
+                      </button>
                       <Link to={`/edit/${post.id}`}>
                         <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title={t(locale, "createPost.editTitle")}>
                           <Pencil className="h-4 w-4" />
@@ -234,6 +250,14 @@ export default function MyPosts() {
           </div>
         )}
       </div>
+      {boostingPostId !== null && (
+        <BoostPicker
+          postId={boostingPostId}
+          isBusiness={subStatus?.plan === "business"}
+          freeBoostsRemaining={subStatus?.freeBoostsRemaining ?? 0}
+          onClose={() => setBoostingPostId(null)}
+        />
+      )}
     </div>
   );
 }
