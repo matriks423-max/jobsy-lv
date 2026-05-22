@@ -59,7 +59,7 @@ export default function Browse() {
     (searchParams.get("sort") as never) ?? "newest"
   );
   const [page, setPage] = useState(Number(searchParams.get("page") ?? "0"));
-  const [viewMode, setViewMode] = useState<"list" | "map">("list");
+  const [viewMode, setViewMode] = useState<"list" | "map">("map");
   const [showSaveAlert, setShowSaveAlert] = useState(false);
   const [alertLabel, setAlertLabel] = useState("");
 
@@ -154,17 +154,8 @@ export default function Browse() {
             <h1 className="font-display text-3xl font-bold text-ink md:text-4xl">
               {t(locale, "browse.title")}
             </h1>
-            {/* List / Map toggle */}
+            {/* Map / List toggle — map first */}
             <div className="flex overflow-hidden rounded-xl border-2 border-ink">
-              <button
-                onClick={() => setViewMode("list")}
-                className={`flex items-center gap-1.5 px-3 py-2 font-body text-sm font-medium transition ${
-                  viewMode === "list" ? "bg-ink text-cream" : "bg-white text-ink hover:bg-cream"
-                }`}
-              >
-                <LayoutList className="h-4 w-4" />
-                <span className="hidden sm:inline">{t(locale, "browse.viewList")}</span>
-              </button>
               <button
                 onClick={() => setViewMode("map")}
                 className={`flex items-center gap-1.5 px-3 py-2 font-body text-sm font-medium transition ${
@@ -173,6 +164,15 @@ export default function Browse() {
               >
                 <Map className="h-4 w-4" />
                 <span className="hidden sm:inline">{t(locale, "browse.viewMap")}</span>
+              </button>
+              <button
+                onClick={() => setViewMode("list")}
+                className={`flex items-center gap-1.5 px-3 py-2 font-body text-sm font-medium transition ${
+                  viewMode === "list" ? "bg-ink text-cream" : "bg-white text-ink hover:bg-cream"
+                }`}
+              >
+                <LayoutList className="h-4 w-4" />
+                <span className="hidden sm:inline">{t(locale, "browse.viewList")}</span>
               </button>
             </div>
           </div>

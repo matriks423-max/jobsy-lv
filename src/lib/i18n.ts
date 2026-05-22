@@ -38,6 +38,10 @@ export const translations = {
       step3Desc:
         "Vienojies par detaļām, izpildi darbu un saņem samaksu.",
     },
+    cityMap: {
+      title: "Meklē pēc pilsētas",
+      viewPosts: "Skatīt sludinājumus",
+    },
     latestPosts: {
       title: "Jaunākie sludinājumi",
       titleItalic: "sludinājumi",
@@ -375,6 +379,10 @@ export const translations = {
       step3: "Скажи да!",
       step3Desc: "Договорись о деталях, выполни работу и получи оплату.",
     },
+    cityMap: {
+      title: "Поиск по городу",
+      viewPosts: "Смотреть объявления",
+    },
     latestPosts: {
       title: "Новейшие объявления",
       titleItalic: "объявления",
@@ -711,6 +719,10 @@ export const translations = {
         "Other users see your post and reach out via email or phone.",
       step3: "Say yes!",
       step3Desc: "Agree on details, do the job, and get paid.",
+    },
+    cityMap: {
+      title: "Browse by city",
+      viewPosts: "View posts",
     },
     latestPosts: {
       title: "Latest posts",
