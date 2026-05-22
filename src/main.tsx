@@ -5,7 +5,10 @@ import './index.css'
 import { TRPCProvider } from "@/providers/trpc"
 import { LocaleProvider } from "@/lib/locale-context"
 import ErrorBoundary from "@/components/ErrorBoundary"
+import { initSentry } from "@/lib/sentry"
 import App from './App.tsx'
+
+initSentry();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

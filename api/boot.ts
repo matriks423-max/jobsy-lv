@@ -18,6 +18,9 @@ import { eq } from "drizzle-orm";
 import { mkdir, writeFile, readFile } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
+import { initSentryServer, captureException } from "./lib/sentry";
+
+initSentryServer();
 
 const app = new Hono<{ Bindings: HttpBindings }>();
 
@@ -542,6 +545,12 @@ app.use("/api/trpc/*", async (c) => {
   });
 });
 app.all("/api/*", (c) => c.json({ error: "Not Found" }, 404));
+
+// Global error handler — catches unhandled exceptions and reports to Sentry
+app.onError((err, c) => {
+  captureException(err, { path: c.req.path, method: c.req.method });
+  return c.json({ error: "Internal server error" }, 500);
+});
 
 export default app;
 

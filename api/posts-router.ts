@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq, desc, sql, gte, count } from "drizzle-orm";
+import { eq, desc, sql, gte, count, inArray } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
@@ -301,10 +301,25 @@ export const postsRouter = createRouter({
     expireOldPosts().catch((err) =>
       console.error("[expireOldPosts] failed:", err?.message ?? err)
     );
-    return listPostsWithProfiles({
+    const posts = await listPostsWithProfiles({
       userId: ctx.user.id,
       limit: 50,
     });
+    if (posts.length === 0) return [];
+
+    // Fetch interest counts for all user's posts in one query
+    const postIds = posts.map((p) => p.post.id);
+    const interestRows = await getDb()
+      .select({ postId: schema.interests.postId, cnt: count() })
+      .from(schema.interests)
+      .where(inArray(schema.interests.postId, postIds))
+      .groupBy(schema.interests.postId);
+    const interestMap = new Map(interestRows.map((r) => [r.postId, r.cnt]));
+
+    return posts.map((p) => ({
+      ...p,
+      interestCount: interestMap.get(p.post.id) ?? 0,
+    }));
   }),
 
   contact: authedQuery
@@ -506,19 +521,24 @@ export const postsRouter = createRouter({
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const [totalUsers, totalPosts, activePosts, postsToday, usersToday, paidPosts, pendingCount, reportsCount] =
-      await Promise.all([
-        getDb().select({ c: count() }).from(schema.users).then((r) => r[0]?.c ?? 0),
-        getDb().select({ c: count() }).from(schema.posts).then((r) => r[0]?.c ?? 0),
-        getDb().select({ c: count() }).from(schema.posts).where(eq(schema.posts.status, "active")).then((r) => r[0]?.c ?? 0),
-        getDb().select({ c: count() }).from(schema.posts).where(gte(schema.posts.createdAt, today)).then((r) => r[0]?.c ?? 0),
-        getDb().select({ c: count() }).from(schema.users).where(gte(schema.users.createdAt, today)).then((r) => r[0]?.c ?? 0),
-        getDb().select({ c: count() }).from(schema.posts).where(eq(schema.posts.wasFree, false)).then((r) => r[0]?.c ?? 0),
-        getDb().select({ c: count() }).from(schema.posts).where(eq(schema.posts.status, "pending_review")).then((r) => r[0]?.c ?? 0),
-        getDb().select({ c: count() }).from(schema.reports).where(eq(schema.reports.resolved, false)).then((r) => r[0]?.c ?? 0),
-      ]);
+    const [
+      totalUsers, totalPosts, activePosts, postsToday, usersToday,
+      paidPosts, pendingCount, reportsCount, totalInterests, totalReviews, verifiedPhones,
+    ] = await Promise.all([
+      getDb().select({ c: count() }).from(schema.users).then((r) => r[0]?.c ?? 0),
+      getDb().select({ c: count() }).from(schema.posts).then((r) => r[0]?.c ?? 0),
+      getDb().select({ c: count() }).from(schema.posts).where(eq(schema.posts.status, "active")).then((r) => r[0]?.c ?? 0),
+      getDb().select({ c: count() }).from(schema.posts).where(gte(schema.posts.createdAt, today)).then((r) => r[0]?.c ?? 0),
+      getDb().select({ c: count() }).from(schema.users).where(gte(schema.users.createdAt, today)).then((r) => r[0]?.c ?? 0),
+      getDb().select({ c: count() }).from(schema.posts).where(eq(schema.posts.wasFree, false)).then((r) => r[0]?.c ?? 0),
+      getDb().select({ c: count() }).from(schema.posts).where(eq(schema.posts.status, "pending_review")).then((r) => r[0]?.c ?? 0),
+      getDb().select({ c: count() }).from(schema.reports).where(eq(schema.reports.resolved, false)).then((r) => r[0]?.c ?? 0),
+      getDb().select({ c: count() }).from(schema.interests).then((r) => r[0]?.c ?? 0),
+      getDb().select({ c: count() }).from(schema.reviews).then((r) => r[0]?.c ?? 0),
+      getDb().select({ c: count() }).from(schema.profiles).where(eq(schema.profiles.phoneVerified, true)).then((r) => r[0]?.c ?? 0),
+    ]);
 
-    return { totalUsers, totalPosts, activePosts, postsToday, usersToday, paidPosts, pendingCount, reportsCount };
+    return { totalUsers, totalPosts, activePosts, postsToday, usersToday, paidPosts, pendingCount, reportsCount, totalInterests, totalReviews, verifiedPhones };
   }),
 
   listUsers: adminQuery
@@ -533,8 +553,11 @@ export const postsRouter = createRouter({
           authMethod: schema.users.authMethod,
           createdAt: schema.users.createdAt,
           lastSignInAt: schema.users.lastSignInAt,
+          phoneVerified: schema.profiles.phoneVerified,
+          postCount: sql<number>`(SELECT COUNT(*) FROM ${schema.posts} WHERE ${schema.posts.userId} = ${schema.users.id})`,
         })
         .from(schema.users)
+        .leftJoin(schema.profiles, eq(schema.profiles.userId, schema.users.id))
         .where(input.search ? sql`${schema.users.email} LIKE ${"%" + input.search + "%"} OR ${schema.users.name} LIKE ${"%" + input.search + "%"}` : undefined)
         .orderBy(desc(schema.users.createdAt))
         .limit(input.limit)

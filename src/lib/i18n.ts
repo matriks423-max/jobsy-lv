@@ -65,7 +65,6 @@ export const translations = {
     browse: {
       title: "Atrodi palīdzību vai darbu",
       searchPlaceholder: "Meklēt pēc atslēgvārda...",
-      showing: "Rādīti {count} sludinājumi",
       typeAll: "Visi",
       typeNeed: "Vajag palīdzību",
       typeOffer: "Varu palīdzēt",
@@ -403,7 +402,6 @@ export const translations = {
     browse: {
       title: "Найди помощь или работу",
       searchPlaceholder: "Искать по ключевым словам...",
-      showing: "Показано {count} объявлений",
       typeAll: "Все",
       typeNeed: "Нужна помощь",
       typeOffer: "Могу помочь",
@@ -741,7 +739,6 @@ export const translations = {
     browse: {
       title: "Find help or work",
       searchPlaceholder: "Search by keyword...",
-      showing: "Showing {count} posts",
       typeAll: "All",
       typeNeed: "Need Help",
       typeOffer: "Can Help",

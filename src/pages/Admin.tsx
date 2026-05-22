@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   CheckCircle, XCircle, Trash2, ShieldOff, AlertTriangle,
   FileText, Flag, Loader2, LayoutDashboard, Users, List,
-  Eye, ShieldCheck, Ban, UserCheck, Search,
+  Eye, ShieldCheck, Ban, UserCheck, Search, Phone,
 } from "lucide-react";
 
 type AdminTab = "overview" | "users" | "posts" | "pending" | "reports";
@@ -124,22 +124,36 @@ export default function Admin() {
 
         {/* ── OVERVIEW ── */}
         {tab === "overview" && (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {[
-              { label: "Total Users", value: stats?.totalUsers, color: "text-coral" },
-              { label: "Active Posts", value: stats?.activePosts, color: "text-sage" },
-              { label: "Posts Today", value: stats?.postsToday, color: "text-mustard" },
-              { label: "Signups Today", value: stats?.usersToday, color: "text-coral" },
-              { label: "Total Posts", value: stats?.totalPosts, color: "text-ink" },
-              { label: "Paid Posts", value: stats?.paidPosts, color: "text-sage" },
-              { label: "Pending Review", value: stats?.pendingCount, color: "text-mustard" },
-              { label: "Open Reports", value: stats?.reportsCount, color: "text-need" },
-            ].map((s) => (
-              <div key={s.label} className="rounded-2xl border-2 border-ink bg-white p-5 text-center">
-                <p className={`font-mono text-3xl font-bold ${s.color}`}>{s.value ?? "—"}</p>
-                <p className="mt-1 font-body text-xs text-ink-muted">{s.label}</p>
-              </div>
-            ))}
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {[
+                { label: "Total Users", value: stats?.totalUsers, color: "text-coral" },
+                { label: "Active Posts", value: stats?.activePosts, color: "text-sage" },
+                { label: "Posts Today", value: stats?.postsToday, color: "text-mustard" },
+                { label: "Signups Today", value: stats?.usersToday, color: "text-coral" },
+                { label: "Total Posts", value: stats?.totalPosts, color: "text-ink" },
+                { label: "Paid Posts", value: stats?.paidPosts, color: "text-sage" },
+                { label: "Pending Review", value: stats?.pendingCount, color: "text-mustard" },
+                { label: "Open Reports", value: stats?.reportsCount, color: "text-need" },
+              ].map((s) => (
+                <div key={s.label} className="rounded-2xl border-2 border-ink bg-white p-5 text-center">
+                  <p className={`font-mono text-3xl font-bold ${s.color}`}>{s.value ?? "—"}</p>
+                  <p className="mt-1 font-body text-xs text-ink-muted">{s.label}</p>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              {[
+                { label: "Interests Sent", value: stats?.totalInterests, color: "text-coral" },
+                { label: "Reviews Left", value: stats?.totalReviews, color: "text-mustard" },
+                { label: "Verified Phones", value: stats?.verifiedPhones, color: "text-sage" },
+              ].map((s) => (
+                <div key={s.label} className="rounded-2xl border-2 border-ink bg-white p-5 text-center">
+                  <p className={`font-mono text-3xl font-bold ${s.color}`}>{s.value ?? "—"}</p>
+                  <p className="mt-1 font-body text-xs text-ink-muted">{s.label}</p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
@@ -167,8 +181,13 @@ export default function Admin() {
                       {u.role === "banned" && <span className="rounded bg-need-light px-1.5 py-0.5 font-mono text-[10px] font-bold text-need">BANNED</span>}
                     </div>
                     <p className="font-mono text-xs text-ink-muted">
-                      #{u.id} · {u.name ?? "—"} · {u.authMethod} · joined {new Date(u.createdAt).toLocaleDateString()}
+                      #{u.id} · {u.name ?? "—"} · {u.authMethod} · joined {new Date(u.createdAt).toLocaleDateString()} · {u.postCount ?? 0} posts
                     </p>
+                    {u.phoneVerified && (
+                      <span className="mt-1 flex items-center gap-1 font-mono text-[10px] text-sage">
+                        <Phone className="h-3 w-3" /> phone verified
+                      </span>
+                    )}
                   </div>
                   <div className="flex shrink-0 gap-1">
                     {u.role === "banned" ? (

@@ -19,6 +19,7 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
+  Heart,
 } from "lucide-react";
 
 export default function MyPosts() {
@@ -137,7 +138,7 @@ export default function MyPosts() {
           </div>
         ) : filtered.length > 0 ? (
           <div className="space-y-4">
-            {filtered.map((item: PostWithProfile) => {
+            {filtered.map((item: PostWithProfile & { interestCount?: number }) => {
               const post = item.post;
               const status = getStatusConfig(post.status);
               const StatusIcon = status.icon;
@@ -174,6 +175,11 @@ export default function MyPosts() {
                       <span className="flex items-center gap-1 font-mono text-xs text-ink-light">
                         <MessageSquare className="h-3 w-3" /> {post.contactCount}
                       </span>
+                      {post.type === "need" && (
+                        <span className="flex items-center gap-1 font-mono text-xs text-coral">
+                          <Heart className="h-3 w-3" /> {item.interestCount ?? 0}
+                        </span>
+                      )}
                     </div>
                     <div className="flex gap-1">
                       {post.status === "active" && (
