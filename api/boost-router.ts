@@ -27,10 +27,33 @@ export const boostRouter = createRouter({
       if (ctx.user.plan === "business" && input.boostType === "featured") {
         const profile = await getProfileByUserId(ctx.user.id);
         if (profile && profile.freeBoostsRemaining > 0) {
-          await applyBoostToPost(input.postId, "featured", "free-boost");
-          await updateProfile(ctx.user.id, {
-            freeBoostsRemaining: profile.freeBoostsRemaining - 1,
+          // Use a transaction to prevent race conditions
+          await getDb().transaction(async (tx) => {
+            // Re-read inside transaction to get current value
+            const [freshProfile] = await tx
+              .select({ freeBoostsRemaining: schema.profiles.freeBoostsRemaining })
+              .from(schema.profiles)
+              .where(eq(schema.profiles.userId, ctx.user.id))
+              .limit(1);
+
+            if (!freshProfile || freshProfile.freeBoostsRemaining <= 0) {
+              throw new TRPCError({ code: "BAD_REQUEST", message: "No free boosts remaining" });
+            }
+
+            const boostExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+            await tx
+              .update(schema.posts)
+              .set({ boostType: "featured", boostExpiresAt, boostStripeSessionId: "free-boost" })
+              .where(eq(schema.posts.id, input.postId));
+
+            await tx.insert(schema.socialQueue).values({ postId: input.postId, boostType: "featured" });
+
+            await tx
+              .update(schema.profiles)
+              .set({ freeBoostsRemaining: freshProfile.freeBoostsRemaining - 1 })
+              .where(eq(schema.profiles.userId, ctx.user.id));
           });
+
           return { free: true };
         }
       }
