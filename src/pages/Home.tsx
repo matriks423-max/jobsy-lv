@@ -1,8 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
-import { CATEGORIES } from "@/lib/categories";
+import { CATEGORIES, CITIES } from "@/lib/categories";
+import { getCityCoords } from "@/lib/lv-cities";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -19,6 +25,10 @@ import {
   Copy,
   Check,
 } from "lucide-react";
+
+// Fix Leaflet default icon paths in Vite
+delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
+L.Icon.Default.mergeOptions({ iconRetinaUrl: markerIcon2x, iconUrl: markerIcon, shadowUrl: markerShadow });
 
 function AnimatedCounter({ target, duration = 1500 }: { target: number; duration?: number }) {
   const [count, setCount] = useState(0);
@@ -229,6 +239,48 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* City Map */}
+      <section className="px-4 py-20 noise-bg">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="mb-8 text-center font-display text-3xl font-bold text-ink md:text-4xl">
+            {t(locale, "cityMap.title")}
+          </h2>
+          <MapContainer
+            center={[56.88, 24.6]}
+            zoom={7}
+            className="h-[340px] w-full rounded-2xl border-2 border-ink md:h-[440px]"
+            scrollWheelZoom={false}
+            zoomControl={true}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {CITIES.filter((c) => c !== "other").map((cityKey) => {
+              const coords = getCityCoords(cityKey);
+              if (!coords) return null;
+              return (
+                <Marker key={cityKey} position={[coords.lat, coords.lng]}>
+                  <Popup>
+                    <div className="min-w-[140px] text-center">
+                      <p className="mb-2 font-bold text-gray-900">
+                        {t(locale, `cities.${cityKey}` as never)}
+                      </p>
+                      <Link
+                        to={`/browse?city=${cityKey}`}
+                        className="inline-block rounded-lg border-2 border-gray-800 bg-orange-400 px-3 py-1 text-xs font-medium text-gray-900 hover:bg-orange-500"
+                      >
+                        {t(locale, "cityMap.viewPosts")} →
+                      </Link>
+                    </div>
+                  </Popup>
+                </Marker>
+              );
+            })}
+          </MapContainer>
         </div>
       </section>
 

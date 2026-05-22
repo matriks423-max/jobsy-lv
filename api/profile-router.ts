@@ -4,6 +4,11 @@ import { createRouter, authedQuery } from "./middleware";
 import { getProfileByUserId, updateProfile } from "./queries/profiles";
 import { generateOtp, storeOtp, validateOtp, sendSms } from "./lib/sms";
 
+// Max 3 OTP sends per 15-minute window per user
+const otpRateMap = new Map<number, { count: number; windowStart: number }>();
+const OTP_MAX = 3;
+const OTP_WINDOW_MS = 15 * 60 * 1000;
+
 export const profileRouter = createRouter({
   me: authedQuery.query(async ({ ctx }: { ctx: { user: { id: number } } }) => {
     const profile = await getProfileByUserId(ctx.user.id);
@@ -46,6 +51,16 @@ export const profileRouter = createRouter({
   sendPhoneOtp: authedQuery
     .input(z.object({ phone: z.string().min(5).max(50) }))
     .mutation(async ({ ctx, input }) => {
+      const now = Date.now();
+      const entry = otpRateMap.get(ctx.user.id);
+      if (entry && now - entry.windowStart < OTP_WINDOW_MS) {
+        if (entry.count >= OTP_MAX) {
+          throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Pārāk daudz mēģinājumu. Mēģini vēlāk." });
+        }
+        otpRateMap.set(ctx.user.id, { count: entry.count + 1, windowStart: entry.windowStart });
+      } else {
+        otpRateMap.set(ctx.user.id, { count: 1, windowStart: now });
+      }
       const code = generateOtp();
       storeOtp(input.phone, ctx.user.id, code);
       await sendSms(input.phone, `Tavs jobsy.lv verifikācijas kods: ${code}`);

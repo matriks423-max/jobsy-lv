@@ -105,7 +105,7 @@ export async function upsertUser(data: InsertUser) {
         email: data.email ?? null,
         name: data.name ?? null,
         avatarUrl: data.avatar ?? null,
-        freePostUsed: false,
+        freePostsUsed: 0,
         freePostCredits: 0,
         referralCode,
       } as InsertProfile);

@@ -43,7 +43,7 @@ export const profiles = mysqlTable("profiles", {
   city: varchar("city", { length: 100 }),
   avatarUrl: text("avatarUrl"),
   phoneVerified: boolean("phoneVerified").default(false).notNull(),
-  freePostUsed: boolean("freePostUsed").default(false).notNull(),
+  freePostsUsed: int("freePostsUsed", { unsigned: true }).default(0).notNull(),
   freePostCredits: int("freePostCredits", { unsigned: true }).default(0).notNull(),
   referralCode: varchar("referralCode", { length: 20 }).unique(),
   referredBy: bigint("referredBy", { mode: "number", unsigned: true }),
