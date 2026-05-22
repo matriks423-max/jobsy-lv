@@ -138,6 +138,9 @@ app.post("/api/checkout", async (c) => {
     } catch {
       return c.json({ error: "Unauthorized" }, 401);
     }
+    if ((user as { role?: string }).role === "banned") {
+      return c.json({ error: "Account suspended" }, 403);
+    }
     const body = await c.req.json();
     const { postId } = body;
     const result = await createCheckoutSession(Number(postId), user.id);

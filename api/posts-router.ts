@@ -25,11 +25,7 @@ import {
 import { createContact, hasContacted, createReport } from "./queries/reports";
 import { hasInterested, createInterest } from "./queries/interests";
 import { sendInterestNotification } from "./lib/email";
-import {
-  getReferralByReferredId,
-  markReferralPostMade,
-  markReferralRewarded,
-} from "./queries/referrals";
+import { atomicRewardReferral } from "./queries/referrals";
 import { addFreePostCredit } from "./queries/profiles";
 import { createCheckoutSession } from "./stripe";
 import { moderateContent, softFlagCheck } from "./lib/moderation";
@@ -112,13 +108,13 @@ export const postsRouter = createRouter({
         type: postTypeEnum,
         title: z.string().min(5).max(80),
         description: z.string().max(500).optional(),
-        category: z.string(),
+        category: z.enum(["household","moving","repairs","garden","auto","childcare","pets","it","tutoring","other"]),
         city: z.string().optional(),
-        region: z.string().optional(),
+        region: z.string().max(100).optional(),
         budgetText: z.string().max(100).optional(),
         whenText: z.string().max(100).optional(),
         language: languageEnum.default("lv"),
-        images: z.array(z.string()).optional(),
+        images: z.array(z.string().regex(/^\/uploads\/[\w.-]+$/, "Invalid image path")).max(5).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -153,12 +149,11 @@ export const postsRouter = createRouter({
 
       const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-      // Priority: free post credits > first free post > paid
-      const hasFreeCredits = profile.freePostCredits > 0;
-      const canUseFreePost = FREE_FIRST_POST && profile.freePostsUsed < FREE_POSTS_LIMIT;
+      // Atomic priority: credits first, then built-in free slots, then paid.
+      // useFreePostCredit / useFreePost both use conditional UPDATE — safe under concurrency.
+      const creditConsumed = await useFreePostCredit(ctx.user.id);
 
-      if (hasFreeCredits) {
-        await useFreePostCredit(ctx.user.id);
+      if (creditConsumed) {
         const post = await createPost({
           ...input,
           userId: ctx.user.id,
@@ -182,7 +177,9 @@ export const postsRouter = createRouter({
         return { postId: insertId, requiresPayment: false, needsReview };
       }
 
-      if (canUseFreePost) {
+      const freeSlotConsumed = FREE_FIRST_POST && await useFreePost(ctx.user.id, FREE_POSTS_LIMIT);
+
+      if (freeSlotConsumed) {
         const post = await createPost({
           ...input,
           userId: ctx.user.id,
@@ -190,7 +187,6 @@ export const postsRouter = createRouter({
           wasFree: true,
           expiresAt,
         });
-        await useFreePost(ctx.user.id);
         const insertId = Number((post as unknown as [{ insertId: bigint }])[0].insertId);
 
         // Save images
@@ -383,8 +379,8 @@ export const postsRouter = createRouter({
     .input(
       z.object({
         postId: z.number(),
-        reason: z.string(),
-        details: z.string().optional(),
+        reason: z.enum(["misleading","offensive","fraud","spam","other"]),
+        details: z.string().max(500).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -626,11 +622,14 @@ export const postsRouter = createRouter({
       if (!post.filled) throw new TRPCError({ code: "BAD_REQUEST", message: "Post not filled yet" });
 
       const reviewerId = ctx.user.id;
-      // Post owner can review someone who expressed interest; interested party can review post owner
       const isPostOwner = post.userId === reviewerId;
       const isRevieweePostOwner = input.revieweeId === post.userId;
       if (!isPostOwner && !isRevieweePostOwner) {
         throw new TRPCError({ code: "FORBIDDEN", message: "Not eligible to leave this review" });
+      }
+      // Non-owner reviewer must have expressed interest on this post
+      if (!isPostOwner && !(await hasInterested(input.postId, reviewerId))) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Must have expressed interest to leave a review" });
       }
       if (reviewerId === input.revieweeId) {
         throw new TRPCError({ code: "BAD_REQUEST", message: "Cannot review yourself" });
@@ -695,10 +694,6 @@ export const postsRouter = createRouter({
 });
 
 async function checkAndRewardReferralOnPost(userId: number) {
-  const referral = await getReferralByReferredId(userId);
-  if (!referral || referral.postMade || referral.rewarded) return;
-
-  await markReferralPostMade(userId);
-  await addFreePostCredit(referral.referrerId);
-  await markReferralRewarded(userId);
+  const referrerId = await atomicRewardReferral(userId);
+  if (referrerId) await addFreePostCredit(referrerId);
 }

@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, and } from "drizzle-orm";
 import * as schema from "@db/schema";
 import type { InsertProfile } from "@db/schema";
 import { getDb } from "./connection";
@@ -28,36 +28,29 @@ export async function updateProfile(userId: number, data: Partial<InsertProfile>
     .where(eq(schema.profiles.userId, userId));
 }
 
-export async function useFreePost(userId: number) {
-  await getDb()
+// Atomic: increments only if under limit. Returns true if the slot was consumed.
+export async function useFreePost(userId: number, limit: number): Promise<boolean> {
+  const result = await getDb()
     .update(schema.profiles)
     .set({ freePostsUsed: sql`freePostsUsed + 1`, updatedAt: new Date() })
-    .where(eq(schema.profiles.userId, userId));
+    .where(and(eq(schema.profiles.userId, userId), sql`freePostsUsed < ${limit}`));
+  return (result as unknown as [{ affectedRows: number }])[0].affectedRows > 0;
 }
 
 export async function addFreePostCredit(userId: number) {
-  const profile = await getProfileByUserId(userId);
-  if (!profile) return;
   await getDb()
     .update(schema.profiles)
-    .set({
-      freePostCredits: profile.freePostCredits + 1,
-      updatedAt: new Date(),
-    })
+    .set({ freePostCredits: sql`freePostCredits + 1`, updatedAt: new Date() })
     .where(eq(schema.profiles.userId, userId));
 }
 
-export async function useFreePostCredit(userId: number) {
-  const profile = await getProfileByUserId(userId);
-  if (!profile || profile.freePostCredits <= 0) return false;
-  await getDb()
+// Atomic: decrements only if credits > 0. Returns true if a credit was consumed.
+export async function useFreePostCredit(userId: number): Promise<boolean> {
+  const result = await getDb()
     .update(schema.profiles)
-    .set({
-      freePostCredits: profile.freePostCredits - 1,
-      updatedAt: new Date(),
-    })
-    .where(eq(schema.profiles.userId, userId));
-  return true;
+    .set({ freePostCredits: sql`freePostCredits - 1`, updatedAt: new Date() })
+    .where(and(eq(schema.profiles.userId, userId), sql`freePostCredits > 0`));
+  return (result as unknown as [{ affectedRows: number }])[0].affectedRows > 0;
 }
 
 export async function getProfileByReferralCode(code: string) {

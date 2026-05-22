@@ -2,7 +2,7 @@ import Stripe from "stripe";
 import { env } from "./lib/env";
 import { getPostById, updatePost } from "./queries/posts";
 import { getProfileByUserId, updateProfile } from "./queries/profiles";
-import { getReferralByReferredId, markReferralPostMade, markReferralRewarded } from "./queries/referrals";
+import { atomicRewardReferral } from "./queries/referrals";
 import { addFreePostCredit } from "./queries/profiles";
 import { sendPostPublished } from "./lib/email";
 
@@ -72,21 +72,21 @@ export async function handleStripeWebhook(body: string, signature: string) {
 
     if (postId && userId) {
       const post = await getPostById(Number(postId));
-      if (post && post.stripeSessionId === session.id) {
+      // Guard: correct session id AND not already active (idempotent, prevents double email)
+      if (post && post.stripeSessionId === session.id && post.status !== "active") {
         await updatePost(post.id, {
           status: "active",
           paidAt: new Date(),
           stripePaymentId: session.payment_intent as string,
         });
 
-        // Send post published email
         const profile = await getProfileByUserId(Number(userId));
         if (profile?.email) {
           void sendPostPublished(profile.email, post.title, post.id);
         }
 
-        // Check referral reward
-        await checkAndRewardReferral(Number(userId));
+        const referrerId = await atomicRewardReferral(Number(userId));
+        if (referrerId) await addFreePostCredit(referrerId);
       }
     }
   }
@@ -94,16 +94,5 @@ export async function handleStripeWebhook(body: string, signature: string) {
   return { received: true };
 }
 
-export async function checkAndRewardReferral(userId: number) {
-  const referral = await getReferralByReferredId(userId);
-  if (!referral || referral.postMade || referral.rewarded) return;
-
-  // Mark that the referred user made a post
-  await markReferralPostMade(userId);
-
-  // Give referrer a free post credit
-  await addFreePostCredit(referral.referrerId);
-  await markReferralRewarded(userId);
-}
 
 export { stripe };
