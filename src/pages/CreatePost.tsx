@@ -6,6 +6,7 @@ import { CATEGORIES, CITIES } from "@/lib/categories";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
+import UpgradeModal from "@/components/UpgradeModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -56,6 +57,7 @@ export default function CreatePost() {
   const [uploading, setUploading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const { data: referralInfo } = trpc.referral.me.useQuery(undefined, {
@@ -94,17 +96,15 @@ export default function CreatePost() {
 
   const createMutation = trpc.posts.create.useMutation({
     onSuccess: (data) => {
-      if (data.requiresPayment && data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
-      } else if (data.requiresPayment) {
-        navigate(`/payment?postId=${data.postId}`);
-      } else {
-        const reviewParam = data.needsReview ? "&review=true" : "";
-        navigate(`/success?post=${data.postId}&free=true${reviewParam}`);
-      }
+      const reviewParam = data.needsReview ? "&review=true" : "";
+      navigate(`/success?post=${data.postId}&free=true${reviewParam}`);
     },
     onError: (err) => {
-      toast(err.message, "error");
+      if (err.message.includes("Mēneša limits")) {
+        setShowUpgrade(true);
+      } else {
+        toast(err.message, "error");
+      }
     },
   });
 
@@ -526,6 +526,9 @@ export default function CreatePost() {
           </div>
         )}
       </div>
+
+      {/* Upgrade Modal */}
+      {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
 
       {/* Delete Dialog */}
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
