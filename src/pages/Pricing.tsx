@@ -4,7 +4,7 @@ import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
-import { Check, Zap, ChevronDown } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 
 const BOOST_FEATURES = [
   { icon: "🔝", name: "Bump to top", price: "€1.00", desc: "7 days at top of category + social post" },
