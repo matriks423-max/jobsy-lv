@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import PostCard from "@/components/PostCard";
+import BoostPicker from "@/components/BoostPicker";
 import {
   Dialog,
   DialogContent,
@@ -46,6 +47,7 @@ import {
   Eye,
   Star,
   ShieldCheck,
+  Zap,
 } from "lucide-react";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -67,11 +69,16 @@ export default function PostDetail() {
   const [showShare, setShowShare] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
+  const [showBoost, setShowBoost] = useState(false);
 
   const { data, isLoading } = trpc.posts.getById.useQuery(
     { id: postId },
     { enabled: !isNaN(postId) }
   );
+
+  const { data: subStatus } = trpc.subscription.status.useQuery(undefined, {
+    enabled: isAuthenticated ?? false,
+  });
 
   const contactMutation = trpc.posts.contact.useMutation({
     onSuccess: () => toast(t(locale, "postDetail.contact.opened"), "success"),
@@ -280,11 +287,20 @@ export default function PostDetail() {
               <Share2 className="h-4 w-4" />
             </button>
             {isOwner && (
-              <Link to={`/edit/${post.id}`}>
-                <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title={t(locale, "nav.myPosts")}>
-                  <Pencil className="h-4 w-4" />
+              <>
+                <Link to={`/edit/${post.id}`}>
+                  <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title={t(locale, "nav.myPosts")}>
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                </Link>
+                <button
+                  onClick={() => setShowBoost(true)}
+                  className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark"
+                  title={t(locale, "boost.title")}
+                >
+                  <Zap className="h-4 w-4" />
                 </button>
-              </Link>
+              </>
             )}
           </div>
         </div>
@@ -614,6 +630,16 @@ export default function PostDetail() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Boost Picker — post owner only */}
+      {showBoost && (
+        <BoostPicker
+          postId={postId}
+          isBusiness={subStatus?.plan === "business"}
+          freeBoostsRemaining={subStatus?.freeBoostsRemaining ?? 0}
+          onClose={() => setShowBoost(false)}
+        />
+      )}
 
       {/* Image Gallery Lightbox */}
       {showGallery && images.length > 0 && (
