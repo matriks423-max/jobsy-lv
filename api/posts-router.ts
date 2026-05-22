@@ -21,6 +21,7 @@ import {
   getProfileByUserId,
   useFreePost,
   useFreePostCredit,
+  updateProfile,
 } from "./queries/profiles";
 import { createContact, hasContacted, createReport } from "./queries/reports";
 import { hasInterested, createInterest } from "./queries/interests";
@@ -152,84 +153,56 @@ export const postsRouter = createRouter({
 
       const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-      // Priority: free post credits > first free post > paid
-      const hasFreeCredits = profile.freePostCredits > 0;
-      const canUseFreePost = FREE_FIRST_POST && !profile.freePostUsed;
+      // Plan-based posting logic
+      if (ctx.user.plan !== "business") {
+        // Free tier: enforce monthly limit of 10 posts
+        const today = new Date();
+        const thisMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-01`;
 
-      if (hasFreeCredits) {
-        await useFreePostCredit(ctx.user.id);
-        const post = await createPost({
-          ...input,
-          userId: ctx.user.id,
-          status: needsReview ? "pending_review" : "active",
-          wasFree: true,
-          expiresAt,
-        });
-        const insertId = Number((post as unknown as [{ insertId: bigint }])[0].insertId);
-
-        // Save images
-        if (input.images && input.images.length > 0) {
-          for (const url of input.images) {
-            await getDb().insert(schema.postImages).values({ postId: insertId, url });
-          }
+        if (profile.monthlyPostReset !== thisMonth) {
+          // New month — reset counter
+          await updateProfile(ctx.user.id, { monthlyPostCount: 0, monthlyPostReset: thisMonth });
+          profile.monthlyPostCount = 0;
         }
 
-        await checkAndRewardReferralOnPost(ctx.user.id);
-        if (!needsReview && profile.email) {
-          void sendPostPublished(profile.email, input.title, insertId);
+        const FREE_MONTHLY_LIMIT = 10;
+        if (profile.monthlyPostCount >= FREE_MONTHLY_LIMIT) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Mēneša limits sasniegts — jaunini uz Business kontu",
+          });
         }
-        return { postId: insertId, requiresPayment: false, needsReview };
       }
 
-      if (canUseFreePost) {
-        const post = await createPost({
-          ...input,
-          userId: ctx.user.id,
-          status: needsReview ? "pending_review" : "active",
-          wasFree: true,
-          expiresAt,
-        });
-        await useFreePost(ctx.user.id);
-        const insertId = Number((post as unknown as [{ insertId: bigint }])[0].insertId);
-
-        // Save images
-        if (input.images && input.images.length > 0) {
-          for (const url of input.images) {
-            await getDb().insert(schema.postImages).values({ postId: insertId, url });
-          }
-        }
-
-        await checkAndRewardReferralOnPost(ctx.user.id);
-        if (!needsReview && profile.email) {
-          void sendPostPublished(profile.email, input.title, insertId);
-        }
-        return { postId: insertId, requiresPayment: false, needsReview };
-      }
-
-      // Paid post
+      // Create post — always active or pending_review, never pending_payment
       const post = await createPost({
         ...input,
         userId: ctx.user.id,
-        status: "pending_payment",
-        wasFree: false,
+        status: needsReview ? "pending_review" : "active",
+        wasFree: true,
         expiresAt,
       });
 
       const insertId = Number((post as unknown as [{ insertId: bigint }])[0].insertId);
 
-      // Save images for paid post as well
+      // Save images
       if (input.images && input.images.length > 0) {
         for (const url of input.images) {
           await getDb().insert(schema.postImages).values({ postId: insertId, url, sortOrder: 0 });
         }
       }
 
-      try {
-        const checkout = await createCheckoutSession(insertId, ctx.user.id);
-        return { postId: insertId, requiresPayment: true, checkoutUrl: checkout.url };
-      } catch {
-        return { postId: insertId, requiresPayment: true, checkoutUrl: `/payment?postId=${insertId}` };
+      // Increment monthly counter for free users
+      if (ctx.user.plan !== "business") {
+        await updateProfile(ctx.user.id, { monthlyPostCount: profile.monthlyPostCount + 1 });
       }
+
+      await checkAndRewardReferralOnPost(ctx.user.id);
+      if (!needsReview && profile.email) {
+        void sendPostPublished(profile.email, input.title, insertId);
+      }
+
+      return { postId: insertId, requiresPayment: false, needsReview };
     }),
 
   update: authedQuery
