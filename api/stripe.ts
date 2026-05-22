@@ -34,10 +34,15 @@ export async function applyBoostToPost(
   sessionId: string
 ) {
   const boostExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-  await updatePost(postId, { boostType, boostExpiresAt, boostStripeSessionId: sessionId });
-  if (boostType === "bump" || boostType === "featured") {
-    await getDb().insert(schema.socialQueue).values({ postId, boostType });
-  }
+  await getDb().transaction(async (tx) => {
+    await tx
+      .update(schema.posts)
+      .set({ boostType, boostExpiresAt, boostStripeSessionId: sessionId })
+      .where(eq(schema.posts.id, postId));
+    if (boostType === "bump" || boostType === "featured") {
+      await tx.insert(schema.socialQueue).values({ postId, boostType });
+    }
+  });
 }
 
 export async function activateBusinessPlan(userId: number, subscriptionId: string) {
@@ -88,6 +93,7 @@ export async function createCheckoutSession(postId: number, userId: number) {
 export async function createSubscriptionCheckout(userId: number) {
   if (!stripe || !env.stripeBusinessPriceId) throw new Error("Stripe subscription not configured");
   const customerId = await ensureStripeCustomer(userId);
+  if (!customerId) throw new Error("Could not resolve Stripe customer");
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
     currency: "eur",
@@ -123,6 +129,7 @@ export async function createBoostCheckout(
   const post = await getPostById(postId);
   if (!post || post.userId !== userId) throw new Error("Invalid post");
   const customerId = await ensureStripeCustomer(userId);
+  if (!customerId) throw new Error("Could not resolve Stripe customer");
   const BOOST_CENTS = { bump: 100, featured: 200, urgent: 50 } as const;
   const BOOST_NAMES = {
     bump: "Bump to top (7 days)",
@@ -161,10 +168,10 @@ export async function handleStripeWebhook(body: string, signature: string) {
     if (type === "boost") {
       // Boost payment completed
       const postId = Number(session.metadata?.postId);
-      const boostType = session.metadata?.boostType as "bump" | "featured" | "urgent";
-      if (postId && boostType) {
-        await applyBoostToPost(postId, boostType, session.id);
-      }
+      const rawBoostType = session.metadata?.boostType;
+      if (!postId || !["bump", "featured", "urgent"].includes(rawBoostType ?? "")) return;
+      const boostType = rawBoostType as "bump" | "featured" | "urgent";
+      await applyBoostToPost(postId, boostType, session.id);
     } else if (type !== "subscription") {
       // Legacy post payment (no type field = old flow)
       const postId = session.metadata?.postId;
@@ -175,7 +182,7 @@ export async function handleStripeWebhook(body: string, signature: string) {
           await updatePost(post.id, {
             status: "active",
             paidAt: new Date(),
-            stripePaymentId: session.payment_intent as string,
+            stripePaymentId: typeof session.payment_intent === "string" ? session.payment_intent : undefined,
           });
           const profile = await getProfileByUserId(Number(userId));
           if (profile?.email) void sendPostPublished(profile.email, post.title, post.id);
