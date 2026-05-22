@@ -4,6 +4,7 @@ import { statsRouter } from "./stats-router";
 import { referralRouter } from "./referral-router";
 import { profileRouter } from "./profile-router";
 import { emailAuthRouter } from "./email-auth";
+import { savedSearchesRouter } from "./saved-searches-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
@@ -14,6 +15,7 @@ export const appRouter = createRouter({
   referral: referralRouter,
   profile: profileRouter,
   emailAuth: emailAuthRouter,
+  savedSearches: savedSearchesRouter,
 });
 
 export type AppRouter = typeof appRouter;

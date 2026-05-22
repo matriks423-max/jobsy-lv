@@ -151,6 +151,20 @@ export const reviews = mysqlTable("reviews", {
   index("idx_reviews_reviewee").on(table.revieweeId),
 ]);
 
+export const savedSearches = mysqlTable("savedSearches", {
+  id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
+  userId: bigint("userId", { mode: "number", unsigned: true }).notNull(),
+  label: varchar("label", { length: 100 }).notNull(),
+  type: mysqlEnum("type", ["need", "offer"]).default("need").notNull(),
+  category: varchar("category", { length: 50 }),
+  city: varchar("city", { length: 100 }),
+  keyword: varchar("keyword", { length: 100 }),
+  lastNotifiedAt: timestamp("lastNotifiedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => [
+  index("idx_saved_searches_user").on(table.userId),
+]);
+
 export const postImages = mysqlTable("postImages", {
   id: int("id", { unsigned: true }).autoincrement().primaryKey(),
   postId: int("postId", { unsigned: true }).notNull(),
@@ -179,3 +193,5 @@ export type PostImage = typeof postImages.$inferSelect;
 export type InsertPostImage = typeof postImages.$inferInsert;
 export type Review = typeof reviews.$inferSelect;
 export type InsertReview = typeof reviews.$inferInsert;
+export type SavedSearch = typeof savedSearches.$inferSelect;
+export type InsertSavedSearch = typeof savedSearches.$inferInsert;

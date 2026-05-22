@@ -4,6 +4,8 @@ import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { CATEGORIES, CITIES } from "@/lib/categories";
 import { trpc } from "@/providers/trpc";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/useToast";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -22,6 +24,8 @@ import {
   Plus,
   LayoutList,
   Map,
+  Bell,
+  Check,
 } from "lucide-react";
 import JobMap from "@/components/JobMap";
 
@@ -39,6 +43,8 @@ function useDebounce<T>(value: T, delay: number): T {
 export default function Browse() {
   const navigate = useNavigate();
   const { locale } = useLocale();
+  const { isAuthenticated } = useAuth();
+  const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
@@ -54,6 +60,8 @@ export default function Browse() {
   );
   const [page, setPage] = useState(Number(searchParams.get("page") ?? "0"));
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
+  const [showSaveAlert, setShowSaveAlert] = useState(false);
+  const [alertLabel, setAlertLabel] = useState("");
 
   const listInput = {
     type: type === "all" ? undefined : type,
@@ -109,6 +117,30 @@ export default function Browse() {
     (category !== "all" ? 1 : 0) +
     (city !== "all" ? 1 : 0) +
     (debouncedSearch ? 1 : 0);
+
+  const saveSearchMutation = trpc.savedSearches.save.useMutation({
+    onSuccess: () => {
+      toast(t(locale, "browse.alertSaved"), "success");
+      setShowSaveAlert(false);
+      setAlertLabel("");
+    },
+    onError: (err) => toast(err.message, "error"),
+  });
+
+  const buildAutoLabel = () => {
+    const parts: string[] = [];
+    if (type !== "all") parts.push(type === "need" ? t(locale, "browse.typeNeed") : t(locale, "browse.typeOffer"));
+    if (category !== "all") parts.push(t(locale, `categories.${category}` as never));
+    if (city !== "all") parts.push(t(locale, `cities.${city}` as never));
+    if (debouncedSearch) parts.push(`"${debouncedSearch}"`);
+    return parts.join(" · ") || t(locale, "browse.title");
+  };
+
+  const handleOpenSaveAlert = () => {
+    if (!isAuthenticated) { navigate("/login"); return; }
+    setAlertLabel(buildAutoLabel());
+    setShowSaveAlert(true);
+  };
 
   const posts = data ?? [];
   const hasMore = posts.length === PAGE_SIZE;
@@ -224,6 +256,15 @@ export default function Browse() {
               {t(locale, "browse.clear")}
             </button>
           )}
+          {activeFiltersCount > 0 && (
+            <button
+              onClick={handleOpenSaveAlert}
+              className="flex items-center gap-1.5 rounded-lg border-2 border-ink bg-mustard-light px-3 py-1.5 font-body text-sm font-medium text-ink hover:bg-mustard transition"
+            >
+              <Bell className="h-3.5 w-3.5" />
+              {t(locale, "browse.saveAlert")}
+            </button>
+          )}
         </div>
 
         {/* Active filter pills */}
@@ -253,6 +294,36 @@ export default function Browse() {
                 <button onClick={() => setSearch("")}><X className="h-3 w-3" /></button>
               </span>
             )}
+          </div>
+        )}
+
+        {/* Save Alert inline form */}
+        {showSaveAlert && (
+          <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border-2 border-ink bg-mustard-light p-4">
+            <Bell className="h-4 w-4 shrink-0 text-ink" />
+            <Input
+              value={alertLabel}
+              onChange={(e) => setAlertLabel(e.target.value)}
+              placeholder={t(locale, "browse.alertLabelPlaceholder")}
+              className="h-9 flex-1 min-w-[180px] rounded-lg border-2 border-ink bg-white font-body text-sm focus:border-coral"
+            />
+            <button
+              onClick={() => saveSearchMutation.mutate({
+                label: alertLabel || buildAutoLabel(),
+                type: type === "all" ? "need" : type,
+                category: category === "all" ? undefined : category,
+                city: city === "all" ? undefined : city,
+                keyword: debouncedSearch || undefined,
+              })}
+              disabled={saveSearchMutation.isPending}
+              className="flex items-center gap-1.5 rounded-lg border-2 border-ink bg-ink px-4 py-1.5 font-body text-sm font-medium text-cream hover:bg-ink/80"
+            >
+              <Check className="h-3.5 w-3.5" />
+              {t(locale, "browse.alertConfirm")}
+            </button>
+            <button onClick={() => setShowSaveAlert(false)} className="text-ink-muted hover:text-ink">
+              <X className="h-4 w-4" />
+            </button>
           </div>
         )}
 

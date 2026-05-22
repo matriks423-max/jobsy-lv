@@ -16,6 +16,8 @@ import {
   Palette,
   Edit3,
   ShieldCheck,
+  Bell,
+  Trash2,
 } from "lucide-react";
 
 const THEMES: { value: Theme; labelKey: string; preview: string }[] = [
@@ -37,6 +39,12 @@ export default function Settings() {
   const [otpCode, setOtpCode] = useState("");
 
   const utils = trpc.useUtils();
+
+  const { data: savedSearches } = trpc.savedSearches.list.useQuery(undefined, { enabled: isAuthenticated });
+  const deleteSearchMutation = trpc.savedSearches.delete.useMutation({
+    onSuccess: () => utils.savedSearches.list.invalidate(),
+    onError: (err) => toast(err.message, "error"),
+  });
 
   const { data: profile, isLoading } = trpc.profile.me.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -216,6 +224,38 @@ export default function Settings() {
                 {saved ? t(locale, "settings.saved") : t(locale, "settings.save")}
               </Button>
             </div>
+          )}
+        </div>
+
+        {/* My Alerts section */}
+        <div className="mb-6 rounded-3xl border-2 border-ink bg-white p-6 md:p-8">
+          <div className="mb-6 flex items-center gap-3">
+            <Bell className="h-5 w-5 text-coral" />
+            <h2 className="font-body text-lg font-bold text-ink">
+              {t(locale, "settings.alertsSection")}
+            </h2>
+          </div>
+          {!savedSearches || savedSearches.length === 0 ? (
+            <p className="font-body text-sm text-ink-muted">{t(locale, "settings.alertsEmpty")}</p>
+          ) : (
+            <ul className="space-y-3">
+              {savedSearches.map((s) => (
+                <li key={s.id} className="flex items-center justify-between gap-3 rounded-xl border-2 border-ink-light bg-cream p-3">
+                  <div>
+                    <p className="font-body text-sm font-bold text-ink">{s.label}</p>
+                    <p className="font-mono text-xs text-ink-light">
+                      {s.type} {s.category ? `· ${s.category}` : ""} {s.city ? `· ${s.city}` : ""} {s.keyword ? `· "${s.keyword}"` : ""}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => deleteSearchMutation.mutate({ id: s.id })}
+                    className="rounded-lg border border-ink-light p-2 text-ink-muted hover:border-need hover:text-need"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
 

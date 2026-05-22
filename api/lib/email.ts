@@ -80,6 +80,40 @@ export async function sendInterestNotification(
   }
 }
 
+export async function sendSearchAlert(
+  to: string,
+  label: string,
+  posts: Array<{ id: number; title: string; city: string | null }>
+): Promise<void> {
+  try {
+    const rows = posts
+      .map((p) => {
+        const safeTitle = escHtml(p.title);
+        const safeCity = p.city ? escHtml(p.city) : "";
+        const url = `https://jobsy.lv/post/${p.id}`;
+        return `<li style="margin-bottom:12px;"><a href="${url}" style="color:#E8512A;font-weight:bold;text-decoration:none;">${safeTitle}</a>${safeCity ? ` <span style="color:#8A7060;">— ${safeCity}</span>` : ""}</li>`;
+      })
+      .join("");
+    await resend.emails.send({
+      from: FROM,
+      to,
+      subject: `Jauni sludinājumi: "${escHtml(label)}" 🔔`,
+      html: `
+        <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; background: #FAF6F0; padding: 40px 32px;">
+          <h1 style="font-size: 28px; color: #1A1208; margin-bottom: 8px;">jobsy<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#E8512A;margin-left:2px;vertical-align:middle;"></span></h1>
+          <hr style="border: 2px solid #1A1208; margin: 16px 0 32px;" />
+          <h2 style="font-size: 22px; color: #1A1208; margin-bottom: 8px;">Jauni sludinājumi tev!</h2>
+          <p style="color: #4A3728; font-size: 15px; margin-bottom: 20px;">Meklēšana: <strong>${escHtml(label)}</strong></p>
+          <ul style="padding-left: 20px; color: #1A1208; font-size: 15px; line-height: 1.8;">${rows}</ul>
+          <p style="color: #8A7060; font-size: 13px; margin-top: 32px;">Pārvaldit saglabātās meklēšanas: <a href="https://jobsy.lv/settings" style="color:#E8512A;">jobsy.lv/settings</a><br/>© 2026 jobsy.lv</p>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("[email] sendSearchAlert failed:", err);
+  }
+}
+
 export async function sendExpiryReminder(
   to: string,
   postTitle: string,
