@@ -555,7 +555,7 @@ export default function PostDetail() {
                 .filter((r) => r.post.id !== post.id)
                 .slice(0, 3)
                 .map((r) => (
-                  <PostCard key={r.post.id} post={r.post} profile={r.profile} />
+                  <PostCard key={r.post.id} post={r.post} profile={r.profile} isBusiness={r.isBusiness} />
                 ))}
             </div>
           </div>
