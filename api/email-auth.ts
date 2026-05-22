@@ -76,7 +76,7 @@ export async function handleGoogleCallback(code: string, redirectUri: string) {
         email: profile.email,
         name: profile.name ?? profile.email.split("@")[0],
         avatarUrl: profile.picture ?? null,
-        freePostUsed: false,
+        freePostsUsed: 0,
         freePostCredits: 0,
         referralCode,
       } as any);
@@ -137,7 +137,7 @@ export const emailAuthRouter = createRouter({
         userId: insertId,
         email: input.email,
         name: input.name,
-        freePostUsed: false,
+        freePostsUsed: 0,
         freePostCredits: 0,
         referralCode: refCode,
       } as any);

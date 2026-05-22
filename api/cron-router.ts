@@ -155,7 +155,7 @@ cronRouter.get("/backup", async (c) => {
         userId: schema.profiles.userId,
         phone: schema.profiles.phone,
         phoneVerified: schema.profiles.phoneVerified,
-        freePostUsed: schema.profiles.freePostUsed,
+        freePostsUsed: schema.profiles.freePostsUsed,
         freePostCredits: schema.profiles.freePostCredits,
       }).from(schema.profiles),
     ]);
@@ -170,7 +170,8 @@ cronRouter.get("/backup", async (c) => {
 
     const { Resend } = await import("resend");
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const adminEmail = process.env.ADMIN_EMAIL ?? "matriks423@gmail.com";
+    const adminEmail = process.env.ADMIN_EMAIL;
+    if (!adminEmail) return c.json({ error: "ADMIN_EMAIL env var not set" }, 500);
 
     await resend.emails.send({
       from: "jobsy.lv <noreply@jobsy.lv>",

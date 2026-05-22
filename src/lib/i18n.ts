@@ -30,13 +30,17 @@ export const translations = {
       titleItalic: "darbojas",
       step1: "Ievieto sludinājumu",
       step1Desc:
-        "Vai meklē palīdzību, vai piedāvā savus pakalpojumus. Pirmais sludinājums bez maksas.",
+        "Vai meklē palīdzību, vai piedāvā savus pakalpojumus. Pirmie 2 sludinājumi bez maksas.",
       step2: "Saņem atbildes",
       step2Desc:
         "Citi lietotāji redz tavu sludinājumu un sazinās ar tevi pa e-pastu vai telefonu.",
       step3: "Saki jā!",
       step3Desc:
         "Vienojies par detaļām, izpildi darbu un saņem samaksu.",
+    },
+    cityMap: {
+      title: "Meklē pēc pilsētas",
+      viewPosts: "Skatīt sludinājumus",
     },
     latestPosts: {
       title: "Jaunākie sludinājumi",
@@ -145,7 +149,7 @@ export const translations = {
       title: "Izveidot sludinājumu",
       titleItalic: "sludinājumu",
       editTitle: "Labot sludinājumu",
-      freeBadge: "Pirmais sludinājums bez maksas!",
+      freeBadge: "Pirmie 2 sludinājumi bez maksas!",
       creditBadge: "{count} bezmaksas sludinājumi no ieteikumiem",
       paidBadge: "Nākamais sludinājums: €2",
       typeLabel: "Sludinājuma veids",
@@ -184,7 +188,7 @@ export const translations = {
       deleteConfirm: "Dzēst",
       deleteCancel: "Atcelt",
       deleteBtn: "Dzēst",
-      info: "Pirmais sludinājums bez maksas. Sākot ar 2. — €2. Aktīvs 30 dienas.",
+      info: "Pirmie 2 sludinājumi bez maksas. Sākot ar 3. — €2. Aktīvs 30 dienas.",
       privacy: "Privātuma politika",
       terms: "Lietošanas noteikumi",
     },
@@ -293,7 +297,7 @@ export const translations = {
     },
     category: {
       ctaHeading: "Vajag palīdzību ar {cat}?",
-      ctaSubtitle: "Publicē sludinājumu — pirmais bez maksas.",
+      ctaSubtitle: "Publicē sludinājumu — pirmie 2 bez maksas.",
     },
     cookie: {
       message: "Mēs izmantojam sīkdatnes, lai uzlabotu lietošanas pieredzi.",
@@ -368,12 +372,16 @@ export const translations = {
       titleItalic: "работает",
       step1: "Размести объявление",
       step1Desc:
-        "Ищешь помощь или предлагаешь услуги. Первое объявление бесплатно.",
+        "Ищешь помощь или предлагаешь услуги. Первые 2 объявления бесплатно.",
       step2: "Получи отклики",
       step2Desc:
         "Другие пользователи видят твоё объявление и связываются по email или телефону.",
       step3: "Скажи да!",
       step3Desc: "Договорись о деталях, выполни работу и получи оплату.",
+    },
+    cityMap: {
+      title: "Поиск по городу",
+      viewPosts: "Смотреть объявления",
     },
     latestPosts: {
       title: "Новейшие объявления",
@@ -482,7 +490,7 @@ export const translations = {
       title: "Разместить объявление",
       titleItalic: "объявление",
       editTitle: "Редактировать объявление",
-      freeBadge: "Первое объявление бесплатно!",
+      freeBadge: "Первые 2 объявления бесплатно!",
       creditBadge: "{count} бесплатных объявлений от рефералов",
       paidBadge: "Следующее объявление: €2",
       typeLabel: "Тип объявления",
@@ -521,7 +529,7 @@ export const translations = {
       deleteConfirm: "Удалить",
       deleteCancel: "Отмена",
       deleteBtn: "Удалить",
-      info: "Первое объявление бесплатно. Начиная со 2-го — €2. Активно 30 дней.",
+      info: "Первые 2 объявления бесплатно. Начиная с 3-го — €2. Активно 30 дней.",
       privacy: "Политика конфиденциальности",
       terms: "Условия использования",
     },
@@ -630,7 +638,7 @@ export const translations = {
     },
     category: {
       ctaHeading: "Нужна помощь с {cat}?",
-      ctaSubtitle: "Разместите объявление — первое бесплатно.",
+      ctaSubtitle: "Разместите объявление — первые 2 бесплатно.",
     },
     cookie: {
       message: "Мы используем куки для улучшения работы сайта.",
@@ -705,12 +713,16 @@ export const translations = {
       titleItalic: "works",
       step1: "Post your job",
       step1Desc:
-        "Whether you need help or offer your services. First post is free.",
+        "Whether you need help or offer your services. First 2 posts are free.",
       step2: "Get responses",
       step2Desc:
         "Other users see your post and reach out via email or phone.",
       step3: "Say yes!",
       step3Desc: "Agree on details, do the job, and get paid.",
+    },
+    cityMap: {
+      title: "Browse by city",
+      viewPosts: "View posts",
     },
     latestPosts: {
       title: "Latest posts",
@@ -819,7 +831,7 @@ export const translations = {
       title: "Create a post",
       titleItalic: "post",
       editTitle: "Edit post",
-      freeBadge: "First post is free!",
+      freeBadge: "First 2 posts are free!",
       creditBadge: "{count} free posts from referrals",
       paidBadge: "Next post: €2",
       typeLabel: "Post type",
@@ -858,7 +870,7 @@ export const translations = {
       deleteConfirm: "Delete",
       deleteCancel: "Cancel",
       deleteBtn: "Delete",
-      info: "First post is free. From the 2nd — €2. Post active for 30 days.",
+      info: "First 2 posts are free. From the 3rd — €2. Post active for 30 days.",
       privacy: "Privacy Policy",
       terms: "Terms of Service",
     },
@@ -967,7 +979,7 @@ export const translations = {
     },
     category: {
       ctaHeading: "Need help with {cat}?",
-      ctaSubtitle: "Post a listing — the first one is free.",
+      ctaSubtitle: "Post a listing — first 2 are free.",
     },
     cookie: {
       message: "We use cookies to improve your experience.",

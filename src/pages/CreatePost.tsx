@@ -130,8 +130,8 @@ export default function CreatePost() {
 
   const hasFreeCredits = referralInfo && referralInfo.freePostCredits > 0;
   const creditCount = referralInfo?.freePostCredits ?? 0;
-  const freePostUsed = referralInfo?.freePostUsed ?? false;
-  const showFreeBadge = !hasFreeCredits && !freePostUsed;
+  const freePostsUsed = referralInfo?.freePostsUsed ?? 0;
+  const showFreeBadge = !hasFreeCredits && freePostsUsed < 2;
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
