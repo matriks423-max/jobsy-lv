@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>jobsy.lv — Style Direction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,700&family=Geist:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Instrument+Sans:wght@400;500;600;700&family=Sora:wght@400;600;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#000}
+
+/* ── SWITCHER ── */
+.switcher{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%);
+  z-index:1000;display:flex;gap:4px;
+  background:rgba(0,0,0,0.6);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.12);border-radius:40px;padding:5px;
+}
+.sw-btn{
+  padding:8px 22px;border-radius:30px;border:none;cursor:pointer;
+  font-size:12px;font-weight:600;letter-spacing:0.04em;transition:all 0.3s;
+  color:rgba(255,255,255,0.5);background:transparent;font-family:inherit;
+}
+.sw-btn.active{color:#000;background:#fff;}
+
+/* ── SLIDES ── */
+.slides{width:100%;height:100vh;position:relative}
+.slide{
+  position:absolute;inset:0;opacity:0;pointer-events:none;
+  transition:opacity 0.6s cubic-bezier(0.16,1,0.3,1);
+  overflow-y:auto;
+}
+.slide.active{opacity:1;pointer-events:auto}
+
+/* ════════════════════════════════════════════
+   STYLE 1 — GLASS DEPTHS
+   Dark navy · Frosted glass · 3D tilt · Amber
+════════════════════════════════════════════ */
+#s1{
+  background:#050B1A;
+  font-family:'Geist','Segoe UI',sans-serif;
+}
+
+/* Mesh gradient bg */
+.s1-bg{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(245,166,35,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 60%, rgba(56,102,255,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 80%, rgba(0,210,130,0.04) 0%, transparent 60%),
+    #050B1A;
+}
+
+/* Stars */
+.s1-stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) ease-in-out infinite var(--del,0s)}
+@keyframes twinkle{0%,100%{opacity:0.1}50%{opacity:var(--op,0.6)}}
+
+.s1-content{position:relative;z-index:1;min-height:100vh;padding-bottom:60px}
+
+/* Nav */
+.s1-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 48px;border-bottom:1px solid rgba(255,255,255,0.06);
+  position:sticky;top:0;z-index:100;
+  background:rgba(5,11,26,0.7);backdrop-filter:blur(20px);
+}
+.s1-logo{
+  font-family:'Fraunces',serif;font-size:26px;font-weight:900;
+  color:#fff;letter-spacing:-1px;
+}
+.s1-logo em{font-style:italic;color:#F5A623}
+.s1-nav-links{display:flex;gap:28px;align-items:center}
+.s1-nav-link{font-size:13px;color:rgba(255,255,255,0.4);font-weight:500;cursor:pointer;transition:color 0.2s}
+.s1-nav-link:hover{color:#fff}
+.s1-btn{
+  padding:9px 22px;background:linear-gradient(135deg,#F5A623,#FF7B2C);
+  color:#050B1A;border:none;border-radius:8px;font-size:13px;font-weight:700;
+  cursor:pointer;letter-spacing:0.02em;transition:transform 0.2s,box-shadow 0.2s;
+}
+.s1-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(245,166,35,0.35)}
+
+/* Hero */
+.s1-hero{padding:80px 48px 60px;position:relative}
+.s1-hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid rgba(245,166,35,0.3);background:rgba(245,166,35,0.06);
+  padding:5px 14px;border-radius:20px;margin-bottom:28px;
+  font-size:11px;font-weight:600;color:#F5A623;letter-spacing:0.1em;text-transform:uppercase;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.s1-h1{
+  font-family:'Fraunces',serif;font-size:72px;font-weight:900;
+  line-height:0.92;letter-spacing:-3px;color:#fff;margin-bottom:20px;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+}
+.s1-h1 em{font-style:italic;color:#F5A623;font-weight:700}
+.s1-h1 .dim{color:rgba(255,255,255,0.25)}
+.s1-hero-sub{
+  font-size:16px;color:rgba(255,255,255,0.45);line-height:1.65;
+  max-width:400px;margin-bottom:36px;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+}
+.s1-search{
+  display:flex;max-width:520px;
+  border:1px solid rgba(255,255,255,0.12);border-radius:12px;
+  background:rgba(255,255,255,0.04);backdrop-filter:blur(10px);overflow:hidden;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+}
+.s1-search input{
+  flex:1;background:transparent;border:none;padding:14px 20px;
+  font-size:14px;color:#fff;outline:none;font-family:inherit;
+}
+.s1-search input::placeholder{color:rgba(255,255,255,0.25)}
+.s1-search-btn{
+  background:linear-gradient(135deg,#F5A623,#FF7B2C);color:#050B1A;
+  border:none;padding:14px 24px;font-size:13px;font-weight:700;cursor:pointer;
+}
+
+/* Category chips */
+.s1-cats{
+  display:flex;gap:8px;margin:16px 0 0;flex-wrap:wrap;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.4s both;
+}
+.s1-cat{
+  padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;
+  border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);
+  transition:all 0.2s;letter-spacing:0.04em;
+}
+.s1-cat:hover,.s1-cat.active{
+  border-color:rgba(245,166,35,0.5);color:#F5A623;background:rgba(245,166,35,0.08)
+}
+
+/* Glass cards */
+.s1-cards-section{padding:0 48px 60px}
+.s1-section-label{
+  font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;
+  color:rgba(255,255,255,0.2);margin-bottom:20px;display:flex;align-items:center;gap:10px;
+}
+.s1-section-label::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.06)}
+.s1-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+
+.s1-card{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:16px;padding:20px;
+  cursor:pointer;transition:border-color 0.3s;
+  transform-style:preserve-3d;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) var(--del,0s) both;
+  position:relative;overflow:hidden;
+}
+.s1-card::before{
+  content:'';position:absolute;inset:0;border-radius:16px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.06) 0%,transparent 60%);
+  opacity:0;transition:opacity 0.3s;pointer-events:none;
+}
+.s1-card:hover::before{opacity:1}
+.s1-card:hover{border-color:rgba(245,166,35,0.25)}
+.s1-card-type{
+  font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+  padding:3px 8px;border-radius:4px;display:inline-block;margin-bottom:12px;
+}
+.s1-card-type.offer{background:rgba(245,166,35,0.15);color:#F5A623}
+.s1-card-type.need{background:rgba(239,68,68,0.15);color:#F87171}
+.s1-card-emoji{font-size:28px;display:block;margin-bottom:10px}
+.s1-card-title{font-size:15px;font-weight:600;color:#fff;line-height:1.35;margin-bottom:8px}
+.s1-card-meta{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:14px}
+.s1-card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06)}
+.s1-card-city{font-size:11px;color:rgba(255,255,255,0.3)}
+.s1-card-price{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:#F5A623}
+
+/* Stats strip */
+.s1-stats{
+  margin:0 48px;padding:24px;border:1px solid rgba(255,255,255,0.06);
+  border-radius:16px;background:rgba(255,255,255,0.02);
+  display:flex;justify-content:space-around;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.6s both;
+}
+.s1-stat-num{
+  font-family:'Fraunces',serif;font-size:36px;font-weight:900;
+  color:#F5A623;letter-spacing:-1px;text-align:center;display:block;
+}
+.s1-stat-label{
+  font-size:10px;color:rgba(255,255,255,0.25);text-align:center;
+  letter-spacing:0.1em;text-transform:uppercase;display:block;margin-top:4px;
+}
+
+/* ════════════════════════════════════════════
+   STYLE 2 — SUN & CRAFT
+   Warm amber · Industrial · 3D stack cards · Noise
+════════════════════════════════════════════ */
+#s2{font-family:'Instrument Sans','Segoe UI',sans-serif;background:#FBF6EE}
+
+.s2-bg{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 30% 20%, rgba(232,133,10,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 75% 80%, rgba(28,21,16,0.05) 0%, transparent 60%),
+    #FBF6EE;
+}
+/* Noise */
+.s2-noise{
+  position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.04;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:256px 256px;
+}
+
+.s2-content{position:relative;z-index:1;min-height:100vh;padding-bottom:60px}
+
+.s2-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 48px;border-bottom:2px solid #1C1510;
+  position:sticky;top:0;z-index:100;background:#FBF6EE;
+}
+.s2-logo{
+  font-family:'Playfair Display',serif;font-size:26px;font-weight:900;
+  color:#1C1510;letter-spacing:-0.5px;
+}
+.s2-logo span{color:#E8850A}
+.s2-nav-links{display:flex;gap:24px;align-items:center}
+.s2-nav-link{font-size:13px;color:#7A6A5A;font-weight:500;cursor:pointer}
+.s2-btn{
+  padding:10px 24px;background:#1C1510;color:#FBF6EE;
+  border:2px solid #1C1510;font-size:13px;font-weight:700;cursor:pointer;
+  letter-spacing:0.04em;transition:all 0.2s;font-family:inherit;
+}
+.s2-btn:hover{background:#E8850A;border-color:#E8850A;color:#fff}
+
+.s2-hero{padding:72px 48px 48px;display:grid;grid-template-columns:1fr 340px;gap:48px;align-items:start}
+.s2-hero-left{}
+.s2-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#E8850A;color:#fff;padding:5px 14px;
+  font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+  margin-bottom:24px;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) both;
+}
+.s2-h1{
+  font-family:'Playfair Display',serif;font-size:68px;font-weight:900;
+  line-height:0.9;letter-spacing:-2px;color:#1C1510;margin-bottom:20px;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+}
+.s2-h1 em{font-style:italic;color:#E8850A}
+.s2-hero-sub{
+  font-size:15px;color:#7A6A5A;line-height:1.65;margin-bottom:32px;max-width:380px;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+}
+.s2-search{
+  display:flex;border:2px solid #1C1510;overflow:hidden;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.25s both;
+}
+.s2-search input{
+  flex:1;background:transparent;border:none;padding:12px 18px;
+  font-size:14px;color:#1C1510;outline:none;font-family:inherit;
+}
+.s2-search input::placeholder{color:#B0A090}
+.s2-search-btn{
+  background:#1C1510;color:#FBF6EE;border:none;padding:12px 20px;
+  font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
+  transition:background 0.2s;
+}
+.s2-search-btn:hover{background:#E8850A}
+
+/* Stacked card preview on right */
+.s2-stack{position:relative;height:300px}
+.s2-stack-card{
+  position:absolute;left:0;right:0;
+  background:#fff;border:2px solid #1C1510;padding:18px;
+  transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  cursor:pointer;
+}
+.s2-stack-card:nth-child(1){
+  top:0;transform:rotate(-3deg) translateY(0);
+  box-shadow:4px 4px 0 #1C1510;z-index:3;
+  animation:stackIn1 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+}
+.s2-stack-card:nth-child(2){
+  top:20px;transform:rotate(1.5deg) translateY(0);
+  box-shadow:4px 4px 0 rgba(28,21,16,0.4);z-index:2;
+  animation:stackIn2 0.8s cubic-bezier(0.16,1,0.3,1) 0.4s both;
+}
+.s2-stack-card:nth-child(3){
+  top:38px;transform:rotate(-1deg) translateY(0);
+  box-shadow:4px 4px 0 rgba(28,21,16,0.2);z-index:1;
+  animation:stackIn3 0.8s cubic-bezier(0.16,1,0.3,1) 0.5s both;
+}
+.s2-stack:hover .s2-stack-card:nth-child(1){transform:rotate(-3deg) translateY(-12px)}
+.s2-stack:hover .s2-stack-card:nth-child(2){transform:rotate(1.5deg) translateY(12px)}
+@keyframes stackIn1{from{opacity:0;transform:rotate(-3deg) translateY(60px)}to{opacity:1;transform:rotate(-3deg) translateY(0)}}
+@keyframes stackIn2{from{opacity:0;transform:rotate(1.5deg) translateY(60px)}to{opacity:1;transform:rotate(1.5deg) translateY(0)}}
+@keyframes stackIn3{from{opacity:0;transform:rotate(-1deg) translateY(60px)}to{opacity:1;transform:rotate(-1deg) translateY(0)}}
+.s2-card-type{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:8px;color:#E8850A}
+.s2-card-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#1C1510;line-height:1.3;margin-bottom:6px}
+.s2-card-detail{font-size:12px;color:#9B8B7A;display:flex;justify-content:space-between}
+.s2-card-price{font-weight:700;color:#1C1510}
+
+/* Cat grid */
+.s2-cats{padding:0 48px 40px;display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.s2-cat-tile{
+  border:2px solid #1C1510;padding:14px 10px;text-align:center;cursor:pointer;
+  transition:all 0.2s;background:#fff;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) var(--del,0.3s) both;
+}
+.s2-cat-tile:hover{background:#E8850A;border-color:#E8850A;color:#fff;transform:translateY(-4px);box-shadow:0 6px 0 #1C1510}
+.s2-cat-tile:hover .s2-cat-icon{filter:brightness(10)}
+.s2-cat-tile:hover .s2-cat-name{color:#fff}
+.s2-cat-icon{font-size:24px;display:block;margin-bottom:6px}
+.s2-cat-name{font-size:10px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#1C1510;transition:color 0.2s}
+
+/* Listings */
+.s2-listings{padding:0 48px 40px}
+.s2-listing{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 0;border-bottom:1px solid #E8E0D4;cursor:pointer;
+  transition:all 0.2s;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) var(--del,0.4s) both;
+}
+.s2-listing:hover{padding-left:8px}
+.s2-listing:hover .s2-listing-arrow{color:#E8850A;transform:translateX(4px)}
+.s2-listing-num{
+  font-family:'Playfair Display',serif;font-size:13px;font-style:italic;
+  color:#C0B0A0;width:28px;flex-shrink:0;
+}
+.s2-listing-badge{
+  font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  padding:2px 7px;flex-shrink:0;
+}
+.s2-listing-badge.offer{background:#FFF3E0;color:#E8850A;border:1px solid #E8850A}
+.s2-listing-badge.need{background:#FFF5F5;color:#DC2626;border:1px solid #DC2626}
+.s2-listing-title{flex:1;font-size:14px;font-weight:600;color:#1C1510}
+.s2-listing-city{font-size:12px;color:#A09080;min-width:80px}
+.s2-listing-price{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#1C1510;min-width:70px;text-align:right}
+.s2-listing-arrow{font-size:14px;color:#C0B0A0;transition:all 0.2s}
+
+/* Stats */
+.s2-stats{
+  margin:0 48px;padding:28px;border:2px solid #1C1510;
+  display:flex;justify-content:space-around;
+  box-shadow:5px 5px 0 #1C1510;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.6s both;
+}
+.s2-stat-num{
+  font-family:'Playfair Display',serif;font-size:40px;font-weight:900;
+  color:#E8850A;letter-spacing:-2px;text-align:center;display:block;
+}
+.s2-stat-label{
+  font-size:9px;font-weight:700;color:#B0A090;text-align:center;
+  letter-spacing:0.12em;text-transform:uppercase;display:block;margin-top:4px;
+}
+
+/* ════════════════════════════════════════════
+   STYLE 3 — CRYSTALLINE
+   Cool Nordic · Electric blue · Isometric grid · Sora
+════════════════════════════════════════════ */
+#s3{font-family:'Sora','Segoe UI',sans-serif;background:#F0F4FF}
+
+.s3-bg{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(46,92,255,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 20% 70%, rgba(0,229,160,0.06) 0%, transparent 60%),
+    #F0F4FF;
+}
+
+/* Isometric grid */
+.s3-grid{
+  position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.3;
+  background-image:
+    linear-gradient(30deg, rgba(46,92,255,0.08) 1px, transparent 1px),
+    linear-gradient(150deg, rgba(46,92,255,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46,92,255,0.04) 1px, transparent 1px);
+  background-size:40px 40px, 40px 40px, 40px 40px;
+}
+
+.s3-content{position:relative;z-index:1;min-height:100vh;padding-bottom:60px}
+
+.s3-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 48px;
+  background:rgba(240,244,255,0.8);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(46,92,255,0.1);
+  position:sticky;top:0;z-index:100;
+}
+.s3-logo{font-size:22px;font-weight:800;color:#0A1628;letter-spacing:-0.5px}
+.s3-logo span{color:#2E5CFF}
+.s3-nav-links{display:flex;gap:24px;align-items:center}
+.s3-nav-link{font-size:12px;color:#6B7A9A;font-weight:600}
+.s3-btn{
+  padding:9px 22px;background:#2E5CFF;color:#fff;border:none;
+  border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
+  font-family:inherit;letter-spacing:0.02em;
+  box-shadow:0 4px 14px rgba(46,92,255,0.35);
+  transition:all 0.2s;
+}
+.s3-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(46,92,255,0.45)}
+
+.s3-hero{padding:72px 48px 56px;text-align:center;position:relative}
+
+/* Floating 3D cards behind hero text */
+.s3-float-card{
+  position:absolute;border-radius:16px;background:rgba(255,255,255,0.7);
+  border:1px solid rgba(46,92,255,0.12);backdrop-filter:blur(10px);
+  padding:14px 16px;font-size:12px;font-weight:600;color:#0A1628;
+  box-shadow:0 8px 32px rgba(46,92,255,0.08);
+  animation:float var(--d,4s) ease-in-out infinite;
+  transform-style:preserve-3d;
+}
+.s3-float-card:nth-child(1){top:20px;left:8%;--d:3.8s;animation-delay:0s}
+.s3-float-card:nth-child(2){top:60px;right:6%;--d:4.4s;animation-delay:0.8s}
+.s3-float-card:nth-child(3){bottom:40px;left:12%;--d:3.5s;animation-delay:1.2s}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-12px) rotate(1deg)}}
+.s3-float-tag{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px}
+.s3-float-tag.blue{color:#2E5CFF}
+.s3-float-tag.mint{color:#00C896}
+
+.s3-eyebrow{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(46,92,255,0.08);border:1px solid rgba(46,92,255,0.2);
+  color:#2E5CFF;padding:5px 16px;border-radius:20px;
+  font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+  margin-bottom:24px;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) both;
+}
+.s3-h1{
+  font-size:66px;font-weight:800;line-height:0.95;letter-spacing:-2.5px;
+  color:#0A1628;margin-bottom:18px;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+}
+.s3-h1 .blue{color:#2E5CFF}
+.s3-h1 .mint{
+  background:linear-gradient(90deg,#2E5CFF,#00E5A0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.s3-hero-sub{
+  font-size:16px;color:#6B7A9A;line-height:1.65;max-width:480px;
+  margin:0 auto 36px;font-family:'IBM Plex Sans',sans-serif;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+}
+.s3-search{
+  display:flex;max-width:560px;margin:0 auto;border-radius:14px;overflow:hidden;
+  box-shadow:0 8px 40px rgba(46,92,255,0.15);
+  background:#fff;border:1px solid rgba(46,92,255,0.15);
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+}
+.s3-search input{
+  flex:1;background:transparent;border:none;padding:14px 20px;
+  font-size:14px;color:#0A1628;outline:none;font-family:inherit;
+}
+.s3-search input::placeholder{color:#9AA8C4}
+.s3-search-btn{
+  background:linear-gradient(135deg,#2E5CFF,#00E5A0);color:#fff;
+  border:none;padding:14px 28px;font-size:13px;font-weight:700;
+  cursor:pointer;font-family:inherit;letter-spacing:0.02em;
+}
+
+/* Feature pills */
+.s3-pills{
+  display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.4s both;
+}
+.s3-pill{
+  padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;
+  background:rgba(255,255,255,0.8);border:1px solid rgba(46,92,255,0.15);
+  color:#4A5A7A;cursor:pointer;transition:all 0.2s;
+  backdrop-filter:blur(4px);
+}
+.s3-pill:hover{background:#2E5CFF;color:#fff;border-color:#2E5CFF}
+
+/* Card grid */
+.s3-cards{padding:0 48px 48px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.s3-card{
+  background:rgba(255,255,255,0.7);border:1px solid rgba(46,92,255,0.1);
+  border-radius:16px;padding:20px;cursor:pointer;
+  backdrop-filter:blur(10px);
+  box-shadow:0 4px 24px rgba(46,92,255,0.06);
+  transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) var(--del,0.3s) both;
+}
+.s3-card:hover{
+  transform:translateY(-6px) scale(1.01);
+  box-shadow:0 16px 48px rgba(46,92,255,0.15);
+  border-color:rgba(46,92,255,0.3);
+}
+.s3-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.s3-card-icon{
+  width:40px;height:40px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;font-size:20px;
+}
+.s3-card-icon.blue{background:rgba(46,92,255,0.1)}
+.s3-card-icon.mint{background:rgba(0,229,160,0.1)}
+.s3-card-type{
+  font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  padding:3px 9px;border-radius:6px;
+}
+.s3-card-type.offer{background:rgba(0,200,150,0.12);color:#00C896}
+.s3-card-type.need{background:rgba(255,87,87,0.1);color:#FF5757}
+.s3-card-title{font-size:14px;font-weight:700;color:#0A1628;line-height:1.35;margin-bottom:6px}
+.s3-card-desc{font-size:12px;color:#6B7A9A;line-height:1.5;font-family:'IBM Plex Sans',sans-serif;margin-bottom:14px}
+.s3-card-footer{display:flex;justify-content:space-between;align-items:center}
+.s3-card-meta{font-size:11px;color:#9AA8C4}
+.s3-card-price{font-size:16px;font-weight:800;color:#2E5CFF}
+
+/* Stats */
+.s3-stats{
+  margin:0 48px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  animation:fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.7s both;
+}
+.s3-stat{
+  background:rgba(255,255,255,0.7);border:1px solid rgba(46,92,255,0.1);
+  border-radius:16px;padding:20px;text-align:center;
+  backdrop-filter:blur(10px);
+}
+.s3-stat-num{
+  font-size:36px;font-weight:800;letter-spacing:-1px;
+  background:linear-gradient(135deg,#2E5CFF,#00E5A0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  display:block;
+}
+.s3-stat-label{font-size:10px;color:#9AA8C4;letter-spacing:0.1em;text-transform:uppercase;margin-top:4px;display:block}
+
+/* Pick bar */
+.pick-bar{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  z-index:1000;display:flex;gap:12px;align-items:center;
+  background:rgba(0,0,0,0.75);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.1);border-radius:40px;padding:10px 20px;
+}
+.pick-label{font-size:11px;color:rgba(255,255,255,0.4);font-weight:500;margin-right:4px}
+.pick-btn{
+  padding:8px 20px;border-radius:24px;border:none;font-size:12px;font-weight:700;
+  cursor:pointer;transition:all 0.3s;font-family:inherit;letter-spacing:0.02em;
+  color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.08);
+}
+.pick-btn:hover,.pick-btn.chosen{color:#000;background:#fff}
+.pick-btn.chosen::before{content:'✓ '}
+</style>
+</head>
+<body>
+
+<!-- Switcher -->
+<div class="switcher">
+  <button class="sw-btn active" onclick="showStyle(1,this)">① Glass Depths</button>
+  <button class="sw-btn" onclick="showStyle(2,this)">② Sun & Craft</button>
+  <button class="sw-btn" onclick="showStyle(3,this)">③ Crystalline</button>
+</div>
+
+<!-- Pick bar -->
+<div class="pick-bar">
+  <span class="pick-label">Pick direction →</span>
+  <button class="pick-btn" onclick="pick(this,'Glass Depths')">Glass Depths</button>
+  <button class="pick-btn" onclick="pick(this,'Sun &amp; Craft')">Sun & Craft</button>
+  <button class="pick-btn" onclick="pick(this,'Crystalline')">Crystalline</button>
+</div>
+
+<div class="slides">
+
+<!-- ══ SLIDE 1 — GLASS DEPTHS ══ -->
+<div class="slide active" id="s1">
+  <div class="s1-bg"></div>
+  <div class="s1-stars" id="stars"></div>
+  <div class="s1-content">
+
+    <nav class="s1-nav">
+      <div class="s1-logo">jobsy<em>.</em>lv</div>
+      <div class="s1-nav-links">
+        <span class="s1-nav-link">Sludinājumi</span>
+        <span class="s1-nav-link">Kategorijas</span>
+        <span class="s1-nav-link">Cenas</span>
+        <span class="s1-nav-link">Par mums</span>
+        <button class="s1-btn">+ Publicēt</button>
+      </div>
+    </nav>
+
+    <div class="s1-hero">
+      <div class="s1-hero-eyebrow">
+        <span style="width:6px;height:6px;border-radius:50%;background:#F5A623;display:inline-block"></span>
+        Latvija · 2,847 aktīvi sludinājumi
+      </div>
+      <h1 class="s1-h1">
+        Atrodi<br>
+        <em>darbu,</em><br>
+        <span class="dim">kas paliek.</span>
+      </h1>
+      <p class="s1-hero-sub">
+        Tūkstoši vietējo darbu, pakalpojumu un sludinājumu visā Latvijā — publicēti katru dienu.
+      </p>
+      <div class="s1-search">
+        <input type="text" placeholder="Elektriķis, tīrīšana, IT..." readonly>
+        <button class="s1-search-btn">Meklēt →</button>
+      </div>
+      <div class="s1-cats">
+        <span class="s1-cat active">🔨 Remontdarbi</span>
+        <span class="s1-cat">💻 IT & Tech</span>
+        <span class="s1-cat">🌿 Dārzkopība</span>
+        <span class="s1-cat">🚗 Transports</span>
+        <span class="s1-cat">📸 Radošais</span>
+        <span class="s1-cat">🏠 Mājas palīgs</span>
+      </div>
+    </div>
+
+    <div class="s1-cards-section">
+      <div class="s1-section-label">Jaunākie sludinājumi</div>
+      <div class="s1-cards">
+        <div class="s1-card" style="--del:0.3s">
+          <span class="s1-card-type offer">Piedāvājums</span>
+          <span class="s1-card-emoji">🔌</span>
+          <div class="s1-card-title">Elektriķis — sertificēts, ātra atsaukšanās</div>
+          <div class="s1-card-meta">Māju un biroju elektrodarbi, drošinātāji, vadu ieguldīšana</div>
+          <div class="s1-card-footer">
+            <span class="s1-card-city">📍 Rīga</span>
+            <span class="s1-card-price">€35 / h</span>
+          </div>
+        </div>
+        <div class="s1-card" style="--del:0.4s">
+          <span class="s1-card-type need">Meklē</span>
+          <span class="s1-card-emoji">🏠</span>
+          <div class="s1-card-title">Nepieciešams mājas tīrīšanas speciālists</div>
+          <div class="s1-card-meta">2× nedēļā, 3 istabu dzīvoklis, Centrs. Ilgtermiņa sadarbība</div>
+          <div class="s1-card-footer">
+            <span class="s1-card-city">📍 Rīga</span>
+            <span class="s1-card-price">€150 / mēn</span>
+          </div>
+        </div>
+        <div class="s1-card" style="--del:0.5s">
+          <span class="s1-card-type offer">Piedāvājums</span>
+          <span class="s1-card-emoji">📷</span>
+          <div class="s1-card-title">Fotogrāfija — portreti, pasākumi, produkti</div>
+          <div class="s1-card-meta">Profesionāls aprīkojums, ātra foto apstrāde, visa Latvija</div>
+          <div class="s1-card-footer">
+            <span class="s1-card-city">📍 Latvija</span>
+            <span class="s1-card-price">no €80</span>
+          </div>
+        </div>
+        <div class="s1-card" style="--del:0.55s">
+          <span class="s1-card-type need">Meklē</span>
+          <span class="s1-card-emoji">💻</span>
+          <div class="s1-card-title">React izstrādātājs, nepilna slodze</div>
+          <div class="s1-card-meta">15–20h nedēļā, SaaS projekts, elastīgs grafiks</div>
+          <div class="s1-card-footer">
+            <span class="s1-card-city">📍 Remote</span>
+            <span class="s1-card-price">€45 / h</span>
+          </div>
+        </div>
+        <div class="s1-card" style="--del:0.6s">
+          <span class="s1-card-type offer">Piedāvājums</span>
+          <span class="s1-card-emoji">🚗</span>
+          <div class="s1-card-title">Kraušanas pakalpojumi — furgons + 2 cilvēki</div>
+          <div class="s1-card-meta">Dzīvokļu pārvākšanās, ātra atsaukšanās, visa Latvija</div>
+          <div class="s1-card-footer">
+            <span class="s1-card-city">📍 Latvija</span>
+            <span class="s1-card-price">no €60</span>
+          </div>
+        </div>
+        <div class="s1-card" style="--del:0.65s">
+          <span class="s1-card-type need">Meklē</span>
+          <span class="s1-card-emoji">🌿</span>
+          <div class="s1-card-title">Meklē dārznieku vasaras sezonai</div>
+          <div class="s1-card-meta">Privātmājas dārzs, 2× mēnesī, Jūrmala</div>
+          <div class="s1-card-footer">
+            <span class="s1-card-city">📍 Jūrmala</span>
+            <span class="s1-card-price">€120</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="s1-stats">
+      <div><span class="s1-stat-num">2,847</span><span class="s1-stat-label">Aktīvi sludinājumi</span></div>
+      <div><span class="s1-stat-num">18</span><span class="s1-stat-label">Kategorijas</span></div>
+      <div><span class="s1-stat-num">12,400+</span><span class="s1-stat-label">Reģistrēti lietotāji</span></div>
+      <div><span class="s1-stat-num">847</span><span class="s1-stat-label">Šodien publicēts</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 2 — SUN & CRAFT ══ -->
+<div class="slide" id="s2">
+  <div class="s2-bg"></div>
+  <div class="s2-noise"></div>
+  <div class="s2-content">
+
+    <nav class="s2-nav">
+      <div class="s2-logo">jobsy<span>.</span>lv</div>
+      <div class="s2-nav-links">
+        <span class="s2-nav-link">Sludinājumi</span>
+        <span class="s2-nav-link">Kategorijas</span>
+        <span class="s2-nav-link">Cenas</span>
+        <span class="s2-nav-link">Par mums</span>
+        <button class="s2-btn">+ Publicēt sludinājumu</button>
+      </div>
+    </nav>
+
+    <div class="s2-hero">
+      <div class="s2-hero-left">
+        <div class="s2-eyebrow">🇱🇻 Latvijas vietējais darba tirgus</div>
+        <h1 class="s2-h1">Darbs,<br>kas <em>paliek</em><br>Latvijā.</h1>
+        <p class="s2-hero-sub">Reāli cilvēki, reāls darbs — atrodi pakalpojumus un darba piedāvājumus tuvāk mājām.</p>
+        <div class="s2-search">
+          <input type="text" placeholder="Ko tu meklē?" readonly>
+          <button class="s2-search-btn">Meklēt →</button>
+        </div>
+      </div>
+
+      <div class="s2-stack">
+        <div class="s2-stack-card">
+          <div class="s2-card-type">⚡ Piedāvājums</div>
+          <div class="s2-card-title">Elektriķis ar 10 gadu pieredzi</div>
+          <div class="s2-card-detail"><span>📍 Rīga</span><span class="s2-card-price">€35/h</span></div>
+        </div>
+        <div class="s2-stack-card">
+          <div class="s2-card-type" style="color:#E8850A">🔍 Meklē</div>
+          <div class="s2-card-title">Nepieciešams React izstrādātājs</div>
+          <div class="s2-card-detail"><span>📍 Remote</span><span class="s2-card-price">€45/h</span></div>
+        </div>
+        <div class="s2-stack-card">
+          <div class="s2-card-type">📸 Piedāvājums</div>
+          <div class="s2-card-title">Fotogrāfs — portreti & pasākumi</div>
+          <div class="s2-card-detail"><span>📍 Latvija</span><span class="s2-card-price">no €80</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="s2-cats">
+      <div class="s2-cat-tile" style="--del:0.2s"><span class="s2-cat-icon">🔨</span><span class="s2-cat-name">Remontdarbi</span></div>
+      <div class="s2-cat-tile" style="--del:0.25s"><span class="s2-cat-icon">💻</span><span class="s2-cat-name">IT & Tech</span></div>
+      <div class="s2-cat-tile" style="--del:0.3s"><span class="s2-cat-icon">🌿</span><span class="s2-cat-name">Dārzs</span></div>
+      <div class="s2-cat-tile" style="--del:0.35s"><span class="s2-cat-icon">🚗</span><span class="s2-cat-name">Transports</span></div>
+      <div class="s2-cat-tile" style="--del:0.4s"><span class="s2-cat-icon">📸</span><span class="s2-cat-name">Radošais</span></div>
+      <div class="s2-cat-tile" style="--del:0.45s"><span class="s2-cat-icon">🏠</span><span class="s2-cat-name">Mājas palīgs</span></div>
+    </div>
+
+    <div class="s2-listings">
+      <div class="s2-listing" style="--del:0.35s"><span class="s2-listing-num">01</span><span class="s2-listing-badge offer">Piedāvājums</span><span class="s2-listing-title">Santehniķis — ātra atsaukšanās, visa Rīga</span><span class="s2-listing-city">Rīga</span><span class="s2-listing-price">€30/h</span><span class="s2-listing-arrow">→</span></div>
+      <div class="s2-listing" style="--del:0.4s"><span class="s2-listing-num">02</span><span class="s2-listing-badge need">Meklē</span><span class="s2-listing-title">Aukle 3× nedēļā, vakarios, Jūrmala</span><span class="s2-listing-city">Jūrmala</span><span class="s2-listing-price">€200/mēn</span><span class="s2-listing-arrow">→</span></div>
+      <div class="s2-listing" style="--del:0.45s"><span class="s2-listing-num">03</span><span class="s2-listing-badge offer">Piedāvājums</span><span class="s2-listing-title">Kraušanas pakalpojumi ar furgonu un komandu</span><span class="s2-listing-city">Latvija</span><span class="s2-listing-price">no €60</span><span class="s2-listing-arrow">→</span></div>
+      <div class="s2-listing" style="--del:0.5s"><span class="s2-listing-num">04</span><span class="s2-listing-badge need">Meklē</span><span class="s2-listing-title">Tīmekļa dizains un Figma prototipēšana</span><span class="s2-listing-city">Remote</span><span class="s2-listing-price">€40/h</span><span class="s2-listing-arrow">→</span></div>
+      <div class="s2-listing" style="--del:0.55s"><span class="s2-listing-num">05</span><span class="s2-listing-badge offer">Piedāvājums</span><span class="s2-listing-title">Dārznieks — dārza kopšana un labiekārtošana</span><span class="s2-listing-city">Liepāja</span><span class="s2-listing-price">€25/h</span><span class="s2-listing-arrow">→</span></div>
+    </div>
+
+    <div class="s2-stats">
+      <div><span class="s2-stat-num">2,847</span><span class="s2-stat-label">Aktīvi sludinājumi</span></div>
+      <div><span class="s2-stat-num">18</span><span class="s2-stat-label">Kategorijas</span></div>
+      <div><span class="s2-stat-num">12k+</span><span class="s2-stat-label">Lietotāji</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 3 — CRYSTALLINE ══ -->
+<div class="slide" id="s3">
+  <div class="s3-bg"></div>
+  <div class="s3-grid"></div>
+  <div class="s3-content">
+
+    <nav class="s3-nav">
+      <div class="s3-logo">jobsy<span>.lv</span></div>
+      <div class="s3-nav-links">
+        <span class="s3-nav-link">Sludinājumi</span>
+        <span class="s3-nav-link">Kategorijas</span>
+        <span class="s3-nav-link">Cenas</span>
+        <span class="s3-nav-link">Par mums</span>
+        <button class="s3-btn">Publicēt sludinājumu</button>
+      </div>
+    </nav>
+
+    <div class="s3-hero">
+      <!-- Floating cards -->
+      <div class="s3-float-card">
+        <div class="s3-float-tag blue">Piedāvājums</div>
+        🔌 Elektriķis · Rīga · <strong>€35/h</strong>
+      </div>
+      <div class="s3-float-card">
+        <div class="s3-float-tag mint">Meklē</div>
+        💻 React Dev · Remote · <strong>€45/h</strong>
+      </div>
+      <div class="s3-float-card">
+        <div class="s3-float-tag blue">Piedāvājums</div>
+        📷 Fotogrāfs · Latvija · <strong>no €80</strong>
+      </div>
+
+      <div class="s3-eyebrow">
+        <span style="width:6px;height:6px;border-radius:50%;background:#00C896;display:inline-block;animation:twinkle 2s ease-in-out infinite"></span>
+        2,847 aktīvi sludinājumi Latvijā
+      </div>
+      <h1 class="s3-h1">
+        Atrodi <span class="blue">darbu.</span><br>
+        Publicē <span class="mint">ātri.</span>
+      </h1>
+      <p class="s3-hero-sub">
+        Vietējie darbi, pakalpojumi un sludinājumi visā Latvijā. Reģistrējies bez maksas, publicē pirmajā minūtē.
+      </p>
+      <div class="s3-search">
+        <input type="text" placeholder="Kādu darbu tu meklē?" readonly>
+        <button class="s3-search-btn">Meklēt →</button>
+      </div>
+      <div class="s3-pills">
+        <span class="s3-pill">🔨 Remontdarbi</span>
+        <span class="s3-pill">💻 IT & Tech</span>
+        <span class="s3-pill">🌿 Dārzs</span>
+        <span class="s3-pill">🚗 Transports</span>
+        <span class="s3-pill">📸 Radošais</span>
+        <span class="s3-pill">🏠 Mājas palīgs</span>
+      </div>
+    </div>
+
+    <div class="s3-cards">
+      <div class="s3-card" style="--del:0.3s">
+        <div class="s3-card-header">
+          <div class="s3-card-icon blue">🔌</div>
+          <span class="s3-card-type offer">Piedāvājums</span>
+        </div>
+        <div class="s3-card-title">Sertificēts elektriķis — ātra atsaukšanās</div>
+        <div class="s3-card-desc">Mājas un biroji. Drošinātāji, vadu ieguldīšana, paneļi.</div>
+        <div class="s3-card-footer">
+          <span class="s3-card-meta">📍 Rīga · 2h atpakaļ</span>
+          <span class="s3-card-price">€35/h</span>
+        </div>
+      </div>
+      <div class="s3-card" style="--del:0.4s">
+        <div class="s3-card-header">
+          <div class="s3-card-icon mint">💻</div>
+          <span class="s3-card-type need">Meklē</span>
+        </div>
+        <div class="s3-card-title">React & TypeScript izstrādātājs</div>
+        <div class="s3-card-desc">15–20h/nedēļā, SaaS produkts, elastīgs grafiks. Remote.</div>
+        <div class="s3-card-footer">
+          <span class="s3-card-meta">📍 Remote · Šodien</span>
+          <span class="s3-card-price">€45/h</span>
+        </div>
+      </div>
+      <div class="s3-card" style="--del:0.5s">
+        <div class="s3-card-header">
+          <div class="s3-card-icon blue">🏠</div>
+          <span class="s3-card-type need">Meklē</span>
+        </div>
+        <div class="s3-card-title">Mājas tīrīšana 2× nedēļā</div>
+        <div class="s3-card-desc">3 istabu dzīvoklis Centrā. Ilgtermiņa sadarbība vēlama.</div>
+        <div class="s3-card-footer">
+          <span class="s3-card-meta">📍 Rīga · Vakar</span>
+          <span class="s3-card-price">€150/mēn</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="s3-stats">
+      <div class="s3-stat"><span class="s3-stat-num">2,847</span><span class="s3-stat-label">Aktīvi sludinājumi</span></div>
+      <div class="s3-stat"><span class="s3-stat-num">18</span><span class="s3-stat-label">Kategorijas</span></div>
+      <div class="s3-stat"><span class="s3-stat-num">12,400+</span><span class="s3-stat-label">Reģistrēti lietotāji</span></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /slides -->
+
+<script>
+// Stars for style 1
+const container = document.getElementById('stars');
+for(let i=0;i<80;i++){
+  const s = document.createElement('div');
+  s.className='star';
+  const size = Math.random()*2.5+0.5;
+  s.style.cssText=`width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${2+Math.random()*4}s;--del:${Math.random()*4}s;--op:${0.3+Math.random()*0.7}`;
+  container.appendChild(s);
+}
+
+// Slide switcher
+function showStyle(n, btn){
+  document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.querySelectorAll('.sw-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Pick
+let chosen = null;
+function pick(btn, name){
+  document.querySelectorAll('.pick-btn').forEach(b=>{b.classList.remove('chosen');b.textContent=b.textContent.replace('✓ ','')});
+  btn.classList.add('chosen');
+  chosen = name;
+  btn.textContent = '✓ '+name;
+}
+
+// 3D card tilt on mouse move
+document.querySelectorAll('.s1-card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX-r.left)/r.width-0.5;
+    const y = (e.clientY-r.top)/r.height-0.5;
+    card.style.transform=`perspective(600px) rotateY(${x*14}deg) rotateX(${-y*14}deg) translateZ(8px)`;
+  });
+  card.addEventListener('mouseleave',()=>{
+    card.style.transform='perspective(600px) rotateY(0) rotateX(0) translateZ(0)';
+    card.style.transition='transform 0.5s cubic-bezier(0.16,1,0.3,1)';
+  });
+  card.addEventListener('mouseenter',()=>{card.style.transition='transform 0.1s'});
+});
+</script>
+</body>
+</html>

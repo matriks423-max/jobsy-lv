@@ -25,6 +25,8 @@ export const translations = {
       statsCities: "Pilsētas",
       statsCategories: "Kategorijas",
       statsUsers: "Reģistrēti lietotāji",
+      searchPlaceholder: "Meklē darbus, pakalpojumus...",
+      searchBtn: "Meklēt",
     },
     howItWorks: {
       title: "Kā tas darbojas?",
@@ -421,6 +423,8 @@ export const translations = {
       statsCities: "Города",
       statsCategories: "Категории",
       statsUsers: "Зарегистрированных пользователей",
+      searchPlaceholder: "Найти работу, услуги...",
+      searchBtn: "Искать",
     },
     howItWorks: {
       title: "Как это работает?",
@@ -816,6 +820,8 @@ export const translations = {
       statsCities: "Cities",
       statsCategories: "Categories",
       statsUsers: "Registered users",
+      searchPlaceholder: "Search jobs, services...",
+      searchBtn: "Search",
     },
     howItWorks: {
       title: "How it works",

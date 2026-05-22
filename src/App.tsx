@@ -21,6 +21,7 @@ import Settings from "./pages/Settings";
 import Category from "./pages/Category";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import StylePreview from "./pages/StylePreview";
 
 export default function App() {
   return (
@@ -56,6 +57,7 @@ export default function App() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/kategorija/:slug" element={<Category />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/style-preview" element={<StylePreview />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

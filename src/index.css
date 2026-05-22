@@ -63,6 +63,73 @@
   --need-light:   #F0D0D0;
 }
 
+/* ─── Season: Spring (Mar–May) ────────────────────────────── */
+[data-season="spring"] {
+  --coral:        #6BAD6A;
+  --coral-hover:  #5A9A59;
+  --coral-light:  #D4EDDA;
+  --mustard:      #F7C873;
+  --mustard-light:#FEF3D0;
+  --sage:         #A8C5A0;
+  --sage-light:   #E0EED8;
+  --season-hero-from: #F2FBF0;
+  --season-hero-to:   #FBF9F0;
+}
+
+/* ─── Season: Summer (Jun–Aug) ─────────────────────────────── */
+[data-season="summer"] {
+  /* Summer uses base defaults — only hero gradient needed */
+  --season-hero-from: #FBF6EE;
+  --season-hero-to:   #F5F1E8;
+}
+
+/* ─── Season: Autumn (Sep–Nov) ─────────────────────────────── */
+[data-season="autumn"] {
+  --coral:        #C4632A;
+  --coral-hover:  #A85520;
+  --coral-light:  #F5E0CC;
+  --mustard:      #D4A832;
+  --mustard-light:#F7EBC8;
+  --sage:         #8FAD6A;
+  --sage-light:   #DDE8CC;
+  --season-hero-from: #FBF5EE;
+  --season-hero-to:   #F7EEE0;
+}
+
+/* ─── Season: Winter (Dec–Feb) ─────────────────────────────── */
+[data-season="winter"] {
+  --coral:        #5B8AC4;
+  --coral-hover:  #4A72A8;
+  --coral-light:  #D8E8F8;
+  --mustard:      #C4B8A0;
+  --mustard-light:#EDE8DC;
+  --sage:         #8EB8D4;
+  --sage-light:   #D8EDF8;
+  --season-hero-from: #EFF4FA;
+  --season-hero-to:   #E4EDF8;
+}
+
+/* ─── Seasonal top accent line ─────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--coral);
+  z-index: 9999;
+  pointer-events: none;
+  transition: background 0.5s ease;
+}
+
+/* ─── Navbar scroll blur ───────────────────────────────────── */
+nav.navbar-scrolled {
+  background-color: color-mix(in srgb, var(--cream) 88%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
 @font-face {
   font-family: 'Geist';
   src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/Geist-Variable.woff2') format('woff2');
