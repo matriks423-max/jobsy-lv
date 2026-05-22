@@ -26,7 +26,7 @@
 - À la carte boosts available
 - Soft upgrade prompt when approaching or hitting monthly limit
 
-### Business — €14.90/month (Stripe Subscription)
+### Business — €9.99/month (Stripe Subscription)
 - Unlimited posts
 - 🏢 Business badge on all posts and profile — auto-granted on first successful payment
 - Company profile: name, logo (uploaded image), website URL, description
@@ -99,7 +99,7 @@ CREATE TABLE socialQueue (
 
 ### Subscription product
 - Create one Stripe Product: "jobsy.lv Business"
-- One Price: €14.90/month recurring
+- One Price: €9.99/month recurring
 - Store `STRIPE_BUSINESS_PRICE_ID` in Railway env vars
 
 ### Subscription lifecycle (webhooks)
@@ -187,7 +187,7 @@ Returns pending social queue items (for future social automation sprint).
 ### Upgrade modal
 - Triggered when free user hits post #10/month or tries to access business features
 - Shows remaining posts this month + Business tier benefits
-- CTA: "Upgrade — €14.90/month"
+- CTA: "Upgrade — €9.99/month"
 
 ### Boost picker UI
 - Shown on post detail page (owner only) and MyPosts page
@@ -228,7 +228,7 @@ Admin panel shows queue status. No actual social API calls in this sprint — in
 
 | | Free | Business |
 |---|---|---|
-| **Price** | Bez maksas | €14.90/mēnesī |
+| **Price** | Bez maksas | €9.99/mēnesī |
 | **Sludinājumi** | 10/mēnesī | Neierobežoti |
 | **Uzņēmuma profils** | ✗ | ✓ |
 | **Business badge** | ✗ | 🏢 |
