@@ -310,7 +310,9 @@ export default function Browse() {
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
             <h1 className="font-display text-3xl font-bold text-ink md:text-4xl">
-              {t(locale, "browse.title")}
+              {debouncedSearch
+                ? `"${debouncedSearch}"`
+                : t(locale, "browse.title")}
             </h1>
             <p className="mt-1 font-body text-sm text-ink-muted">
               {totalCount !== undefined
@@ -457,9 +459,22 @@ export default function Browse() {
                     ))}
                   </div>
                 ) : posts.length === 0 ? (
-                  <div className="py-20 text-center">
-                    <p className="font-body text-lg text-ink-muted">{t(locale, "browse.noResults")}</p>
-                    <button onClick={clearFilters} className="mt-4 font-body text-sm text-coral hover:underline">
+                  <div className="py-24 text-center">
+                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-ink bg-white text-3xl">
+                      🔍
+                    </div>
+                    <p className="font-display text-xl font-bold text-ink">
+                      {debouncedSearch
+                        ? `Nav rezultātu priekš "${debouncedSearch}"`
+                        : t(locale, "browse.noResults")}
+                    </p>
+                    <p className="mt-2 font-body text-sm text-ink-muted">
+                      Mēģini citus atslēgvārdus vai notīri filtrus
+                    </p>
+                    <button
+                      onClick={clearFilters}
+                      className="mt-4 rounded-xl border-2 border-ink px-4 py-2 font-body text-sm font-medium transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_var(--ink)]"
+                    >
                       {t(locale, "browse.clear")}
                     </button>
                   </div>

@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
 import CookieBanner from "@/components/CookieBanner";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import ScrollToTop from "@/components/ScrollToTop";
 import Home from "./pages/Home";
 import Browse from "./pages/Browse";
@@ -64,6 +65,7 @@ export default function App() {
         <Footer />
         <BackToTop />
         <CookieBanner />
+        <PWAInstallPrompt />
       </div>
     </ThemeProvider>
   );

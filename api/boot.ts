@@ -254,9 +254,17 @@ app.post("/api/upload", async (c) => {
       return c.json({ error: "Invalid image format" }, 400);
     }
 
-    await writeFile(filepath, buffer);
+    let url: string;
+    const { isR2Configured, uploadToR2 } = await import("./lib/storage");
 
-    const url = `/uploads/${filename}`;
+    if (isR2Configured()) {
+      // Upload to Cloudflare R2
+      url = await uploadToR2(`posts/${filename}`, buffer, file.type);
+    } else {
+      // Fall back to local disk (dev only — ephemeral on Railway)
+      await writeFile(filepath, buffer);
+      url = `/uploads/${filename}`;
+    }
 
     // Only insert into postImages if we have a real post ID (not 0 = new post not yet created)
     const realPostId = Number(postId);

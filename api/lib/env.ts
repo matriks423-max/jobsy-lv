@@ -41,5 +41,12 @@ export const env = {
 
   // Cron secret — required in production (any value, keep secret)
   cronSecret: optional("CRON_SECRET"),
+
+  // Cloudflare R2 image storage — optional; falls back to local /uploads in dev
+  r2AccountId: optional("R2_ACCOUNT_ID"),
+  r2AccessKeyId: optional("R2_ACCESS_KEY_ID"),
+  r2SecretAccessKey: optional("R2_SECRET_ACCESS_KEY"),
+  r2Bucket: optional("R2_BUCKET"),
+  r2PublicUrl: optional("R2_PUBLIC_URL"), // e.g. https://pub-xxx.r2.dev or custom domain
 };
 

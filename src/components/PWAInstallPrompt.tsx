@@ -1,0 +1,74 @@
+import { useEffect, useState } from "react";
+import { Download, X } from "lucide-react";
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
+
+export default function PWAInstallPrompt() {
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [dismissed, setDismissed] = useState(false);
+
+  useEffect(() => {
+    // Don't show if already dismissed this session
+    if (sessionStorage.getItem("pwa-dismissed")) {
+      setDismissed(true);
+      return;
+    }
+
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+    };
+
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  if (!deferredPrompt || dismissed) return null;
+
+  const install = async () => {
+    await deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === "accepted" || outcome === "dismissed") {
+      setDeferredPrompt(null);
+      setDismissed(true);
+    }
+  };
+
+  const dismiss = () => {
+    sessionStorage.setItem("pwa-dismissed", "1");
+    setDismissed(true);
+  };
+
+  return (
+    <div className="fixed bottom-20 left-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-2xl border-2 border-ink bg-cream shadow-[4px_4px_0_var(--ink)] sm:bottom-6 sm:left-auto sm:right-6 sm:translate-x-0">
+      <div className="flex items-start gap-3 p-4">
+        <div
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-ink"
+          style={{ background: "var(--coral)" }}
+        >
+          <img src="/icon-192.png" alt="jobsy" className="h-7 w-7 rounded-lg" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="font-body text-sm font-semibold text-ink">Pievienot sākumekrānam</p>
+          <p className="mt-0.5 font-body text-xs text-ink-muted">Ātrāka piekļuve darbiņiem</p>
+        </div>
+        <button onClick={dismiss} className="shrink-0 text-ink-muted hover:text-ink">
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+      <div className="border-t-2 border-ink px-4 py-3">
+        <button
+          onClick={install}
+          className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-ink py-2 font-body text-sm font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_var(--ink)]"
+          style={{ background: "var(--coral)", color: "var(--cream)" }}
+        >
+          <Download className="h-4 w-4" />
+          Instalēt
+        </button>
+      </div>
+    </div>
+  );
+}
