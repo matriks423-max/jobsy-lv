@@ -461,7 +461,9 @@ export default function PostDetail() {
                 )}
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="font-body text-base font-bold text-ink">{profile?.name ?? "—"}</p>
+                    <Link to={`/user/${post.userId}`} className="font-body text-base font-bold text-ink hover:text-coral">
+                      {profile?.name ?? "—"}
+                    </Link>
                     {profile?.phoneVerified && (
                       <span className="inline-flex items-center gap-0.5 rounded-full border border-sage bg-sage-light px-2 py-0.5 font-body text-[10px] font-medium text-sage">
                         <ShieldCheck className="h-3 w-3" />

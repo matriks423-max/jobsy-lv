@@ -761,6 +761,85 @@ export const postsRouter = createRouter({
         .then((r) => r[0] ?? null);
       return row;
     }),
+
+  // Public user profile — name, avatar, city, business info, active posts, reviews received
+  publicProfile: publicQuery
+    .input(z.object({ userId: z.number() }))
+    .query(async ({ input }) => {
+      const db = getDb();
+
+      const [profileRows, userRows] = await Promise.all([
+        db.select({
+          name: schema.profiles.name,
+          avatarUrl: schema.profiles.avatarUrl,
+          city: schema.profiles.city,
+          phoneVerified: schema.profiles.phoneVerified,
+          companyName: schema.profiles.companyName,
+          companyWebsite: schema.profiles.companyWebsite,
+          companyDescription: schema.profiles.companyDescription,
+          createdAt: schema.profiles.createdAt,
+        })
+          .from(schema.profiles)
+          .where(eq(schema.profiles.userId, input.userId))
+          .limit(1),
+        db.select({ plan: schema.users.plan, createdAt: schema.users.createdAt })
+          .from(schema.users)
+          .where(eq(schema.users.id, input.userId))
+          .limit(1),
+      ]);
+
+      const profile = profileRows[0];
+      if (!profile) return null;
+
+      // Active posts by this user
+      const posts = await db
+        .select({
+          id: schema.posts.id,
+          title: schema.posts.title,
+          type: schema.posts.type,
+          category: schema.posts.category,
+          city: schema.posts.city,
+          budgetText: schema.posts.budgetText,
+          viewCount: schema.posts.viewCount,
+          createdAt: schema.posts.createdAt,
+          boostType: schema.posts.boostType,
+          boostExpiresAt: schema.posts.boostExpiresAt,
+          filled: schema.posts.filled,
+        })
+        .from(schema.posts)
+        .where(sql`${schema.posts.userId} = ${input.userId} AND ${schema.posts.status} = 'active'`)
+        .orderBy(desc(schema.posts.createdAt))
+        .limit(20);
+
+      // Reviews received
+      const reviews = await db
+        .select({
+          id: schema.reviews.id,
+          stars: schema.reviews.stars,
+          comment: schema.reviews.comment,
+          createdAt: schema.reviews.createdAt,
+          reviewerName: schema.profiles.name,
+        })
+        .from(schema.reviews)
+        .leftJoin(schema.profiles, eq(schema.profiles.userId, schema.reviews.reviewerId))
+        .where(eq(schema.reviews.revieweeId, input.userId))
+        .orderBy(desc(schema.reviews.createdAt))
+        .limit(10);
+
+      const avgRating = reviews.length
+        ? Math.round((reviews.reduce((s, r) => s + r.stars, 0) / reviews.length) * 10) / 10
+        : null;
+
+      return {
+        profile,
+        isBusiness: userRows[0]?.plan === "business",
+        memberSince: userRows[0]?.createdAt ?? profile.createdAt,
+        posts,
+        reviews,
+        avgRating,
+        reviewCount: reviews.length,
+      };
+    }),
 });
 
 async function checkAndRewardReferralOnPost(userId: number) {

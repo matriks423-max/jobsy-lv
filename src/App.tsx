@@ -25,6 +25,7 @@ import NotFound from "./pages/NotFound";
 import StylePreview from "./pages/StylePreview";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import UserProfile from "./pages/UserProfile";
 
 export default function App() {
   return (
@@ -62,6 +63,7 @@ export default function App() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/kategorija/:slug" element={<Category />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/user/:id" element={<UserProfile />} />
             <Route path="/style-preview" element={<StylePreview />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
