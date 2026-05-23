@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
@@ -14,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import PostCard from "@/components/PostCard";
 import {
   Search,
@@ -26,6 +28,17 @@ import {
   Map,
   Bell,
   Check,
+  SlidersHorizontal,
+  Home,
+  Truck,
+  Wrench,
+  Flower2,
+  Car,
+  Baby,
+  Cat,
+  Monitor,
+  GraduationCap,
+  MoreHorizontal,
 } from "lucide-react";
 import JobMap from "@/components/JobMap";
 
@@ -39,6 +52,10 @@ function useDebounce<T>(value: T, delay: number): T {
   }, [value, delay]);
   return debounced;
 }
+
+const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  Home, Truck, Wrench, Flower2, Car, Baby, Cat, Monitor, GraduationCap, MoreHorizontal,
+};
 
 export default function Browse() {
   const navigate = useNavigate();
@@ -62,6 +79,7 @@ export default function Browse() {
   const [viewMode, setViewMode] = useState<"list" | "map">("map");
   const [showSaveAlert, setShowSaveAlert] = useState(false);
   const [alertLabel, setAlertLabel] = useState("");
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   const listInput = {
     type: type === "all" ? undefined : type,
@@ -147,16 +165,179 @@ export default function Browse() {
   const posts = data ?? [];
   const hasMore = posts.length === PAGE_SIZE;
 
+  // ── Local filter panel (used in both sidebar and mobile sheet) ──
+  function FilterPanel({ onClose }: { onClose?: () => void }) {
+    return (
+      <div className="space-y-6">
+        {/* Search */}
+        <div>
+          <label className="mb-2 block font-body text-xs font-bold uppercase tracking-wide text-ink-muted">
+            {t(locale, "browse.searchPlaceholder")}
+          </label>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted" />
+            <input
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+              placeholder={t(locale, "browse.searchPlaceholder")}
+              className="h-10 w-full rounded-xl border-2 border-ink bg-white pl-9 pr-3 font-body text-sm focus:border-coral focus:outline-none"
+            />
+          </div>
+        </div>
+
+        {/* Type */}
+        <div>
+          <label className="mb-2 block font-body text-xs font-bold uppercase tracking-wide text-ink-muted">
+            {t(locale, "browse.typeAll")}
+          </label>
+          <div className="flex gap-2">
+            {(["all", "need", "offer"] as const).map((tVal) => (
+              <button
+                key={tVal}
+                onClick={() => { setType(tVal); setPage(0); onClose?.(); }}
+                className={`flex-1 rounded-xl border-2 py-2 font-body text-sm font-medium transition ${
+                  type === tVal
+                    ? "border-ink bg-coral text-ink"
+                    : "border-ink-light bg-white text-ink-muted hover:border-ink"
+                }`}
+              >
+                {tVal === "all" ? t(locale, "browse.typeAll") : tVal === "need" ? t(locale, "browse.typeNeed") : t(locale, "browse.typeOffer")}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Category grid */}
+        <div>
+          <label className="mb-2 block font-body text-xs font-bold uppercase tracking-wide text-ink-muted">
+            {t(locale, "browse.category")}
+          </label>
+          <div className="grid grid-cols-2 gap-1.5">
+            <button
+              onClick={() => { setCategory("all"); setPage(0); }}
+              className={`flex items-center gap-1.5 rounded-lg border-2 px-2 py-1.5 font-body text-xs transition ${
+                category === "all" ? "border-ink bg-ink text-cream" : "border-ink-light bg-white text-ink hover:border-ink"
+              }`}
+            >
+              <MoreHorizontal className="h-3.5 w-3.5 shrink-0" />
+              {t(locale, "browse.category")}
+            </button>
+            {CATEGORIES.map((cat) => {
+              const Icon = CATEGORY_ICONS[cat.icon] ?? MoreHorizontal;
+              return (
+                <button
+                  key={cat.key}
+                  onClick={() => { setCategory(cat.key); setPage(0); onClose?.(); }}
+                  className={`flex items-center gap-1.5 rounded-lg border-2 px-2 py-1.5 font-body text-xs transition ${
+                    category === cat.key
+                      ? "border-ink bg-coral text-ink"
+                      : "border-ink-light bg-white text-ink hover:border-ink"
+                  }`}
+                >
+                  <Icon className="h-3.5 w-3.5 shrink-0" />
+                  {t(locale, `categories.${cat.key}` as never)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* City */}
+        <div>
+          <label className="mb-2 block font-body text-xs font-bold uppercase tracking-wide text-ink-muted">
+            {t(locale, "browse.city")}
+          </label>
+          <Select value={city} onValueChange={(v) => { setCity(v); setPage(0); }}>
+            <SelectTrigger className="w-full rounded-xl border-2 border-ink bg-white font-body text-sm">
+              <MapPin className="mr-2 h-4 w-4 text-ink-muted" />
+              <SelectValue placeholder={t(locale, "browse.city")} />
+            </SelectTrigger>
+            <SelectContent className="border-2 border-ink">
+              <SelectItem value="all">{t(locale, "browse.city")}</SelectItem>
+              {CITIES.map((c) => (
+                <SelectItem key={c} value={c}>{t(locale, `cities.${c}` as never)}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Sort */}
+        <div>
+          <label className="mb-2 block font-body text-xs font-bold uppercase tracking-wide text-ink-muted">
+            Kārtot
+          </label>
+          <Select value={sort} onValueChange={(v) => { setSort(v as "newest" | "oldest"); setPage(0); }}>
+            <SelectTrigger className="w-full rounded-xl border-2 border-ink bg-white font-body text-sm">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="border-2 border-ink">
+              <SelectItem value="newest">{t(locale, "browse.sortNewest")}</SelectItem>
+              <SelectItem value="oldest">{t(locale, "browse.sortOldest")}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Save search */}
+        {activeFiltersCount > 0 && isAuthenticated && (
+          <button
+            onClick={handleOpenSaveAlert}
+            className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-ink bg-mustard-light px-3 py-2 font-body text-sm font-medium text-ink hover:bg-mustard transition"
+          >
+            <Bell className="h-3.5 w-3.5" />
+            {t(locale, "browse.saveAlert")}
+          </button>
+        )}
+
+        {/* Clear */}
+        {activeFiltersCount > 0 && (
+          <button
+            onClick={() => { clearFilters(); onClose?.(); }}
+            className="flex w-full items-center justify-center gap-1 font-body text-sm text-coral hover:text-coral-hover"
+          >
+            <X className="h-4 w-4" />
+            {t(locale, "browse.clear")}
+          </button>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen px-4 py-8 noise-bg">
-      <div className="mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="mb-4 flex items-center justify-between">
+    <div className="min-h-screen noise-bg">
+      <div className="mx-auto max-w-7xl px-4 py-8">
+
+        {/* Top bar */}
+        <div className="mb-6 flex items-start justify-between gap-4">
+          <div>
             <h1 className="font-display text-3xl font-bold text-ink md:text-4xl">
               {t(locale, "browse.title")}
             </h1>
-            {/* Map / List toggle — map first */}
+            <p className="mt-1 font-body text-sm text-ink-muted">
+              {totalCount !== undefined
+                ? t(locale, "browse.showing", { count: totalCount })
+                : t(locale, "browse.showing", { count: posts.length })}
+            </p>
+          </div>
+
+          <div className="flex shrink-0 items-center gap-2">
+            {/* Mobile filter button */}
+            <button
+              onClick={() => setShowMobileFilters(true)}
+              className="flex items-center gap-2 rounded-xl border-2 border-ink bg-white px-3 py-2 font-body text-sm font-medium md:hidden"
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+              Filtri
+              {activeFiltersCount > 0 && (
+                <span
+                  className="rounded-full px-1.5 py-0.5 font-mono text-xs text-ink"
+                  style={{ background: 'var(--coral)' }}
+                >
+                  {activeFiltersCount}
+                </span>
+              )}
+            </button>
+
+            {/* View toggle */}
             <div className="flex overflow-hidden rounded-xl border-2 border-ink">
               <button
                 onClick={() => setViewMode("map")}
@@ -178,100 +359,11 @@ export default function Browse() {
               </button>
             </div>
           </div>
-          {/* search input — keep as-is */}
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-muted" />
-            <Input
-              value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(0); }}
-              placeholder={t(locale, "browse.searchPlaceholder")}
-              className="h-12 rounded-xl border-2 border-ink bg-white pl-12 font-body text-base focus:border-coral"
-            />
-          </div>
-          <p className="mt-2 font-body text-sm text-ink-muted">
-            {totalCount !== undefined
-              ? t(locale, "browse.showing", { count: totalCount })
-              : t(locale, "browse.showing", { count: posts.length })}
-          </p>
         </div>
 
-        {/* Filters */}
-        <div className="mb-6 flex flex-wrap items-center gap-3">
-          <div className="flex gap-2">
-            {(["all", "need", "offer"] as const).map((tVal) => (
-              <button
-                key={tVal}
-                onClick={() => { setType(tVal); setPage(0); }}
-                className={`rounded-full border-2 px-4 py-2 font-body text-sm font-medium transition ${
-                  type === tVal
-                    ? "border-ink bg-coral text-ink"
-                    : "border-ink-light bg-white text-ink-muted hover:border-ink hover:text-ink"
-                }`}
-              >
-                {tVal === "all" ? t(locale, "browse.typeAll") : tVal === "need" ? t(locale, "browse.typeNeed") : t(locale, "browse.typeOffer")}
-              </button>
-            ))}
-          </div>
-
-          <Select value={category} onValueChange={(v) => { setCategory(v); setPage(0); }}>
-            <SelectTrigger className="w-[180px] rounded-xl border-2 border-ink bg-white font-body">
-              <SelectValue placeholder={t(locale, "browse.category")} />
-            </SelectTrigger>
-            <SelectContent className="border-2 border-ink">
-              <SelectItem value="all">{t(locale, "browse.category")}</SelectItem>
-              {CATEGORIES.map((c) => (
-                <SelectItem key={c.key} value={c.key}>
-                  {t(locale, `categories.${c.key}` as never)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={city} onValueChange={(v) => { setCity(v); setPage(0); }}>
-            <SelectTrigger className="w-[160px] rounded-xl border-2 border-ink bg-white font-body">
-              <MapPin className="mr-2 h-4 w-4" />
-              <SelectValue placeholder={t(locale, "browse.city")} />
-            </SelectTrigger>
-            <SelectContent className="border-2 border-ink">
-              <SelectItem value="all">{t(locale, "browse.city")}</SelectItem>
-              {CITIES.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {t(locale, `cities.${c}` as never)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={sort} onValueChange={(v) => { setSort(v as "newest" | "oldest"); setPage(0); }}>
-            <SelectTrigger className="w-[140px] rounded-xl border-2 border-ink bg-white font-body">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="border-2 border-ink">
-              <SelectItem value="newest">{t(locale, "browse.sortNewest")}</SelectItem>
-              <SelectItem value="oldest">{t(locale, "browse.sortOldest")}</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {activeFiltersCount > 0 && (
-            <button onClick={clearFilters} className="flex items-center gap-1 font-body text-sm text-coral hover:text-coral-hover">
-              <X className="h-4 w-4" />
-              {t(locale, "browse.clear")}
-            </button>
-          )}
-          {activeFiltersCount > 0 && (
-            <button
-              onClick={handleOpenSaveAlert}
-              className="flex items-center gap-1.5 rounded-lg border-2 border-ink bg-mustard-light px-3 py-1.5 font-body text-sm font-medium text-ink hover:bg-mustard transition"
-            >
-              <Bell className="h-3.5 w-3.5" />
-              {t(locale, "browse.saveAlert")}
-            </button>
-          )}
-        </div>
-
-        {/* Active filter pills */}
+        {/* Mobile active filter pills */}
         {activeFiltersCount > 0 && (
-          <div className="mb-6 flex flex-wrap gap-2">
+          <div className="mb-4 flex flex-wrap gap-2 md:hidden">
             {type !== "all" && (
               <span className="inline-flex items-center gap-1 rounded-full border-2 border-ink bg-coral-light px-3 py-1 font-body text-xs font-medium text-ink">
                 {type === "need" ? t(locale, "browse.typeNeed") : t(locale, "browse.typeOffer")}
@@ -299,7 +391,7 @@ export default function Browse() {
           </div>
         )}
 
-        {/* Save Alert inline form */}
+        {/* Save alert inline form */}
         {showSaveAlert && (
           <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border-2 border-ink bg-mustard-light p-4">
             <Bell className="h-4 w-4 shrink-0 text-ink" />
@@ -307,7 +399,7 @@ export default function Browse() {
               value={alertLabel}
               onChange={(e) => setAlertLabel(e.target.value)}
               placeholder={t(locale, "browse.alertLabelPlaceholder")}
-              className="h-9 flex-1 min-w-[180px] rounded-lg border-2 border-ink bg-white font-body text-sm focus:border-coral"
+              className="h-9 flex-1 min-w-[180px] rounded-lg border-2 border-ink bg-white px-3 font-body text-sm focus:border-coral focus:outline-none"
             />
             <button
               onClick={() => saveSearchMutation.mutate({
@@ -329,89 +421,119 @@ export default function Browse() {
           </div>
         )}
 
-        {/* Featured Posts */}
-        {featuredPosts.length > 0 && (
-          <div className="mb-8">
-            <h2 className="mb-3 font-display text-lg font-bold text-ink">
-              {t(locale, "browse.featured")}
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {featuredPosts.map(({ post, profile, isBusiness, images }) => (
-                <PostCard key={`featured-${post.id}`} post={post} profile={profile} isBusiness={isBusiness} images={images} />
-              ))}
+        {/* Main layout: sidebar + content */}
+        <div className="flex gap-6">
+          {/* Desktop sidebar */}
+          <aside className="hidden w-[280px] shrink-0 md:block">
+            <div className="sticky top-24 rounded-2xl border-2 border-ink bg-white p-5">
+              <FilterPanel />
             </div>
-            <div className="mt-4 border-b-2 border-ink-light" />
-          </div>
-        )}
+          </aside>
 
-        {/* Results */}
-        {viewMode === "list" ? (
-          <>
-            {isLoading ? (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="h-48 animate-pulse rounded-2xl border-2 border-ink bg-white" />
-                ))}
-              </div>
-            ) : posts.length === 0 ? (
-              <div className="py-20 text-center">
-                <p className="font-body text-lg text-ink-muted">{t(locale, "browse.noResults")}</p>
-                <button onClick={clearFilters} className="mt-4 font-body text-sm text-coral hover:underline">
-                  {t(locale, "browse.clear")}
-                </button>
-              </div>
-            ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {posts.map(({ post, profile, isBusiness, images }) => (
-                  <PostCard key={post.id} post={post} profile={profile} isBusiness={isBusiness} images={images} />
-                ))}
+          {/* Content area */}
+          <div className="min-w-0 flex-1">
+            {/* Featured Posts */}
+            {featuredPosts.length > 0 && (
+              <div className="mb-8">
+                <h2 className="mb-3 font-display text-lg font-bold text-ink">
+                  {t(locale, "browse.featured")}
+                </h2>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {featuredPosts.map(({ post, profile, isBusiness, images }) => (
+                    <PostCard key={`featured-${post.id}`} post={post} profile={profile} isBusiness={isBusiness} images={images} />
+                  ))}
+                </div>
+                <div className="mt-4 border-b-2 border-ink-light" />
               </div>
             )}
-            {/* Pagination */}
-            {(page > 0 || hasMore) && (
-              <div className="mt-8 flex items-center justify-center gap-4">
-                <button
-                  onClick={() => setPage((p) => Math.max(0, p - 1))}
-                  disabled={page === 0}
-                  className="flex items-center gap-1 rounded-xl border-2 border-ink px-4 py-2 font-body text-sm font-medium disabled:opacity-40"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                  {t(locale, "browse.prev")}
-                </button>
-                <span className="font-mono text-sm text-ink-muted">{page + 1}</span>
-                <button
-                  onClick={() => setPage((p) => p + 1)}
-                  disabled={!hasMore}
-                  className="flex items-center gap-1 rounded-xl border-2 border-ink px-4 py-2 font-body text-sm font-medium disabled:opacity-40"
-                >
-                  {t(locale, "browse.next")}
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="mb-6">
-            {isLoading ? (
-              <div className="h-[520px] animate-pulse rounded-2xl border-2 border-ink bg-white" />
-            ) : (
-              <JobMap posts={posts} />
-            )}
-            <p className="mt-3 font-body text-sm text-ink-muted">
-              {t(locale, "browse.mapShowing", { count: posts.filter(({ post }) => post.city && post.city !== "other").length })}
-            </p>
-          </div>
-        )}
 
-        {/* Mobile FAB — Post a Job */}
-        <button
-          onClick={() => navigate("/create")}
-          className="fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full border-2 border-ink bg-coral px-4 py-3 font-body text-sm font-medium text-ink shadow-card-coral transition hover:-translate-y-0.5 hover:bg-coral-hover md:hidden"
-        >
-          <Plus className="h-4 w-4" />
-          {t(locale, "nav.createPost")}
-        </button>
+            {/* Results */}
+            {viewMode === "list" ? (
+              <>
+                {isLoading ? (
+                  <div className="grid gap-6 sm:grid-cols-2">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <div key={i} className="h-48 animate-pulse rounded-2xl border-2 border-ink bg-white" />
+                    ))}
+                  </div>
+                ) : posts.length === 0 ? (
+                  <div className="py-20 text-center">
+                    <p className="font-body text-lg text-ink-muted">{t(locale, "browse.noResults")}</p>
+                    <button onClick={clearFilters} className="mt-4 font-body text-sm text-coral hover:underline">
+                      {t(locale, "browse.clear")}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid gap-6 sm:grid-cols-2">
+                    {posts.map(({ post, profile, isBusiness, images }) => (
+                      <PostCard key={post.id} post={post} profile={profile} isBusiness={isBusiness} images={images} />
+                    ))}
+                  </div>
+                )}
+
+                {/* Pagination */}
+                {(page > 0 || hasMore) && (
+                  <div className="mt-8 flex items-center justify-center gap-4">
+                    <button
+                      onClick={() => setPage((p) => Math.max(0, p - 1))}
+                      disabled={page === 0}
+                      className="flex items-center gap-1 rounded-xl border-2 border-ink px-4 py-2 font-body text-sm font-medium disabled:opacity-40"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                      {t(locale, "browse.prev")}
+                    </button>
+                    <span className="font-mono text-sm text-ink-muted">{page + 1}</span>
+                    <button
+                      onClick={() => setPage((p) => p + 1)}
+                      disabled={!hasMore}
+                      className="flex items-center gap-1 rounded-xl border-2 border-ink px-4 py-2 font-body text-sm font-medium disabled:opacity-40"
+                    >
+                      {t(locale, "browse.next")}
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="mb-6">
+                {isLoading ? (
+                  <div className="h-[520px] animate-pulse rounded-2xl border-2 border-ink bg-white" />
+                ) : (
+                  <JobMap posts={posts} />
+                )}
+                <p className="mt-3 font-body text-sm text-ink-muted">
+                  {t(locale, "browse.mapShowing", { count: posts.filter(({ post }) => post.city && post.city !== "other").length })}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
+
+      {/* Mobile FAB */}
+      <button
+        onClick={() => navigate("/create")}
+        className="fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full border-2 border-ink bg-coral px-4 py-3 font-body text-sm font-medium text-ink shadow-card-coral transition hover:-translate-y-0.5 hover:bg-coral-hover md:hidden"
+      >
+        <Plus className="h-4 w-4" />
+        {t(locale, "nav.createPost")}
+      </button>
+
+      {/* Mobile filter Sheet */}
+      <Sheet open={showMobileFilters} onOpenChange={setShowMobileFilters}>
+        <SheetContent side="bottom" className="h-[85vh] overflow-y-auto rounded-t-2xl border-t-2 border-ink bg-cream p-6">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="font-display text-xl font-bold text-ink">Filtri</h2>
+            <button
+              onClick={() => setShowMobileFilters(false)}
+              className="rounded-lg border-2 border-ink p-1.5"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <FilterPanel onClose={() => setShowMobileFilters(false)} />
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
