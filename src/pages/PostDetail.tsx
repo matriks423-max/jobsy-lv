@@ -174,8 +174,52 @@ export default function PostDetail() {
     if (!data?.post) return;
     const prev = document.title;
     document.title = `${data.post.title} — jobsy.lv`;
-    return () => { document.title = prev; };
-  }, [data?.post]);
+
+    // Dynamic meta description + OG tags for SEO and social sharing
+    const desc = [
+      data.post.description?.slice(0, 120),
+      data.post.city ? t(locale, `cities.${data.post.city}` as never) : null,
+      data.post.budgetText,
+    ].filter(Boolean).join(" · ") || `${data.post.title} — jobsy.lv`;
+
+    const url = `https://jobsy.lv/post/${data.post.id}`;
+    const image = data.images?.[0] ?? "https://jobsy.lv/og-image.png";
+
+    const setMeta = (selector: string, attr: string, value: string) => {
+      let el = document.querySelector<HTMLMetaElement>(selector);
+      const created = !el;
+      if (!el) {
+        el = document.createElement("meta");
+        const [name, val] = attr.split("=");
+        el.setAttribute(name, val ?? "");
+        document.head.appendChild(el);
+      }
+      el.content = value;
+      return created ? el : null;
+    };
+
+    const metas: HTMLMetaElement[] = [];
+    const add = (sel: string, attr: string, val: string) => {
+      const el = setMeta(sel, attr, val);
+      if (el) metas.push(el);
+    };
+
+    add('meta[name="description"]', "name=description", desc);
+    add('meta[property="og:title"]', "property=og:title", `${data.post.title} — jobsy.lv`);
+    add('meta[property="og:description"]', "property=og:description", desc);
+    add('meta[property="og:url"]', "property=og:url", url);
+    add('meta[property="og:image"]', "property=og:image", image);
+    add('meta[property="og:type"]', "property=og:type", "website");
+    add('meta[name="twitter:card"]', "name=twitter:card", "summary_large_image");
+    add('meta[name="twitter:title"]', "name=twitter:title", `${data.post.title} — jobsy.lv`);
+    add('meta[name="twitter:description"]', "name=twitter:description", desc);
+    add('meta[name="twitter:image"]', "name=twitter:image", image);
+
+    return () => {
+      document.title = prev;
+      metas.forEach((el) => document.head.removeChild(el));
+    };
+  }, [data?.post, data?.images, locale]);
 
   const { data: relatedPosts } = trpc.posts.list.useQuery(
     {

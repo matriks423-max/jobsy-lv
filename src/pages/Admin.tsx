@@ -7,8 +7,23 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   CheckCircle, XCircle, Trash2, ShieldOff, AlertTriangle,
   FileText, Flag, Loader2, LayoutDashboard, Users, List,
-  Eye, ShieldCheck, Ban, UserCheck, Search, Phone, Share2,
+  Eye, ShieldCheck, Ban, UserCheck, Search, Phone, Share2, Download,
 } from "lucide-react";
+
+function downloadCsv(filename: string, rows: string[][]): void {
+  const escape = (v: unknown) => {
+    const s = String(v ?? "").replace(/"/g, '""');
+    return /[",\n\r]/.test(s) ? `"${s}"` : s;
+  };
+  const csv = rows.map((r) => r.map(escape).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 type AdminTab = "overview" | "users" | "posts" | "pending" | "reports" | "queue";
 
@@ -163,14 +178,32 @@ export default function Admin() {
         {/* ── USERS ── */}
         {tab === "users" && (
           <div>
-            <div className="mb-4 flex items-center gap-2 rounded-xl border-2 border-ink bg-white px-4 py-2">
-              <Search className="h-4 w-4 text-ink-muted" />
-              <input
-                value={userSearch}
-                onChange={(e) => setUserSearch(e.target.value)}
-                placeholder="Search by email or name..."
-                className="flex-1 bg-transparent font-body text-sm text-ink outline-none placeholder:text-ink-muted"
-              />
+            <div className="mb-4 flex gap-2">
+              <div className="flex flex-1 items-center gap-2 rounded-xl border-2 border-ink bg-white px-4 py-2">
+                <Search className="h-4 w-4 text-ink-muted" />
+                <input
+                  value={userSearch}
+                  onChange={(e) => setUserSearch(e.target.value)}
+                  placeholder="Search by email or name..."
+                  className="flex-1 bg-transparent font-body text-sm text-ink outline-none placeholder:text-ink-muted"
+                />
+              </div>
+              {users && users.length > 0 && (
+                <button
+                  onClick={() => {
+                    const rows = [
+                      ["id", "email", "name", "role", "plan", "authMethod", "phoneVerified", "postCount", "createdAt"],
+                      ...users.map((u) => [u.id, u.email, u.name ?? "", u.role, u.plan ?? "", u.authMethod, u.phoneVerified ? "yes" : "no", u.postCount ?? 0, new Date(u.createdAt).toISOString()]),
+                    ];
+                    downloadCsv(`jobsy-users-${new Date().toISOString().split("T")[0]}.csv`, rows as string[][]);
+                  }}
+                  className="flex items-center gap-2 rounded-xl border-2 border-ink bg-white px-4 py-2 font-body text-sm font-medium text-ink hover:bg-cream-dark transition"
+                  title="Export CSV"
+                >
+                  <Download className="h-4 w-4" />
+                  CSV
+                </button>
+              )}
             </div>
             <div className="space-y-3">
               {usersLoading ? (
@@ -215,7 +248,7 @@ export default function Admin() {
         {/* ── ALL POSTS ── */}
         {tab === "posts" && (
           <div>
-            <div className="mb-4 flex flex-wrap gap-2">
+            <div className="mb-4 flex flex-wrap items-center gap-2">
               {STATUS_OPTIONS.map((s) => (
                 <button key={s} onClick={() => setPostStatus(s)}
                   className={`rounded-full border-2 px-3 py-1 font-body text-xs font-medium transition ${
@@ -224,6 +257,22 @@ export default function Admin() {
                   {STATUS_LABELS[s]}
                 </button>
               ))}
+              {allPosts && allPosts.length > 0 && (
+                <button
+                  onClick={() => {
+                    const rows = [
+                      ["id", "title", "type", "category", "status", "city", "userId", "viewCount", "contactCount", "wasFree", "boostType", "createdAt", "expiresAt"],
+                      ...allPosts.map((p) => [p.id, p.title, p.type, p.category, p.status, p.city ?? "", p.userId, p.viewCount, p.contactCount, p.wasFree ? "yes" : "no", p.boostType ?? "", new Date(p.createdAt).toISOString(), p.expiresAt ? new Date(p.expiresAt).toISOString() : ""]),
+                    ];
+                    downloadCsv(`jobsy-posts-${new Date().toISOString().split("T")[0]}.csv`, rows as string[][]);
+                  }}
+                  className="ml-auto flex items-center gap-2 rounded-xl border-2 border-ink bg-white px-4 py-1.5 font-body text-xs font-medium text-ink hover:bg-cream-dark transition"
+                  title="Export CSV"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  CSV
+                </button>
+              )}
             </div>
             <div className="space-y-3">
               {postsLoading ? (

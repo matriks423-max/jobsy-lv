@@ -181,6 +181,38 @@ export async function sendPaymentFailed(to: string): Promise<void> {
   }
 }
 
+export async function sendContactNotification(
+  ownerEmail: string,
+  postTitle: string,
+  postId: number,
+  contactorName: string
+): Promise<void> {
+  try {
+    const postUrl = `https://jobsy.lv/post/${postId}`;
+    await resend.emails.send({
+      from: FROM,
+      to: ownerEmail,
+      subject: `Kāds apskata tavu kontaktinformāciju — "${escHtml(postTitle)}"`,
+      html: `
+        <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; background: #FAF6F0; padding: 40px 32px;">
+          <h1 style="font-size: 28px; color: #1A1208; margin-bottom: 8px;">jobsy<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#E8512A;margin-left:2px;vertical-align:middle;"></span></h1>
+          <hr style="border: 2px solid #1A1208; margin: 16px 0 32px;" />
+          <h2 style="font-size: 22px; color: #1A1208; margin-bottom: 16px;">Jauns kontakts!</h2>
+          <p style="color: #4A3728; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
+            <strong>${escHtml(contactorName)}</strong> apskata tavu kontaktinformāciju sludinājumā <strong>${escHtml(postTitle)}</strong>. Sagaidi zvanu vai e-pastu drīzumā!
+          </p>
+          <a href="${escHtml(postUrl)}" style="display: inline-block; background: #E8512A; color: #FAF6F0; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 15px; border: 2px solid #1A1208;">
+            Skatīt sludinājumu →
+          </a>
+          <p style="color: #8A7060; font-size: 13px; margin-top: 32px;">© 2026 jobsy.lv</p>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("[email] sendContactNotification failed:", err);
+  }
+}
+
 export async function sendExpiryReminder(
   to: string,
   postTitle: string,

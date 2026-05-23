@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { motion } from "framer-motion";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
+import { relativeTime } from "@/lib/relativeTime";
 import { CATEGORIES } from "@/lib/categories";
 import type { Post, Profile } from "@db/schema";
 import {
@@ -150,10 +151,8 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
                 {locale === "lv" ? "Steidzams" : locale === "ru" ? "Срочно" : "Urgent"}
               </span>
             )}
-            <span className="ml-auto font-mono text-xs text-ink-light">
-              {new Date(post.createdAt).toLocaleDateString(
-                locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB"
-              )}
+            <span className="ml-auto font-mono text-xs text-ink-light" title={new Date(post.createdAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}>
+              {relativeTime(post.createdAt, locale)}
             </span>
           </div>
         </div>

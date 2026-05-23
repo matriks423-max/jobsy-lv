@@ -24,7 +24,7 @@ import {
 } from "./queries/profiles";
 import { createContact, hasContacted, createReport } from "./queries/reports";
 import { hasInterested, createInterest } from "./queries/interests";
-import { sendInterestNotification } from "./lib/email";
+import { sendInterestNotification, sendContactNotification } from "./lib/email";
 import {
   getReferralByReferredId,
   markReferralPostMade,
@@ -368,6 +368,22 @@ export const postsRouter = createRouter({
           fromUserId: ctx.user.id,
         });
         await incrementContactCount(input.postId);
+
+        // Notify post owner (fire-and-forget, non-blocking)
+        // Use profile contact email if set, otherwise look up user login email
+        const ownerEmail = postResult.profile?.email
+          ?? await getDb()
+            .select({ email: schema.users.email })
+            .from(schema.users)
+            .where(eq(schema.users.id, postResult.post.userId))
+            .limit(1)
+            .then((r) => r[0]?.email ?? null);
+
+        if (ownerEmail && postResult.post.userId !== ctx.user.id) {
+          const contactorProfile = await getProfileByUserId(ctx.user.id);
+          const contactorName = contactorProfile?.name ?? ctx.user.email;
+          void sendContactNotification(ownerEmail, postResult.post.title, input.postId, contactorName);
+        }
       }
 
       return {
