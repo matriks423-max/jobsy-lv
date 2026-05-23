@@ -338,13 +338,13 @@ app.get("/post/:id", async (c, next) => {
     const result = await getPostWithProfile(postId);
     if (!result) return next();
 
-    const { post, profile } = result;
+    const { post, profile, images } = result;
     const rawTitle = `${post.title} — jobsy.lv`;
     const rawDesc = post.description?.substring(0, 160) ?? "Atrodi palīdzību vai piedāvā darbus Latvijā.";
     const title = escHtml(rawTitle);
     const desc = escHtml(rawDesc);
     const url = `https://jobsy.lv/post/${postId}`;
-    const image = `https://jobsy.lv/og-image.png`;
+    const image = images?.[0] ?? `https://jobsy.lv/og-image.png`;
     const authorName = escHtml(profile?.name ?? "Anonīms");
 
     const html = `<!DOCTYPE html>

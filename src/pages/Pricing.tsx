@@ -34,7 +34,7 @@ export default function Pricing() {
 
   useEffect(() => {
     if (searchParams.get("canceled") === "true") {
-      toast("Maksājums atcelts.", "info");
+      toast(t(locale, "pricing.toastCanceled"), "info");
       setSearchParams({}, { replace: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

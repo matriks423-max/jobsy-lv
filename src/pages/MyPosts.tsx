@@ -44,7 +44,7 @@ export default function MyPosts() {
   // Handle Stripe boost redirect
   useEffect(() => {
     if (searchParams.get("boosted") === "true") {
-      toast("Boost aktivizēts! 🔝", "success");
+      toast(t(locale, "myPosts.toastBoostActivated"), "success");
       setSearchParams({}, { replace: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,7 +65,7 @@ export default function MyPosts() {
   });
   const renewMutation = trpc.posts.renew.useMutation({
     onSuccess: (data) => {
-      toast("Sludinājums atjaunots!", "success");
+      toast(t(locale, "myPosts.toastRenewed"), "success");
       utils.posts.myPosts.invalidate();
       navigate(`/post/${data.postId}`);
     },
@@ -241,7 +241,7 @@ export default function MyPosts() {
                           onClick={() => renewMutation.mutate({ postId: post.id })}
                           disabled={renewMutation.isPending}
                           className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark"
-                          title="Atjaunot sludinājumu (jauna 30 dienu kopija)"
+                          title={t(locale, "myPosts.renewTooltip")}
                         >
                           <RefreshCw className="h-4 w-4" />
                         </button>

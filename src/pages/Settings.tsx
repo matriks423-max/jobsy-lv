@@ -103,10 +103,10 @@ export default function Settings() {
   // Handle Stripe redirect params
   useEffect(() => {
     if (searchParams.get("subscribed") === "true") {
-      toast("Apsveicam! Business abonements aktivizēts 🎉", "success");
+      toast(t(locale, "settings.toastSubscribed"), "success");
       setSearchParams({}, { replace: true });
     } else if (searchParams.get("canceled") === "true") {
-      toast("Maksājums atcelts.", "info");
+      toast(t(locale, "pricing.toastCanceled"), "info");
       setSearchParams({}, { replace: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

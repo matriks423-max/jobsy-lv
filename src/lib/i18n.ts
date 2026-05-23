@@ -218,6 +218,9 @@ export const translations = {
       expires: "Beidzas",
       toastFilled: "Atzīmēts kā aizpildīts",
       toastOpen: "Atzīmēts kā atvērts",
+      toastRenewed: "Sludinājums atjaunots!",
+      toastBoostActivated: "Boost aktivizēts! 🔝",
+      renewTooltip: "Atjaunot sludinājumu (jauna 30 dienu kopija)",
     },
     success: {
       title: "Sludinājums publicēts!",
@@ -331,6 +334,7 @@ export const translations = {
       faq1a: "Tavi sludinājumi paliek aktīvi līdz to derīguma termiņam. Tu pāreji uz bezmaksas plānu.",
       faq2q: "Vai varu mainīt plānu?",
       faq2a: "Jā, vari jaunināt vai pazemināt jebkurā brīdī Stripe portālā.",
+      toastCanceled: "Maksājums atcelts.",
     },
     boost: {
       title: "Palielināt redzamību",
@@ -385,6 +389,7 @@ export const translations = {
       manageBilling: "Pārvaldīt maksājumus",
       currentPlanFree: "Pašreizējais plāns: Bezmaksas",
       currentPlanBusiness: "Pašreizējais plāns: 🏢 Business",
+      toastSubscribed: "Apsveicam! Business abonements aktivizēts 🎉",
     },
     referral: {
       title: "Ienes draugus — saņem bezmaksas sludinājumus",
@@ -615,6 +620,9 @@ export const translations = {
       expires: "Истекает",
       toastFilled: "Отмечено как закрытое",
       toastOpen: "Отмечено как открытое",
+      toastRenewed: "Объявление обновлено!",
+      toastBoostActivated: "Boost активирован! 🔝",
+      renewTooltip: "Обновить объявление (новая копия на 30 дней)",
     },
     success: {
       title: "Объявление опубликовано!",
@@ -728,6 +736,7 @@ export const translations = {
       faq1a: "Ваши объявления остаются активными до истечения срока. Вы переходите на бесплатный план.",
       faq2q: "Могу ли я сменить план?",
       faq2a: "Да, вы можете повысить или понизить тариф в любое время через портал Stripe.",
+      toastCanceled: "Платёж отменён.",
     },
     boost: {
       title: "Повысить видимость",
@@ -782,6 +791,7 @@ export const translations = {
       manageBilling: "Управление подпиской",
       currentPlanFree: "Текущий план: Бесплатный",
       currentPlanBusiness: "Текущий план: 🏢 Business",
+      toastSubscribed: "Поздравляем! Подписка Business активирована 🎉",
     },
     referral: {
       title: "Приведи друга — получи бесплатное объявление",
@@ -1012,6 +1022,9 @@ export const translations = {
       expires: "Expires",
       toastFilled: "Marked as filled",
       toastOpen: "Marked as open",
+      toastRenewed: "Post renewed!",
+      toastBoostActivated: "Boost activated! 🔝",
+      renewTooltip: "Renew post (new 30-day copy)",
     },
     success: {
       title: "Post published!",
@@ -1125,6 +1138,7 @@ export const translations = {
       faq1a: "Your posts stay active until their expiry date. You move to the free plan.",
       faq2q: "Can I switch plans?",
       faq2a: "Yes, upgrade or downgrade anytime via the Stripe portal.",
+      toastCanceled: "Payment cancelled.",
     },
     boost: {
       title: "Boost visibility",
@@ -1179,6 +1193,7 @@ export const translations = {
       manageBilling: "Manage billing",
       currentPlanFree: "Current plan: Free",
       currentPlanBusiness: "Current plan: 🏢 Business",
+      toastSubscribed: "Congratulations! Business plan activated 🎉",
     },
     referral: {
       title: "Invite friends — earn free posts",

@@ -430,7 +430,7 @@ export default function PostDetail() {
                   onClick={() => { setGalleryIndex(i); setShowGallery(true); }}
                   className="aspect-square overflow-hidden rounded-xl border-2 border-ink"
                 >
-                  <img src={img} alt="" className="h-full w-full object-cover" />
+                  <img src={img} alt={`${post.title} — ${i + 1}`} className="h-full w-full object-cover" loading="lazy" />
                 </button>
               ))}
             </div>
@@ -736,7 +736,7 @@ export default function PostDetail() {
       {showGallery && images.length > 0 && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75" onClick={() => setShowGallery(false)}>
           <div className="relative max-h-[80vh] max-w-[90vw]">
-            <img src={images[galleryIndex]} alt="" className="max-h-[80vh] max-w-[90vw] rounded-2xl border-2 border-ink" />
+            <img src={images[galleryIndex]} alt={`${post.title} — ${galleryIndex + 1}`} className="max-h-[80vh] max-w-[90vw] rounded-2xl border-2 border-ink" />
             {images.length > 1 && (
               <>
                 <button

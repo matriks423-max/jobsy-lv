@@ -77,12 +77,25 @@ export default function Category() {
     if (!catInfo) navigate("/browse", { replace: true });
   }, [catInfo, navigate]);
 
-  // Set document title for SEO
+  // Set document title + meta description for SEO
   useEffect(() => {
-    if (seo) document.title = `${seo.heading} — jobsy.lv`;
-    return () => {
-      document.title = "jobsy.lv — Atrodi palīdzību vai piedāvā darbu";
-    };
+    if (seo) {
+      document.title = `${seo.heading} — jobsy.lv`;
+      // Inject meta description
+      let meta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+      const created = !meta;
+      if (!meta) {
+        meta = document.createElement("meta");
+        meta.name = "description";
+        document.head.appendChild(meta);
+      }
+      meta.content = seo.description;
+      return () => {
+        document.title = "jobsy.lv — Atrodi palīdzību vai piedāvā darbu";
+        if (created && meta) document.head.removeChild(meta);
+        else if (meta) meta.content = "";
+      };
+    }
   }, [seo]);
 
   const { data, isLoading } = trpc.posts.list.useQuery(
