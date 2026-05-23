@@ -77,11 +77,7 @@ export default function Pricing() {
             {t(locale, "pricing.title")}
           </h1>
           <p className="mt-3 font-body text-lg text-ink-muted">
-            {locale === "lv"
-              ? "Vienkāršs un godīgs — bez slēptajām maksām"
-              : locale === "ru"
-              ? "Просто и честно — без скрытых платежей"
-              : "Simple and honest — no hidden fees"}
+            {t(locale, "pricing.subtitle")}
           </p>
         </div>
 

@@ -85,6 +85,7 @@ export const translations = {
       clear: "Notīrīt",
       empty: "Nekas nav atrasts. Mēģini citus filtrus.",
       noResults: "Nekas nav atrasts. Mēģini citus filtrus.",
+      noResultsSub: "Mēģini citus atslēgvārdus vai notīri filtrus",
       loadMore: "Ielādēt vēl",
       loading: "Ielādē...",
       viewPost: "Skatīt",
@@ -319,6 +320,7 @@ export const translations = {
     },
     pricing: {
       title: "Cenas",
+      subtitle: "Vienkāršs un godīgs — bez slēptajām maksām",
       free: "Bezmaksas",
       business: "Business",
       perMonth: "/mēnesī",
@@ -512,6 +514,7 @@ export const translations = {
       clear: "Очистить",
       empty: "Ничего не найдено. Попробуй другие фильтры.",
       noResults: "Ничего не найдено. Попробуй другие фильтры.",
+      noResultsSub: "Попробуй другие ключевые слова или сбрось фильтры",
       loadMore: "Загрузить ещё",
       loading: "Загрузка...",
       viewPost: "Смотреть",
@@ -746,6 +749,7 @@ export const translations = {
     },
     pricing: {
       title: "Цены",
+      subtitle: "Просто и честно — без скрытых платежей",
       free: "Бесплатно",
       business: "Бизнес",
       perMonth: "/месяц",
@@ -939,6 +943,7 @@ export const translations = {
       clear: "Clear",
       empty: "Nothing found. Try different filters.",
       noResults: "Nothing found. Try different filters.",
+      noResultsSub: "Try different keywords or clear the filters",
       loadMore: "Load more",
       loading: "Loading...",
       viewPost: "View",
@@ -1173,6 +1178,7 @@ export const translations = {
     },
     pricing: {
       title: "Pricing",
+      subtitle: "Simple and honest — no hidden fees",
       free: "Free",
       business: "Business",
       perMonth: "/month",

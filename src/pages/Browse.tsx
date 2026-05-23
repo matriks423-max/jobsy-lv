@@ -504,12 +504,13 @@ export default function Browse() {
                       🔍
                     </div>
                     <p className="font-display text-xl font-bold text-ink">
-                      {debouncedSearch
-                        ? `Nav rezultātu priekš "${debouncedSearch}"`
-                        : t(locale, "browse.noResults")}
+                      {t(locale, "browse.noResults")}
                     </p>
+                    {debouncedSearch && (
+                      <p className="font-mono text-sm text-ink-muted">"{debouncedSearch}"</p>
+                    )}
                     <p className="mt-2 font-body text-sm text-ink-muted">
-                      Mēģini citus atslēgvārdus vai notīri filtrus
+                      {t(locale, "browse.noResultsSub")}
                     </p>
                     <button
                       onClick={clearFilters}

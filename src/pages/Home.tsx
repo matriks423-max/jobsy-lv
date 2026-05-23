@@ -115,8 +115,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    document.title = "jobsy.lv — Atrodi palīdzību vai piedāvā darbu";
-  }, []);
+    document.title = `jobsy.lv — ${t(locale, "hero.title")}`;
+  }, [locale]);
 
   const { data: stats } = trpc.stats.get.useQuery();
   const { data: posts, isLoading } = trpc.posts.list.useQuery(
