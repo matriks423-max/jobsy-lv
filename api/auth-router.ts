@@ -11,6 +11,9 @@ import * as schema from "../db/schema";
 import { sendEmail } from "./lib/email";
 import { env } from "./lib/env";
 
+// In-memory rate limit: max 3 forgot-password requests per email per hour
+const forgotRateMap = new Map<string, { count: number; windowStart: number }>();
+
 export const authRouter = createRouter({
   me: authedQuery.query((opts) => opts.ctx.user),
 
@@ -51,6 +54,19 @@ export const authRouter = createRouter({
         .from(schema.users)
         .where(eq(schema.users.email, input.email.toLowerCase()))
         .limit(1);
+
+      // Rate limit: 3 requests per email per hour
+      const key = input.email.toLowerCase();
+      const now = Date.now();
+      const rateEntry = forgotRateMap.get(key);
+      if (rateEntry && now - rateEntry.windowStart < 60 * 60 * 1000) {
+        if (rateEntry.count >= 3) {
+          return { success: true }; // Silent rate limit — don't reveal enumeration
+        }
+        forgotRateMap.set(key, { count: rateEntry.count + 1, windowStart: rateEntry.windowStart });
+      } else {
+        forgotRateMap.set(key, { count: 1, windowStart: now });
+      }
 
       // Always return success to prevent email enumeration
       if (!user || user.authMethod !== "email") {
