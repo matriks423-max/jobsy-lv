@@ -30,7 +30,7 @@ export const profileRouter = createRouter({
       phone: z.string().max(50).optional(),
       name: z.string().min(1).max(100).optional(),
       companyName: z.string().max(255).optional(),
-      companyWebsite: z.string().max(512).optional().or(z.literal("")),
+      companyWebsite: z.union([z.string().url().max(512), z.literal("")]).optional(),
       companyDescription: z.string().max(300).optional(),
     }))
     .mutation(async ({ ctx, input }: { ctx: { user: { id: number } }; input: { phone?: string; name?: string; companyName?: string; companyWebsite?: string; companyDescription?: string } }) => {
