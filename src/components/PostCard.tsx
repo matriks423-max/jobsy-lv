@@ -38,7 +38,7 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
   const { locale } = useLocale();
 
   const category = CATEGORIES.find((c) => c.key === post.category);
-  const CategoryIcon = category ? iconMap[category.icon] : MoreHorizontal;
+  const CategoryIcon = (category ? (iconMap[category.icon] ?? MoreHorizontal) : MoreHorizontal);
   const isNeed = post.type === "need";
   const heroImage = images?.[0];
 
