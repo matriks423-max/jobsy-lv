@@ -412,8 +412,16 @@ export const postsRouter = createRouter({
         await createInterest(input.postId, ctx.user.id);
         const helperProfile = await getProfileByUserId(ctx.user.id);
         const helperName = helperProfile?.name ?? "Kāds";
-        if (postResult.profile?.email) {
-          void sendInterestNotification(postResult.profile.email, helperName, postResult.post.title, input.postId);
+        // Fall back to login email if profile email not set
+        const ownerEmail = postResult.profile?.email
+          ?? await getDb()
+            .select({ email: schema.users.email })
+            .from(schema.users)
+            .where(eq(schema.users.id, postResult.post.userId))
+            .limit(1)
+            .then((r) => r[0]?.email ?? null);
+        if (ownerEmail) {
+          void sendInterestNotification(ownerEmail, helperName, postResult.post.title, input.postId);
         }
       }
       return { success: true, already };
