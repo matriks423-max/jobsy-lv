@@ -3,6 +3,11 @@ import { Resend } from "resend";
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = "jobsy.lv <noreply@jobsy.lv>";
 
+// Generic send — used by auth-router for password reset etc.
+export async function sendEmail(opts: { to: string; subject: string; html: string }): Promise<void> {
+  await resend.emails.send({ from: FROM, to: opts.to, subject: opts.subject, html: opts.html });
+}
+
 function escHtml(str: string): string {
   return str
     .replace(/&/g, "&amp;")
