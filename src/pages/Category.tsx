@@ -4,7 +4,7 @@ import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { CATEGORIES } from "@/lib/categories";
 import { trpc } from "@/providers/trpc";
-import PostCard from "@/components/PostCard";
+import PostCard, { PostCardSkeleton } from "@/components/PostCard";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 
 const PAGE_SIZE = 12;
@@ -146,10 +146,7 @@ export default function Category() {
         {isLoading ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-48 animate-pulse rounded-2xl border-2 border-ink bg-white"
-              />
+              <PostCardSkeleton key={i} />
             ))}
           </div>
         ) : posts.length === 0 ? (

@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   User,
   Phone,
@@ -155,18 +156,18 @@ export default function Settings() {
             <div className="space-y-4">
               {/* Name */}
               <div className="space-y-2">
-                <div className="h-4 w-16 animate-pulse rounded bg-cream-dark" />
-                <div className="h-12 animate-pulse rounded-xl bg-cream-dark" />
+                <Skeleton className="h-4 w-16 rounded" />
+                <Skeleton className="h-12 rounded-xl" />
               </div>
               {/* Email */}
               <div className="space-y-2">
-                <div className="h-4 w-20 animate-pulse rounded bg-cream-dark" />
-                <div className="h-12 animate-pulse rounded-xl bg-cream-dark" />
+                <Skeleton className="h-4 w-20 rounded" />
+                <Skeleton className="h-12 rounded-xl" />
               </div>
               {/* Phone */}
               <div className="space-y-2">
-                <div className="h-4 w-24 animate-pulse rounded bg-cream-dark" />
-                <div className="h-12 animate-pulse rounded-xl bg-cream-dark" />
+                <Skeleton className="h-4 w-24 rounded" />
+                <Skeleton className="h-12 rounded-xl" />
               </div>
             </div>
           ) : (

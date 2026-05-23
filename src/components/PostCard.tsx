@@ -177,7 +177,7 @@ export function PostCardSkeleton() {
   return (
     <div className="relative flex flex-col overflow-hidden rounded-2xl border-2 border-ink bg-white">
       {/* Left accent stripe */}
-      <div className="absolute left-0 top-0 h-full w-1 animate-pulse bg-accent" />
+      <Skeleton className="absolute left-0 top-0 h-full w-1 rounded-none" />
       <div className="flex flex-1 flex-col p-5 pl-6">
         {/* Badges row */}
         <div className="mb-3 flex flex-wrap items-center gap-2">
