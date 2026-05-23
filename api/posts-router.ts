@@ -218,6 +218,7 @@ export const postsRouter = createRouter({
         region: z.string().optional(),
         budgetText: z.string().max(100).optional(),
         whenText: z.string().max(100).optional(),
+        images: z.array(z.string()).max(5).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -240,8 +241,18 @@ export const postsRouter = createRouter({
         }
       }
 
-      const { id, ...data } = input;
+      const { id, images, ...data } = input;
       await updatePost(id, data as any);
+
+      // Sync images: replace all existing images with the new list
+      if (images !== undefined) {
+        const db = getDb();
+        await db.delete(schema.postImages).where(eq(schema.postImages.postId, id));
+        for (let i = 0; i < images.length; i++) {
+          await db.insert(schema.postImages).values({ postId: id, url: images[i], sortOrder: i });
+        }
+      }
+
       return { success: true };
     }),
 

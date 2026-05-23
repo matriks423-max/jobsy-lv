@@ -156,7 +156,7 @@ export default function CreatePost() {
     };
 
     if (isEditing) {
-      updateMutation.mutate({ id: postId, ...data });
+      updateMutation.mutate({ id: postId, ...data, images: images.length > 0 ? images : [] });
     } else {
       createMutation.mutate({ ...data, images: images.length > 0 ? images : undefined });
     }

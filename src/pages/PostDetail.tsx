@@ -71,6 +71,16 @@ export default function PostDetail() {
   const [showGallery, setShowGallery] = useState(false);
   const [showBoost, setShowBoost] = useState(false);
 
+  const { data, isLoading } = trpc.posts.getById.useQuery(
+    { id: postId },
+    {
+      enabled: !isNaN(postId),
+      // Prevent refetch-on-focus from inflating view counts
+      staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
+    }
+  );
+
   const images = data?.images ?? [];
 
   // Gallery keyboard navigation
@@ -84,16 +94,6 @@ export default function PostDetail() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [showGallery, images.length]);
-
-  const { data, isLoading } = trpc.posts.getById.useQuery(
-    { id: postId },
-    {
-      enabled: !isNaN(postId),
-      // Prevent refetch-on-focus from inflating view counts
-      staleTime: 5 * 60 * 1000,
-      refetchOnWindowFocus: false,
-    }
-  );
 
   const { data: subStatus } = trpc.subscription.status.useQuery(undefined, {
     enabled: isAuthenticated ?? false,

@@ -264,6 +264,7 @@ export const translations = {
       errorEmail: "Nepareizs e-pasts",
       errorPassword: "Parole pārāk īsa (min 8 zīmes)",
       errorName: "Vārds pārāk īss",
+      forgotPassword: "Aizmirsi paroli?",
     },
     notFound: {
       title: "Lapa nav atrasta",
@@ -693,6 +694,7 @@ export const translations = {
       errorEmail: "Неверный email",
       errorPassword: "Пароль слишком короткий (мин. 8 символов)",
       errorName: "Имя слишком короткое",
+      forgotPassword: "Забыли пароль?",
     },
     notFound: {
       title: "Страница не найдена",
@@ -1122,6 +1124,7 @@ export const translations = {
       errorEmail: "Invalid email",
       errorPassword: "Password too short (min 8 chars)",
       errorName: "Name too short",
+      forgotPassword: "Forgot password?",
     },
     notFound: {
       title: "Page not found",

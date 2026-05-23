@@ -191,7 +191,7 @@ export default function Login() {
                 {mode === "login" && (
                   <div className="mt-1 text-right">
                     <Link to="/forgot-password" className="font-body text-xs text-coral hover:underline">
-                      Aizmirsi paroli?
+                      {t(locale, "login.forgotPassword")}
                     </Link>
                   </div>
                 )}
