@@ -116,9 +116,10 @@ export async function listPostsWithProfiles(filters?: {
   const posts = await listPosts(filters);
   if (posts.length === 0) return [];
 
-  // Fetch profiles and user plans for the authors of these posts
+  // Fetch profiles, user plans, and first image for each post in parallel
   const userIds = [...new Set(posts.map((p) => p.userId))];
-  const [profiles, users] = await Promise.all([
+  const postIds = posts.map((p) => p.id);
+  const [profiles, users, imageRows] = await Promise.all([
     getDb()
       .select()
       .from(schema.profiles)
@@ -127,14 +128,27 @@ export async function listPostsWithProfiles(filters?: {
       .select({ id: schema.users.id, plan: schema.users.plan })
       .from(schema.users)
       .where(inArray(schema.users.id, userIds)),
+    getDb()
+      .select({ postId: schema.postImages.postId, url: schema.postImages.url })
+      .from(schema.postImages)
+      .where(inArray(schema.postImages.postId, postIds))
+      .orderBy(schema.postImages.sortOrder),
   ]);
   const profileMap = new Map(profiles.map((p) => [p.userId, p]));
   const planMap = new Map(users.map((u) => [u.id, u.plan]));
+  // Keep only the first (lowest sortOrder) image per post
+  const imageMap = new Map<number, string[]>();
+  for (const row of imageRows) {
+    const existing = imageMap.get(row.postId);
+    if (existing) existing.push(row.url);
+    else imageMap.set(row.postId, [row.url]);
+  }
 
   return posts.map((post) => ({
     post,
     profile: profileMap.get(post.userId),
     isBusiness: planMap.get(post.userId) === "business",
+    images: imageMap.get(post.id) ?? [],
   }));
 }
 
@@ -156,7 +170,8 @@ export async function getFeaturedPosts(limit = 6) {
   if (posts.length === 0) return [];
 
   const userIds = [...new Set(posts.map((p) => p.userId))];
-  const [profiles, users] = await Promise.all([
+  const postIds = posts.map((p) => p.id);
+  const [profiles, users, imageRows] = await Promise.all([
     getDb()
       .select()
       .from(schema.profiles)
@@ -165,14 +180,26 @@ export async function getFeaturedPosts(limit = 6) {
       .select({ id: schema.users.id, plan: schema.users.plan })
       .from(schema.users)
       .where(inArray(schema.users.id, userIds)),
+    getDb()
+      .select({ postId: schema.postImages.postId, url: schema.postImages.url })
+      .from(schema.postImages)
+      .where(inArray(schema.postImages.postId, postIds))
+      .orderBy(schema.postImages.sortOrder),
   ]);
   const profileMap = new Map(profiles.map((p) => [p.userId, p]));
   const planMap = new Map(users.map((u) => [u.id, u.plan]));
+  const imageMap = new Map<number, string[]>();
+  for (const row of imageRows) {
+    const existing = imageMap.get(row.postId);
+    if (existing) existing.push(row.url);
+    else imageMap.set(row.postId, [row.url]);
+  }
 
   return posts.map((post) => ({
     post,
     profile: profileMap.get(post.userId),
     isBusiness: planMap.get(post.userId) === "business",
+    images: imageMap.get(post.id) ?? [],
   }));
 }
 
@@ -286,6 +313,9 @@ export async function deletePost(id: number) {
     getDb().delete(schema.postImages).where(eq(schema.postImages.postId, id)),
     getDb().delete(schema.contacts).where(eq(schema.contacts.postId, id)),
     getDb().delete(schema.reports).where(eq(schema.reports.postId, id)),
+    getDb().delete(schema.interests).where(eq(schema.interests.postId, id)),
+    getDb().delete(schema.reviews).where(eq(schema.reviews.postId, id)),
+    getDb().delete(schema.socialQueue).where(eq(schema.socialQueue.postId, id)),
   ]);
   await getDb()
     .delete(schema.posts)
