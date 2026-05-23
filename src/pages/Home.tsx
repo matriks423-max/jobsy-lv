@@ -261,7 +261,7 @@ export default function Home() {
       {featuredPosts.length > 0 && (
         <section className="px-4 py-8">
           <div className="mx-auto max-w-6xl">
-            <h2 className="mb-6 font-display text-2xl font-bold text-ink">✨ Featured</h2>
+            <h2 className="mb-6 font-display text-2xl font-bold text-ink">{t(locale, "browse.featured")}</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {featuredPosts.map(({ post, profile, isBusiness, images }) => (
                 <PostCard key={`hf-${post.id}`} post={post} profile={profile} isBusiness={isBusiness} images={images} />

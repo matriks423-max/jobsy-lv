@@ -104,13 +104,31 @@ export default function Browse() {
     search: listInput.search,
   });
 
-  // Set page title — reflects active search
+  // Set page title + meta description
   useEffect(() => {
     const prev = document.title;
     document.title = debouncedSearch
       ? `"${debouncedSearch}" — jobsy.lv`
       : t(locale, "browse.title") + " — jobsy.lv";
-    return () => { document.title = prev; };
+
+    const desc = locale === "lv"
+      ? "Atrodi pakalpojumu sniedzējus vai piedāvā savas prasmes Latvijā. Remontdarbi, pārvākšanās, dārzkopība, IT, bērnkopība un vēl."
+      : locale === "ru"
+      ? "Найди исполнителей или предложи свои услуги в Латвии. Ремонт, переезд, садоводство, IT, уход за детьми и многое другое."
+      : "Find service providers or offer your skills in Latvia. Repairs, moving, gardening, IT, childcare and more.";
+    let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+    const created = !metaDesc;
+    if (!metaDesc) {
+      metaDesc = document.createElement("meta");
+      metaDesc.name = "description";
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.content = desc;
+
+    return () => {
+      document.title = prev;
+      if (created && metaDesc) document.head.removeChild(metaDesc);
+    };
   }, [locale, debouncedSearch]);
 
   // Sync URL params
@@ -350,7 +368,7 @@ export default function Browse() {
               className="flex items-center gap-2 rounded-xl border-2 border-ink bg-white px-3 py-2 font-body text-sm font-medium md:hidden"
             >
               <SlidersHorizontal className="h-4 w-4" />
-              Filtri
+              {locale === "ru" ? "Фильтры" : locale === "en" ? "Filters" : "Filtri"}
               {activeFiltersCount > 0 && (
                 <span
                   className="rounded-full px-1.5 py-0.5 font-mono text-xs text-ink"
@@ -560,7 +578,7 @@ export default function Browse() {
       <Sheet open={showMobileFilters} onOpenChange={setShowMobileFilters}>
         <SheetContent side="bottom" className="h-[85vh] overflow-y-auto rounded-t-2xl border-t-2 border-ink bg-cream p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-display text-xl font-bold text-ink">Filtri</h2>
+            <h2 className="font-display text-xl font-bold text-ink">{locale === "ru" ? "Фильтры" : locale === "en" ? "Filters" : "Filtri"}</h2>
             <button
               onClick={() => setShowMobileFilters(false)}
               className="rounded-lg border-2 border-ink p-1.5"

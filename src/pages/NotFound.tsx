@@ -47,7 +47,7 @@ export default function NotFound() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Meklē sludinājumus..."
+              placeholder={t(locale, "hero.searchPlaceholder")}
               className="w-full rounded-xl border-2 border-ink bg-white py-2.5 pl-10 pr-4 font-body text-sm outline-none focus:border-coral"
             />
           </div>
@@ -56,7 +56,7 @@ export default function NotFound() {
             className="rounded-xl border-2 border-ink px-4 py-2.5 font-body text-sm font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_var(--ink)]"
             style={{ background: "var(--coral)" }}
           >
-            Meklēt
+            {t(locale, "hero.searchBtn")}
           </button>
         </form>
 

@@ -7,12 +7,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { Check, ChevronDown } from "lucide-react";
 
-const BOOST_FEATURES = [
-  { icon: "🔝", name: "Bump to top", price: "€1.00", desc: "7 days at top of category + social post" },
-  { icon: "⭐", name: "Featured", price: "€2.00", desc: "7 days in Featured section + social post" },
-  { icon: "🔴", name: "Urgent", price: "€0.50", desc: "Red Urgent label for 7 days" },
-];
-
 export default function Pricing() {
   const { locale } = useLocale();
   const { isAuthenticated } = useAuth();
@@ -46,10 +40,12 @@ export default function Pricing() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const boostAlaCarte = locale === "lv" ? "Boost à la carte" : locale === "ru" ? "Boost по выбору" : "Boost à la carte";
+
   const FREE_FEATURES = [
     t(locale, "pricing.freePostsPerMonth"),
     t(locale, "pricing.contactFree"),
-    "Boost à la carte",
+    boostAlaCarte,
   ];
 
   const BUSINESS_FEATURES = [
@@ -59,8 +55,14 @@ export default function Pricing() {
     t(locale, "pricing.analytics"),
     t(locale, "pricing.freeBoosts"),
     t(locale, "pricing.contactFree"),
-    "Boost à la carte",
+    boostAlaCarte,
     t(locale, "pricing.cancelAnytime"),
+  ];
+
+  const BOOST_FEATURES = [
+    { icon: "🔝", name: t(locale, "boost.bump"), price: "€1.00", desc: t(locale, "boost.bumpDesc") },
+    { icon: "⭐", name: t(locale, "boost.featured"), price: "€2.00", desc: t(locale, "boost.featuredDesc") },
+    { icon: "🔴", name: t(locale, "boost.urgent"), price: "€0.50", desc: t(locale, "boost.urgentDesc") },
   ];
 
   return (
