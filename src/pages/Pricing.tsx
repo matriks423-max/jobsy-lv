@@ -42,7 +42,7 @@ export default function Pricing() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const boostAlaCarte = locale === "lv" ? "Boost à la carte" : locale === "ru" ? "Boost по выбору" : "Boost à la carte";
+  const boostAlaCarte = t(locale, "pricing.boostAlaCarte");
 
   const FREE_FEATURES = [
     t(locale, "pricing.freePostsPerMonth"),
