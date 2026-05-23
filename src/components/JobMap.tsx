@@ -1,4 +1,5 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { Link } from "react-router";
 import L from "leaflet";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
@@ -22,6 +23,32 @@ interface JobMapProps {
   posts: Array<{ post: Post; profile?: Profile | null }>;
 }
 
+// Auto-fits map bounds whenever posts change
+function FitBoundsController({ posts }: JobMapProps) {
+  const map = useMap();
+
+  useEffect(() => {
+    const coords = posts
+      .map(({ post }) => getCityCoords(post.city))
+      .filter(Boolean) as Array<{ lat: number; lng: number }>;
+
+    if (coords.length === 0) {
+      map.setView([56.88, 24.6], 7);
+      return;
+    }
+
+    if (coords.length === 1) {
+      map.setView([coords[0].lat, coords[0].lng], 10);
+      return;
+    }
+
+    const bounds = L.latLngBounds(coords.map((c) => [c.lat, c.lng] as [number, number]));
+    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
+  }, [map, posts]);
+
+  return null;
+}
+
 export default function JobMap({ posts }: JobMapProps) {
   const { locale } = useLocale();
 
@@ -38,6 +65,7 @@ export default function JobMap({ posts }: JobMapProps) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      <FitBoundsController posts={mappable} />
       {mappable.map(({ post }) => {
         const coords = getCityCoords(post.city)!;
         const category = CATEGORIES.find((c) => c.key === post.category);
@@ -45,13 +73,17 @@ export default function JobMap({ posts }: JobMapProps) {
           <Marker key={post.id} position={[coords.lat, coords.lng]}>
             <Popup>
               <div className="min-w-[160px]">
-                <p className="mb-1 text-xs font-medium uppercase text-gray-500">
+                <p className="mb-1 font-mono text-[10px] font-medium uppercase tracking-wide" style={{ color: 'var(--coral)' }}>
                   {category ? t(locale, `categories.${category.key}` as never) : post.category}
                 </p>
-                <p className="mb-2 font-bold text-gray-900 leading-snug">{post.title}</p>
+                <p className="mb-2 font-bold leading-snug text-gray-900">{post.title}</p>
+                {post.budgetText && (
+                  <p className="mb-2 font-mono text-xs text-gray-600">{post.budgetText}</p>
+                )}
                 <Link
                   to={`/post/${post.id}`}
-                  className="inline-block rounded bg-orange-400 px-3 py-1 text-xs font-medium text-white hover:bg-orange-500"
+                  className="inline-block rounded-lg border-2 border-gray-800 px-3 py-1 font-mono text-xs font-medium text-gray-900 transition hover:-translate-y-0.5"
+                  style={{ background: 'var(--coral)' }}
                 >
                   {t(locale, "browse.viewPost")} →
                 </Link>
