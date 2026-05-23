@@ -5,6 +5,7 @@ import { z } from "zod";
 import * as bcrypt from "bcryptjs";
 import { Session } from "@contracts/constants";
 import { getSessionCookieOptions } from "./lib/cookies";
+import { TRPCError } from "@trpc/server";
 import { createRouter, authedQuery, publicQuery } from "./middleware";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
@@ -85,17 +86,17 @@ export const authRouter = createRouter({
 
       await sendEmail({
         to: user.email,
-        subject: "Atjaunot paroli — jobsy.lv",
+        subject: "Reset your password — jobsy.lv",
         html: `
           <div style="font-family:sans-serif;max-width:480px;margin:0 auto;">
-            <h2 style="color:#1a1a1a;">Paroles atjaunošana</h2>
-            <p>Mēs saņēmām pieprasījumu atjaunot Tavu paroli jobsy.lv kontam.</p>
-            <p>Noklikšķini uz pogas zemāk, lai izveidotu jaunu paroli. Saite ir spēkā <strong>1 stundu</strong>.</p>
+            <h2 style="color:#1a1a1a;">Password reset</h2>
+            <p>We received a request to reset the password for your jobsy.lv account.</p>
+            <p>Click the button below to set a new password. The link is valid for <strong>1 hour</strong>.</p>
             <a href="${resetUrl}" style="display:inline-block;margin:16px 0;padding:12px 24px;background:#C8A97E;color:#1a1a1a;text-decoration:none;border-radius:8px;font-weight:600;">
-              Atjaunot paroli
+              Reset password
             </a>
-            <p style="color:#888;font-size:13px;">Ja Tu nepieprasīji šo, vienkārši ignorē šo e-pastu.</p>
-            <p style="color:#888;font-size:12px;">Vai kopē saiti: ${resetUrl}</p>
+            <p style="color:#888;font-size:13px;">If you did not request this, simply ignore this email.</p>
+            <p style="color:#888;font-size:12px;">Or copy the link: ${resetUrl}</p>
           </div>
         `,
       });
@@ -115,7 +116,7 @@ export const authRouter = createRouter({
         .limit(1);
 
       if (!user || !user.resetTokenExpiry || user.resetTokenExpiry < new Date()) {
-        throw new Error("Invalid or expired reset link");
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid or expired reset link" });
       }
 
       const hash = await bcrypt.hash(input.password, 10);
