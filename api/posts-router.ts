@@ -272,6 +272,62 @@ export const postsRouter = createRouter({
       return { success: true };
     }),
 
+  // Renew an expired/closed post — creates a fresh copy with 30-day expiry
+  renew: authedQuery
+    .input(z.object({ postId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const result = await getPostWithProfile(input.postId);
+      if (!result) throw new TRPCError({ code: "NOT_FOUND", message: "Sludinājums nav atrasts" });
+      if (result.post.userId !== ctx.user.id) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Šis sludinājums nepieder tev" });
+      }
+
+      const profile = await getProfileByUserId(ctx.user.id);
+      if (!profile) throw new TRPCError({ code: "NOT_FOUND", message: "Profils nav atrasts" });
+
+      // Rate limit check
+      const postsToday = await countUserPostsToday(ctx.user.id);
+      if (postsToday >= MAX_POSTS_PER_DAY) {
+        throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: `Dienā atļauts publicēt max ${MAX_POSTS_PER_DAY} sludinājumus` });
+      }
+
+      // Plan limit check for free users
+      if (ctx.user.plan !== "business") {
+        const today = new Date();
+        const thisMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-01`;
+        if (profile.monthlyPostReset !== thisMonth) {
+          await updateProfile(ctx.user.id, { monthlyPostCount: 0, monthlyPostReset: thisMonth });
+          profile.monthlyPostCount = 0;
+        }
+        if (profile.monthlyPostCount >= 10) {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Mēneša limits sasniegts" });
+        }
+      }
+
+      const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+      const orig = result.post;
+      const newPost = await createPost({
+        type: orig.type,
+        title: orig.title,
+        description: orig.description ?? undefined,
+        category: orig.category,
+        city: orig.city ?? undefined,
+        region: orig.region ?? undefined,
+        budgetText: orig.budgetText ?? undefined,
+        whenText: orig.whenText ?? undefined,
+        language: (orig.language as "lv" | "ru" | "en") ?? "lv",
+        userId: ctx.user.id,
+        status: "active",
+        wasFree: true,
+        expiresAt,
+      });
+      const insertId = Number((newPost as unknown as [{ insertId: bigint }])[0].insertId);
+      if (ctx.user.plan !== "business") {
+        await updateProfile(ctx.user.id, { monthlyPostCount: profile.monthlyPostCount + 1 });
+      }
+      return { postId: insertId };
+    }),
+
   myPosts: authedQuery.query(async ({ ctx }) => {
     expireOldPosts().catch((err) =>
       console.error("[expireOldPosts] failed:", err?.message ?? err)

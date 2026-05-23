@@ -22,6 +22,7 @@ import {
   AlertCircle,
   Heart,
   Zap,
+  RefreshCw,
 } from "lucide-react";
 
 export default function MyPosts() {
@@ -59,6 +60,14 @@ export default function MyPosts() {
     onSuccess: () => {
       toast(t(locale, "createPost.toastDeleted"), "success");
       utils.posts.myPosts.invalidate();
+    },
+    onError: (err) => toast(err.message, "error"),
+  });
+  const renewMutation = trpc.posts.renew.useMutation({
+    onSuccess: (data) => {
+      toast("Sludinājums atjaunots!", "success");
+      utils.posts.myPosts.invalidate();
+      navigate(`/post/${data.postId}`);
     },
     onError: (err) => toast(err.message, "error"),
   });
@@ -227,6 +236,16 @@ export default function MyPosts() {
                           <Pencil className="h-4 w-4" />
                         </button>
                       </Link>
+                      {["expired", "closed"].includes(post.status) && (
+                        <button
+                          onClick={() => renewMutation.mutate({ postId: post.id })}
+                          disabled={renewMutation.isPending}
+                          className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark"
+                          title="Atjaunot sludinājumu (jauna 30 dienu kopija)"
+                        >
+                          <RefreshCw className="h-4 w-4" />
+                        </button>
+                      )}
                       <button
                         onClick={() => {
                           if (confirm(t(locale, "myPosts.confirmDelete"))) {
