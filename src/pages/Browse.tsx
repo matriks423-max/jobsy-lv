@@ -125,6 +125,11 @@ export default function Browse() {
     setSearchParams(params, { replace: true });
   }, [type, category, city, sort, debouncedSearch, page]);
 
+  // Scroll to top of results when page changes
+  useEffect(() => {
+    if (page > 0) window.scrollTo({ top: 280, behavior: "smooth" });
+  }, [page]);
+
   // "/" keyboard shortcut focuses search input
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {

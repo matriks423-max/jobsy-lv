@@ -71,6 +71,18 @@ export default function PostDetail() {
   const [showGallery, setShowGallery] = useState(false);
   const [showBoost, setShowBoost] = useState(false);
 
+  // Gallery keyboard navigation
+  useEffect(() => {
+    if (!showGallery) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") setGalleryIndex((i) => (i - 1 + images.length) % images.length);
+      if (e.key === "ArrowRight") setGalleryIndex((i) => (i + 1) % images.length);
+      if (e.key === "Escape") setShowGallery(false);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [showGallery, images.length]);
+
   const { data, isLoading } = trpc.posts.getById.useQuery(
     { id: postId },
     { enabled: !isNaN(postId) }
@@ -274,17 +286,33 @@ export default function PostDetail() {
     contactMutation.mutate({ postId });
   };
 
-  const handleShare = (platform: string) => {
+  const handleShare = async (platform?: string) => {
     const url = window.location.href;
-    const text = encodeURIComponent(`${post.title} — jobsy.lv`);
+    const text = `${post.title} — jobsy.lv`;
+
+    // Use Web Share API on mobile when no specific platform requested
+    if (!platform && navigator.share) {
+      try {
+        await navigator.share({ title: post.title, text, url });
+        return;
+      } catch {
+        // User cancelled or not supported — fall through to dialog
+      }
+    }
+
+    setShowShare(true);
+    if (!platform) return;
+
+    const encoded = encodeURIComponent(url);
+    const encodedText = encodeURIComponent(text);
     if (platform === "twitter") {
-      window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${text}`, "_blank");
+      window.open(`https://twitter.com/intent/tweet?url=${encoded}&text=${encodedText}`, "_blank");
     } else if (platform === "facebook") {
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, "_blank");
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encoded}`, "_blank");
     } else if (platform === "whatsapp") {
-      window.open(`https://wa.me/?text=${text}%20${encodeURIComponent(url)}`, "_blank");
+      window.open(`https://wa.me/?text=${encodedText}%20${encoded}`, "_blank");
     } else if (platform === "copy") {
-      navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(url);
       toast(t(locale, "postDetail.share.copied"), "success");
     }
     setShowShare(false);
@@ -324,7 +352,7 @@ export default function PostDetail() {
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setShowShare(true)}
+              onClick={() => handleShare()}
               className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark"
               title={t(locale, "postDetail.share.title")}
             >
