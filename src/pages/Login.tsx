@@ -188,6 +188,13 @@ export default function Login() {
                   </button>
                 </div>
                 {errors.password && <p className="mt-1 font-body text-xs text-need">{errors.password}</p>}
+                {mode === "login" && (
+                  <div className="mt-1 text-right">
+                    <Link to="/forgot-password" className="font-body text-xs text-coral hover:underline">
+                      Aizmirsi paroli?
+                    </Link>
+                  </div>
+                )}
               </div>
 
               {mode === "register" && (

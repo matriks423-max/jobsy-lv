@@ -19,6 +19,8 @@ export const users = mysqlTable("users", {
   name: varchar("name", { length: 255 }),
   avatar: text("avatar"),
   passwordHash: varchar("passwordHash", { length: 255 }),
+  resetToken: varchar("resetToken", { length: 64 }),
+  resetTokenExpiry: timestamp("resetTokenExpiry"),
   authMethod: mysqlEnum("authMethod", ["kimi", "google", "email"]).default("email").notNull(),
   role: mysqlEnum("role", ["user", "admin", "banned"]).default("user").notNull(),
   plan: mysqlEnum("plan", ["free", "business"]).default("free").notNull(),

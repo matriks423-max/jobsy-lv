@@ -104,12 +104,14 @@ export default function Browse() {
     search: listInput.search,
   });
 
-  // Set page title
+  // Set page title — reflects active search
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "browse.title") + " — jobsy.lv";
+    document.title = debouncedSearch
+      ? `"${debouncedSearch}" — jobsy.lv`
+      : t(locale, "browse.title") + " — jobsy.lv";
     return () => { document.title = prev; };
-  }, [locale]);
+  }, [locale, debouncedSearch]);
 
   // Sync URL params
   useEffect(() => {

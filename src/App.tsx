@@ -23,6 +23,8 @@ import Category from "./pages/Category";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import StylePreview from "./pages/StylePreview";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 export default function App() {
   return (
@@ -55,6 +57,8 @@ export default function App() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/kategorija/:slug" element={<Category />} />
             <Route path="/admin" element={<Admin />} />
