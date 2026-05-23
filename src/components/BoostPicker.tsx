@@ -46,7 +46,7 @@ export default function BoostPicker({ postId, isBusiness, freeBoostsRemaining, o
         <h3 className="mb-1 font-display text-xl font-bold text-ink">
           {t(locale, "boost.selectBoost")}
         </h3>
-        <p className="mb-5 font-body text-xs text-ink-muted">7 {locale === "lv" ? "dienu ilgs" : locale === "ru" ? "дней" : "days"}</p>
+        <p className="mb-5 font-body text-xs text-ink-muted">{t(locale, "boost.duration")}</p>
 
         <div className="space-y-3">
           {BOOSTS.map((b) => {

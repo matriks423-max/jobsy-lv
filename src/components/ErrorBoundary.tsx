@@ -1,6 +1,20 @@
 import { Component, type ReactNode, type ErrorInfo } from "react";
 import { Sentry } from "@/lib/sentry";
 
+function getLocale(): "lv" | "ru" | "en" {
+  try {
+    const stored = localStorage.getItem("jobsy-language");
+    if (stored === "lv" || stored === "ru" || stored === "en") return stored;
+  } catch { /* ignore */ }
+  return "lv";
+}
+
+const ERROR_STRINGS = {
+  lv: { heading: "Kaut kas nogāja greizi", body: "Radās neparedzēta kļūda. Lūdzu, atgriezieties sākumlapā un mēģiniet vēlreiz.", btn: "Atgriezties sākumlapā" },
+  ru: { heading: "Что-то пошло не так", body: "Произошла непредвиденная ошибка. Вернитесь на главную и попробуйте ещё раз.", btn: "На главную" },
+  en: { heading: "Something went wrong", body: "An unexpected error occurred. Please return to the home page and try again.", btn: "Back to Home" },
+};
+
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
@@ -34,19 +48,20 @@ export default class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       if (this.props.fallback) return this.props.fallback;
+      const s = ERROR_STRINGS[getLocale()];
       return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--cream)] px-4 text-center">
           <h1 className="font-serif text-4xl font-bold text-[var(--ink)] mb-4">
-            Kaut kas nogāja greizi
+            {s.heading}
           </h1>
           <p className="text-[var(--muted)] mb-8 max-w-sm">
-            Radās neparedzēta kļūda. Lūdzu, atgriezieties sākumlapā un mēģiniet vēlreiz.
+            {s.body}
           </p>
           <button
             onClick={this.handleReset}
             className="px-6 py-3 bg-[var(--ink)] text-[var(--cream)] rounded-xl font-semibold hover:opacity-80 transition-opacity"
           >
-            Atgriezties sākumlapā
+            {s.btn}
           </button>
         </div>
       );

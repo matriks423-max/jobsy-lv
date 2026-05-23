@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Download, X } from "lucide-react";
+import { useLocale } from "@/lib/locale-context";
+import { t } from "@/lib/i18n";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -7,6 +9,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export default function PWAInstallPrompt() {
+  const { locale } = useLocale();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
@@ -52,8 +55,8 @@ export default function PWAInstallPrompt() {
           <img src="/icon-192.png" alt="jobsy" className="h-7 w-7 rounded-lg" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-body text-sm font-semibold text-ink">Pievienot sākumekrānam</p>
-          <p className="mt-0.5 font-body text-xs text-ink-muted">Ātrāka piekļuve darbiņiem</p>
+          <p className="font-body text-sm font-semibold text-ink">{t(locale, "pwa.addToHome")}</p>
+          <p className="mt-0.5 font-body text-xs text-ink-muted">{t(locale, "pwa.subtitle")}</p>
         </div>
         <button onClick={dismiss} className="shrink-0 text-ink-muted hover:text-ink">
           <X className="h-4 w-4" />
@@ -66,7 +69,7 @@ export default function PWAInstallPrompt() {
           style={{ background: "var(--coral)", color: "var(--cream)" }}
         >
           <Download className="h-4 w-4" />
-          Instalēt
+          {t(locale, "pwa.install")}
         </button>
       </div>
     </div>

@@ -76,7 +76,7 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
           </div>
         ) : Date.now() - new Date(post.createdAt).getTime() < 24 * 60 * 60 * 1000 ? (
           <div className="absolute right-3 top-3 z-10 rounded-full border-2 border-coral bg-coral px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase text-ink">
-            {locale === "lv" ? "Jauns" : locale === "ru" ? "Новый" : "New"}
+            {t(locale, "postCard.badgeNew")}
           </div>
         ) : null}
 
@@ -153,7 +153,7 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
             )}
             {post.boostType === "urgent" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date() && (
               <span className="inline-flex items-center gap-0.5 rounded-full border border-red-400 bg-red-50 px-1.5 py-0.5 font-mono text-[10px] font-bold text-red-600 uppercase">
-                {locale === "lv" ? "Steidzams" : locale === "ru" ? "Срочно" : "Urgent"}
+                {t(locale, "boost.urgent")}
               </span>
             )}
             {post.boostType === "bump" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date() && (

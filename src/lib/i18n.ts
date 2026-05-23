@@ -306,6 +306,9 @@ export const translations = {
       ctaHeading: "Vajag palīdzību ar {cat}?",
       ctaSubtitle: "Publicē sludinājumu — pirmie 2 bez maksas.",
     },
+    postCard: {
+      badgeNew: "Jauns",
+    },
     cookie: {
       message: "Mēs izmantojam sīkdatnes, lai uzlabotu lietošanas pieredzi.",
       learnMore: "Uzzināt vairāk",
@@ -350,6 +353,12 @@ export const translations = {
       expires: "Beidzas",
       selectBoost: "Izvēlieties boost",
       activated: "Boost aktivizēts!",
+      duration: "7 dienu ilgs",
+    },
+    pwa: {
+      addToHome: "Pievienot sākumekrānam",
+      subtitle: "Ātrāka piekļuve darbiņiem",
+      install: "Instalēt",
     },
     upgrade: {
       title: "Mēneša limits sasniegts",
@@ -708,6 +717,9 @@ export const translations = {
       ctaHeading: "Нужна помощь с {cat}?",
       ctaSubtitle: "Разместите объявление — первые 2 бесплатно.",
     },
+    postCard: {
+      badgeNew: "Новый",
+    },
     cookie: {
       message: "Мы используем куки для улучшения работы сайта.",
       learnMore: "Подробнее",
@@ -752,6 +764,12 @@ export const translations = {
       expires: "Истекает",
       selectBoost: "Выберите boost",
       activated: "Boost активирован!",
+      duration: "7 дней",
+    },
+    pwa: {
+      addToHome: "Добавить на экран",
+      subtitle: "Быстрый доступ к объявлениям",
+      install: "Установить",
     },
     upgrade: {
       title: "Достигнут месячный лимит",
@@ -1110,6 +1128,9 @@ export const translations = {
       ctaHeading: "Need help with {cat}?",
       ctaSubtitle: "Post a listing — first 2 are free.",
     },
+    postCard: {
+      badgeNew: "New",
+    },
     cookie: {
       message: "We use cookies to improve your experience.",
       learnMore: "Learn more",
@@ -1154,6 +1175,12 @@ export const translations = {
       expires: "Expires",
       selectBoost: "Select boost",
       activated: "Boost activated!",
+      duration: "7 days",
+    },
+    pwa: {
+      addToHome: "Add to home screen",
+      subtitle: "Quick access to listings",
+      install: "Install",
     },
     upgrade: {
       title: "Monthly limit reached",
