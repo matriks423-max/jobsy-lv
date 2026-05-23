@@ -217,7 +217,7 @@ export async function handleStripeWebhook(body: string, signature: string) {
 
   if (event.type === "invoice.payment_succeeded") {
     const invoice = event.data.object as Stripe.Invoice;
-    const sub = invoice.subscription;
+    const sub = (invoice as Stripe.Invoice & { subscription?: string | Stripe.Subscription | null }).subscription;
     if (sub && typeof sub === "string") {
       // Renewal: reset free boosts for this subscriber
       const subObj = await stripe.subscriptions.retrieve(sub);

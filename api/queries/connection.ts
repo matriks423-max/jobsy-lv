@@ -21,7 +21,8 @@ let instance: ReturnType<typeof drizzle<typeof fullSchema>>;
 
 export function getDb() {
   if (!instance) {
-    instance = drizzle(pool, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    instance = drizzle(pool as any, {
       mode: "planetscale",
       schema: fullSchema,
     });

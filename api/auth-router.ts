@@ -6,8 +6,8 @@ import * as bcrypt from "bcryptjs";
 import { Session } from "@contracts/constants";
 import { getSessionCookieOptions } from "./lib/cookies";
 import { createRouter, authedQuery, publicQuery } from "./middleware";
-import { getDb } from "../db";
-import * as schema from "../db/schema";
+import { getDb } from "./queries/connection";
+import * as schema from "@db/schema";
 import { sendEmail } from "./lib/email";
 import { env } from "./lib/env";
 
