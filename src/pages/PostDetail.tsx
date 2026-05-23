@@ -87,7 +87,12 @@ export default function PostDetail() {
 
   const { data, isLoading } = trpc.posts.getById.useQuery(
     { id: postId },
-    { enabled: !isNaN(postId) }
+    {
+      enabled: !isNaN(postId),
+      // Prevent refetch-on-focus from inflating view counts
+      staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
+    }
   );
 
   const { data: subStatus } = trpc.subscription.status.useQuery(undefined, {

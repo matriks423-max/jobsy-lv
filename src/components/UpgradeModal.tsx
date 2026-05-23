@@ -1,6 +1,7 @@
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { trpc } from "@/providers/trpc";
+import { useToast } from "@/hooks/useToast";
 import { X, Zap } from "lucide-react";
 
 interface UpgradeModalProps {
@@ -9,9 +10,11 @@ interface UpgradeModalProps {
 
 export default function UpgradeModal({ onClose }: UpgradeModalProps) {
   const { locale } = useLocale();
+  const { toast } = useToast();
 
   const upgradeMutation = trpc.subscription.createCheckout.useMutation({
     onSuccess: ({ url }) => { if (url) window.location.href = url; },
+    onError: (err) => toast(err.message, "error"),
   });
 
   return (

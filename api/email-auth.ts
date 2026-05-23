@@ -102,6 +102,11 @@ function serializeAppCookie(token: string, secure: boolean) {
   });
 }
 
+// In-memory rate limit: max 10 login attempts per email per 15 minutes
+const loginRateMap = new Map<string, { count: number; windowStart: number }>();
+const LOGIN_RATE_LIMIT = 10;
+const LOGIN_RATE_WINDOW_MS = 15 * 60 * 1000;
+
 export const emailAuthRouter = createRouter({
   register: publicQuery
     .input(
@@ -176,6 +181,19 @@ export const emailAuthRouter = createRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      // Rate limit: max 10 attempts per email per 15 minutes
+      const key = input.email.toLowerCase();
+      const now = Date.now();
+      const rateEntry = loginRateMap.get(key);
+      if (rateEntry && now - rateEntry.windowStart < LOGIN_RATE_WINDOW_MS) {
+        if (rateEntry.count >= LOGIN_RATE_LIMIT) {
+          throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Pārāk daudz mēģinājumi. Lūdzu, uzgaidiet." });
+        }
+        loginRateMap.set(key, { count: rateEntry.count + 1, windowStart: rateEntry.windowStart });
+      } else {
+        loginRateMap.set(key, { count: 1, windowStart: now });
+      }
+
       const user = await findUserByEmail(input.email);
       if (!user || !user.passwordHash) {
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Nepareizs e-pasts vai parole" });
@@ -185,6 +203,9 @@ export const emailAuthRouter = createRouter({
       if (!valid) {
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Nepareizs e-pasts vai parole" });
       }
+
+      // Reset rate limit on successful login
+      loginRateMap.delete(key);
 
       await getDb()
         .update(schema.users)

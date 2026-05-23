@@ -19,10 +19,12 @@ export default function Pricing() {
 
   const upgradeMutation = trpc.subscription.createCheckout.useMutation({
     onSuccess: ({ url }) => { if (url) window.location.href = url; },
+    onError: (err) => toast(err.message, "error"),
   });
 
   const portalMutation = trpc.subscription.createPortal.useMutation({
     onSuccess: ({ url }) => { if (url) window.location.href = url; },
+    onError: (err) => toast(err.message, "error"),
   });
 
   const isBusiness = status?.plan === "business";

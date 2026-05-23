@@ -50,9 +50,11 @@ export default function Settings() {
   const { data: subStatus } = trpc.subscription.status.useQuery(undefined, { enabled: isAuthenticated ?? false });
   const upgradeMutation = trpc.subscription.createCheckout.useMutation({
     onSuccess: ({ url }) => { if (url) window.location.href = url; },
+    onError: (err) => toast(err.message, "error"),
   });
   const portalMutation = trpc.subscription.createPortal.useMutation({
     onSuccess: ({ url }) => { if (url) window.location.href = url; },
+    onError: (err) => toast(err.message, "error"),
   });
 
   const { data: savedSearches } = trpc.savedSearches.list.useQuery(undefined, { enabled: isAuthenticated });
