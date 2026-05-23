@@ -4,6 +4,7 @@ import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { relativeTime } from "@/lib/relativeTime";
 import { CATEGORIES } from "@/lib/categories";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { Post, Profile } from "@db/schema";
 import {
   Home,
@@ -168,5 +169,35 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
         </div>
       </Link>
     </motion.div>
+  );
+}
+
+/** Skeleton placeholder that mirrors the PostCard content layout. */
+export function PostCardSkeleton() {
+  return (
+    <div className="relative flex flex-col overflow-hidden rounded-2xl border-2 border-ink bg-white">
+      {/* Left accent stripe */}
+      <div className="absolute left-0 top-0 h-full w-1 animate-pulse bg-accent" />
+      <div className="flex flex-1 flex-col p-5 pl-6">
+        {/* Badges row */}
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <Skeleton className="h-5 w-12 rounded" />
+          <Skeleton className="h-5 w-20 rounded-full" />
+          <Skeleton className="h-4 w-14 rounded-full" />
+        </div>
+        {/* Title */}
+        <Skeleton className="mb-2 h-6 w-3/4 rounded-md" />
+        <Skeleton className="mb-4 h-5 w-1/2 rounded-md" />
+        {/* Description */}
+        <Skeleton className="mb-1 h-4 w-full rounded-md" />
+        <Skeleton className="mb-4 h-4 w-5/6 rounded-md" />
+        {/* Footer row */}
+        <div className="mt-auto flex items-center gap-3 pt-2">
+          <Skeleton className="h-4 w-20 rounded-md" />
+          <Skeleton className="h-4 w-16 rounded-md" />
+          <Skeleton className="ml-auto h-3 w-12 rounded-md" />
+        </div>
+      </div>
+    </div>
   );
 }

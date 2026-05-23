@@ -16,7 +16,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import PostCard from "@/components/PostCard";
+import PostCard, { PostCardSkeleton } from "@/components/PostCard";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Search,
   X,
@@ -302,7 +303,7 @@ export default function Browse() {
         {/* Sort */}
         <div>
           <label className="mb-2 block font-body text-xs font-bold uppercase tracking-wide text-ink-muted">
-            Kārtot
+            {t(locale, "browse.sort")}
           </label>
           <Select value={sort} onValueChange={(v) => { setSort(v as typeof sort); setPage(0); }}>
             <SelectTrigger className="w-full rounded-xl border-2 border-ink bg-white font-body text-sm">
@@ -368,7 +369,7 @@ export default function Browse() {
               className="flex items-center gap-2 rounded-xl border-2 border-ink bg-white px-3 py-2 font-body text-sm font-medium md:hidden"
             >
               <SlidersHorizontal className="h-4 w-4" />
-              {locale === "ru" ? "Фильтры" : locale === "en" ? "Filters" : "Filtri"}
+              {t(locale, "browse.filters")}
               {activeFiltersCount > 0 && (
                 <span
                   className="rounded-full px-1.5 py-0.5 font-mono text-xs text-ink"
@@ -495,7 +496,7 @@ export default function Browse() {
                 {isLoading ? (
                   <div className="grid gap-6 sm:grid-cols-2">
                     {Array.from({ length: 6 }).map((_, i) => (
-                      <div key={i} className="h-48 animate-pulse rounded-2xl border-2 border-ink bg-white" />
+                      <PostCardSkeleton key={i} />
                     ))}
                   </div>
                 ) : posts.length === 0 ? (
@@ -553,7 +554,7 @@ export default function Browse() {
             ) : (
               <div className="mb-6">
                 {isLoading ? (
-                  <div className="h-[520px] animate-pulse rounded-2xl border-2 border-ink bg-white" />
+                  <Skeleton className="h-[520px] rounded-2xl border-2 border-ink" />
                 ) : (
                   <JobMap posts={posts} />
                 )}
@@ -579,7 +580,7 @@ export default function Browse() {
       <Sheet open={showMobileFilters} onOpenChange={setShowMobileFilters}>
         <SheetContent side="bottom" className="h-[85vh] overflow-y-auto rounded-t-2xl border-t-2 border-ink bg-cream p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-display text-xl font-bold text-ink">{locale === "ru" ? "Фильтры" : locale === "en" ? "Filters" : "Filtri"}</h2>
+            <h2 className="font-display text-xl font-bold text-ink">{t(locale, "browse.filters")}</h2>
             <button
               onClick={() => setShowMobileFilters(false)}
               className="rounded-lg border-2 border-ink p-1.5"

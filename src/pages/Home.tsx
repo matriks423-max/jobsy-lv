@@ -13,7 +13,7 @@ import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import PostCard from "@/components/PostCard";
+import PostCard, { PostCardSkeleton } from "@/components/PostCard";
 import type { PostWithProfile } from "@/types/post";
 import {
   Star,
@@ -411,10 +411,7 @@ export default function Home() {
           {isLoading ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {[...Array(6)].map((_, i) => (
-                <Skeleton
-                  key={i}
-                  className="h-48 rounded-2xl border-2 border-ink"
-                />
+                <PostCardSkeleton key={i} />
               ))}
             </div>
           ) : posts && posts.length > 0 ? (

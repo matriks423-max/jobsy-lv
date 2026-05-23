@@ -153,8 +153,21 @@ export default function Settings() {
 
           {isLoading ? (
             <div className="space-y-4">
-              <div className="h-12 animate-pulse rounded-xl bg-cream-dark" />
-              <div className="h-12 animate-pulse rounded-xl bg-cream-dark" />
+              {/* Name */}
+              <div className="space-y-2">
+                <div className="h-4 w-16 animate-pulse rounded bg-cream-dark" />
+                <div className="h-12 animate-pulse rounded-xl bg-cream-dark" />
+              </div>
+              {/* Email */}
+              <div className="space-y-2">
+                <div className="h-4 w-20 animate-pulse rounded bg-cream-dark" />
+                <div className="h-12 animate-pulse rounded-xl bg-cream-dark" />
+              </div>
+              {/* Phone */}
+              <div className="space-y-2">
+                <div className="h-4 w-24 animate-pulse rounded bg-cream-dark" />
+                <div className="h-12 animate-pulse rounded-xl bg-cream-dark" />
+              </div>
             </div>
           ) : (
             <div className="space-y-4">
