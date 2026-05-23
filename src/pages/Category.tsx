@@ -155,8 +155,8 @@ export default function Category() {
         ) : (
           <>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {posts.map(({ post, profile, isBusiness }) => (
-                <PostCard key={post.id} post={post} profile={profile} isBusiness={isBusiness} />
+              {posts.map(({ post, profile, isBusiness, images }) => (
+                <PostCard key={post.id} post={post} profile={profile} isBusiness={isBusiness} images={images} />
               ))}
             </div>
 

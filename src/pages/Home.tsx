@@ -72,7 +72,7 @@ function MarqueeStrip() {
   const { locale } = useLocale();
   const items = CATEGORIES.map((cat, i) => (
     <span key={i} className="inline-flex items-center gap-3 whitespace-nowrap px-4">
-      <Star className="h-4 w-4 fill-coral text-coral" />
+      <Star className="h-4 w-4" style={{ fill: 'var(--coral)', color: 'var(--coral)' }} />
       <span className="font-display text-lg font-bold italic text-mustard">
         {t(locale, `categories.${cat.key}` as never)}
       </span>
@@ -105,6 +105,7 @@ export default function Home() {
   const { isAuthenticated } = useAuth();
   const [activeFilter, setActiveFilter] = useState<"all" | "need" | "offer">("all");
   const [copied, setCopied] = useState(false);
+  const [cardView, setCardView] = useState<"grid" | "list">("grid");
   const [heroSearch, setHeroSearch] = useState("");
 
   const handleHeroSearch = (e: { preventDefault(): void }) => {
@@ -262,8 +263,8 @@ export default function Home() {
           <div className="mx-auto max-w-6xl">
             <h2 className="mb-6 font-display text-2xl font-bold text-ink">✨ Featured</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {featuredPosts.map(({ post, profile, isBusiness }) => (
-                <PostCard key={`hf-${post.id}`} post={post} profile={profile} isBusiness={isBusiness} />
+              {featuredPosts.map(({ post, profile, isBusiness, images }) => (
+                <PostCard key={`hf-${post.id}`} post={post} profile={profile} isBusiness={isBusiness} images={images} />
               ))}
             </div>
           </div>
@@ -299,7 +300,10 @@ export default function Home() {
                 key={i}
                 className="flex flex-col items-center text-center"
               >
-                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full border-2 border-ink bg-white font-display text-2xl font-bold text-ink">
+                <div
+                  className="mb-4 flex h-14 w-14 items-center justify-center rounded-full border-2 border-ink font-display text-2xl font-bold transition-colors duration-500"
+                  style={{ background: 'var(--coral-light)', color: 'var(--coral)' }}
+                >
                   {step.num}
                 </div>
                 <h3 className="mb-2 font-body text-lg font-bold text-ink">
@@ -362,24 +366,44 @@ export default function Home() {
               {t(locale, "latestPosts.title")}
             </h2>
 
-            <div className="flex gap-2">
-              {(["all", "need", "offer"] as const).map((f) => (
+            <div className="flex items-center gap-3">
+              {/* Grid/List toggle */}
+              <div className="flex overflow-hidden rounded-xl border-2 border-ink">
                 <button
-                  key={f}
-                  onClick={() => setActiveFilter(f)}
-                  className={`rounded-full border-2 px-4 py-2 font-body text-sm font-medium transition ${
-                    activeFilter === f
-                      ? "border-ink bg-coral text-ink"
-                      : "border-ink-light bg-transparent text-ink-muted hover:border-ink hover:text-ink"
-                  }`}
+                  onClick={() => setCardView("grid")}
+                  className={`px-3 py-2 font-body text-sm font-medium transition ${cardView === "grid" ? "bg-ink text-cream" : "bg-white text-ink hover:bg-cream"}`}
+                  title="Grid view"
                 >
-                  {f === "all"
-                    ? t(locale, "latestPosts.all")
-                    : f === "need"
-                    ? t(locale, "latestPosts.need")
-                    : t(locale, "latestPosts.offer")}
+                  ⊞
                 </button>
-              ))}
+                <button
+                  onClick={() => setCardView("list")}
+                  className={`px-3 py-2 font-body text-sm font-medium transition ${cardView === "list" ? "bg-ink text-cream" : "bg-white text-ink hover:bg-cream"}`}
+                  title="List view"
+                >
+                  ☰
+                </button>
+              </div>
+              {/* Type filter */}
+              <div className="flex gap-2">
+                {(["all", "need", "offer"] as const).map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setActiveFilter(f)}
+                    className={`rounded-full border-2 px-4 py-2 font-body text-sm font-medium transition ${
+                      activeFilter === f
+                        ? "border-ink bg-coral text-ink"
+                        : "border-ink-light bg-transparent text-ink-muted hover:border-ink hover:text-ink"
+                    }`}
+                  >
+                    {f === "all"
+                      ? t(locale, "latestPosts.all")
+                      : f === "need"
+                      ? t(locale, "latestPosts.need")
+                      : t(locale, "latestPosts.offer")}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -393,9 +417,9 @@ export default function Home() {
               ))}
             </div>
           ) : posts && posts.length > 0 ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className={cardView === "grid" ? "grid gap-6 sm:grid-cols-2 lg:grid-cols-3" : "flex flex-col gap-3"}>
               {posts.map((item: PostWithProfile) => (
-                <PostCard key={item.post.id} post={item.post} profile={item.profile} isBusiness={item.isBusiness} />
+                <PostCard key={item.post.id} post={item.post} profile={item.profile} isBusiness={item.isBusiness} images={item.images} />
               ))}
             </div>
           ) : (

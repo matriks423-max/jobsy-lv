@@ -336,8 +336,8 @@ export default function Browse() {
               {t(locale, "browse.featured")}
             </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {featuredPosts.map(({ post, profile, isBusiness }) => (
-                <PostCard key={`featured-${post.id}`} post={post} profile={profile} isBusiness={isBusiness} />
+              {featuredPosts.map(({ post, profile, isBusiness, images }) => (
+                <PostCard key={`featured-${post.id}`} post={post} profile={profile} isBusiness={isBusiness} images={images} />
               ))}
             </div>
             <div className="mt-4 border-b-2 border-ink-light" />
@@ -362,8 +362,8 @@ export default function Browse() {
               </div>
             ) : (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {posts.map(({ post, profile, isBusiness }) => (
-                  <PostCard key={post.id} post={post} profile={profile} isBusiness={isBusiness} />
+                {posts.map(({ post, profile, isBusiness, images }) => (
+                  <PostCard key={post.id} post={post} profile={profile} isBusiness={isBusiness} images={images} />
                 ))}
               </div>
             )}

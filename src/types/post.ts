@@ -4,4 +4,5 @@ export interface PostWithProfile {
   post: Post;
   profile: Profile | undefined;
   isBusiness?: boolean;
+  images?: string[];
 }
