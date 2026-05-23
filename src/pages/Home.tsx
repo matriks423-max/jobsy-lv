@@ -345,7 +345,8 @@ export default function Home() {
                       </p>
                       <Link
                         to={`/browse?city=${cityKey}`}
-                        className="inline-block rounded-lg border-2 border-gray-800 bg-orange-400 px-3 py-1 text-xs font-medium text-gray-900 hover:bg-orange-500"
+                        className="inline-block rounded-lg border-2 border-gray-800 px-3 py-1 text-xs font-medium text-gray-900 transition hover:-translate-y-0.5"
+                        style={{ background: 'var(--coral)' }}
                       >
                         {t(locale, "cityMap.viewPosts")} →
                       </Link>
