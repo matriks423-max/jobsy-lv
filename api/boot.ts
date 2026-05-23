@@ -446,6 +446,7 @@ app.get("/sitemap.xml", async (c) => {
   const staticPages = [
     { loc: "/", priority: "1.0", changefreq: "daily" },
     { loc: "/browse", priority: "0.9", changefreq: "hourly" },
+    { loc: "/pricing", priority: "0.7", changefreq: "monthly" },
     { loc: "/login", priority: "0.3", changefreq: "monthly" },
     { loc: "/privacy", priority: "0.2", changefreq: "monthly" },
     { loc: "/terms", priority: "0.2", changefreq: "monthly" },

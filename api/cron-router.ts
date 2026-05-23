@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { eq, and, lte, gte, isNull, or, sql } from "drizzle-orm";
 import * as schema from "@db/schema";
 import { getDb } from "./queries/connection";
-import { sendExpiryReminder, sendSearchAlert } from "./lib/email";
+import { sendExpiryReminder, sendSearchAlert, sendPostExpired } from "./lib/email";
 
 export const cronRouter = new Hono();
 
@@ -122,6 +122,62 @@ cronRouter.get("/search-alerts", async (c) => {
   }
 
   return c.json({ ok: true, alertsSent, searchesChecked: searches.length });
+});
+
+// Expire active posts and notify owners — run hourly
+cronRouter.get("/expire", async (c) => {
+  const secret = c.req.header("x-cron-secret");
+  const expected = process.env.CRON_SECRET;
+  if (!expected || !secret || secret !== expected) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const now = new Date();
+
+  // Find active posts that should be expired (join with users for email)
+  const expiredPosts = await getDb()
+    .select({
+      id: schema.posts.id,
+      title: schema.posts.title,
+      userId: schema.posts.userId,
+    })
+    .from(schema.posts)
+    .where(
+      and(
+        eq(schema.posts.status, "active"),
+        lte(schema.posts.expiresAt, now)
+      )
+    );
+
+  if (expiredPosts.length === 0) return c.json({ ok: true, expired: 0 });
+
+  // Bulk mark as expired
+  const ids = expiredPosts.map((p) => p.id);
+  await getDb()
+    .update(schema.posts)
+    .set({ status: "expired" })
+    .where(
+      and(
+        eq(schema.posts.status, "active"),
+        lte(schema.posts.expiresAt, now)
+      )
+    );
+
+  // Send notification emails
+  let notified = 0;
+  for (const post of expiredPosts) {
+    const userRows = await getDb()
+      .select({ email: schema.users.email })
+      .from(schema.users)
+      .where(eq(schema.users.id, post.userId))
+      .limit(1);
+    const email = userRows[0]?.email;
+    if (!email) continue;
+    await sendPostExpired(email, post.title, post.id);
+    notified++;
+  }
+
+  return c.json({ ok: true, expired: ids.length, notified });
 });
 
 cronRouter.get("/backup", async (c) => {

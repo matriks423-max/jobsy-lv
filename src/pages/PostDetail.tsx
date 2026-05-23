@@ -71,6 +71,8 @@ export default function PostDetail() {
   const [showGallery, setShowGallery] = useState(false);
   const [showBoost, setShowBoost] = useState(false);
 
+  const images = data?.images ?? [];
+
   // Gallery keyboard navigation
   useEffect(() => {
     if (!showGallery) return;
@@ -227,9 +229,21 @@ export default function PostDetail() {
     add('meta[name="twitter:description"]', "name=twitter:description", desc);
     add('meta[name="twitter:image"]', "name=twitter:image", image);
 
+    // Canonical link
+    let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    const canonicalCreated = !canonical;
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+    canonical.href = url;
+
     return () => {
       document.title = prev;
       metas.forEach((el) => document.head.removeChild(el));
+      if (canonicalCreated && canonical) document.head.removeChild(canonical);
+      else if (canonical) canonical.href = "";
     };
   }, [data?.post, data?.images, locale]);
 
@@ -242,8 +256,6 @@ export default function PostDetail() {
     },
     { enabled: !!data?.post }
   );
-
-  const images = data?.images ?? [];
 
   if (isLoading) {
     return (

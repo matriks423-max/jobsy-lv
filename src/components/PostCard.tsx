@@ -69,11 +69,15 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
           className={`absolute left-0 top-0 h-full w-1 rounded-l-2xl ${isNeed ? "bg-need" : "bg-sage"}`}
         />
 
-        {post.filled && (
+        {post.filled ? (
           <div className="absolute right-3 top-3 z-10 rounded-full border-2 border-ink bg-sage px-2.5 py-0.5 font-body text-xs font-medium text-ink">
             ✓ {t(locale, "postDetail.statusFilled")}
           </div>
-        )}
+        ) : Date.now() - new Date(post.createdAt).getTime() < 24 * 60 * 60 * 1000 ? (
+          <div className="absolute right-3 top-3 z-10 rounded-full border-2 border-coral bg-coral px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase text-ink">
+            {locale === "lv" ? "Jauns" : locale === "ru" ? "Новый" : "New"}
+          </div>
+        ) : null}
 
         <div className="flex flex-1 flex-col p-5 pl-6">
           {/* Top row */}
