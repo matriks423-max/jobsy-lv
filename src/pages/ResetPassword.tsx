@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate, Link } from "react-router";
 import { Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
 import { trpc } from "@/providers/trpc";
 import { useLocale } from "@/lib/locale-context";
+import { t } from "@/lib/i18n";
 
 export default function ResetPassword() {
   const { locale } = useLocale();
@@ -18,9 +19,9 @@ export default function ResetPassword() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = "Atjaunot paroli — jobsy.lv";
+    document.title = t(locale, "resetPassword.pageTitle") + " — jobsy.lv";
     return () => { document.title = prev; };
-  }, []);
+  }, [locale]);
 
   const resetMutation = trpc.auth.resetPassword.useMutation({
     onSuccess: () => setDone(true),
@@ -30,9 +31,9 @@ export default function ResetPassword() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (password.length < 8) { setError("Parolei jābūt vismaz 8 simboliem"); return; }
-    if (password !== confirm) { setError("Paroles nesakrīt"); return; }
-    if (!token) { setError("Nederīga saite"); return; }
+    if (password.length < 8) { setError(t(locale, "resetPassword.errorMinLength")); return; }
+    if (password !== confirm) { setError(t(locale, "resetPassword.errorMismatch")); return; }
+    if (!token) { setError(t(locale, "resetPassword.errorInvalidLink")); return; }
     resetMutation.mutate({ token, password });
   };
 
@@ -40,9 +41,9 @@ export default function ResetPassword() {
     return (
       <div className="flex min-h-[60vh] items-center justify-center px-4">
         <div className="text-center">
-          <p className="font-body text-ink-muted">Nederīga atjaunošanas saite.</p>
+          <p className="font-body text-ink-muted">{t(locale, "resetPassword.invalidLinkDesc")}</p>
           <Link to="/login" className="mt-4 inline-block font-body text-sm text-coral hover:underline">
-            Atpakaļ uz pieteikšanos
+            {t(locale, "resetPassword.backToLogin")}
           </Link>
         </div>
       </div>
@@ -54,14 +55,14 @@ export default function ResetPassword() {
       <div className="flex min-h-[60vh] items-center justify-center px-4">
         <div className="text-center">
           <CheckCircle2 className="mx-auto mb-4 h-12 w-12" style={{ color: "var(--coral)" }} />
-          <h1 className="font-display text-2xl font-bold text-ink">Parole atjaunota!</h1>
-          <p className="mt-2 font-body text-ink-muted">Vari pieteikties ar jauno paroli.</p>
+          <h1 className="font-display text-2xl font-bold text-ink">{t(locale, "resetPassword.successTitle")}</h1>
+          <p className="mt-2 font-body text-ink-muted">{t(locale, "resetPassword.successDesc")}</p>
           <button
             onClick={() => navigate("/login")}
             className="mt-6 rounded-xl border-2 border-ink px-6 py-2.5 font-body font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_var(--ink)]"
             style={{ background: "var(--coral)" }}
           >
-            Pieteikties
+            {t(locale, "resetPassword.loginBtn")}
           </button>
         </div>
       </div>
@@ -72,8 +73,8 @@ export default function ResetPassword() {
     <div className="flex min-h-[70vh] items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="font-display text-3xl font-bold text-ink">Jaunā parole</h1>
-          <p className="mt-2 font-body text-sm text-ink-muted">Ievadi jaunu paroli savam kontam</p>
+          <h1 className="font-display text-3xl font-bold text-ink">{t(locale, "resetPassword.heading")}</h1>
+          <p className="mt-2 font-body text-sm text-ink-muted">{t(locale, "resetPassword.subheading")}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="rounded-2xl border-2 border-ink bg-white p-6 shadow-[4px_4px_0_var(--ink)]">
@@ -84,13 +85,13 @@ export default function ResetPassword() {
           )}
 
           <div className="mb-4">
-            <label className="mb-1 block font-body text-sm font-medium text-ink">Jaunā parole</label>
+            <label className="mb-1 block font-body text-sm font-medium text-ink">{t(locale, "resetPassword.newPasswordLabel")}</label>
             <div className="relative">
               <input
                 type={showPw ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Vismaz 8 simboli"
+                placeholder={t(locale, "resetPassword.newPasswordPlaceholder")}
                 className="w-full rounded-xl border-2 border-ink bg-cream px-4 py-2.5 pr-10 font-body text-sm outline-none focus:border-coral"
                 required
                 minLength={8}
@@ -106,12 +107,12 @@ export default function ResetPassword() {
           </div>
 
           <div className="mb-6">
-            <label className="mb-1 block font-body text-sm font-medium text-ink">Apstipriniet paroli</label>
+            <label className="mb-1 block font-body text-sm font-medium text-ink">{t(locale, "resetPassword.confirmLabel")}</label>
             <input
               type={showPw ? "text" : "password"}
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
-              placeholder="Atkārtojiet paroli"
+              placeholder={t(locale, "resetPassword.confirmPlaceholder")}
               className="w-full rounded-xl border-2 border-ink bg-cream px-4 py-2.5 font-body text-sm outline-none focus:border-coral"
               required
             />
@@ -123,13 +124,13 @@ export default function ResetPassword() {
             className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-ink py-2.5 font-body font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_var(--ink)] disabled:opacity-60"
             style={{ background: "var(--coral)" }}
           >
-            {resetMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Saglabāt paroli"}
+            {resetMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : t(locale, "resetPassword.submitBtn")}
           </button>
         </form>
 
         <p className="mt-4 text-center font-body text-sm text-ink-muted">
           <Link to="/login" className="text-coral hover:underline">
-            Atpakaļ uz pieteikšanos
+            {t(locale, "resetPassword.backToLogin")}
           </Link>
         </p>
       </div>

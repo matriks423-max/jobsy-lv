@@ -101,7 +101,7 @@ export const postsRouter = createRouter({
       if (!result) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Sludinājums nav atrasts",
+          message: "Post not found",
         });
       }
       await incrementViewCount(input.id);
@@ -141,7 +141,7 @@ export const postsRouter = createRouter({
       if (postsToday >= MAX_POSTS_PER_DAY) {
         throw new TRPCError({
           code: "TOO_MANY_REQUESTS",
-          message: `Dienā atļauts publicēt max ${MAX_POSTS_PER_DAY} sludinājumus`,
+          message: `Daily limit: max ${MAX_POSTS_PER_DAY} posts per day`,
         });
       }
 
@@ -149,7 +149,7 @@ export const postsRouter = createRouter({
       if (!profile) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Profils nav atrasts",
+          message: "Profile not found",
         });
       }
 
@@ -171,7 +171,7 @@ export const postsRouter = createRouter({
         if (profile.monthlyPostCount >= FREE_MONTHLY_LIMIT) {
           throw new TRPCError({
             code: "FORBIDDEN",
-            message: "Mēneša limits sasniegts — jaunini uz Business kontu",
+            message: "Monthly limit reached — upgrade to Business",
           });
         }
       }
@@ -224,10 +224,10 @@ export const postsRouter = createRouter({
     .mutation(async ({ ctx, input }) => {
       const postResult = await getPostWithProfile(input.id);
       if (!postResult) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Sludinājums nav atrasts" });
+        throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
       }
       if (postResult.post.userId !== ctx.user.id) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Šis sludinājums nepieder tev" });
+        throw new TRPCError({ code: "FORBIDDEN", message: "Post does not belong to you" });
       }
 
       // Moderate updated content
@@ -261,10 +261,10 @@ export const postsRouter = createRouter({
     .mutation(async ({ ctx, input }) => {
       const postResult = await getPostWithProfile(input.id);
       if (!postResult) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Sludinājums nav atrasts" });
+        throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
       }
       if (postResult.post.userId !== ctx.user.id) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Šis sludinājums nepieder tev" });
+        throw new TRPCError({ code: "FORBIDDEN", message: "Post does not belong to you" });
       }
 
       await deletePost(input.id);
@@ -275,9 +275,9 @@ export const postsRouter = createRouter({
     .input(z.object({ postId: z.number(), filled: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
       const result = await getPostWithProfile(input.postId);
-      if (!result) throw new TRPCError({ code: "NOT_FOUND", message: "Sludinājums nav atrasts" });
+      if (!result) throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
       if (result.post.userId !== ctx.user.id) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Šis sludinājums nepieder tev" });
+        throw new TRPCError({ code: "FORBIDDEN", message: "Post does not belong to you" });
       }
       await setPostFilled(input.postId, input.filled);
       return { success: true };
@@ -288,18 +288,18 @@ export const postsRouter = createRouter({
     .input(z.object({ postId: z.number() }))
     .mutation(async ({ ctx, input }) => {
       const result = await getPostWithProfile(input.postId);
-      if (!result) throw new TRPCError({ code: "NOT_FOUND", message: "Sludinājums nav atrasts" });
+      if (!result) throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
       if (result.post.userId !== ctx.user.id) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Šis sludinājums nepieder tev" });
+        throw new TRPCError({ code: "FORBIDDEN", message: "Post does not belong to you" });
       }
 
       const profile = await getProfileByUserId(ctx.user.id);
-      if (!profile) throw new TRPCError({ code: "NOT_FOUND", message: "Profils nav atrasts" });
+      if (!profile) throw new TRPCError({ code: "NOT_FOUND", message: "Profile not found" });
 
       // Rate limit check
       const postsToday = await countUserPostsToday(ctx.user.id);
       if (postsToday >= MAX_POSTS_PER_DAY) {
-        throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: `Dienā atļauts publicēt max ${MAX_POSTS_PER_DAY} sludinājumus` });
+        throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: `Daily limit: max ${MAX_POSTS_PER_DAY} posts per day` });
       }
 
       // Plan limit check for free users
@@ -311,7 +311,7 @@ export const postsRouter = createRouter({
           profile.monthlyPostCount = 0;
         }
         if (profile.monthlyPostCount >= 10) {
-          throw new TRPCError({ code: "FORBIDDEN", message: "Mēneša limits sasniegts" });
+          throw new TRPCError({ code: "FORBIDDEN", message: "Monthly limit reached — upgrade to Business" });
         }
       }
 
@@ -369,7 +369,7 @@ export const postsRouter = createRouter({
     .mutation(async ({ ctx, input }) => {
       const postResult = await getPostWithProfile(input.postId);
       if (!postResult) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Sludinājums nav atrasts" });
+        throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
       }
 
       const alreadyContacted = await hasContacted(input.postId, ctx.user.id);
@@ -415,8 +415,8 @@ export const postsRouter = createRouter({
     .input(z.object({ postId: z.number() }))
     .mutation(async ({ ctx, input }) => {
       const postResult = await getPostWithProfile(input.postId);
-      if (!postResult) throw new TRPCError({ code: "NOT_FOUND", message: "Sludinājums nav atrasts" });
-      if (postResult.post.userId === ctx.user.id) throw new TRPCError({ code: "FORBIDDEN", message: "Nevar izteikt interesi par savu sludinājumu" });
+      if (!postResult) throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
+      if (postResult.post.userId === ctx.user.id) throw new TRPCError({ code: "FORBIDDEN", message: "Cannot express interest in your own post" });
 
       const already = await hasInterested(input.postId, ctx.user.id);
       if (!already) {
@@ -467,12 +467,12 @@ export const postsRouter = createRouter({
     .mutation(async ({ ctx, input }) => {
       const postResult = await getPostWithProfile(input.postId);
       if (!postResult) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Sludinājums nav atrasts" });
+        throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
       }
       if (postResult.post.userId !== ctx.user.id) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "Šis sludinājums nepieder tev",
+          message: "Post does not belong to you",
         });
       }
 
@@ -518,7 +518,7 @@ export const postsRouter = createRouter({
         .limit(1);
       
       if (!report.length) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Ziņojums nav atrasts" });
+        throw new TRPCError({ code: "NOT_FOUND", message: "Report not found" });
       }
 
       if (input.action === "delete") {

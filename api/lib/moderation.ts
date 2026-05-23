@@ -110,7 +110,7 @@ export function moderateContent(title: string, description: string = ""): Modera
     // Determine category
     return {
       allowed: false,
-      reason: `Saturs nav atļauts. Sludinājums pārkāpj Lietošanas noteikumus.`,
+      reason: `Content not allowed. Post violates Terms of Use.`,
       flaggedWords,
     };
   }
@@ -128,7 +128,7 @@ export function moderateContent(title: string, description: string = ""): Modera
     if (pattern.test(text)) {
       return {
         allowed: false,
-        reason: "Saturs nav atļauts. Aizliegti rakstzīmju triki.",
+        reason: "Content not allowed. Disguised characters are prohibited.",
         flaggedWords: ["disguised_content"],
       };
     }

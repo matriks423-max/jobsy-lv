@@ -120,7 +120,7 @@ export const emailAuthRouter = createRouter({
     .mutation(async ({ ctx, input }) => {
       const existing = await findUserByEmail(input.email);
       if (existing) {
-        throw new TRPCError({ code: "CONFLICT", message: "Šis e-pasts jau ir reģistrēts" });
+        throw new TRPCError({ code: "CONFLICT", message: "Email already registered" });
       }
 
       const passwordHash = await bcrypt.hash(input.password, 12);
@@ -187,7 +187,7 @@ export const emailAuthRouter = createRouter({
       const rateEntry = loginRateMap.get(key);
       if (rateEntry && now - rateEntry.windowStart < LOGIN_RATE_WINDOW_MS) {
         if (rateEntry.count >= LOGIN_RATE_LIMIT) {
-          throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Pārāk daudz mēģinājumi. Lūdzu, uzgaidiet." });
+          throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Too many attempts. Please wait." });
         }
         loginRateMap.set(key, { count: rateEntry.count + 1, windowStart: rateEntry.windowStart });
       } else {
@@ -196,12 +196,12 @@ export const emailAuthRouter = createRouter({
 
       const user = await findUserByEmail(input.email);
       if (!user || !user.passwordHash) {
-        throw new TRPCError({ code: "UNAUTHORIZED", message: "Nepareizs e-pasts vai parole" });
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Incorrect email or password" });
       }
 
       const valid = await bcrypt.compare(input.password, user.passwordHash);
       if (!valid) {
-        throw new TRPCError({ code: "UNAUTHORIZED", message: "Nepareizs e-pasts vai parole" });
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Incorrect email or password" });
       }
 
       // Reset rate limit on successful login

@@ -23,7 +23,7 @@ const requireAuth = t.middleware(async (opts) => {
   if (ctx.user.role === "banned") {
     throw new TRPCError({
       code: "FORBIDDEN",
-      message: "Tavs konts ir aizliegts.",
+      message: "Your account has been banned.",
     });
   }
 

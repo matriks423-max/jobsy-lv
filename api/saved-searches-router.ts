@@ -29,7 +29,7 @@ export const savedSearchesRouter = createRouter({
         .where(eq(schema.savedSearches.userId, ctx.user.id));
 
       if (existing.length >= 10) {
-        throw new TRPCError({ code: "BAD_REQUEST", message: "Maksimums 10 saglabātās meklēšanas" });
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Maximum 10 saved searches" });
       }
 
       await getDb().insert(schema.savedSearches).values({

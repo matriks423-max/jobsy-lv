@@ -55,7 +55,7 @@ export const profileRouter = createRouter({
       const entry = otpRateMap.get(ctx.user.id);
       if (entry && now - entry.windowStart < OTP_WINDOW_MS) {
         if (entry.count >= OTP_MAX) {
-          throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Pārāk daudz mēģinājumu. Mēģini vēlāk." });
+          throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Too many attempts. Try again later." });
         }
         otpRateMap.set(ctx.user.id, { count: entry.count + 1, windowStart: entry.windowStart });
       } else {
@@ -71,7 +71,7 @@ export const profileRouter = createRouter({
     .input(z.object({ phone: z.string(), code: z.string().length(6) }))
     .mutation(async ({ ctx, input }) => {
       const valid = validateOtp(input.phone, ctx.user.id, input.code);
-      if (!valid) throw new TRPCError({ code: "BAD_REQUEST", message: "Nepareizs vai derīguma termiņš beidzies kods" });
+      if (!valid) throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid or expired code" });
       await updateProfile(ctx.user.id, { phone: input.phone, phoneVerified: true } as any);
       return { success: true };
     }),

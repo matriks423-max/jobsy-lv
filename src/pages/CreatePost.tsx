@@ -99,7 +99,7 @@ export default function CreatePost() {
       navigate(`/success?post=${data.postId}&free=true${reviewParam}`);
     },
     onError: (err) => {
-      if (err.message.includes("Mēneša limits")) {
+      if (err.message.includes("Monthly limit")) {
         setShowUpgrade(true);
       } else {
         toast(err.message, "error");
