@@ -309,12 +309,12 @@ export default function Settings() {
             </p>
             {subStatus?.plan === "free" && (
               <p className="mt-0.5 font-body text-xs text-ink-muted">
-                {subStatus.monthlyPostCount}/10 {locale === "lv" ? "sludinājumi šomēnes" : locale === "ru" ? "объявлений в месяц" : "posts this month"}
+                {subStatus.monthlyPostCount}/10 {t(locale, "settings.postsThisMonth")}
               </p>
             )}
             {subStatus?.plan === "business" && (
               <p className="mt-0.5 font-body text-xs text-ink-muted">
-                {subStatus.freeBoostsRemaining} {locale === "lv" ? "bezmaksas boost atlikuši" : locale === "ru" ? "бесплатных boost осталось" : "free boosts remaining"}
+                {subStatus.freeBoostsRemaining} {t(locale, "settings.freeBoostsRemaining")}
               </p>
             )}
           </div>
@@ -330,7 +330,7 @@ export default function Settings() {
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-ink outline-none focus:border-ink"
-                  placeholder={locale === "lv" ? "Uzņēmuma nosaukums" : locale === "ru" ? "Название компании" : "Company name"}
+                  placeholder={t(locale, "settings.companyNamePlaceholder")}
                 />
               </div>
               <div>

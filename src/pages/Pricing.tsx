@@ -93,9 +93,7 @@ export default function Pricing() {
               </p>
               <p className="mt-1 font-display text-5xl font-bold text-ink">€0</p>
               <p className="mt-1 font-body text-sm text-ink-muted">
-                {locale === "lv" ? "Bez maksas uz visiem laikiem"
-                  : locale === "ru" ? "Бесплатно навсегда"
-                  : "Free forever"}
+                {t(locale, "pricing.freeForever")}
               </p>
             </div>
             <ul className="mb-8 space-y-3">
@@ -108,9 +106,7 @@ export default function Pricing() {
             </ul>
             {isBusiness ? (
               <div className="rounded-xl border-2 border-ink-light bg-cream-dark px-4 py-3 text-center font-body text-sm text-ink-muted">
-                {locale === "lv" ? "Tavs pašreizējais plāns ir Business"
-                  : locale === "ru" ? "Ваш текущий план — Business"
-                  : "Your current plan is Business"}
+                {t(locale, "pricing.currentPlanIsBusiness")}
               </div>
             ) : (
               <Link
@@ -125,7 +121,7 @@ export default function Pricing() {
           {/* Business */}
           <div className="relative rounded-2xl border-2 border-ink bg-ink p-8 text-cream shadow-card">
             <div className="absolute -top-3 left-6 rounded-full border-2 border-ink bg-coral px-3 py-0.5 font-mono text-xs font-bold text-ink uppercase">
-              {locale === "lv" ? "Populārākais" : locale === "ru" ? "Популярный" : "Most popular"}
+              {t(locale, "pricing.mostPopular")}
             </div>
             <div className="mb-6">
               <p className="font-body text-sm font-medium uppercase tracking-widest text-cream/60">
@@ -165,7 +161,7 @@ export default function Pricing() {
                 className="w-full rounded-xl border-2 border-cream bg-coral px-6 py-3 font-body text-sm font-semibold text-ink hover:opacity-90 transition disabled:opacity-60"
               >
                 {upgradeMutation.isPending
-                  ? (locale === "lv" ? "Ielādē..." : locale === "ru" ? "Загрузка..." : "Loading...")
+                  ? t(locale, "pricing.loading")
                   : t(locale, "pricing.upgrade")}
               </button>
             )}
@@ -175,12 +171,10 @@ export default function Pricing() {
         {/* Boosts */}
         <div className="mb-16">
           <h2 className="mb-2 font-display text-2xl font-bold text-ink">
-            {locale === "lv" ? "Boost — pieejams visiem" : locale === "ru" ? "Boost — для всех" : "Boosts — available to everyone"}
+            {t(locale, "pricing.boostForAll")}
           </h2>
           <p className="mb-6 font-body text-sm text-ink-muted">
-            {locale === "lv" ? "Maksā tikai par to, ko izmanto."
-              : locale === "ru" ? "Платите только за то, что используете."
-              : "Pay only for what you use."}
+            {t(locale, "pricing.boostForAllDesc")}
           </p>
           <div className="grid gap-4 sm:grid-cols-3">
             {BOOST_FEATURES.map((b) => (

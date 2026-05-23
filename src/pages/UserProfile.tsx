@@ -117,7 +117,7 @@ export default function UserProfile() {
                 )}
                 <span className="flex items-center gap-1">
                   <Calendar className="h-3.5 w-3.5" />
-                  {locale === "lv" ? "Biedrs" : locale === "ru" ? "Участник" : "Member"}{" "}
+                  {t(locale, "userProfile.member")}{" "}
                   {relativeTime(memberSince, locale)}
                 </span>
               </div>
@@ -165,7 +165,7 @@ export default function UserProfile() {
         {posts.length > 0 && (
           <div className="mb-6">
             <h2 className="mb-4 font-display text-xl font-bold text-ink">
-              {locale === "lv" ? "Aktīvie sludinājumi" : locale === "ru" ? "Активные объявления" : "Active Posts"}
+              {t(locale, "userProfile.activePosts")}
               <span className="ml-2 font-mono text-sm font-normal text-ink-muted">({posts.length})</span>
             </h2>
             <div className="space-y-3">
@@ -219,7 +219,7 @@ export default function UserProfile() {
         {reviews.length > 0 && (
           <div>
             <h2 className="mb-4 font-display text-xl font-bold text-ink">
-              {locale === "lv" ? "Atsauksmes" : locale === "ru" ? "Отзывы" : "Reviews"}
+              {t(locale, "userProfile.reviews")}
             </h2>
             <div className="space-y-3">
               {reviews.map((r) => (
@@ -246,7 +246,7 @@ export default function UserProfile() {
         {posts.length === 0 && reviews.length === 0 && (
           <div className="py-16 text-center">
             <p className="font-body text-ink-muted">
-              {locale === "lv" ? "Nav aktīvu sludinājumu." : locale === "ru" ? "Нет активных объявлений." : "No active posts."}
+              {t(locale, "userProfile.noActivePosts")}
             </p>
           </div>
         )}

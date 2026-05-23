@@ -311,8 +311,8 @@ export default function Browse() {
             <SelectContent className="border-2 border-ink">
               <SelectItem value="newest">{t(locale, "browse.sortNewest")}</SelectItem>
               <SelectItem value="oldest">{t(locale, "browse.sortOldest")}</SelectItem>
-              <SelectItem value="budget_asc">{locale === "lv" ? "Cena ↑" : locale === "ru" ? "Цена ↑" : "Price ↑"}</SelectItem>
-              <SelectItem value="budget_desc">{locale === "lv" ? "Cena ↓" : locale === "ru" ? "Цена ↓" : "Price ↓"}</SelectItem>
+              <SelectItem value="budget_asc">{t(locale, "browse.sortBudgetAsc")}</SelectItem>
+              <SelectItem value="budget_desc">{t(locale, "browse.sortBudgetDesc")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
