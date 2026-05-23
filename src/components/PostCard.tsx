@@ -151,9 +151,9 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
                 {locale === "lv" ? "Steidzams" : locale === "ru" ? "Срочно" : "Urgent"}
               </span>
             )}
-            {post.boostType === "top" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date() && (
+            {post.boostType === "bump" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date() && (
               <span className="inline-flex items-center gap-0.5 rounded-full border border-mustard bg-mustard-light px-1.5 py-0.5 font-mono text-[10px] font-bold text-ink uppercase">
-                {locale === "lv" ? "Top" : locale === "ru" ? "Топ" : "Top"}
+                🔝
               </span>
             )}
             <span className="ml-auto font-mono text-xs text-ink-light" title={new Date(post.createdAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}>

@@ -72,7 +72,7 @@ export default function Browse() {
   );
   const [category, setCategory] = useState(searchParams.get("category") ?? "all");
   const [city, setCity] = useState(searchParams.get("city") ?? "all");
-  const [sort, setSort] = useState<"newest" | "oldest">(
+  const [sort, setSort] = useState<"newest" | "oldest" | "budget_asc" | "budget_desc">(
     (searchParams.get("sort") as never) ?? "newest"
   );
   const [page, setPage] = useState(Number(searchParams.get("page") ?? "0"));
@@ -286,13 +286,15 @@ export default function Browse() {
           <label className="mb-2 block font-body text-xs font-bold uppercase tracking-wide text-ink-muted">
             Kārtot
           </label>
-          <Select value={sort} onValueChange={(v) => { setSort(v as "newest" | "oldest"); setPage(0); }}>
+          <Select value={sort} onValueChange={(v) => { setSort(v as typeof sort); setPage(0); }}>
             <SelectTrigger className="w-full rounded-xl border-2 border-ink bg-white font-body text-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="border-2 border-ink">
               <SelectItem value="newest">{t(locale, "browse.sortNewest")}</SelectItem>
               <SelectItem value="oldest">{t(locale, "browse.sortOldest")}</SelectItem>
+              <SelectItem value="budget_asc">{locale === "lv" ? "Cena ↑" : locale === "ru" ? "Цена ↑" : "Price ↑"}</SelectItem>
+              <SelectItem value="budget_desc">{locale === "lv" ? "Cena ↓" : locale === "ru" ? "Цена ↓" : "Price ↓"}</SelectItem>
             </SelectContent>
           </Select>
         </div>
