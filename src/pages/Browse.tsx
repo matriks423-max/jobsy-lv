@@ -125,6 +125,18 @@ export default function Browse() {
     setSearchParams(params, { replace: true });
   }, [type, category, city, sort, debouncedSearch, page]);
 
+  // "/" keyboard shortcut focuses search input
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "/" && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
+        e.preventDefault();
+        document.getElementById("browse-search")?.focus();
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
+
   const clearFilters = () => {
     setType("all");
     setCategory("all");
@@ -179,6 +191,7 @@ export default function Browse() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted" />
             <input
+              id="browse-search"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(0); }}
               placeholder={t(locale, "browse.searchPlaceholder")}
