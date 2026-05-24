@@ -24,5 +24,16 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router"],
+          "vendor-trpc": ["@trpc/client", "@trpc/react-query", "@tanstack/react-query"],
+          "vendor-motion": ["framer-motion"],
+          "vendor-map": ["leaflet", "react-leaflet"],
+          "vendor-ui": ["sonner", "lucide-react"],
+        },
+      },
+    },
   },
 });
