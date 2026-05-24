@@ -260,6 +260,14 @@ export default function Navbar() {
                         >
                           {t(locale, "nav.settings")}
                         </button>
+                        {user.role === "admin" && (
+                          <button
+                            onClick={() => { navigate("/admin"); setMobileOpen(false); }}
+                            className="font-body text-xs text-coral hover:text-coral/70"
+                          >
+                            Admin
+                          </button>
+                        )}
                         <button
                           onClick={() => {
                             logout();

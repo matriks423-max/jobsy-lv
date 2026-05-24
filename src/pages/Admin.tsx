@@ -59,13 +59,15 @@ export default function Admin() {
 
   const utils = trpc.useUtils();
 
-  const { data: stats } = trpc.posts.adminStats.useQuery(undefined, { enabled: isAuthenticated && user?.role === "admin" });
-  const { data: pendingPosts, isLoading: pendingLoading } = trpc.posts.pendingReview.useQuery(undefined, { enabled: isAuthenticated && user?.role === "admin" });
-  const { data: reports, isLoading: reportsLoading } = trpc.posts.listReports.useQuery(undefined, { enabled: isAuthenticated && user?.role === "admin" });
-  const { data: users, isLoading: usersLoading } = trpc.posts.listUsers.useQuery({ search: userSearch || undefined, limit: 50 }, { enabled: isAuthenticated && user?.role === "admin" });
-  const { data: allPosts, isLoading: postsLoading } = trpc.posts.listAllPosts.useQuery({ status: postStatus || undefined, limit: 50 }, { enabled: isAuthenticated && user?.role === "admin" });
+  const isAdmin = (isAuthenticated ?? false) && user?.role === "admin";
+
+  const { data: stats } = trpc.posts.adminStats.useQuery(undefined, { enabled: isAdmin });
+  const { data: pendingPosts, isLoading: pendingLoading } = trpc.posts.pendingReview.useQuery(undefined, { enabled: isAdmin });
+  const { data: reports, isLoading: reportsLoading } = trpc.posts.listReports.useQuery(undefined, { enabled: isAdmin });
+  const { data: users, isLoading: usersLoading } = trpc.posts.listUsers.useQuery({ search: userSearch || undefined, limit: 50 }, { enabled: isAdmin });
+  const { data: allPosts, isLoading: postsLoading } = trpc.posts.listAllPosts.useQuery({ status: postStatus || undefined, limit: 50 }, { enabled: isAdmin });
   const [queueStatus, setQueueStatus] = useState<"pending" | "posted" | "failed" | "">("");
-  const { data: socialQueueData, isLoading: queueLoading } = trpc.posts.socialQueue.useQuery({ status: queueStatus || undefined, limit: 100 }, { enabled: isAuthenticated && user?.role === "admin" });
+  const { data: socialQueueData, isLoading: queueLoading } = trpc.posts.socialQueue.useQuery({ status: queueStatus || undefined, limit: 100 }, { enabled: isAdmin });
 
   const approveMutation = trpc.posts.approvePost.useMutation({
     onSuccess: () => { toast("Approved", "success"); utils.posts.pendingReview.invalidate(); utils.posts.adminStats.invalidate(); },
