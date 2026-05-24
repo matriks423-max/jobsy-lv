@@ -21,6 +21,7 @@ import {
 import {
   getProfileByUserId,
   updateProfile,
+  useFreePostCredit,
 } from "./queries/profiles";
 import { createContact, hasContacted, createReport } from "./queries/reports";
 import { hasInterested, createInterest } from "./queries/interests";
@@ -165,10 +166,16 @@ export const postsRouter = createRouter({
 
         const FREE_MONTHLY_LIMIT = 10;
         if (profile.monthlyPostCount >= FREE_MONTHLY_LIMIT) {
-          throw new TRPCError({
-            code: "FORBIDDEN",
-            message: "Monthly limit reached — upgrade to Business",
-          });
+          // Try spending a referral credit before blocking
+          const creditUsed = profile.freePostCredits > 0
+            ? await useFreePostCredit(ctx.user.id)
+            : false;
+          if (!creditUsed) {
+            throw new TRPCError({
+              code: "FORBIDDEN",
+              message: "Monthly limit reached — upgrade to Business",
+            });
+          }
         }
       }
 
