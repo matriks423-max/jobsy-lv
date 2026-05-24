@@ -77,7 +77,10 @@ export default function Browse() {
     (searchParams.get("sort") as never) ?? "newest"
   );
   const [page, setPage] = useState(Number(searchParams.get("page") ?? "0"));
-  const [viewMode, setViewMode] = useState<"list" | "map">("map");
+  // Default to list when a search query is active, map otherwise
+  const [viewMode, setViewMode] = useState<"list" | "map">(
+    searchParams.get("search") ? "list" : "map"
+  );
   const [showSaveAlert, setShowSaveAlert] = useState(false);
   const [alertLabel, setAlertLabel] = useState("");
   const [showMobileFilters, setShowMobileFilters] = useState(false);
