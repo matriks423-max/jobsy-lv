@@ -190,11 +190,11 @@ export const postsRouter = createRouter({
 
       const insertId = Number((post as unknown as [{ insertId: bigint }])[0].insertId);
 
-      // Save images (use index as sortOrder so ordering is stable)
+      // Save images (batch insert — use index as sortOrder so ordering is stable)
       if (input.images && input.images.length > 0) {
-        for (let i = 0; i < input.images.length; i++) {
-          await getDb().insert(schema.postImages).values({ postId: insertId, url: input.images[i], sortOrder: i });
-        }
+        await getDb().insert(schema.postImages).values(
+          input.images.map((url, i) => ({ postId: insertId, url, sortOrder: i }))
+        );
       }
 
       // Increment monthly counter for free users
@@ -251,8 +251,10 @@ export const postsRouter = createRouter({
       if (images !== undefined) {
         const db = getDb();
         await db.delete(schema.postImages).where(eq(schema.postImages.postId, id));
-        for (let i = 0; i < images.length; i++) {
-          await db.insert(schema.postImages).values({ postId: id, url: images[i], sortOrder: i });
+        if (images.length > 0) {
+          await db.insert(schema.postImages).values(
+            images.map((url, i) => ({ postId: id, url, sortOrder: i }))
+          );
         }
       }
 
@@ -337,16 +339,16 @@ export const postsRouter = createRouter({
       });
       const insertId = Number((newPost as unknown as [{ insertId: bigint }])[0].insertId);
 
-      // Copy images from original post to renewed post
+      // Copy images from original post to renewed post (batch insert)
       const originalImages = await getDb()
         .select({ url: schema.postImages.url, sortOrder: schema.postImages.sortOrder })
         .from(schema.postImages)
         .where(eq(schema.postImages.postId, input.postId))
         .orderBy(schema.postImages.sortOrder);
       if (originalImages.length > 0) {
-        for (const img of originalImages) {
-          await getDb().insert(schema.postImages).values({ postId: insertId, url: img.url, sortOrder: img.sortOrder });
-        }
+        await getDb().insert(schema.postImages).values(
+          originalImages.map((img) => ({ postId: insertId, url: img.url, sortOrder: img.sortOrder }))
+        );
       }
 
       if (ctx.user.plan !== "business") {
