@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router";
+import { Routes, Route, Navigate } from "react-router";
+import { useAuth } from "@/hooks/useAuth";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/lib/theme-context";
 import Navbar from "@/components/Navbar";
@@ -16,7 +17,6 @@ import PostDetail from "./pages/PostDetail";
 const CreatePost = lazy(() => import("./pages/CreatePost"));
 const MyPosts = lazy(() => import("./pages/MyPosts"));
 const Success = lazy(() => import("./pages/Success"));
-const Payment = lazy(() => import("./pages/Payment"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
@@ -29,6 +29,13 @@ const StylePreview = lazy(() => import("./pages/StylePreview"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
+
+function AdminRoute({ element }: { element: React.ReactElement }) {
+  const { user, isAuthenticated, isLoading } = useAuth();
+  if (isLoading) return null;
+  if (!isAuthenticated || user?.role !== "admin") return <Navigate to="/" replace />;
+  return element;
+}
 
 export default function App() {
   return (
@@ -57,7 +64,6 @@ export default function App() {
               <Route path="/edit/:id" element={<CreatePost />} />
               <Route path="/my-posts" element={<MyPosts />} />
               <Route path="/success" element={<Success />} />
-              <Route path="/payment" element={<Payment />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
@@ -68,7 +74,7 @@ export default function App() {
               <Route path="/kategorija/:slug" element={<Category />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/user/:id" element={<UserProfile />} />
-              <Route path="/style-preview" element={<StylePreview />} />
+              <Route path="/style-preview" element={<AdminRoute element={<StylePreview />} />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

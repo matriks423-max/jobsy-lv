@@ -96,8 +96,8 @@ export default function Browse() {
     offset: page * PAGE_SIZE,
   } as const;
 
-  const { data, isLoading } = trpc.posts.list.useQuery(listInput);
-  const { data: featuredData } = trpc.posts.featuredPosts.useQuery();
+  const { data, isLoading } = trpc.posts.list.useQuery(listInput, { staleTime: 30 * 1000 });
+  const { data: featuredData } = trpc.posts.featuredPosts.useQuery(undefined, { staleTime: 60 * 1000 });
   const featuredPosts = featuredData ?? [];
 
   const { data: totalCount } = trpc.posts.count.useQuery({
@@ -106,7 +106,7 @@ export default function Browse() {
     city: listInput.city,
     status: listInput.status,
     search: listInput.search,
-  });
+  }, { staleTime: 30 * 1000 });
 
   // Set page title + meta description
   useEffect(() => {
