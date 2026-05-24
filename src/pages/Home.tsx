@@ -128,7 +128,7 @@ export default function Home() {
     { staleTime: 30 * 1000 }
   );
   const { data: referralInfo } = trpc.referral.me.useQuery(undefined, {
-    enabled: isAuthenticated,
+    enabled: isAuthenticated ?? false,
   });
   const { data: featuredData } = trpc.posts.featuredPosts.useQuery();
   const featuredPosts = (featuredData ?? []).slice(0, 3);

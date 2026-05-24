@@ -106,7 +106,7 @@ export default function PostDetail() {
 
   const { data: interestData, refetch: refetchInterest } = trpc.posts.hasInterested.useQuery(
     { postId },
-    { enabled: isAuthenticated && !isNaN(postId) }
+    { enabled: (isAuthenticated ?? false) && !isNaN(postId) }
   );
   const interestMutation = trpc.posts.expressInterest.useMutation({
     onSuccess: (res) => {

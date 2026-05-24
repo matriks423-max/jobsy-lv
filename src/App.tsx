@@ -72,7 +72,7 @@ export default function App() {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/kategorija/:slug" element={<Category />} />
-              <Route path="/admin" element={<Admin />} />
+              <Route path="/admin" element={<AdminRoute element={<Admin />} />} />
               <Route path="/user/:id" element={<UserProfile />} />
               <Route path="/style-preview" element={<AdminRoute element={<StylePreview />} />} />
               <Route path="*" element={<NotFound />} />

@@ -60,7 +60,7 @@ export default function CreatePost() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const { data: referralInfo } = trpc.referral.me.useQuery(undefined, {
-    enabled: isAuthenticated,
+    enabled: isAuthenticated ?? false,
   });
 
   const { data: existingPost } = trpc.posts.getById.useQuery(

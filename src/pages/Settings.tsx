@@ -58,14 +58,14 @@ export default function Settings() {
     onError: (err) => toast(err.message, "error"),
   });
 
-  const { data: savedSearches } = trpc.savedSearches.list.useQuery(undefined, { enabled: isAuthenticated });
+  const { data: savedSearches } = trpc.savedSearches.list.useQuery(undefined, { enabled: isAuthenticated ?? false });
   const deleteSearchMutation = trpc.savedSearches.delete.useMutation({
     onSuccess: () => utils.savedSearches.list.invalidate(),
     onError: (err) => toast(err.message, "error"),
   });
 
   const { data: profile, isLoading } = trpc.profile.me.useQuery(undefined, {
-    enabled: isAuthenticated,
+    enabled: isAuthenticated ?? false,
   });
 
   const updateMutation = trpc.profile.update.useMutation({

@@ -14,7 +14,7 @@ export default function Pricing() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { data: status } = trpc.subscription.status.useQuery(undefined, {
-    enabled: isAuthenticated,
+    enabled: isAuthenticated ?? false,
   });
 
   const upgradeMutation = trpc.subscription.createCheckout.useMutation({
