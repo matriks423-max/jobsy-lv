@@ -33,7 +33,7 @@ function FitBoundsController({ posts }: JobMapProps) {
       .filter(Boolean) as Array<{ lat: number; lng: number }>;
 
     if (coords.length === 0) {
-      map.setView([56.88, 24.6], 8);
+      map.fitBounds([[55.57, 20.87], [58.19, 28.34]], { padding: [16, 16] });
       return;
     }
 

@@ -21,6 +21,17 @@ export const CITIES = [
   "rezekne",
   "ventspils",
   "jurmala",
+  "valmiera",
+  "jekabpils",
+  "tukums",
+  "ogre",
+  "cesis",
+  "sigulda",
+  "bauska",
+  "saldus",
+  "kuldiga",
+  "dobele",
+  "talsi",
   "other",
 ] as const;
 

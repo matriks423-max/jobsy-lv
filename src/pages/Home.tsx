@@ -323,8 +323,8 @@ export default function Home() {
             {t(locale, "cityMap.title")}
           </h2>
           <MapContainer
-            center={[56.88, 24.6]}
-            zoom={8}
+            bounds={[[55.57, 20.87], [58.19, 28.34]]}
+            boundsOptions={{ padding: [16, 16] }}
             className="h-[400px] w-full rounded-2xl border-2 border-ink md:h-[520px]"
             scrollWheelZoom={false}
             zoomControl={true}
