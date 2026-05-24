@@ -2,7 +2,7 @@ import Stripe from "stripe";
 import { env } from "./lib/env";
 import { getPostById, updatePost } from "./queries/posts";
 import { getProfileByUserId, updateProfile } from "./queries/profiles";
-import { getReferralByReferredId, markReferralPostMade, markReferralRewarded } from "./queries/referrals";
+import { atomicRewardReferral } from "./queries/referrals";
 import { addFreePostCredit } from "./queries/profiles";
 import { sendPostPublished, sendPaymentFailed, sendBusinessWelcome } from "./lib/email";
 import { getDb } from "./queries/connection";
@@ -246,11 +246,12 @@ export async function handleStripeWebhook(body: string, signature: string) {
 }
 
 export async function checkAndRewardReferral(userId: number) {
-  const referral = await getReferralByReferredId(userId);
-  if (!referral || referral.postMade || referral.rewarded) return;
-  await markReferralPostMade(userId);
-  await addFreePostCredit(referral.referrerId);
-  await markReferralRewarded(userId);
+  // atomicRewardReferral does check+update in one DB round-trip (WHERE rewarded=false),
+  // preventing double-reward if two Stripe webhooks fire for the same user simultaneously.
+  const referrerId = await atomicRewardReferral(userId);
+  if (referrerId !== null) {
+    await addFreePostCredit(referrerId);
+  }
 }
 
 export { stripe };
