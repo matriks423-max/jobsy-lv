@@ -70,7 +70,7 @@ export async function handleGoogleCallback(code: string, redirectUri: string) {
       const insertId = Number((result as unknown as [{ insertId: bigint }])[0].insertId);
       user = await findUserByIdFn(insertId);
 
-      const referralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const referralCode = randomBytes(3).toString("hex").toUpperCase();
       await getDb().insert(schema.profiles).values({
         id: insertId,
         userId: insertId,

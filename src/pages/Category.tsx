@@ -108,8 +108,15 @@ export default function Category() {
     { enabled: !!catInfo }
   );
 
+  const { data: totalCount } = trpc.posts.count.useQuery(
+    { category: slug, status: "active" },
+    { enabled: !!catInfo }
+  );
+
   const posts = data ?? [];
-  const hasMore = posts.length === PAGE_SIZE;
+  const hasMore = totalCount !== undefined
+    ? (page + 1) * PAGE_SIZE < totalCount
+    : posts.length === PAGE_SIZE;
   const catName = catInfo ? t(locale, `categories.${catInfo.key}` as never) : "";
 
   if (!catInfo) return null;
