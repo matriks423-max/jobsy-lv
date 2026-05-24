@@ -33,7 +33,7 @@ export const translations = {
       titleItalic: "darbojas",
       step1: "Ievieto sludinājumu",
       step1Desc:
-        "Vai meklē palīdzību, vai piedāvā savus pakalpojumus. Pirmie 2 sludinājumi bez maksas.",
+        "Vai meklē palīdzību, vai piedāvā savus pakalpojumus. 10 sludinājumi mēnesī — bez maksas.",
       step2: "Saņem atbildes",
       step2Desc:
         "Citi lietotāji redz tavu sludinājumu un sazinās ar tevi pa e-pastu vai telefonu.",
@@ -56,9 +56,9 @@ export const translations = {
       emptyBtn: "Izveidot sludinājumu",
     },
     ctaBanner: {
-      title: "Pirmais sludinājums bez maksas",
+      title: "Publicē bez maksas",
       titleItalic: "bez maksas",
-      subtitle: "Sākot ar 2. — tikai €2. Aktīvs 30 dienas.",
+      subtitle: "10 sludinājumi mēnesī. Aktīvs 30 dienas.",
       btn: "Izveidot sludinājumu",
     },
     footer: {
@@ -196,7 +196,7 @@ export const translations = {
       deleteConfirm: "Dzēst",
       deleteCancel: "Atcelt",
       deleteBtn: "Dzēst",
-      info: "Pirmie 2 sludinājumi bez maksas. Sākot ar 3. — €2. Aktīvs 30 dienas.",
+      info: "Bezmaksas plāns: 10 sludinājumi mēnesī. Aktīvs 30 dienas.",
       privacy: "Privātuma politika",
       terms: "Lietošanas noteikumi",
     },
@@ -338,7 +338,7 @@ export const translations = {
     },
     category: {
       ctaHeading: "Vajag palīdzību ar {cat}?",
-      ctaSubtitle: "Publicē sludinājumu — pirmie 2 bez maksas.",
+      ctaSubtitle: "Publicē sludinājumu — 10 mēnesī bez maksas.",
     },
     postCard: {
       badgeNew: "Jauns",
@@ -495,7 +495,7 @@ export const translations = {
       titleItalic: "работает",
       step1: "Размести объявление",
       step1Desc:
-        "Ищешь помощь или предлагаешь услуги. Первые 2 объявления бесплатно.",
+        "Ищешь помощь или предлагаешь услуги. 10 объявлений в месяц бесплатно.",
       step2: "Получи отклики",
       step2Desc:
         "Другие пользователи видят твоё объявление и связываются по email или телефону.",
@@ -517,9 +517,9 @@ export const translations = {
       emptyBtn: "Разместить объявление",
     },
     ctaBanner: {
-      title: "Первое объявление бесплатно",
+      title: "Публикуй бесплатно",
       titleItalic: "бесплатно",
-      subtitle: "Начиная со 2-го — всего €2. Активно 30 дней.",
+      subtitle: "10 объявлений в месяц. Активно 30 дней.",
       btn: "Разместить объявление",
     },
     footer: {
@@ -657,7 +657,7 @@ export const translations = {
       deleteConfirm: "Удалить",
       deleteCancel: "Отмена",
       deleteBtn: "Удалить",
-      info: "Первые 2 объявления бесплатно. Начиная с 3-го — €2. Активно 30 дней.",
+      info: "Бесплатный план: 10 объявлений в месяц. Активно 30 дней.",
       privacy: "Политика конфиденциальности",
       terms: "Условия использования",
     },
@@ -799,7 +799,7 @@ export const translations = {
     },
     category: {
       ctaHeading: "Нужна помощь с {cat}?",
-      ctaSubtitle: "Разместите объявление — первые 2 бесплатно.",
+      ctaSubtitle: "Разместите объявление — 10 в месяц бесплатно.",
     },
     postCard: {
       badgeNew: "Новый",
@@ -956,7 +956,7 @@ export const translations = {
       titleItalic: "works",
       step1: "Post your job",
       step1Desc:
-        "Whether you need help or offer your services. First 2 posts are free.",
+        "Whether you need help or offer your services. Free to post — 10 per month.",
       step2: "Get responses",
       step2Desc:
         "Other users see your post and reach out via email or phone.",
@@ -978,9 +978,9 @@ export const translations = {
       emptyBtn: "Create a post",
     },
     ctaBanner: {
-      title: "First post is free",
+      title: "Post for free",
       titleItalic: "free",
-      subtitle: "From the 2nd post — just €2. Active for 30 days.",
+      subtitle: "10 posts per month. Active for 30 days.",
       btn: "Create a post",
     },
     footer: {
@@ -1118,7 +1118,7 @@ export const translations = {
       deleteConfirm: "Delete",
       deleteCancel: "Cancel",
       deleteBtn: "Delete",
-      info: "First 2 posts are free. From the 3rd — €2. Post active for 30 days.",
+      info: "Free plan: 10 posts per month. Active for 30 days.",
       privacy: "Privacy Policy",
       terms: "Terms of Service",
     },
@@ -1260,7 +1260,7 @@ export const translations = {
     },
     category: {
       ctaHeading: "Need help with {cat}?",
-      ctaSubtitle: "Post a listing — first 2 are free.",
+      ctaSubtitle: "Post a listing — 10 per month, free.",
     },
     postCard: {
       badgeNew: "New",
