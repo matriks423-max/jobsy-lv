@@ -348,7 +348,7 @@ export default function Browse() {
 
   return (
     <div className="min-h-screen noise-bg">
-      <div className="mx-auto max-w-screen-2xl px-4 py-8">
+      <div className="mx-auto max-w-7xl px-4 py-8">
 
         {/* Top bar */}
         <div className="mb-6 flex items-start justify-between gap-4">
@@ -484,7 +484,7 @@ export default function Browse() {
                 <h2 className="mb-3 font-display text-lg font-bold text-ink">
                   {t(locale, "browse.featured")}
                 </h2>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                   {featuredPosts.map(({ post, profile, isBusiness, images }) => (
                     <PostCard key={`featured-${post.id}`} post={post} profile={profile} isBusiness={isBusiness} images={images} />
                   ))}
@@ -497,7 +497,7 @@ export default function Browse() {
             {viewMode === "list" ? (
               <>
                 {isLoading ? (
-                  <div className="grid gap-6 sm:grid-cols-2">
+                  <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                     {Array.from({ length: 6 }).map((_, i) => (
                       <PostCardSkeleton key={i} />
                     ))}
@@ -524,7 +524,7 @@ export default function Browse() {
                     </button>
                   </div>
                 ) : (
-                  <div className="grid gap-6 sm:grid-cols-2">
+                  <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                     {posts.map(({ post, profile, isBusiness, images }) => (
                       <PostCard key={post.id} post={post} profile={profile} isBusiness={isBusiness} images={images} />
                     ))}

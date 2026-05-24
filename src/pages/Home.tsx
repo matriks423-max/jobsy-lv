@@ -451,7 +451,7 @@ export default function Home() {
       {/* CTA Banner + Referral */}
       <section className="px-4 pb-20">
         <div className="mx-auto max-w-6xl">
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 lg:grid-cols-2">
             {/* Main CTA */}
             <div className="rounded-3xl border-2 border-ink bg-ink px-8 py-12 text-center noise-bg">
               <h2 className="mx-auto max-w-lg font-display text-2xl font-bold text-cream md:text-3xl">
