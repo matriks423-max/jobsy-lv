@@ -17,6 +17,14 @@ export async function sendSms(to: string, body: string): Promise<void> {
 const otpStore = new Map<string, { code: string; expiry: number; userId: number; attempts: number }>();
 const MAX_OTP_ATTEMPTS = 5;
 
+// Purge expired OTP entries (runs every 15 min)
+setInterval(() => {
+  const now = Date.now();
+  for (const [phone, entry] of otpStore) {
+    if (entry.expiry < now) otpStore.delete(phone);
+  }
+}, 15 * 60 * 1000).unref();
+
 export function generateOtp(): string {
   // Use cryptographically secure random to prevent prediction attacks
   return String(randomInt(100000, 1000000));

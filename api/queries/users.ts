@@ -1,11 +1,13 @@
 import { eq } from "drizzle-orm";
+import { randomBytes } from "crypto";
 import * as schema from "@db/schema";
 import type { InsertUser, InsertProfile } from "@db/schema";
 import { getDb } from "./connection";
 import { env } from "../lib/env";
 
 function generateReferralCode(): string {
-  return Math.random().toString(36).substring(2, 8).toUpperCase();
+  // 3 random bytes → 6 uppercase hex chars (cryptographically secure)
+  return randomBytes(3).toString("hex").toUpperCase();
 }
 
 export async function findUserByUnionId(unionId: string) {

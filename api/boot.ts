@@ -170,6 +170,14 @@ const uploadRateMap = new Map<number, { count: number; windowStart: number }>();
 const UPLOAD_RATE_LIMIT = 10;
 const UPLOAD_RATE_WINDOW_MS = 5 * 60 * 1000;
 
+// Purge stale entries (runs every 10 min)
+setInterval(() => {
+  const cutoff = Date.now() - UPLOAD_RATE_WINDOW_MS * 2;
+  for (const [key, entry] of uploadRateMap) {
+    if (entry.windowStart < cutoff) uploadRateMap.delete(key);
+  }
+}, 10 * 60 * 1000).unref();
+
 // Image upload — HARDENED
 app.post("/api/upload", async (c) => {
   try {

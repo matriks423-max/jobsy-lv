@@ -14,6 +14,15 @@ import { env } from "./lib/env";
 
 // In-memory rate limit: max 3 forgot-password requests per email per hour
 const forgotRateMap = new Map<string, { count: number; windowStart: number }>();
+const FORGOT_WINDOW_MS = 60 * 60 * 1000;
+
+// Purge stale entries (runs every 2 hours)
+setInterval(() => {
+  const cutoff = Date.now() - FORGOT_WINDOW_MS * 2;
+  for (const [key, entry] of forgotRateMap) {
+    if (entry.windowStart < cutoff) forgotRateMap.delete(key);
+  }
+}, 2 * 60 * 60 * 1000).unref();
 
 export const authRouter = createRouter({
   me: authedQuery.query((opts) => opts.ctx.user),
@@ -60,7 +69,7 @@ export const authRouter = createRouter({
       const key = input.email.toLowerCase();
       const now = Date.now();
       const rateEntry = forgotRateMap.get(key);
-      if (rateEntry && now - rateEntry.windowStart < 60 * 60 * 1000) {
+      if (rateEntry && now - rateEntry.windowStart < FORGOT_WINDOW_MS) {
         if (rateEntry.count >= 3) {
           return { success: true }; // Silent rate limit — don't reveal enumeration
         }

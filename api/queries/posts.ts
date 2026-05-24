@@ -309,18 +309,18 @@ export async function countCategories() {
 }
 
 export async function deletePost(id: number) {
-  // Delete related records first (no FK cascade in schema)
-  await Promise.all([
-    getDb().delete(schema.postImages).where(eq(schema.postImages.postId, id)),
-    getDb().delete(schema.contacts).where(eq(schema.contacts.postId, id)),
-    getDb().delete(schema.reports).where(eq(schema.reports.postId, id)),
-    getDb().delete(schema.interests).where(eq(schema.interests.postId, id)),
-    getDb().delete(schema.reviews).where(eq(schema.reviews.postId, id)),
-    getDb().delete(schema.socialQueue).where(eq(schema.socialQueue.postId, id)),
-  ]);
-  await getDb()
-    .delete(schema.posts)
-    .where(eq(schema.posts.id, id));
+  // Wrap in transaction: all child-record deletes + parent delete must succeed together
+  await getDb().transaction(async (tx) => {
+    await Promise.all([
+      tx.delete(schema.postImages).where(eq(schema.postImages.postId, id)),
+      tx.delete(schema.contacts).where(eq(schema.contacts.postId, id)),
+      tx.delete(schema.reports).where(eq(schema.reports.postId, id)),
+      tx.delete(schema.interests).where(eq(schema.interests.postId, id)),
+      tx.delete(schema.reviews).where(eq(schema.reviews.postId, id)),
+      tx.delete(schema.socialQueue).where(eq(schema.socialQueue.postId, id)),
+    ]);
+    await tx.delete(schema.posts).where(eq(schema.posts.id, id));
+  });
 }
 
 export async function countUserPostsToday(userId: number) {

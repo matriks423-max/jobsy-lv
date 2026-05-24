@@ -9,6 +9,14 @@ const otpRateMap = new Map<number, { count: number; windowStart: number }>();
 const OTP_MAX = 3;
 const OTP_WINDOW_MS = 15 * 60 * 1000;
 
+// Purge stale entries (runs every 30 min)
+setInterval(() => {
+  const cutoff = Date.now() - OTP_WINDOW_MS * 2;
+  for (const [key, entry] of otpRateMap) {
+    if (entry.windowStart < cutoff) otpRateMap.delete(key);
+  }
+}, 30 * 60 * 1000).unref();
+
 export const profileRouter = createRouter({
   me: authedQuery.query(async ({ ctx }: { ctx: { user: { id: number } } }) => {
     const profile = await getProfileByUserId(ctx.user.id);

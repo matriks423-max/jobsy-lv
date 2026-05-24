@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import * as cookie from "cookie";
 import bcrypt from "bcryptjs";
+import { randomBytes } from "crypto";
 import { env } from "./lib/env";
 import { getSessionCookieOptions } from "./lib/cookies";
 import { signAppSessionToken } from "./auth/session";
@@ -107,6 +108,14 @@ const loginRateMap = new Map<string, { count: number; windowStart: number }>();
 const LOGIN_RATE_LIMIT = 10;
 const LOGIN_RATE_WINDOW_MS = 15 * 60 * 1000;
 
+// Purge entries whose window expired >2 windows ago (runs every 30 min)
+setInterval(() => {
+  const cutoff = Date.now() - LOGIN_RATE_WINDOW_MS * 2;
+  for (const [key, entry] of loginRateMap) {
+    if (entry.windowStart < cutoff) loginRateMap.delete(key);
+  }
+}, 30 * 60 * 1000).unref();
+
 export const emailAuthRouter = createRouter({
   register: publicQuery
     .input(
@@ -136,7 +145,7 @@ export const emailAuthRouter = createRouter({
 
       const insertId = Number((result as unknown as [{ insertId: bigint }])[0].insertId);
 
-      const refCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const refCode = randomBytes(3).toString("hex").toUpperCase();
       await getDb().insert(schema.profiles).values({
         id: insertId,
         userId: insertId,
