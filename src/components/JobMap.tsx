@@ -33,7 +33,7 @@ function FitBoundsController({ posts }: JobMapProps) {
       .filter(Boolean) as Array<{ lat: number; lng: number }>;
 
     if (coords.length === 0) {
-      map.setView([56.88, 24.6], 7);
+      map.setView([56.88, 24.6], 8);
       return;
     }
 
@@ -57,7 +57,7 @@ export default function JobMap({ posts }: JobMapProps) {
   return (
     <MapContainer
       center={[56.88, 24.6]}
-      zoom={7}
+      zoom={8}
       className="h-[380px] w-full rounded-2xl border-2 border-ink md:h-[520px]"
       scrollWheelZoom={false}
     >

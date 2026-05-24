@@ -152,7 +152,7 @@ export default function Home() {
           <div className="absolute bottom-[25%] left-[20%] h-3 w-3 rotate-45 border-2 opacity-20" style={{ borderColor: 'var(--sage)' }} />
         </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-3xl">
+        <div className="relative z-10 mx-auto w-full max-w-4xl">
           {/* Headline — word-by-word reveal */}
           <motion.h1 className="mb-6 font-display text-5xl font-bold leading-tight text-ink md:text-7xl">
             {t(locale, "hero.title").split(" ").map((word, i) => (
@@ -273,7 +273,7 @@ export default function Home() {
 
       {/* How It Works */}
       <section className="bg-cream-dark px-4 py-20 noise-bg">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-7xl">
           <h2 className="mb-12 text-center font-display text-3xl font-bold text-ink md:text-4xl">
             {t(locale, "howItWorks.title")}
           </h2>
@@ -324,8 +324,8 @@ export default function Home() {
           </h2>
           <MapContainer
             center={[56.88, 24.6]}
-            zoom={7}
-            className="h-[340px] w-full rounded-2xl border-2 border-ink md:h-[440px]"
+            zoom={8}
+            className="h-[400px] w-full rounded-2xl border-2 border-ink md:h-[520px]"
             scrollWheelZoom={false}
             zoomControl={true}
           >
@@ -450,7 +450,7 @@ export default function Home() {
 
       {/* CTA Banner + Referral */}
       <section className="px-4 pb-20">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-6xl">
           <div className="grid gap-6 md:grid-cols-2">
             {/* Main CTA */}
             <div className="rounded-3xl border-2 border-ink bg-ink px-8 py-12 text-center noise-bg">

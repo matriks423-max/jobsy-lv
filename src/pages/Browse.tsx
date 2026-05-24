@@ -348,7 +348,7 @@ export default function Browse() {
 
   return (
     <div className="min-h-screen noise-bg">
-      <div className="mx-auto max-w-7xl px-4 py-8">
+      <div className="mx-auto max-w-screen-2xl px-4 py-8">
 
         {/* Top bar */}
         <div className="mb-6 flex items-start justify-between gap-4">
