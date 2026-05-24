@@ -204,7 +204,10 @@ export default function Browse() {
   };
 
   const posts = data ?? [];
-  const hasMore = posts.length === PAGE_SIZE;
+  // Use totalCount when available (precise), fall back to length heuristic
+  const hasMore = totalCount !== undefined
+    ? (page + 1) * PAGE_SIZE < totalCount
+    : posts.length === PAGE_SIZE;
 
   // ── Local filter panel (used in both sidebar and mobile sheet) ──
   function FilterPanel({ onClose }: { onClose?: () => void }) {
