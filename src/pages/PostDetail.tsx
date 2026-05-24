@@ -257,9 +257,9 @@ export default function PostDetail() {
       type: data?.post.type,
       category: data?.post.category,
       status: "active",
-      limit: 3,
+      limit: 4, // fetch one extra — current post is filtered out client-side
     },
-    { enabled: !!data?.post }
+    { enabled: !!data?.post, staleTime: 30 * 1000 }
   );
 
   if (isLoading) {

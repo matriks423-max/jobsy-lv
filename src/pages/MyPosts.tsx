@@ -51,7 +51,7 @@ export default function MyPosts() {
   }, []);
 
   const { data, isLoading } = trpc.posts.myPosts.useQuery(undefined, {
-    enabled: isAuthenticated,
+    enabled: isAuthenticated ?? false,
   });
 
   const utils = trpc.useUtils();

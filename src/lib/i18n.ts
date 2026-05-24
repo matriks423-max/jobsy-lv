@@ -64,6 +64,7 @@ export const translations = {
     footer: {
       tagline: "Latvijas ērtākais darbiņu dēlis",
       about: "Par mums",
+      account: "Konts",
       contact: "Kontakti",
       privacy: "Privātuma politika",
       terms: "Lietošanas noteikumi",
@@ -536,6 +537,7 @@ export const translations = {
     footer: {
       tagline: "Самая удобная доска объявлений Латвии",
       about: "О нас",
+      account: "Аккаунт",
       contact: "Контакты",
       privacy: "Политика конфиденциальности",
       terms: "Условия использования",
@@ -1008,6 +1010,7 @@ export const translations = {
     footer: {
       tagline: "Latvia's easiest gig board",
       about: "About",
+      account: "Account",
       contact: "Contact",
       privacy: "Privacy Policy",
       terms: "Terms of Service",

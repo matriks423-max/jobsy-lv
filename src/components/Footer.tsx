@@ -75,7 +75,7 @@ export default function Footer() {
           {/* Column 3: Account */}
           <div>
             <h4 className="mb-4 font-body text-sm font-bold uppercase tracking-wide text-ink">
-              {t(locale, "footer.contact")}
+              {t(locale, "footer.account")}
             </h4>
             <ul className="space-y-2.5">
               <li>
