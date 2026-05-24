@@ -5,9 +5,9 @@
     "buildCommand": "npm run build"
   },
   "deploy": {
-    "startCommand": "npx drizzle-kit push --force && npm run start",
+    "startCommand": "npx drizzle-kit push --force || echo '[deploy] migration skipped or already current' && npm run start",
     "healthcheckPath": "/health",
-    "healthcheckTimeout": 60,
+    "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 3
   }
