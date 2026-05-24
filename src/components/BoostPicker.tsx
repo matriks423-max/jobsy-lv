@@ -21,7 +21,7 @@ export default function BoostPicker({ postId, isBusiness, freeBoostsRemaining, o
   const { locale } = useLocale();
   const { toast } = useToast();
 
-  const applyMutation = trpc.boost.apply.useMutation({
+  const applyMutation = trpc.boost.applyBoost.useMutation({
     onSuccess: (data) => {
       if (data.free) {
         toast(t(locale, "boost.activated"), "success");

@@ -9,7 +9,7 @@ import * as schema from "@db/schema";
 import { eq, and, gt } from "drizzle-orm";
 
 export const boostRouter = createRouter({
-  apply: authedQuery
+  applyBoost: authedQuery
     .input(z.object({
       postId: z.number(),
       boostType: z.enum(["bump", "featured", "urgent"]),
