@@ -256,15 +256,16 @@ export const postsRouter = createRouter({
       const { id, images, ...data } = input;
       await updatePost(id, data as any);
 
-      // Sync images: replace all existing images with the new list
+      // Sync images atomically: delete + re-insert in one transaction
       if (images !== undefined) {
-        const db = getDb();
-        await db.delete(schema.postImages).where(eq(schema.postImages.postId, id));
-        if (images.length > 0) {
-          await db.insert(schema.postImages).values(
-            images.map((url, i) => ({ postId: id, url, sortOrder: i }))
-          );
-        }
+        await getDb().transaction(async (tx) => {
+          await tx.delete(schema.postImages).where(eq(schema.postImages.postId, id));
+          if (images.length > 0) {
+            await tx.insert(schema.postImages).values(
+              images.map((url, i) => ({ postId: id, url, sortOrder: i }))
+            );
+          }
+        });
       }
 
       return { success: true };
