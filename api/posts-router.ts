@@ -37,6 +37,15 @@ const MAX_POSTS_PER_DAY = 5;
 const postTypeEnum = z.enum(["need", "offer"]);
 const languageEnum = z.enum(["lv", "ru", "en"]);
 
+// Uploaded image URLs must come from our own upload system
+// Valid patterns: /uploads/<file> (local dev) or https://<anything> (R2 / CDN)
+const imageUrlSchema = z.string()
+  .max(512)
+  .refine(
+    (url) => url.startsWith("/uploads/") || (url.startsWith("https://") && !url.includes("<") && !url.includes(">")),
+    { message: "Invalid image URL" }
+  );
+
 export const postsRouter = createRouter({
   list: publicQuery
     .input(
@@ -117,7 +126,7 @@ export const postsRouter = createRouter({
         budgetText: z.string().max(100).optional(),
         whenText: z.string().max(100).optional(),
         language: languageEnum.default("lv"),
-        images: z.array(z.string()).optional(),
+        images: z.array(imageUrlSchema).max(5).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -221,7 +230,7 @@ export const postsRouter = createRouter({
         region: z.string().optional(),
         budgetText: z.string().max(100).optional(),
         whenText: z.string().max(100).optional(),
-        images: z.array(z.string()).max(5).optional(),
+        images: z.array(imageUrlSchema).max(5).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {

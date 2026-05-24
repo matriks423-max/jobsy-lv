@@ -23,6 +23,17 @@ interface JobMapProps {
   posts: Array<{ post: Post; profile?: Profile | null }>;
 }
 
+// Forces map to recalculate size (needed when map becomes visible after being hidden)
+function InvalidateSizeOnMount() {
+  const map = useMap();
+  useEffect(() => {
+    // Small delay ensures the container has its final CSS dimensions
+    const t = setTimeout(() => map.invalidateSize(), 50);
+    return () => clearTimeout(t);
+  }, [map]);
+  return null;
+}
+
 // Auto-fits map bounds whenever posts change
 function FitBoundsController({ posts }: JobMapProps) {
   const map = useMap();
@@ -65,6 +76,7 @@ export default function JobMap({ posts }: JobMapProps) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      <InvalidateSizeOnMount />
       <FitBoundsController posts={mappable} />
       {mappable.map(({ post }) => {
         const coords = getCityCoords(post.city)!;
