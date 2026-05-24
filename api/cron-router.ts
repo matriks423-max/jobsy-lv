@@ -165,9 +165,9 @@ cronRouter.get("/expire", async (c) => {
     );
   const actuallyExpired = (updateResult as unknown as [{ affectedRows: number }])[0].affectedRows;
 
-  // Only send notification emails for posts we actually transitioned (affectedRows > 0 total).
-  // To get per-post granularity we'd need per-row locking — instead, skip notifications if
-  // another worker beat us to the update (affectedRows < ids.length means overlap).
+  // If another cron worker transitioned all posts first, skip emails entirely to prevent duplicates.
+  if (actuallyExpired === 0) return c.json({ ok: true, expired: 0, notified: 0 });
+
   let notified = 0;
   for (const post of expiredPosts) {
     const userRows = await getDb()
