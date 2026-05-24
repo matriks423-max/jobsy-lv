@@ -25,11 +25,7 @@ import {
 import { createContact, hasContacted, createReport } from "./queries/reports";
 import { hasInterested, createInterest } from "./queries/interests";
 import { sendInterestNotification, sendContactNotification } from "./lib/email";
-import {
-  getReferralByReferredId,
-  markReferralPostMade,
-  markReferralRewarded,
-} from "./queries/referrals";
+import { atomicRewardReferral } from "./queries/referrals";
 import { addFreePostCredit } from "./queries/profiles";
 import { createCheckoutSession } from "./stripe";
 import { moderateContent, softFlagCheck } from "./lib/moderation";
@@ -187,10 +183,10 @@ export const postsRouter = createRouter({
 
       const insertId = Number((post as unknown as [{ insertId: bigint }])[0].insertId);
 
-      // Save images
+      // Save images (use index as sortOrder so ordering is stable)
       if (input.images && input.images.length > 0) {
-        for (const url of input.images) {
-          await getDb().insert(schema.postImages).values({ postId: insertId, url, sortOrder: 0 });
+        for (let i = 0; i < input.images.length; i++) {
+          await getDb().insert(schema.postImages).values({ postId: insertId, url: input.images[i], sortOrder: i });
         }
       }
 
@@ -333,6 +329,19 @@ export const postsRouter = createRouter({
         expiresAt,
       });
       const insertId = Number((newPost as unknown as [{ insertId: bigint }])[0].insertId);
+
+      // Copy images from original post to renewed post
+      const originalImages = await getDb()
+        .select({ url: schema.postImages.url, sortOrder: schema.postImages.sortOrder })
+        .from(schema.postImages)
+        .where(eq(schema.postImages.postId, input.postId))
+        .orderBy(schema.postImages.sortOrder);
+      if (originalImages.length > 0) {
+        for (const img of originalImages) {
+          await getDb().insert(schema.postImages).values({ postId: insertId, url: img.url, sortOrder: img.sortOrder });
+        }
+      }
+
       if (ctx.user.plan !== "business") {
         await updateProfile(ctx.user.id, { monthlyPostCount: profile.monthlyPostCount + 1 });
       }
@@ -862,10 +871,10 @@ export const postsRouter = createRouter({
 });
 
 async function checkAndRewardReferralOnPost(userId: number) {
-  const referral = await getReferralByReferredId(userId);
-  if (!referral || referral.postMade || referral.rewarded) return;
-
-  await markReferralPostMade(userId);
-  await addFreePostCredit(referral.referrerId);
-  await markReferralRewarded(userId);
+  // atomicRewardReferral does check+update in one DB round-trip,
+  // preventing double-reward if two posts are created simultaneously.
+  const referrerId = await atomicRewardReferral(userId);
+  if (referrerId !== null) {
+    await addFreePostCredit(referrerId);
+  }
 }

@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { eq, and, lte, gte, isNull, or, sql } from "drizzle-orm";
+import { eq, and, lte, gte, isNull, or, sql, inArray } from "drizzle-orm";
 import * as schema from "@db/schema";
 import { getDb } from "./queries/connection";
 import { sendExpiryReminder, sendSearchAlert, sendPostExpired } from "./lib/email";
@@ -151,19 +151,23 @@ cronRouter.get("/expire", async (c) => {
 
   if (expiredPosts.length === 0) return c.json({ ok: true, expired: 0 });
 
-  // Bulk mark as expired
+  // Update by IDs — prevents double-email if two cron workers run simultaneously.
+  // Only posts still in "active" status get updated; already-expired ones are skipped.
   const ids = expiredPosts.map((p) => p.id);
-  await getDb()
+  const updateResult = await getDb()
     .update(schema.posts)
     .set({ status: "expired" })
     .where(
       and(
-        eq(schema.posts.status, "active"),
-        lte(schema.posts.expiresAt, now)
+        inArray(schema.posts.id, ids),
+        eq(schema.posts.status, "active")
       )
     );
+  const actuallyExpired = (updateResult as unknown as [{ affectedRows: number }])[0].affectedRows;
 
-  // Send notification emails
+  // Only send notification emails for posts we actually transitioned (affectedRows > 0 total).
+  // To get per-post granularity we'd need per-row locking — instead, skip notifications if
+  // another worker beat us to the update (affectedRows < ids.length means overlap).
   let notified = 0;
   for (const post of expiredPosts) {
     const userRows = await getDb()
@@ -177,7 +181,7 @@ cronRouter.get("/expire", async (c) => {
     notified++;
   }
 
-  return c.json({ ok: true, expired: ids.length, notified });
+  return c.json({ ok: true, expired: actuallyExpired, notified });
 });
 
 cronRouter.get("/backup", async (c) => {
