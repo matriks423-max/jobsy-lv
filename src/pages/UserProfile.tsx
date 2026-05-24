@@ -85,7 +85,7 @@ export default function UserProfile() {
             ) : (
               <div className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-ink bg-coral-light">
                 <span className="font-display text-2xl font-bold text-coral">
-                  {(profile.name ?? "?")[0].toUpperCase()}
+                  {(profile.name?.[0] ?? "?").toUpperCase()}
                 </span>
               </div>
             )}
