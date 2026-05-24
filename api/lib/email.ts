@@ -213,6 +213,35 @@ export async function sendContactNotification(
   }
 }
 
+export async function sendPasswordReset(to: string, resetUrl: string): Promise<void> {
+  const safeUrl = escHtml(resetUrl);
+  await resend.emails.send({
+    from: FROM,
+    to,
+    subject: "Atjaunot paroli — jobsy.lv",
+    html: `
+      <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; background: #FAF6F0; padding: 40px 32px;">
+        <h1 style="font-size: 28px; color: #1A1208; margin-bottom: 8px;">jobsy<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#E8512A;margin-left:2px;vertical-align:middle;"></span></h1>
+        <hr style="border: 2px solid #1A1208; margin: 16px 0 32px;" />
+        <h2 style="font-size: 22px; color: #1A1208; margin-bottom: 16px;">Paroles atjaunošana</h2>
+        <p style="color: #4A3728; font-size: 16px; line-height: 1.6; margin-bottom: 8px;">
+          Saņēmām pieprasījumu atjaunot tava konta paroli. Noklikšķini uz pogas zemāk — saite ir derīga <strong>1 stundu</strong>.
+        </p>
+        <p style="color: #4A3728; font-size: 15px; line-height: 1.6; margin-bottom: 24px;">
+          Ja tu šo pieprasījumu nenosūtīji, vienkārši ignorē šo e-pastu.
+        </p>
+        <a href="${safeUrl}" style="display: inline-block; background: #E8512A; color: #FAF6F0; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 15px; border: 2px solid #1A1208;">
+          Atjaunot paroli →
+        </a>
+        <p style="color: #8A7060; font-size: 12px; margin-top: 24px; word-break: break-all;">
+          Vai kopē saiti: ${safeUrl}
+        </p>
+        <p style="color: #8A7060; font-size: 13px; margin-top: 24px;">© 2026 jobsy.lv</p>
+      </div>
+    `,
+  });
+}
+
 export async function sendPostExpired(
   to: string,
   postTitle: string,

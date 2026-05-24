@@ -23,6 +23,7 @@ import {
   Heart,
   Zap,
   RefreshCw,
+  TrendingUp,
 } from "lucide-react";
 
 export default function MyPosts() {
@@ -117,6 +118,15 @@ export default function MyPosts() {
     }
   };
 
+  const getBoostTimeRemaining = (expiresAt: Date | string) => {
+    const ms = new Date(expiresAt).getTime() - Date.now();
+    if (ms <= 0) return null;
+    const hours = Math.floor(ms / (1000 * 60 * 60));
+    if (hours < 24) return `${hours}h`;
+    const days = Math.floor(hours / 24);
+    return `${days}d`;
+  };
+
   return (
     <div className="min-h-screen px-4 py-8 noise-bg">
       <div className="mx-auto max-w-4xl">
@@ -181,7 +191,11 @@ export default function MyPosts() {
                       <span className="font-body text-xs text-ink-muted">{t(locale, `categories.${post.category}` as never)}</span>
                       {post.boostType !== "none" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date() && (
                         <span className="flex items-center gap-0.5 rounded-full border border-coral bg-coral/10 px-1.5 py-0.5 font-mono text-[10px] text-coral">
-                          <Zap className="h-2.5 w-2.5" /> {t(locale, "boost.boosted")}
+                          <Zap className="h-2.5 w-2.5" />
+                          {post.boostType === "bump" ? "Bump" : post.boostType === "featured" ? "Featured" : "Urgent"}
+                          {getBoostTimeRemaining(post.boostExpiresAt) && (
+                            <span className="ml-0.5 opacity-70">· {getBoostTimeRemaining(post.boostExpiresAt)}</span>
+                          )}
                         </span>
                       )}
                     </div>
@@ -197,8 +211,12 @@ export default function MyPosts() {
 
                   <div className="flex items-center gap-3">
                     <div className="hidden flex-col items-end sm:flex">
-                      <span className="flex items-center gap-1 font-mono text-xs text-ink-light">
-                        <Eye className="h-3 w-3" /> {post.viewCount}
+                      <span className={`flex items-center gap-1 font-mono text-xs ${post.boostType !== "none" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date() ? "text-coral font-semibold" : "text-ink-light"}`}>
+                        {post.boostType !== "none" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date()
+                          ? <TrendingUp className="h-3 w-3" />
+                          : <Eye className="h-3 w-3" />
+                        }
+                        {post.viewCount}
                       </span>
                       <span className="flex items-center gap-1 font-mono text-xs text-ink-light">
                         <MessageSquare className="h-3 w-3" /> {post.contactCount}

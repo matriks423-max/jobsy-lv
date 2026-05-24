@@ -84,8 +84,9 @@ export async function listPosts(filters?: {
   const baseOrder = (() => {
     switch (filters?.sort) {
       case "oldest": return asc(schema.posts.createdAt);
-      case "budget_asc": return asc(schema.posts.budgetText);
-      case "budget_desc": return desc(schema.posts.budgetText);
+      // Extract first numeric sequence from budgetText for proper numeric sort
+      case "budget_asc": return asc(sql`CAST(REGEXP_SUBSTR(${schema.posts.budgetText}, '[0-9]+') AS UNSIGNED)`);
+      case "budget_desc": return desc(sql`CAST(REGEXP_SUBSTR(${schema.posts.budgetText}, '[0-9]+') AS UNSIGNED)`);
       default: return desc(schema.posts.createdAt);
     }
   })();

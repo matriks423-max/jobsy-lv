@@ -41,7 +41,7 @@ export default function CreatePost() {
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
   const postId = Number(id);
-  const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: true });
+  const { isAuthenticated, user } = useAuth({ redirectOnUnauthenticated: true });
   const { toast } = useToast();
 
   const [type, setType] = useState<"need" | "offer">("need");
@@ -60,6 +60,10 @@ export default function CreatePost() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const { data: referralInfo } = trpc.referral.me.useQuery(undefined, {
+    enabled: isAuthenticated ?? false,
+  });
+
+  const { data: subStatus } = trpc.subscription.status.useQuery(undefined, {
     enabled: isAuthenticated ?? false,
   });
 
@@ -217,9 +221,22 @@ export default function CreatePost() {
               {isEditing ? t(locale, "createPost.editTitle") : t(locale, "createPost.title")}
             </h1>
             {!isEditing && (
-              <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-sage bg-sage-light px-3 py-1.5 font-body text-xs font-medium text-sage">
-                {t(locale, "createPost.freeBadge")}
-              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-sage bg-sage-light px-3 py-1.5 font-body text-xs font-medium text-sage">
+                  {t(locale, "createPost.freeBadge")}
+                </span>
+                {subStatus && user?.plan !== "business" && (
+                  <span className={`inline-flex items-center gap-1 rounded-full border-2 px-3 py-1.5 font-body text-xs font-medium ${
+                    subStatus.monthlyPostCount >= 10
+                      ? "border-need bg-need-light text-need"
+                      : subStatus.monthlyPostCount >= 8
+                      ? "border-amber-400 bg-amber-50 text-amber-700"
+                      : "border-ink-light bg-cream text-ink-muted"
+                  }`}>
+                    {subStatus.monthlyPostCount}/10 {t(locale, "createPost.postsThisMonth")}
+                  </span>
+                )}
+              </div>
             )}
           </div>
           {isEditing && (
