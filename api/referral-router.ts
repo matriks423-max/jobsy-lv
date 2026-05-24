@@ -1,8 +1,10 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
 import { createRouter, authedQuery } from "./middleware";
-import { getProfileByUserId, getProfileByReferralCode, setReferredBy } from "./queries/profiles";
-import { createReferral } from "./queries/referrals";
+import { getProfileByUserId, getProfileByReferralCode } from "./queries/profiles";
+import { getDb } from "./queries/connection";
+import * as schema from "@db/schema";
 
 export const referralRouter = createRouter({
   me: authedQuery.query(async ({ ctx }: { ctx: { user: { id: number } } }) => {
@@ -41,10 +43,16 @@ export const referralRouter = createRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Referral code not found" });
       }
 
-      await setReferredBy(ctx.user.id, referrer.userId);
-      await createReferral({
-        referrerId: referrer.userId,
-        referredId: ctx.user.id,
+      // Atomic: both writes succeed together or neither does
+      await getDb().transaction(async (tx) => {
+        await tx
+          .update(schema.profiles)
+          .set({ referredBy: referrer.userId, updatedAt: new Date() })
+          .where(eq(schema.profiles.userId, ctx.user.id));
+        await tx.insert(schema.referrals).values({
+          referrerId: referrer.userId,
+          referredId: ctx.user.id,
+        });
       });
 
       return { success: true, referrerName: referrer.name };
