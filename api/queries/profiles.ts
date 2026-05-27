@@ -119,6 +119,57 @@ export async function spendCredits(
   return succeeded;
 }
 
+// ── Contact view limits ───────────────────────────────────────────────────────
+
+const CONTACT_LIMITS: Record<"free" | "pro" | "business", number | null> = {
+  free: 3,
+  pro: 30,
+  business: null, // unlimited
+};
+const RESET_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+/**
+ * Lazy-reset monthly counter if needed, then atomically increment.
+ * Returns { allowed, limit, used } — only call for NEW contacts (skip if already contacted).
+ */
+export async function checkAndIncrementContactViews(
+  userId: number,
+  plan: "free" | "pro" | "business"
+): Promise<{ allowed: boolean; limit: number | null; used: number }> {
+  const limit = CONTACT_LIMITS[plan];
+  if (limit === null) return { allowed: true, limit: null, used: 0 };
+
+  const profile = await getProfileByUserId(userId);
+  if (!profile) return { allowed: false, limit, used: 0 };
+
+  const now = new Date();
+  const needsReset =
+    !profile.contactViewsResetAt ||
+    now.getTime() - new Date(profile.contactViewsResetAt).getTime() > RESET_MS;
+
+  if (needsReset) {
+    // Reset counter and use first slot atomically
+    await getDb()
+      .update(schema.profiles)
+      .set({ contactViewsThisMonth: 1, contactViewsResetAt: now, updatedAt: now })
+      .where(eq(schema.profiles.userId, userId));
+    return { allowed: true, limit, used: 1 };
+  }
+
+  if (profile.contactViewsThisMonth >= limit) {
+    return { allowed: false, limit, used: profile.contactViewsThisMonth };
+  }
+
+  // Atomic increment with guard — prevents race beyond limit
+  const result = await getDb()
+    .update(schema.profiles)
+    .set({ contactViewsThisMonth: sql`contactViewsThisMonth + 1`, updatedAt: now })
+    .where(and(eq(schema.profiles.userId, userId), sql`contactViewsThisMonth < ${limit}`));
+  const ok = (result as unknown as [{ affectedRows: number }])[0].affectedRows > 0;
+
+  return { allowed: ok, limit, used: ok ? profile.contactViewsThisMonth + 1 : profile.contactViewsThisMonth };
+}
+
 /** Last N credit transactions for a user (for settings history). */
 export async function getCreditTransactions(userId: number, limit = 20) {
   return getDb()

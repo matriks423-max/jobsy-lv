@@ -22,6 +22,7 @@ import {
   getProfileByUserId,
   updateProfile,
   useFreePostCredit,
+  checkAndIncrementContactViews,
 } from "./queries/profiles";
 import { createContact, hasContacted, createReport } from "./queries/reports";
 import { hasInterested, createInterest } from "./queries/interests";
@@ -440,6 +441,16 @@ export const postsRouter = createRouter({
 
       const alreadyContacted = await hasContacted(input.postId, ctx.user.id);
       if (!alreadyContacted) {
+        // Check monthly contact view limit (free: 3, pro: 30, business: ∞)
+        const plan = (ctx.user.plan ?? "free") as "free" | "pro" | "business";
+        const limitCheck = await checkAndIncrementContactViews(ctx.user.id, plan);
+        if (!limitCheck.allowed) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: `Contact limit reached: ${limitCheck.used}/${limitCheck.limit} this month — upgrade to see more`,
+          });
+        }
+
         await createContact({
           postId: input.postId,
           fromUserId: ctx.user.id,

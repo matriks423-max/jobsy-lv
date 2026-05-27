@@ -1,13 +1,21 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createRouter, authedQuery, adminQuery } from "./middleware";
-import { createSubscriptionCheckout, createBillingPortal } from "./stripe";
+import { createSubscriptionCheckout, createProCheckout, createBillingPortal } from "./stripe";
 import { getProfileByUserId, grantCredits, getCreditTransactions } from "./queries/profiles";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
 import { eq, and, count, inArray } from "drizzle-orm";
 
 export const subscriptionRouter = createRouter({
+  createProCheckout: authedQuery.mutation(async ({ ctx }) => {
+    if (ctx.user.plan === "pro" || ctx.user.plan === "business") {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "Already on a paid plan" });
+    }
+    const { url } = await createProCheckout(ctx.user.id);
+    return { url };
+  }),
+
   createCheckout: authedQuery.mutation(async ({ ctx }) => {
     if (ctx.user.plan === "business") {
       throw new TRPCError({ code: "BAD_REQUEST", message: "Already on Business plan" });
@@ -17,8 +25,8 @@ export const subscriptionRouter = createRouter({
   }),
 
   createPortal: authedQuery.mutation(async ({ ctx }) => {
-    if (ctx.user.plan !== "business") {
-      throw new TRPCError({ code: "FORBIDDEN", message: "Business plan required" });
+    if (ctx.user.plan === "free") {
+      throw new TRPCError({ code: "FORBIDDEN", message: "Paid plan required" });
     }
     const { url } = await createBillingPortal(ctx.user.id);
     return { url };
@@ -33,12 +41,20 @@ export const subscriptionRouter = createRouter({
         eq(schema.posts.userId, ctx.user.id),
         inArray(schema.posts.status, ["active", "pending_review"]),
       ));
+    const plan = ctx.user.plan as "free" | "pro" | "business";
+    const CONTACT_LIMITS: Record<"free" | "pro" | "business", number | null> = {
+      free: 3,
+      pro: 30,
+      business: null,
+    };
     return {
-      plan: ctx.user.plan as "free" | "business",
+      plan,
       planExpiresAt: ctx.user.planExpiresAt ?? null,
       freeBoostsRemaining: profile?.freeBoostsRemaining ?? 0,
       activePostCount,
       creditBalance: profile?.creditBalance ?? 0,
+      contactViewsThisMonth: profile?.contactViewsThisMonth ?? 0,
+      contactViewLimit: CONTACT_LIMITS[plan],
     };
   }),
 

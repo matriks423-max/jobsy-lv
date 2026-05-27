@@ -23,7 +23,7 @@ export const users = mysqlTable("users", {
   resetTokenExpiry: timestamp("resetTokenExpiry"),
   authMethod: mysqlEnum("authMethod", ["kimi", "google", "email"]).default("email").notNull(),
   role: mysqlEnum("role", ["user", "admin", "banned"]).default("user").notNull(),
-  plan: mysqlEnum("plan", ["free", "business"]).default("free").notNull(),
+  plan: mysqlEnum("plan", ["free", "pro", "business"]).default("free").notNull(),
   stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 255 }),
   planExpiresAt: timestamp("planExpiresAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -58,6 +58,8 @@ export const profiles = mysqlTable("profiles", {
   monthlyPostReset: varchar("monthlyPostReset", { length: 10 }),
   freeBoostsRemaining: int("freeBoostsRemaining", { unsigned: true }).default(0).notNull(),
   creditBalance: int("creditBalance").default(0).notNull(),
+  contactViewsThisMonth: int("contactViewsThisMonth", { unsigned: true }).default(0).notNull(),
+  contactViewsResetAt: timestamp("contactViewsResetAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt")
     .defaultNow()

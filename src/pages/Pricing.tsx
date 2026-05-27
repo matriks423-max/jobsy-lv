@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link, useSearchParams } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { trpc } from "@/providers/trpc";
@@ -11,10 +11,16 @@ export default function Pricing() {
   const { locale } = useLocale();
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { data: status } = trpc.subscription.status.useQuery(undefined, {
     enabled: isAuthenticated ?? false,
+  });
+
+  const proMutation = trpc.subscription.createProCheckout.useMutation({
+    onSuccess: ({ url }) => { if (url) window.location.href = url; },
+    onError: (err) => toast(err.message, "error"),
   });
 
   const upgradeMutation = trpc.subscription.createCheckout.useMutation({
@@ -27,7 +33,10 @@ export default function Pricing() {
     onError: (err) => toast(err.message, "error"),
   });
 
-  const isBusiness = status?.plan === "business";
+  const plan = status?.plan ?? "free";
+  const isPro = plan === "pro";
+  const isBusiness = plan === "business";
+  const isPaid = isPro || isBusiness;
 
   useEffect(() => {
     document.title = t(locale, "pricing.title") + " — jobsy.lv";
@@ -42,13 +51,26 @@ export default function Pricing() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const FREE_FEATURES = [
+    t(locale, "pricing.freePostsPerMonth"),
+    t(locale, "pricing.freeContactViews"),
+    t(locale, "pricing.boostPrices"),
+  ];
+
+  const PRO_FEATURES = [
+    t(locale, "pricing.proPostsPerMonth"),
+    t(locale, "pricing.proContactViews"),
+    t(locale, "pricing.boostPrices"),
+    t(locale, "pricing.cancelAnytime"),
+  ];
+
   const BUSINESS_FEATURES = [
     t(locale, "pricing.unlimitedPosts"),
+    t(locale, "pricing.unlimitedContacts"),
     t(locale, "pricing.companyProfile"),
     t(locale, "pricing.badge"),
     t(locale, "pricing.analytics"),
     t(locale, "pricing.freeBoosts"),
-    t(locale, "pricing.contactFree"),
     t(locale, "pricing.boostPrices"),
     t(locale, "pricing.cancelAnytime"),
   ];
@@ -58,6 +80,12 @@ export default function Pricing() {
     { icon: "⭐", name: t(locale, "boost.featured"), price: "€2.00", desc: t(locale, "boost.featuredDesc") },
     { icon: "🔴", name: t(locale, "boost.urgent"), price: "€0.50", desc: t(locale, "boost.urgentDesc") },
   ];
+
+  const handleGo = (target: "pro" | "business") => {
+    if (!isAuthenticated) { navigate("/login"); return; }
+    if (target === "pro") proMutation.mutate();
+    else upgradeMutation.mutate();
+  };
 
   return (
     <div className="min-h-screen px-4 py-10 noise-bg">
@@ -73,39 +101,31 @@ export default function Pricing() {
           </p>
         </div>
 
-        {/* Tier cards */}
-        <div className="mb-10 grid gap-6 md:grid-cols-2">
+        {/* Tier cards — 3 columns */}
+        <div className="mb-10 grid gap-6 md:grid-cols-3">
+
           {/* Free */}
-          <div className="rounded-2xl border-2 border-ink bg-white p-8">
-            <div className="mb-6">
-              <p className="font-body text-sm font-medium uppercase tracking-widest text-ink-muted">
+          <div className="rounded-2xl border-2 border-ink bg-white p-6">
+            <div className="mb-5">
+              <p className="font-body text-xs font-medium uppercase tracking-widest text-ink-muted">
                 {t(locale, "pricing.free")}
               </p>
-              <p className="mt-1 font-display text-5xl font-bold text-ink">€0</p>
-              <p className="mt-1 font-body text-sm text-ink-muted">
+              <p className="mt-1 font-display text-4xl font-bold text-ink">€0</p>
+              <p className="mt-1 font-body text-xs text-ink-muted">
                 {t(locale, "pricing.freeForever")}
               </p>
             </div>
-            <ul className="mb-8 space-y-3">
-              <li className="flex items-start gap-2 font-body text-sm text-ink">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-sage" />
-                <span>
-                  <span className="font-semibold">{t(locale, "pricing.freePostsPerMonth")}</span>
-                  <span className="ml-1 font-body text-xs text-ink-muted">— {t(locale, "pricing.freePostNote")}</span>
-                </span>
-              </li>
-              <li className="flex items-center gap-2 font-body text-sm text-ink">
-                <Check className="h-4 w-4 shrink-0 text-sage" />
-                {t(locale, "pricing.contactFree")}
-              </li>
-              <li className="flex items-center gap-2 font-body text-sm text-ink">
-                <Check className="h-4 w-4 shrink-0 text-sage" />
-                {t(locale, "pricing.boostPrices")}
-              </li>
+            <ul className="mb-6 space-y-2.5">
+              {FREE_FEATURES.map((f) => (
+                <li key={f} className="flex items-start gap-2 font-body text-sm text-ink">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-sage" />
+                  <span>{f}</span>
+                </li>
+              ))}
             </ul>
-            {isBusiness ? (
-              <div className="rounded-xl border-2 border-ink-light bg-cream-dark px-4 py-3 text-center font-body text-sm text-ink-muted">
-                {t(locale, "pricing.currentPlanIsBusiness")}
+            {isPaid ? (
+              <div className="rounded-xl border-2 border-ink-light bg-cream-dark px-4 py-3 text-center font-body text-xs text-ink-muted">
+                {isBusiness ? t(locale, "pricing.currentPlanIsBusiness") : t(locale, "pricing.currentPlanIsPro")}
               </div>
             ) : (
               <Link
@@ -117,28 +137,76 @@ export default function Pricing() {
             )}
           </div>
 
-          {/* Business */}
-          <div className="relative rounded-2xl border-2 border-ink bg-ink p-8 text-cream shadow-card">
-            <div className="absolute -top-3 left-6 rounded-full border-2 border-ink bg-coral px-3 py-0.5 font-mono text-xs font-bold text-ink uppercase">
-              {t(locale, "pricing.mostPopular")}
+          {/* Pro */}
+          <div className="relative rounded-2xl border-2 border-ink bg-white p-6">
+            <div className="absolute -top-3 left-6 rounded-full border-2 border-ink bg-mustard-light px-3 py-0.5 font-mono text-xs font-bold text-ink uppercase">
+              {t(locale, "pricing.pro")}
             </div>
-            <div className="mb-6">
-              <p className="font-body text-sm font-medium uppercase tracking-widest text-cream/60">
-                {t(locale, "pricing.business")}
+            <div className="mb-5">
+              <p className="font-body text-xs font-medium uppercase tracking-widest text-ink-muted">
+                {t(locale, "pricing.pro")}
               </p>
               <div className="mt-1 flex items-end gap-1">
-                <p className="font-display text-5xl font-bold text-cream">€9.99</p>
-                <p className="mb-1.5 font-body text-sm text-cream/60">{t(locale, "pricing.perMonth")}</p>
+                <p className="font-display text-4xl font-bold text-ink">€4.99</p>
+                <p className="mb-1 font-body text-xs text-ink-muted">{t(locale, "pricing.perMonth")}</p>
               </div>
-              <p className="mt-1 font-body text-sm text-cream/60">
+              <p className="mt-1 font-body text-xs text-ink-muted">
                 {t(locale, "pricing.cancelAnytime")}
               </p>
             </div>
-            <ul className="mb-8 space-y-3">
+            <ul className="mb-6 space-y-2.5">
+              {PRO_FEATURES.map((f) => (
+                <li key={f} className="flex items-start gap-2 font-body text-sm text-ink">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-sage" />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+            {isPro ? (
+              <button
+                onClick={() => portalMutation.mutate()}
+                disabled={portalMutation.isPending}
+                className="w-full rounded-xl border-2 border-ink bg-cream-dark px-6 py-3 font-body text-sm font-semibold text-ink hover:bg-cream transition disabled:opacity-60"
+              >
+                {t(locale, "pricing.manageBilling")}
+              </button>
+            ) : isBusiness ? (
+              <div className="rounded-xl border-2 border-ink-light bg-cream-dark px-4 py-3 text-center font-body text-xs text-ink-muted">
+                {t(locale, "pricing.currentPlanIsBusiness")}
+              </div>
+            ) : (
+              <button
+                onClick={() => handleGo("pro")}
+                disabled={proMutation.isPending}
+                className="w-full rounded-xl border-2 border-ink bg-ink px-6 py-3 font-body text-sm font-semibold text-cream hover:opacity-90 transition disabled:opacity-60"
+              >
+                {proMutation.isPending ? t(locale, "pricing.loading") : t(locale, "pricing.upgradePro")}
+              </button>
+            )}
+          </div>
+
+          {/* Business */}
+          <div className="relative rounded-2xl border-2 border-ink bg-ink p-6 text-cream shadow-card">
+            <div className="absolute -top-3 left-6 rounded-full border-2 border-ink bg-coral px-3 py-0.5 font-mono text-xs font-bold text-ink uppercase">
+              {t(locale, "pricing.mostPopular")}
+            </div>
+            <div className="mb-5">
+              <p className="font-body text-xs font-medium uppercase tracking-widest text-cream/60">
+                {t(locale, "pricing.business")}
+              </p>
+              <div className="mt-1 flex items-end gap-1">
+                <p className="font-display text-4xl font-bold text-cream">€9.99</p>
+                <p className="mb-1 font-body text-xs text-cream/60">{t(locale, "pricing.perMonth")}</p>
+              </div>
+              <p className="mt-1 font-body text-xs text-cream/60">
+                {t(locale, "pricing.cancelAnytime")}
+              </p>
+            </div>
+            <ul className="mb-6 space-y-2.5">
               {BUSINESS_FEATURES.map((f) => (
-                <li key={f} className="flex items-center gap-2 font-body text-sm text-cream">
-                  <Check className="h-4 w-4 shrink-0 text-coral" />
-                  {f}
+                <li key={f} className="flex items-start gap-2 font-body text-sm text-cream">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-coral" />
+                  <span>{f}</span>
                 </li>
               ))}
             </ul>
@@ -152,16 +220,11 @@ export default function Pricing() {
               </button>
             ) : (
               <button
-                onClick={() => {
-                  if (!isAuthenticated) { window.location.href = "/login"; return; }
-                  upgradeMutation.mutate();
-                }}
+                onClick={() => handleGo("business")}
                 disabled={upgradeMutation.isPending}
                 className="w-full rounded-xl border-2 border-cream bg-coral px-6 py-3 font-body text-sm font-semibold text-ink hover:opacity-90 transition disabled:opacity-60"
               >
-                {upgradeMutation.isPending
-                  ? t(locale, "pricing.loading")
-                  : t(locale, "pricing.upgrade")}
+                {upgradeMutation.isPending ? t(locale, "pricing.loading") : t(locale, "pricing.upgrade")}
               </button>
             )}
           </div>

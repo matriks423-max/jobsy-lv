@@ -31,6 +31,7 @@ export const env = {
   // Stripe
   stripeSecretKey: optional("STRIPE_SECRET_KEY"),
   stripeWebhookSecret: optional("STRIPE_WEBHOOK_SECRET"),
+  stripeProPriceId: optional("STRIPE_PRO_PRICE_ID"),
   stripeBusinessPriceId: optional("STRIPE_BUSINESS_PRICE_ID"),
 
   siteUrl: optional("SITE_URL") ?? "http://localhost:3000",

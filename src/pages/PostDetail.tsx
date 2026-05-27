@@ -535,15 +535,51 @@ export default function PostDetail() {
                     </a>
                   )}
                 </div>
-              ) : (
-                <Button
-                  onClick={handleContact}
-                  disabled={contactMutation.isPending}
-                  className="h-14 w-full rounded-xl border-2 border-ink bg-coral font-body text-base font-medium text-ink hover:bg-coral-hover"
-                >
-                  {contactMutation.isPending ? "..." : t(locale, "postDetail.contact.contactBtn")}
-                </Button>
-              )}
+              ) : (() => {
+                // Contact view limit check
+                const limit = subStatus?.contactViewLimit ?? 3;
+                const used = subStatus?.contactViewsThisMonth ?? 0;
+                const remaining = limit === null ? Infinity : Math.max(0, (limit as number) - used);
+                const limitReached = remaining === 0;
+                const isContactError = contactMutation.error?.message?.includes("Contact limit reached");
+
+                if (limitReached || isContactError) {
+                  return (
+                    <div className="rounded-xl border-2 border-ink bg-cream-dark p-4 text-center">
+                      <Lock className="mx-auto mb-2 h-7 w-7 text-ink-light" />
+                      <p className="mb-1 font-body text-sm font-semibold text-ink">
+                        {t(locale, "pricing.contactLimitReached")}
+                      </p>
+                      <p className="mb-4 font-body text-xs text-ink-muted">
+                        {t(locale, "pricing.contactLimitDesc")}
+                      </p>
+                      <Link
+                        to="/pricing"
+                        className="inline-block rounded-xl border-2 border-ink bg-coral px-5 py-2.5 font-body text-sm font-semibold text-ink hover:opacity-90 transition"
+                      >
+                        {t(locale, "pricing.upgradeForContacts")}
+                      </Link>
+                    </div>
+                  );
+                }
+
+                return (
+                  <>
+                    {subStatus && limit !== null && remaining <= (limit as number) && (
+                      <p className="mb-2 text-center font-body text-xs text-ink-muted">
+                        {remaining} {t(locale, "pricing.contactViewsLeft")}
+                      </p>
+                    )}
+                    <Button
+                      onClick={handleContact}
+                      disabled={contactMutation.isPending}
+                      className="h-14 w-full rounded-xl border-2 border-ink bg-coral font-body text-base font-medium text-ink hover:bg-coral-hover"
+                    >
+                      {contactMutation.isPending ? "..." : t(locale, "postDetail.contact.contactBtn")}
+                    </Button>
+                  </>
+                );
+              })()}
             </div>
           ) : (
             <div className="text-center">

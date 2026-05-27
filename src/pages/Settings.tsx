@@ -109,7 +109,7 @@ export default function Settings() {
 
   // Handle Stripe redirect params
   useEffect(() => {
-    if (searchParams.get("subscribed") === "true") {
+    if (searchParams.get("subscribed") === "true" || searchParams.get("subscribed") === "pro") {
       toast(t(locale, "settings.toastSubscribed"), "success");
       setSearchParams({}, { replace: true });
     } else if (searchParams.get("canceled") === "true") {
@@ -321,10 +321,12 @@ export default function Settings() {
           </div>
 
           {/* Plan status */}
-          <div className={`mb-4 rounded-xl border-2 px-4 py-3 ${subStatus?.plan === "business" ? "border-sage bg-sage/10" : "border-ink-light bg-cream-dark"}`}>
+          <div className={`mb-4 rounded-xl border-2 px-4 py-3 ${subStatus?.plan === "business" ? "border-sage bg-sage/10" : subStatus?.plan === "pro" ? "border-ink bg-ink/5" : "border-ink-light bg-cream-dark"}`}>
             <p className="font-body text-sm font-bold text-ink">
               {subStatus?.plan === "business"
                 ? t(locale, "settings.currentPlanBusiness")
+                : subStatus?.plan === "pro"
+                ? "Pro"
                 : t(locale, "settings.currentPlanFree")}
             </p>
             {subStatus?.plan === "free" && (
@@ -388,7 +390,7 @@ export default function Settings() {
           )}
 
           {/* Upgrade / Manage */}
-          {subStatus?.plan === "business" ? (
+          {subStatus?.plan === "business" || subStatus?.plan === "pro" ? (
             <button
               onClick={() => portalMutation.mutate()}
               disabled={portalMutation.isPending}

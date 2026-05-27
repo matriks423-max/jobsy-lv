@@ -45,6 +45,20 @@ export async function applyBoostToPost(
   });
 }
 
+export async function activateProPlan(userId: number, subscriptionId: string) {
+  await getDb()
+    .update(schema.users)
+    .set({ plan: "pro", stripeSubscriptionId: subscriptionId, planExpiresAt: null })
+    .where(eq(schema.users.id, userId));
+}
+
+export async function deactivateProPlan(userId: number) {
+  await getDb()
+    .update(schema.users)
+    .set({ plan: "free", stripeSubscriptionId: null })
+    .where(eq(schema.users.id, userId));
+}
+
 export async function activateBusinessPlan(userId: number, subscriptionId: string) {
   await getDb()
     .update(schema.users)
@@ -89,6 +103,24 @@ export async function createCheckoutSession(postId: number, userId: number) {
   return { url: session.url, sessionId: session.id };
 }
 
+/** Pro subscription checkout (€4.99/month) */
+export async function createProCheckout(userId: number) {
+  if (!stripe || !env.stripeProPriceId) throw new Error("Stripe Pro plan not configured");
+  const customerId = await ensureStripeCustomer(userId);
+  if (!customerId) throw new Error("Could not resolve Stripe customer");
+  const session = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    currency: "eur",
+    line_items: [{ price: env.stripeProPriceId, quantity: 1 }],
+    subscription_data: { metadata: { userId: String(userId), plan: "pro" } },
+    metadata: { userId: String(userId), type: "subscription", plan: "pro" },
+    success_url: `${env.siteUrl}/settings?subscribed=pro`,
+    cancel_url: `${env.siteUrl}/pricing?canceled=true`,
+    customer: customerId,
+  });
+  return { url: session.url };
+}
+
 /** Business subscription checkout */
 export async function createSubscriptionCheckout(userId: number) {
   if (!stripe || !env.stripeBusinessPriceId) throw new Error("Stripe subscription not configured");
@@ -98,8 +130,8 @@ export async function createSubscriptionCheckout(userId: number) {
     mode: "subscription",
     currency: "eur",
     line_items: [{ price: env.stripeBusinessPriceId, quantity: 1 }],
-    subscription_data: { metadata: { userId: String(userId) } },
-    metadata: { userId: String(userId), type: "subscription" },
+    subscription_data: { metadata: { userId: String(userId), plan: "business" } },
+    metadata: { userId: String(userId), type: "subscription", plan: "business" },
     success_url: `${env.siteUrl}/settings?subscribed=true`,
     cancel_url: `${env.siteUrl}/pricing?canceled=true`,
     customer: customerId,
@@ -195,15 +227,20 @@ export async function handleStripeWebhook(body: string, signature: string) {
   if (event.type === "customer.subscription.created" || event.type === "customer.subscription.updated") {
     const sub = event.data.object as Stripe.Subscription;
     const userId = sub.metadata?.userId;
+    const planType = sub.metadata?.plan ?? "business"; // backward compat: old subs have no plan key → business
     if (userId && sub.status === "active") {
-      await activateBusinessPlan(Number(userId), sub.id);
-      // Send welcome email only on first activation
-      if (event.type === "customer.subscription.created") {
-        try {
-          const customer = await stripe.customers.retrieve(sub.customer as string) as Stripe.Customer;
-          if (customer.email) void sendBusinessWelcome(customer.email);
-        } catch (err) {
-          console.error("[stripe] welcome email customer lookup failed:", err);
+      if (planType === "pro") {
+        await activateProPlan(Number(userId), sub.id);
+      } else {
+        await activateBusinessPlan(Number(userId), sub.id);
+        // Send welcome email only on first activation
+        if (event.type === "customer.subscription.created") {
+          try {
+            const customer = await stripe.customers.retrieve(sub.customer as string) as Stripe.Customer;
+            if (customer.email) void sendBusinessWelcome(customer.email);
+          } catch (err) {
+            console.error("[stripe] welcome email customer lookup failed:", err);
+          }
         }
       }
     }
@@ -212,17 +249,24 @@ export async function handleStripeWebhook(body: string, signature: string) {
   if (event.type === "customer.subscription.deleted") {
     const sub = event.data.object as Stripe.Subscription;
     const userId = sub.metadata?.userId;
-    if (userId) await deactivateBusinessPlan(Number(userId));
+    const planType = sub.metadata?.plan ?? "business";
+    if (userId) {
+      if (planType === "pro") await deactivateProPlan(Number(userId));
+      else await deactivateBusinessPlan(Number(userId));
+    }
   }
 
   if (event.type === "invoice.payment_succeeded") {
     const invoice = event.data.object as Stripe.Invoice;
     const sub = (invoice as Stripe.Invoice & { subscription?: string | Stripe.Subscription | null }).subscription;
     if (sub && typeof sub === "string") {
-      // Renewal: reset free boosts for this subscriber
+      // Renewal: reset free boosts for Business subscribers only
       const subObj = await stripe.subscriptions.retrieve(sub);
       const userId = subObj.metadata?.userId;
-      if (userId) await updateProfile(Number(userId), { freeBoostsRemaining: 2 });
+      const planType = subObj.metadata?.plan ?? "business";
+      if (userId && planType === "business") {
+        await updateProfile(Number(userId), { freeBoostsRemaining: 2 });
+      }
     }
   }
 
