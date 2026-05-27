@@ -733,6 +733,7 @@ export default function PostDetail() {
           postId={postId}
           isBusiness={subStatus?.plan === "business"}
           freeBoostsRemaining={subStatus?.freeBoostsRemaining ?? 0}
+          creditBalance={subStatus?.creditBalance ?? 0}
           onClose={() => setShowBoost(false)}
         />
       )}

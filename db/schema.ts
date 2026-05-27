@@ -57,6 +57,7 @@ export const profiles = mysqlTable("profiles", {
   monthlyPostCount: int("monthlyPostCount", { unsigned: true }).default(0).notNull(),
   monthlyPostReset: varchar("monthlyPostReset", { length: 10 }),
   freeBoostsRemaining: int("freeBoostsRemaining", { unsigned: true }).default(0).notNull(),
+  creditBalance: int("creditBalance").default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt")
     .defaultNow()
@@ -202,6 +203,19 @@ export const socialQueue = mysqlTable("socialQueue", {
   index("idx_social_queue_status").on(table.status),
 ]);
 
+// Credit wallet — tracks every grant and spend for audit
+export const creditTransactions = mysqlTable("creditTransactions", {
+  id: bigint("id", { mode: "number", unsigned: true }).autoincrement().primaryKey(),
+  userId: bigint("userId", { mode: "number", unsigned: true }).notNull(),
+  // Positive = grant/refund, negative = spend. Stored in euro cents.
+  amount: int("amount").notNull(),
+  type: mysqlEnum("type", ["grant", "spend", "refund"]).notNull(),
+  description: varchar("description", { length: 255 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => [
+  index("idx_credit_tx_user").on(table.userId),
+]);
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Profile = typeof profiles.$inferSelect;
@@ -224,3 +238,5 @@ export type SavedSearch = typeof savedSearches.$inferSelect;
 export type InsertSavedSearch = typeof savedSearches.$inferInsert;
 export type SocialQueue = typeof socialQueue.$inferSelect;
 export type InsertSocialQueue = typeof socialQueue.$inferInsert;
+export type CreditTransaction = typeof creditTransactions.$inferSelect;
+export type InsertCreditTransaction = typeof creditTransactions.$inferInsert;

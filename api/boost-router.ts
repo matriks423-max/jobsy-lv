@@ -3,10 +3,12 @@ import { TRPCError } from "@trpc/server";
 import { createRouter, authedQuery } from "./middleware";
 import { createBoostCheckout, applyBoostToPost } from "./stripe";
 import { getPostById } from "./queries/posts";
-import { getProfileByUserId, updateProfile } from "./queries/profiles";
+import { getProfileByUserId, updateProfile, spendCredits } from "./queries/profiles";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
 import { eq, and, gt } from "drizzle-orm";
+
+const BOOST_CENTS = { bump: 100, featured: 200, urgent: 50 } as const;
 
 export const boostRouter = createRouter({
   applyBoost: authedQuery
@@ -61,6 +63,33 @@ export const boostRouter = createRouter({
       // Paid boost — redirect to Stripe checkout
       const { url } = await createBoostCheckout(input.postId, ctx.user.id, input.boostType);
       return { free: false, checkoutUrl: url };
+    }),
+
+  /** Pay for a boost using wallet credits. No Stripe. */
+  applyBoostWithCredits: authedQuery
+    .input(z.object({
+      postId: z.number(),
+      boostType: z.enum(["bump", "featured", "urgent"]),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const post = await getPostById(input.postId);
+      if (!post || post.userId !== ctx.user.id) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Post not found or not yours" });
+      }
+      if (post.status !== "active") {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Only active posts can be boosted" });
+      }
+
+      const cost = BOOST_CENTS[input.boostType];
+      const description = `Boost: ${input.boostType} — post #${input.postId}`;
+
+      const deducted = await spendCredits(ctx.user.id, cost, description);
+      if (!deducted) {
+        throw new TRPCError({ code: "PAYMENT_REQUIRED", message: "Insufficient credit balance" });
+      }
+
+      await applyBoostToPost(input.postId, input.boostType, "credits");
+      return { ok: true };
     }),
 
   myBoosts: authedQuery.query(async ({ ctx }) => {

@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   CheckCircle, XCircle, Trash2, ShieldOff, AlertTriangle,
   FileText, Flag, Loader2, LayoutDashboard, Users, List,
-  Eye, ShieldCheck, Ban, UserCheck, Search, Phone, Share2, Download,
+  Eye, ShieldCheck, Ban, UserCheck, Search, Phone, Share2, Download, Wallet,
 } from "lucide-react";
 
 function downloadCsv(filename: string, rows: string[][]): void {
@@ -25,7 +25,7 @@ function downloadCsv(filename: string, rows: string[][]): void {
   URL.revokeObjectURL(url);
 }
 
-type AdminTab = "overview" | "users" | "posts" | "pending" | "reports" | "queue";
+type AdminTab = "overview" | "users" | "posts" | "pending" | "reports" | "queue" | "credits";
 
 const STATUS_OPTIONS = ["", "active", "pending_review", "pending_payment", "expired", "rejected", "closed"] as const;
 const STATUS_LABELS: Record<string, string> = {
@@ -67,6 +67,9 @@ export default function Admin() {
   const { data: users, isLoading: usersLoading } = trpc.posts.listUsers.useQuery({ search: userSearch || undefined, limit: 50 }, { enabled: isAdmin });
   const { data: allPosts, isLoading: postsLoading } = trpc.posts.listAllPosts.useQuery({ status: postStatus || undefined, limit: 50 }, { enabled: isAdmin });
   const [queueStatus, setQueueStatus] = useState<"pending" | "posted" | "failed" | "">("");
+  const [grantEmail, setGrantEmail] = useState("");
+  const [grantEuros, setGrantEuros] = useState("");
+  const [grantNote, setGrantNote] = useState("");
   const { data: socialQueueData, isLoading: queueLoading } = trpc.posts.socialQueue.useQuery({ status: queueStatus || undefined, limit: 100 }, { enabled: isAdmin });
 
   const approveMutation = trpc.posts.approvePost.useMutation({
@@ -92,6 +95,13 @@ export default function Admin() {
     onSuccess: () => { toast("Post deleted", "success"); utils.posts.listAllPosts.invalidate(); utils.posts.adminStats.invalidate(); },
     onError: (e) => toast(e.message, "error"),
   });
+  const grantCreditsMutation = trpc.subscription.adminGrantCredits.useMutation({
+    onSuccess: (data) => {
+      toast(`Granted €${(data.cents / 100).toFixed(2)} to user #${data.userId}`, "success");
+      setGrantEmail(""); setGrantEuros(""); setGrantNote("");
+    },
+    onError: (e) => toast(e.message, "error"),
+  });
 
   if (authLoading) return (
     <div className="flex min-h-screen items-center justify-center">
@@ -108,6 +118,7 @@ export default function Admin() {
     { key: "pending", label: "Review", icon: <FileText className="h-4 w-4" />, badge: stats?.pendingCount },
     { key: "reports", label: "Reports", icon: <Flag className="h-4 w-4" />, badge: stats?.reportsCount },
     { key: "queue", label: "Social Queue", icon: <Share2 className="h-4 w-4" /> },
+    { key: "credits", label: "Credits", icon: <Wallet className="h-4 w-4" /> },
   ];
 
   return (
@@ -442,6 +453,68 @@ export default function Admin() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* ── CREDITS ── */}
+        {tab === "credits" && (
+          <div className="space-y-6">
+            <div className="rounded-2xl border-2 border-ink bg-white p-6">
+              <div className="mb-4 flex items-center gap-2">
+                <Wallet className="h-5 w-5 text-coral" />
+                <h2 className="font-display text-xl font-bold text-ink">Grant Credits</h2>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="mb-1 block font-body text-xs font-medium text-ink">User Email</label>
+                  <input
+                    type="email"
+                    value={grantEmail}
+                    onChange={(e) => setGrantEmail(e.target.value)}
+                    placeholder="user@example.com"
+                    className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-ink outline-none focus:border-ink"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block font-body text-xs font-medium text-ink">Amount (€)</label>
+                  <input
+                    type="number"
+                    min="0.01"
+                    max="500"
+                    step="0.01"
+                    value={grantEuros}
+                    onChange={(e) => setGrantEuros(e.target.value)}
+                    placeholder="5.00"
+                    className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-ink outline-none focus:border-ink"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block font-body text-xs font-medium text-ink">Note (optional)</label>
+                  <input
+                    type="text"
+                    value={grantNote}
+                    onChange={(e) => setGrantNote(e.target.value)}
+                    placeholder="Promotion May 2026"
+                    maxLength={200}
+                    className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-ink outline-none focus:border-ink"
+                  />
+                </div>
+                <button
+                  onClick={() => {
+                    const euros = parseFloat(grantEuros);
+                    if (!grantEmail || isNaN(euros) || euros <= 0) { toast("Fill in email and valid amount", "error"); return; }
+                    if (confirm(`Grant €${euros.toFixed(2)} to ${grantEmail}?`)) {
+                      grantCreditsMutation.mutate({ email: grantEmail, euros, note: grantNote || undefined });
+                    }
+                  }}
+                  disabled={grantCreditsMutation.isPending}
+                  className="flex items-center gap-2 rounded-xl border-2 border-ink bg-coral px-5 py-2.5 font-body text-sm font-semibold text-ink hover:opacity-90 transition disabled:opacity-60"
+                >
+                  {grantCreditsMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wallet className="h-4 w-4" />}
+                  Grant Credits
+                </button>
+              </div>
+            </div>
           </div>
         )}
 

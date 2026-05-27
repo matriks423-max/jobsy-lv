@@ -1,4 +1,4 @@
-import { eq, sql, and } from "drizzle-orm";
+import { eq, sql, and, desc } from "drizzle-orm";
 import * as schema from "@db/schema";
 import type { InsertProfile } from "@db/schema";
 import { getDb } from "./connection";
@@ -67,4 +67,64 @@ export async function setReferredBy(userId: number, referrerId: number) {
     .update(schema.profiles)
     .set({ referredBy: referrerId, updatedAt: new Date() })
     .where(eq(schema.profiles.userId, userId));
+}
+
+// ── Credit wallet ─────────────────────────────────────────────────────────────
+
+/** Grant credits (positive cents). Always succeeds — admin-only path. */
+export async function grantCredits(
+  userId: number,
+  cents: number,
+  description: string
+): Promise<void> {
+  await getDb().transaction(async (tx) => {
+    await tx
+      .update(schema.profiles)
+      .set({ creditBalance: sql`creditBalance + ${cents}`, updatedAt: new Date() })
+      .where(eq(schema.profiles.userId, userId));
+    await tx.insert(schema.creditTransactions).values({
+      userId,
+      amount: cents,
+      type: "grant",
+      description,
+    });
+  });
+}
+
+/**
+ * Atomically deduct credits for a boost purchase.
+ * Returns true if deduction succeeded (balance was sufficient), false otherwise.
+ */
+export async function spendCredits(
+  userId: number,
+  cents: number,
+  description: string
+): Promise<boolean> {
+  let succeeded = false;
+  await getDb().transaction(async (tx) => {
+    const result = await tx
+      .update(schema.profiles)
+      .set({ creditBalance: sql`creditBalance - ${cents}`, updatedAt: new Date() })
+      .where(and(eq(schema.profiles.userId, userId), sql`creditBalance >= ${cents}`));
+    succeeded = (result as unknown as [{ affectedRows: number }])[0].affectedRows > 0;
+    if (succeeded) {
+      await tx.insert(schema.creditTransactions).values({
+        userId,
+        amount: -cents,
+        type: "spend",
+        description,
+      });
+    }
+  });
+  return succeeded;
+}
+
+/** Last N credit transactions for a user (for settings history). */
+export async function getCreditTransactions(userId: number, limit = 20) {
+  return getDb()
+    .select()
+    .from(schema.creditTransactions)
+    .where(eq(schema.creditTransactions.userId, userId))
+    .orderBy(desc(schema.creditTransactions.createdAt))
+    .limit(limit);
 }

@@ -22,6 +22,9 @@ import {
   Trash2,
   Building2,
   CreditCard,
+  Wallet,
+  ArrowDownLeft,
+  ArrowUpRight,
 } from "lucide-react";
 
 const THEMES: { value: Theme; labelKey: string; preview: string }[] = [
@@ -49,6 +52,7 @@ export default function Settings() {
   const utils = trpc.useUtils();
 
   const { data: subStatus } = trpc.subscription.status.useQuery(undefined, { enabled: isAuthenticated ?? false });
+  const { data: creditHistory } = trpc.subscription.creditHistory.useQuery(undefined, { enabled: isAuthenticated ?? false });
   const upgradeMutation = trpc.subscription.createCheckout.useMutation({
     onSuccess: ({ url }) => { if (url) window.location.href = url; },
     onError: (err) => toast(err.message, "error"),
@@ -404,6 +408,48 @@ export default function Settings() {
             </button>
           )}
         </div>
+
+        {/* Credit Wallet section */}
+        {((subStatus?.creditBalance ?? 0) > 0 || (creditHistory && creditHistory.length > 0)) && (
+          <div className="mb-6 rounded-2xl border-2 border-ink bg-white p-6">
+            <div className="mb-4 flex items-center gap-2">
+              <Wallet className="h-5 w-5 text-coral" />
+              <h2 className="font-display text-xl font-bold text-ink">
+                {t(locale, "credits.historyTitle")}
+              </h2>
+              {(subStatus?.creditBalance ?? 0) > 0 && (
+                <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-mustard-light px-3 py-1 font-body text-xs font-bold text-ink">
+                  {t(locale, "credits.balance")}: €{((subStatus?.creditBalance ?? 0) / 100).toFixed(2)}
+                </span>
+              )}
+            </div>
+
+            {!creditHistory || creditHistory.length === 0 ? (
+              <p className="font-body text-sm text-ink-muted">{t(locale, "credits.noHistory")}</p>
+            ) : (
+              <ul className="space-y-2">
+                {creditHistory.map((tx) => (
+                  <li key={tx.id} className="flex items-center gap-3 rounded-xl border border-ink-light bg-cream px-4 py-2.5">
+                    {tx.amount > 0 ? (
+                      <ArrowDownLeft className="h-4 w-4 shrink-0 text-sage" />
+                    ) : (
+                      <ArrowUpRight className="h-4 w-4 shrink-0 text-coral" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="truncate font-body text-sm text-ink">{tx.description}</p>
+                      <p className="font-mono text-xs text-ink-light">
+                        {new Date(tx.createdAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}
+                      </p>
+                    </div>
+                    <span className={`font-mono text-sm font-bold shrink-0 ${tx.amount > 0 ? "text-sage" : "text-coral"}`}>
+                      {tx.amount > 0 ? "+" : ""}€{(tx.amount / 100).toFixed(2)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
 
         {/* Theme section */}
         <div className="rounded-3xl border-2 border-ink bg-white p-6 md:p-8">

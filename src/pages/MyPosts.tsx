@@ -378,6 +378,7 @@ export default function MyPosts() {
           postId={boostingPostId}
           isBusiness={subStatus?.plan === "business"}
           freeBoostsRemaining={subStatus?.freeBoostsRemaining ?? 0}
+          creditBalance={subStatus?.creditBalance ?? 0}
           onClose={() => setBoostingPostId(null)}
         />
       )}
