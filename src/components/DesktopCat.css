@@ -1,0 +1,166 @@
+/* ─── Desktop Cat Pet ─────────────────────────────────────────────────── */
+
+.desktop-cat {
+  position: fixed;
+  bottom: 0;
+  z-index: 9998;
+  pointer-events: none;
+  user-select: none;
+  line-height: 0;
+}
+.desktop-cat svg {
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18));
+}
+
+/* flip direction */
+.desktop-cat--flipped {
+  transform: scaleX(-1);
+}
+
+/* ── TAIL ────────────────────────────────────────────────────────────── */
+.cat-tail-group {
+  transform-origin: 16px 46px;
+  animation: tailIdle 2.2s ease-in-out infinite;
+}
+@keyframes tailIdle {
+  0%, 100% { transform: rotate(0deg);   }
+  30%       { transform: rotate(22deg);  }
+  70%       { transform: rotate(-13deg); }
+}
+
+/* ── LEGS ────────────────────────────────────────────────────────────── */
+.cat-leg {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+}
+
+/* ── EYE BLINK ───────────────────────────────────────────────────────── */
+.cat-eye {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: blink 6s ease-in-out infinite;
+}
+@keyframes blink {
+  0%, 84%, 100% { transform: scaleY(1);    }
+  89%            { transform: scaleY(0.07); }
+  93%            { transform: scaleY(1);    }
+}
+
+/* ── IDLE ────────────────────────────────────────────────────────────── */
+.desktop-cat--idle .cat-body-group {
+  animation: breathe 3.8s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-1px); }
+}
+
+/* ── WALKING ─────────────────────────────────────────────────────────── */
+.desktop-cat--walking .cat-body-group {
+  animation: walkBob 0.38s ease-in-out infinite;
+}
+@keyframes walkBob {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-3px); }
+}
+.desktop-cat--walking .cat-tail-group {
+  animation: tailWalk 0.38s ease-in-out infinite;
+}
+@keyframes tailWalk {
+  0%, 100% { transform: rotate(-14deg); }
+  50%       { transform: rotate(14deg);  }
+}
+.desktop-cat--walking .cat-leg-fl,
+.desktop-cat--walking .cat-leg-br {
+  animation: legA 0.38s ease-in-out infinite;
+}
+.desktop-cat--walking .cat-leg-fr,
+.desktop-cat--walking .cat-leg-bl {
+  animation: legB 0.38s ease-in-out infinite;
+}
+@keyframes legA {
+  0%, 100% { transform: rotate(-15deg); }
+  50%       { transform: rotate(15deg);  }
+}
+@keyframes legB {
+  0%, 100% { transform: rotate(15deg);  }
+  50%       { transform: rotate(-15deg); }
+}
+
+/* ── RUNNING ─────────────────────────────────────────────────────────── */
+.desktop-cat--running .cat-body-group {
+  animation: runBob 0.18s ease-in-out infinite;
+}
+@keyframes runBob {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-7px); }
+}
+.desktop-cat--running .cat-tail-group {
+  animation: tailRun 0.18s ease-in-out infinite;
+}
+@keyframes tailRun {
+  0%, 100% { transform: rotate(-30deg); }
+  50%       { transform: rotate(-8deg);  }
+}
+.desktop-cat--running .cat-leg-fl,
+.desktop-cat--running .cat-leg-br {
+  animation: legA 0.18s ease-in-out infinite;
+}
+.desktop-cat--running .cat-leg-fr,
+.desktop-cat--running .cat-leg-bl {
+  animation: legB 0.18s ease-in-out infinite;
+}
+
+/* ── SPOOKED ─────────────────────────────────────────────────────────── */
+.desktop-cat--spooked .cat-body-group {
+  animation: spookJump 0.45s ease-out forwards;
+}
+@keyframes spookJump {
+  0%   { transform: translateY(0px)   scale(1);    }
+  35%  { transform: translateY(-14px) scale(1.1);  }
+  65%  { transform: translateY(-9px)  scale(1.05); }
+  100% { transform: translateY(0px)   scale(1);    }
+}
+.desktop-cat--spooked .cat-tail-group {
+  animation: tailSpook 0.45s ease-out;
+}
+@keyframes tailSpook {
+  0%   { transform: rotate(0deg);   }
+  40%  { transform: rotate(-45deg); }
+  100% { transform: rotate(-12deg); }
+}
+
+/* ── SLEEPING ────────────────────────────────────────────────────────── */
+.desktop-cat--sleeping .cat-body-group {
+  animation: none;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transform: scaleY(0.82) translateY(4px);
+}
+.desktop-cat--sleeping .cat-tail-group {
+  animation: none;
+  transform-origin: 16px 46px;
+  transform: rotate(38deg);
+}
+.desktop-cat--sleeping .cat-eye {
+  animation: none;
+  transform: scaleY(0.06);
+}
+
+/* ZZZ */
+.cat-zzz {
+  opacity: 0;
+}
+.desktop-cat--sleeping .cat-zzz-1 {
+  animation: zzzFloat 2.4s ease-in-out 0s infinite;
+}
+.desktop-cat--sleeping .cat-zzz-2 {
+  animation: zzzFloat 2.4s ease-in-out 1.2s infinite;
+}
+@keyframes zzzFloat {
+  0%   { opacity: 0;    transform: translate(0px,  0px)  scale(0.65); }
+  25%  { opacity: 0.9;                                                 }
+  100% { opacity: 0;    transform: translate(7px, -24px) scale(1.1);  }
+}

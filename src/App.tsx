@@ -9,6 +9,7 @@ import BackToTop from "@/components/BackToTop";
 import CookieBanner from "@/components/CookieBanner";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import ScrollToTop from "@/components/ScrollToTop";
+import DesktopCat from "@/components/DesktopCat";
 // Critical pages — eager loaded
 import Home from "./pages/Home";
 import Browse from "./pages/Browse";
@@ -83,6 +84,7 @@ export default function App() {
         <BackToTop />
         <CookieBanner />
         <PWAInstallPrompt />
+        <DesktopCat />
       </div>
     </ThemeProvider>
   );
