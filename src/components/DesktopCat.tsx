@@ -1,24 +1,31 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./DesktopCat.css";
 
-type CatState = "idle" | "walking" | "running" | "sleeping" | "spooked";
+type CatState = "idle" | "walking" | "running" | "sleeping" | "spooked" | "grooming" | "stretching" | "happy";
 
-const W = 80; // cat SVG width
+const W = 80;   // SVG width
+const H = 68;   // SVG height
 const WALK_PX = 1.1;
-const RUN_PX = 3.6;
+const RUN_PX  = 3.6;
+
+const BUBBLES_IDLE  = ["~", "...", "♪", "zz?"];
+const BUBBLES_HAPPY = ["miau!", "♥", "purr~", "^•ᴗ•^"];
+const BUBBLES_GROOM = ["purr...", "~♪", "mmmm~"];
 
 export default function DesktopCat() {
   const [x, setX] = useState(() => {
     const w = typeof window !== "undefined" ? window.innerWidth : 800;
     return Math.round(w * 0.25 + Math.random() * w * 0.5);
   });
-  const [state, setState] = useState<CatState>("idle");
+  const [state, setState]   = useState<CatState>("idle");
   const [flipped, setFlipped] = useState(false);
+  const [bubble, setBubble]   = useState<string | null>(null);
 
   const xRef    = useRef(x);
   const stateRef = useRef<CatState>("idle");
   const targetRef = useRef<number | null>(null);
   const timerRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const bubTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const clamp = (v: number) =>
     Math.max(W, Math.min((typeof window !== "undefined" ? window.innerWidth : 1200) - W, v));
@@ -27,41 +34,74 @@ export default function DesktopCat() {
     if (timerRef.current !== null) clearTimeout(timerRef.current);
   }, []);
 
+  const showBubble = useCallback((text: string, duration = 2000) => {
+    setBubble(text);
+    if (bubTimerRef.current) clearTimeout(bubTimerRef.current);
+    bubTimerRef.current = setTimeout(() => setBubble(null), duration);
+  }, []);
+
   const goIdle = useCallback(() => {
     clearTimer();
     setState("idle");
     stateRef.current = "idle";
 
+    // Occasionally show idle bubble
+    if (Math.random() < 0.22) {
+      const delay = 700 + Math.random() * 1400;
+      setTimeout(() => {
+        if (stateRef.current === "idle") {
+          showBubble(BUBBLES_IDLE[Math.floor(Math.random() * BUBBLES_IDLE.length)], 1800);
+        }
+      }, delay);
+    }
+
     timerRef.current = setTimeout(() => {
       if (stateRef.current !== "idle") return;
       const roll = Math.random();
 
-      if (roll < 0.45) {
+      if (roll < 0.40) {
+        // Walk somewhere
         const d = Math.random() > 0.5 ? 1 : -1;
         const tx = clamp(xRef.current + d * (100 + Math.random() * 260));
         targetRef.current = tx;
         setFlipped(tx < xRef.current);
         setState("walking");
         stateRef.current = "walking";
-      } else if (roll < 0.56) {
+
+      } else if (roll < 0.51) {
+        // Sleep, then stretch on wake
         setState("sleeping");
         stateRef.current = "sleeping";
-        timerRef.current = setTimeout(goIdle, 7000 + Math.random() * 9000);
+        timerRef.current = setTimeout(() => {
+          clearTimer();
+          setState("stretching");
+          stateRef.current = "stretching";
+          showBubble("stretch~", 1500);
+          timerRef.current = setTimeout(goIdle, 1800);
+        }, 7000 + Math.random() * 9000);
+
+      } else if (roll < 0.67) {
+        // Groom
+        setState("grooming");
+        stateRef.current = "grooming";
+        showBubble(BUBBLES_GROOM[Math.floor(Math.random() * BUBBLES_GROOM.length)], 2200);
+        timerRef.current = setTimeout(goIdle, 3000 + Math.random() * 2500);
+
       } else {
-        // just sit idle a bit longer, recurse
+        // Stay idle a bit more
         goIdle();
       }
     }, 1500 + Math.random() * 5500);
-  }, [clearTimer, clamp]);
+  }, [clearTimer, clamp, showBubble]);
 
   // RAF movement loop
   useEffect(() => {
     let raf: number;
     const tick = () => {
-      const s = stateRef.current;
+      const s  = stateRef.current;
       const tx = targetRef.current;
       if ((s === "walking" || s === "running") && tx !== null) {
-        const dx = tx - xRef.current;
+        const dx    = tx - xRef.current;
         const speed = s === "running" ? RUN_PX : WALK_PX;
         if (Math.abs(dx) <= speed + 0.5) {
           xRef.current = tx;
@@ -100,32 +140,87 @@ export default function DesktopCat() {
     return () => window.removeEventListener("mousemove", onMove);
   }, [clearTimer, clamp]);
 
-  // Click anywhere → spooked
+  // Touch-move proximity → scatter (mobile fix)
   useEffect(() => {
-    const onClick = () => {
-      if (stateRef.current === "sleeping") {
-        goIdle();
-        return;
-      }
-      if (stateRef.current === "spooked") return;
-      clearTimer();
-      setState("spooked");
-      stateRef.current = "spooked";
-      const away = clamp(
-        xRef.current < window.innerWidth / 2 ? xRef.current + 220 : xRef.current - 220
-      );
-      targetRef.current = away;
-      setFlipped(away < xRef.current);
-
-      timerRef.current = setTimeout(() => {
+    const onTouchMove = (e: TouchEvent) => {
+      const s = stateRef.current;
+      if (s === "spooked" || s === "running") return;
+      const touch = e.touches[0];
+      const catX  = xRef.current;
+      const catY  = window.innerHeight - 34;
+      const dist  = Math.hypot(touch.clientX - catX, touch.clientY - catY);
+      if (dist < 160) {
+        clearTimer();
+        const away = clamp(touch.clientX < catX ? catX + 280 : catX - 280);
+        targetRef.current = away;
+        setFlipped(away < catX);
         setState("running");
         stateRef.current = "running";
-        timerRef.current = setTimeout(goIdle, 1400);
-      }, 480);
+      }
     };
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    return () => window.removeEventListener("touchmove", onTouchMove);
+  }, [clearTimer, clamp]);
+
+  // Click / tap → happy if on cat, spooked if elsewhere
+  useEffect(() => {
+    const handleInteract = (clientX: number, clientY: number) => {
+      const s = stateRef.current;
+
+      // Wake sleeping cat
+      if (s === "sleeping") {
+        clearTimer();
+        setState("stretching");
+        stateRef.current = "stretching";
+        showBubble("!", 900);
+        timerRef.current = setTimeout(goIdle, 1800);
+        return;
+      }
+      if (s === "spooked" || s === "happy") return;
+
+      // Detect if touch/click landed on cat
+      const catLeft = xRef.current - W / 2;
+      const catTop  = window.innerHeight - H;
+      const onCat   =
+        clientX >= catLeft && clientX <= catLeft + W &&
+        clientY >= catTop  && clientY <= window.innerHeight;
+
+      clearTimer();
+
+      if (onCat) {
+        setState("happy");
+        stateRef.current = "happy";
+        showBubble(BUBBLES_HAPPY[Math.floor(Math.random() * BUBBLES_HAPPY.length)], 1500);
+        timerRef.current = setTimeout(goIdle, 1200);
+      } else {
+        setState("spooked");
+        stateRef.current = "spooked";
+        const away = clamp(
+          xRef.current < window.innerWidth / 2 ? xRef.current + 220 : xRef.current - 220
+        );
+        targetRef.current = away;
+        setFlipped(away < xRef.current);
+        timerRef.current = setTimeout(() => {
+          setState("running");
+          stateRef.current = "running";
+          timerRef.current = setTimeout(goIdle, 1400);
+        }, 480);
+      }
+    };
+
+    const onClick      = (e: MouseEvent) => handleInteract(e.clientX, e.clientY);
+    const onTouchStart = (e: TouchEvent) => {
+      const t = e.touches[0];
+      handleInteract(t.clientX, t.clientY);
+    };
+
     window.addEventListener("click", onClick);
-    return () => window.removeEventListener("click", onClick);
-  }, [clearTimer, clamp, goIdle]);
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    return () => {
+      window.removeEventListener("click", onClick);
+      window.removeEventListener("touchstart", onTouchStart);
+    };
+  }, [clearTimer, clamp, goIdle, showBubble]);
 
   // Start
   useEffect(() => {
@@ -140,6 +235,7 @@ export default function DesktopCat() {
       aria-hidden="true"
       role="presentation"
     >
+      {bubble && <div className="cat-bubble">{bubble}</div>}
       <CatSVG />
     </div>
   );
@@ -162,7 +258,6 @@ function CatSVG() {
           strokeWidth="7"
           strokeLinecap="round"
         />
-        {/* stripe overlay */}
         <path
           d="M16,46 C4,50 0,35 6,22 C10,14 17,17 15,25"
           fill="none"
@@ -178,11 +273,11 @@ function CatSVG() {
       <g className="cat-body-group">
         {/* Body */}
         <ellipse cx="34" cy="47" rx="19" ry="12" fill="#F4A261" />
-        {/* Tabby stripes on body */}
+        {/* Tabby stripes */}
         <path d="M26,37 Q28,47 26,58" stroke="#D4834A" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.5" />
         <path d="M33,36 Q35,47 33,58" stroke="#D4834A" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.5" />
 
-        {/* Back legs (rendered before head so they look behind) */}
+        {/* Back legs */}
         <g className="cat-leg cat-leg-bl">
           <rect x="18" y="57" width="7" height="11" rx="3.5" fill="#D4834A" />
         </g>
@@ -231,7 +326,7 @@ function CatSVG() {
         <line x1="62" y1="36" x2="49" y2="36" stroke="#9a9a9a" strokeWidth="0.9" />
         <line x1="62" y1="38.5" x2="49" y2="42" stroke="#9a9a9a" strokeWidth="0.9" />
 
-        {/* Front legs (in front of body) */}
+        {/* Front legs */}
         <g className="cat-leg cat-leg-fl">
           <rect x="44" y="57" width="7" height="11" rx="3.5" fill="#E8953A" />
         </g>
@@ -240,7 +335,7 @@ function CatSVG() {
         </g>
       </g>
 
-      {/* ZZZ — outside body group so it floats freely */}
+      {/* ZZZ — floats outside body group */}
       <text className="cat-zzz cat-zzz-1" x="70" y="14" fontSize="12" fill="#94B4BC" fontWeight="bold" fontFamily="Georgia, serif">z</text>
       <text className="cat-zzz cat-zzz-2" x="76" y="7"  fontSize="9"  fill="#94B4BC" fontWeight="bold" fontFamily="Georgia, serif">z</text>
     </svg>
