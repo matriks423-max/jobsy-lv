@@ -33,15 +33,19 @@ cronRouter.get("/reminders", async (c) => {
       )
     );
 
+  // Batch-fetch emails for all expiring post owners in one query
+  const reminderUserIds = [...new Set(expiringPosts.map((p) => p.userId))];
+  const reminderEmailRows = reminderUserIds.length > 0
+    ? await getDb()
+        .select({ id: schema.users.id, email: schema.users.email })
+        .from(schema.users)
+        .where(inArray(schema.users.id, reminderUserIds))
+    : [];
+  const reminderEmailById = new Map(reminderEmailRows.map((u) => [u.id, u.email]));
+
   let sent = 0;
   for (const post of expiringPosts) {
-    const userRows = await getDb()
-      .select({ email: schema.users.email })
-      .from(schema.users)
-      .where(eq(schema.users.id, post.userId))
-      .limit(1);
-
-    const email = userRows[0]?.email;
+    const email = reminderEmailById.get(post.userId);
     if (!email) continue;
 
     await sendExpiryReminder(email, post.title, post.id);
@@ -168,14 +172,17 @@ cronRouter.get("/expire", async (c) => {
   // If another cron worker transitioned all posts first, skip emails entirely to prevent duplicates.
   if (actuallyExpired === 0) return c.json({ ok: true, expired: 0, notified: 0 });
 
+  // Batch-fetch all user emails in one query instead of N+1
+  const userIds = [...new Set(expiredPosts.map((p) => p.userId))];
+  const userEmailRows = await getDb()
+    .select({ id: schema.users.id, email: schema.users.email })
+    .from(schema.users)
+    .where(inArray(schema.users.id, userIds));
+  const emailById = new Map(userEmailRows.map((u) => [u.id, u.email]));
+
   let notified = 0;
   for (const post of expiredPosts) {
-    const userRows = await getDb()
-      .select({ email: schema.users.email })
-      .from(schema.users)
-      .where(eq(schema.users.id, post.userId))
-      .limit(1);
-    const email = userRows[0]?.email;
+    const email = emailById.get(post.userId);
     if (!email) continue;
     await sendPostExpired(email, post.title, post.id);
     notified++;

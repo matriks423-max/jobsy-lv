@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { Cookie } from "lucide-react";
@@ -28,7 +28,7 @@ export default function CookieBanner() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t-2 border-ink bg-surface-cream p-4 shadow-float">
+    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-outline-variant bg-surface-cream p-4 shadow-float">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
         <div className="flex items-start gap-3">
           <Cookie className="mt-0.5 h-5 w-5 shrink-0 text-accent-coral" />
@@ -42,7 +42,7 @@ export default function CookieBanner() {
         <div className="flex gap-2">
           <button
             onClick={decline}
-            className="rounded-lg border-2 border-ink-light px-4 py-2 font-body text-sm text-on-surface-variant hover:border-ink hover:text-on-surface"
+            className="rounded-lg border-2 border-outline-variant px-4 py-2 font-body text-sm text-on-surface-variant hover:border-primary-DEFAULT hover:text-on-surface"
           >
             {t(locale, "cookie.decline")}
           </button>

@@ -2,7 +2,6 @@
 import { Routes, Route, Navigate } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { Toaster } from "sonner";
-import { ThemeProvider } from "@/lib/theme-context";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
@@ -40,8 +39,7 @@ function AdminRoute({ element }: { element: React.ReactElement }) {
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col">
         <Toaster
           position="bottom-right"
           toastOptions={{
@@ -88,6 +86,5 @@ export default function App() {
         <PWAInstallPrompt />
         <DesktopCat />
       </div>
-    </ThemeProvider>
   );
 }

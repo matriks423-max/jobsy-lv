@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -74,7 +74,7 @@ export default function CreatePost() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = (isEditing ? t(locale, "createPost.editPageTitle") : t(locale, "nav.createPost")) + " — Jobsy.lv";
+    document.title = (isEditing ? t(locale, "createPost.editPageTitle") : t(locale, "nav.createPost")) + " � Jobsy.lv";
     return () => { document.title = prev; };
   }, [locale, isEditing]);
 
@@ -222,14 +222,14 @@ export default function CreatePost() {
             </h1>
             {!isEditing && (
               <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-sage bg-success-emerald/10 px-3 py-1.5 font-body text-xs font-medium text-success-emerald">
+                <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-success-emerald bg-success-emerald/10 px-3 py-1.5 font-body text-xs font-medium text-success-emerald">
                   {t(locale, "createPost.freeBadge")}
                 </span>
                 {subStatus && user?.plan !== "business" && (
                   <span className={`inline-flex items-center gap-1 rounded-full border-2 px-3 py-1.5 font-body text-xs font-medium ${
                     (subStatus.activePostCount ?? 0) >= 1
-                      ? "border-need bg-need-light text-need"
-                      : "border-ink-light bg-surface-cream text-on-surface-variant"
+                      ? "border-need bg-surface-cream text-secondary-DEFAULT"
+                      : "border-outline-variant bg-surface-cream text-on-surface-variant"
                   }`}>
                     {subStatus.activePostCount ?? 0}/1 {t(locale, "pricing.freePostsPerMonth")}
                   </span>
@@ -241,7 +241,7 @@ export default function CreatePost() {
             <Button
               variant="outline"
               onClick={() => setShowDeleteDialog(true)}
-              className="h-10 rounded-xl border-2 border-need text-need hover:bg-need-light"
+              className="h-10 rounded-xl border-2 border-need text-secondary-DEFAULT hover:bg-surface-cream"
             >
               <Trash2 className="mr-1 h-4 w-4" />
               {t(locale, "createPost.deleteBtn")}
@@ -263,11 +263,11 @@ export default function CreatePost() {
                   onClick={() => setType("need")}
                   className={`flex flex-col items-center gap-3 rounded-xl border-2 p-6 transition ${
                     type === "need"
-                      ? "border-need bg-need-light shadow-card-need scale-[1.02]"
-                      : "border-ink-light bg-surface-cream opacity-70 hover:opacity-100"
+                      ? "border-need bg-surface-cream shadow-card scale-[1.02]"
+                      : "border-outline-variant bg-surface-cream opacity-70 hover:opacity-100"
                   }`}
                 >
-                  <HandHelping className={`h-8 w-8 ${type === "need" ? "text-need" : "text-on-surface-variant"}`} />
+                  <HandHelping className={`h-8 w-8 ${type === "need" ? "text-secondary-DEFAULT" : "text-on-surface-variant"}`} />
                   <span className="font-body text-sm font-bold">
                     {t(locale, "createPost.typeNeed")}
                   </span>
@@ -277,8 +277,8 @@ export default function CreatePost() {
                   onClick={() => setType("offer")}
                   className={`flex flex-col items-center gap-3 rounded-xl border-2 p-6 transition ${
                     type === "offer"
-                      ? "border-sage bg-success-emerald/10 shadow-card-sage scale-[1.02]"
-                      : "border-ink-light bg-surface-cream opacity-70 hover:opacity-100"
+                      ? "border-success-emerald bg-success-emerald/10 shadow-card-sage scale-[1.02]"
+                      : "border-outline-variant bg-surface-cream opacity-70 hover:opacity-100"
                   }`}
                 >
                   <Wrench className={`h-8 w-8 ${type === "offer" ? "text-success-emerald" : "text-on-surface-variant"}`} />
@@ -298,7 +298,7 @@ export default function CreatePost() {
             <Select value={category} onValueChange={setCategory}>
               <SelectTrigger
                 className={`h-12 rounded-xl border-2 ${
-                  errors.category ? "border-need" : "border-ink-light"
+                  errors.category ? "border-error" : "border-outline-variant"
                 } bg-white font-body focus:border-primary-DEFAULT`}
               >
                 <SelectValue placeholder={t(locale, "createPost.selectPlaceholder")} />
@@ -312,7 +312,7 @@ export default function CreatePost() {
               </SelectContent>
             </Select>
             {errors.category && (
-              <p className="mt-1 font-body text-xs text-need">{errors.category}</p>
+              <p className="mt-1 font-body text-xs text-secondary-DEFAULT">{errors.category}</p>
             )}
           </div>
 
@@ -326,13 +326,13 @@ export default function CreatePost() {
               onChange={(e) => setTitle(e.target.value)}
               placeholder={t(locale, "createPost.titlePlaceholder")}
               className={`h-12 rounded-xl border-2 ${
-                errors.title ? "border-need" : "border-ink-light"
+                errors.title ? "border-error" : "border-outline-variant"
               } bg-white font-body focus:border-primary-DEFAULT`}
               maxLength={80}
             />
             <div className="mt-1 flex justify-between">
               {errors.title && (
-                <p className="font-body text-xs text-need">{errors.title}</p>
+                <p className="font-body text-xs text-secondary-DEFAULT">{errors.title}</p>
               )}
               <span className="ml-auto font-mono text-xs text-outline">
                 {title.length}/80
@@ -350,13 +350,13 @@ export default function CreatePost() {
               onChange={(e) => setDescription(e.target.value)}
               placeholder={t(locale, "createPost.descPlaceholder")}
               className={`min-h-[120px] resize-y rounded-xl border-2 ${
-                errors.description ? "border-need" : "border-ink-light"
+                errors.description ? "border-error" : "border-outline-variant"
               } bg-white font-body focus:border-primary-DEFAULT`}
               maxLength={500}
             />
             <div className="mt-1 flex justify-between">
               {errors.description && (
-                <p className="font-body text-xs text-need">{errors.description}</p>
+                <p className="font-body text-xs text-secondary-DEFAULT">{errors.description}</p>
               )}
               <span className="ml-auto font-mono text-xs text-outline">
                 {description.length}/500
@@ -382,7 +382,7 @@ export default function CreatePost() {
                   />
                   <button
                     onClick={() => removeImage(idx)}
-                    className="absolute right-1 top-1 rounded-full bg-ink p-1 text-white"
+                    className="absolute right-1 top-1 rounded-full bg-primary-DEFAULT p-1 text-white"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -392,7 +392,7 @@ export default function CreatePost() {
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
-                  className="flex h-24 w-24 flex-col items-center justify-center rounded-xl border-2 border-dashed border-ink-light bg-surface-cream hover:border-ink"
+                  className="flex h-24 w-24 flex-col items-center justify-center rounded-xl border-2 border-dashed border-outline-variant bg-surface-cream hover:border-primary-DEFAULT"
                 >
                   {uploading ? (
                     <Loader2 className="h-5 w-5 animate-spin text-on-surface-variant" />
@@ -423,7 +423,7 @@ export default function CreatePost() {
                 {t(locale, "createPost.cityLabel")}
               </label>
               <Select value={city} onValueChange={setCity}>
-                <SelectTrigger className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-primary-DEFAULT">
+                <SelectTrigger className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary-DEFAULT">
                   <SelectValue placeholder={t(locale, "createPost.selectPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent className="border border-outline-variant">
@@ -443,7 +443,7 @@ export default function CreatePost() {
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
                 placeholder={t(locale, "createPost.regionPlaceholder")}
-                className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-primary-DEFAULT"
+                className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary-DEFAULT"
               />
             </div>
           </div>
@@ -458,7 +458,7 @@ export default function CreatePost() {
                 value={budgetText}
                 onChange={(e) => setBudgetText(e.target.value)}
                 placeholder={t(locale, "createPost.budgetPlaceholder")}
-                className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-primary-DEFAULT"
+                className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary-DEFAULT"
               />
             </div>
             <div>
@@ -469,7 +469,7 @@ export default function CreatePost() {
                 value={whenText}
                 onChange={(e) => setWhenText(e.target.value)}
                 placeholder={t(locale, "createPost.whenPlaceholder")}
-                className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-primary-DEFAULT"
+                className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary-DEFAULT"
               />
             </div>
           </div>
@@ -495,7 +495,7 @@ export default function CreatePost() {
 
         {/* Info Banner */}
         {!isEditing && (
-          <div className="mt-6 flex items-start gap-3 rounded-2xl border-2 border-ink-light bg-surface-cream p-5">
+          <div className="mt-6 flex items-start gap-3 rounded-2xl border-2 border-outline-variant bg-surface-cream p-5">
             <Info className="mt-0.5 h-5 w-5 shrink-0 text-on-surface-variant" />
             <div>
               <p className="font-body text-sm text-on-surface-variant">
@@ -547,7 +547,7 @@ export default function CreatePost() {
                 deleteMutation.mutate({ id: postId });
                 setShowDeleteDialog(false);
               }}
-              className="flex-1 rounded-xl border-2 border-need bg-need-light font-body text-need hover:bg-need"
+              className="flex-1 rounded-xl border-2 border-need bg-surface-cream font-body text-secondary-DEFAULT hover:bg-need"
             >
               <Trash2 className="mr-2 h-4 w-4" />
               {t(locale, "createPost.deleteConfirm")}

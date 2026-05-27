@@ -1,4 +1,4 @@
-ï»¿import { useEffect } from "react";
+import { useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -39,7 +39,7 @@ export default function Pricing() {
   const isPaid = isPro || isBusiness;
 
   useEffect(() => {
-    document.title = t(locale, "pricing.title") + " â€” Jobsy.lv";
+    document.title = t(locale, "pricing.title") + " — Jobsy.lv";
     return () => { document.title = "jobsy.lv"; };
   }, [locale]);
 
@@ -76,9 +76,9 @@ export default function Pricing() {
   ];
 
   const BOOST_FEATURES = [
-    { icon: "ðŸ”", name: t(locale, "boost.bump"), price: "â‚¬1.00", desc: t(locale, "boost.bumpDesc") },
-    { icon: "â­", name: t(locale, "boost.featured"), price: "â‚¬2.00", desc: t(locale, "boost.featuredDesc") },
-    { icon: "ðŸ”´", name: t(locale, "boost.urgent"), price: "â‚¬0.50", desc: t(locale, "boost.urgentDesc") },
+    { icon: "??", name: t(locale, "boost.bump"), price: "€1.00", desc: t(locale, "boost.bumpDesc") },
+    { icon: "?", name: t(locale, "boost.featured"), price: "€2.00", desc: t(locale, "boost.featuredDesc") },
+    { icon: "??", name: t(locale, "boost.urgent"), price: "€0.50", desc: t(locale, "boost.urgentDesc") },
   ];
 
   const handleGo = (target: "pro" | "business") => {
@@ -101,7 +101,7 @@ export default function Pricing() {
           </p>
         </div>
 
-        {/* Tier cards â€” 3 columns */}
+        {/* Tier cards — 3 columns */}
         <div className="mb-10 grid gap-6 md:grid-cols-3 items-stretch">
 
           {/* Free */}
@@ -110,7 +110,7 @@ export default function Pricing() {
               <p className="font-body text-xs font-medium uppercase tracking-widest text-on-surface-variant">
                 {t(locale, "pricing.free")}
               </p>
-              <p className="mt-1 font-headline text-4xl font-bold text-on-surface">â‚¬0</p>
+              <p className="mt-1 font-headline text-4xl font-bold text-on-surface">€0</p>
               <p className="mt-1 font-body text-xs text-on-surface-variant">
                 {t(locale, "pricing.freeForever")}
               </p>
@@ -124,7 +124,7 @@ export default function Pricing() {
               ))}
             </ul>
             {isPaid ? (
-              <div className="rounded-xl border-2 border-ink-light bg-surface-cream px-4 py-3 text-center font-body text-xs text-on-surface-variant">
+              <div className="rounded-xl border-2 border-outline-variant bg-surface-cream px-4 py-3 text-center font-body text-xs text-on-surface-variant">
                 {isBusiness ? t(locale, "pricing.currentPlanIsBusiness") : t(locale, "pricing.currentPlanIsPro")}
               </div>
             ) : (
@@ -147,7 +147,7 @@ export default function Pricing() {
                 {t(locale, "pricing.pro")}
               </p>
               <div className="mt-1 flex items-end gap-1">
-                <p className="font-headline text-4xl font-bold text-on-surface">â‚¬4.99</p>
+                <p className="font-headline text-4xl font-bold text-on-surface">€4.99</p>
                 <p className="mb-1 font-body text-xs text-on-surface-variant">{t(locale, "pricing.perMonth")}</p>
               </div>
               <p className="mt-1 font-body text-xs text-on-surface-variant">
@@ -166,19 +166,19 @@ export default function Pricing() {
               <button
                 onClick={() => portalMutation.mutate()}
                 disabled={portalMutation.isPending}
-                className="w-full rounded-xl border border-outline-variant bg-surface-cream px-6 py-3 font-body text-sm font-semibold text-on-surface hover:bg-cream transition disabled:opacity-60"
+                className="w-full rounded-xl border border-outline-variant bg-surface-cream px-6 py-3 font-body text-sm font-semibold text-on-surface hover:bg-surface-cream transition disabled:opacity-60"
               >
                 {t(locale, "pricing.manageBilling")}
               </button>
             ) : isBusiness ? (
-              <div className="rounded-xl border-2 border-ink-light bg-surface-cream px-4 py-3 text-center font-body text-xs text-on-surface-variant">
+              <div className="rounded-xl border-2 border-outline-variant bg-surface-cream px-4 py-3 text-center font-body text-xs text-on-surface-variant">
                 {t(locale, "pricing.currentPlanIsBusiness")}
               </div>
             ) : (
               <button
                 onClick={() => handleGo("pro")}
                 disabled={proMutation.isPending}
-                className="w-full rounded-xl border border-outline-variant bg-ink px-6 py-3 font-body text-sm font-semibold text-cream hover:opacity-90 transition disabled:opacity-60"
+                className="w-full rounded-xl border border-outline-variant bg-primary-DEFAULT px-6 py-3 font-body text-sm font-semibold text-white hover:opacity-90 transition disabled:opacity-60"
               >
                 {proMutation.isPending ? t(locale, "pricing.loading") : t(locale, "pricing.upgradePro")}
               </button>
@@ -186,25 +186,25 @@ export default function Pricing() {
           </div>
 
           {/* Business */}
-          <div className="relative flex flex-col rounded-2xl border border-outline-variant bg-ink p-6 text-cream shadow-card">
+          <div className="relative flex flex-col rounded-2xl border border-outline-variant bg-primary-DEFAULT p-6 text-white shadow-card">
             <div className="absolute -top-3 left-6 rounded-full border border-outline-variant bg-accent-coral px-3 py-0.5 font-mono text-xs font-bold text-on-surface uppercase">
               {t(locale, "pricing.mostPopular")}
             </div>
             <div className="mb-5">
-              <p className="font-body text-xs font-medium uppercase tracking-widest text-cream/60">
+              <p className="font-body text-xs font-medium uppercase tracking-widest text-white/60">
                 {t(locale, "pricing.business")}
               </p>
               <div className="mt-1 flex items-end gap-1">
-                <p className="font-headline text-4xl font-bold text-cream">â‚¬9.99</p>
-                <p className="mb-1 font-body text-xs text-cream/60">{t(locale, "pricing.perMonth")}</p>
+                <p className="font-headline text-4xl font-bold text-white">€9.99</p>
+                <p className="mb-1 font-body text-xs text-white/60">{t(locale, "pricing.perMonth")}</p>
               </div>
-              <p className="mt-1 font-body text-xs text-cream/60">
+              <p className="mt-1 font-body text-xs text-white/60">
                 {t(locale, "pricing.cancelAnytime")}
               </p>
             </div>
             <ul className="mb-6 flex-1 space-y-2.5">
               {BUSINESS_FEATURES.map((f) => (
-                <li key={f} className="flex items-start gap-2 font-body text-sm text-cream">
+                <li key={f} className="flex items-start gap-2 font-body text-sm text-white">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent-coral" />
                   <span>{f}</span>
                 </li>
@@ -214,7 +214,7 @@ export default function Pricing() {
               <button
                 onClick={() => portalMutation.mutate()}
                 disabled={portalMutation.isPending}
-                className="w-full rounded-xl border-2 border-cream bg-surface-cream px-6 py-3 font-body text-sm font-semibold text-on-surface hover:bg-cream/90 transition disabled:opacity-60"
+                className="w-full rounded-xl border border-outline-variant bg-surface-cream px-6 py-3 font-body text-sm font-semibold text-on-surface hover:bg-surface-cream/90 transition disabled:opacity-60"
               >
                 {t(locale, "pricing.manageBilling")}
               </button>
@@ -222,7 +222,7 @@ export default function Pricing() {
               <button
                 onClick={() => handleGo("business")}
                 disabled={upgradeMutation.isPending}
-                className="w-full rounded-xl border-2 border-cream bg-accent-coral px-6 py-3 font-body text-sm font-semibold text-on-surface hover:opacity-90 transition disabled:opacity-60"
+                className="w-full rounded-xl border border-outline-variant bg-accent-coral px-6 py-3 font-body text-sm font-semibold text-on-surface hover:opacity-90 transition disabled:opacity-60"
               >
                 {upgradeMutation.isPending ? t(locale, "pricing.loading") : t(locale, "pricing.upgrade")}
               </button>
@@ -263,7 +263,7 @@ export default function Pricing() {
               { q: t(locale, "pricing.faq2q"), a: t(locale, "pricing.faq2a") },
               { q: t(locale, "pricing.faq3q"), a: t(locale, "pricing.faq3a") },
             ].map(({ q, a }) => (
-              <details key={q} className="group border-b border-ink-light pb-4">
+              <details key={q} className="group border-b border-outline-variant pb-4">
                 <summary className="flex cursor-pointer items-center justify-between font-body text-sm font-semibold text-on-surface">
                   {q}
                   <ChevronDown className="h-4 w-4 text-on-surface-variant transition group-open:rotate-180" />

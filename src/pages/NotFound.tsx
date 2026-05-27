@@ -23,7 +23,7 @@ export default function NotFound() {
   return (
     <div className="flex min-h-[80vh] items-center justify-center px-4">
       <div className="w-full max-w-md text-center">
-        {/* Large seasonal 404 */}
+        {/* Large decorative 404 */}
         <div
           className="mb-2 font-headline text-[120px] font-bold leading-none"
           style={{ color: "#FF7F50", opacity: 0.15 }}
@@ -53,8 +53,7 @@ export default function NotFound() {
           </div>
           <button
             type="submit"
-            className="rounded-xl border border-outline-variant px-4 py-2.5 font-body text-sm font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_#141b2b]"
-            style={{ background: "#FF7F50" }}
+            className="rounded-xl border border-outline-variant bg-accent-coral px-4 py-2.5 font-body text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-card-hover"
           >
             {t(locale, "hero.searchBtn")}
           </button>

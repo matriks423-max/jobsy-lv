@@ -1,4 +1,4 @@
-﻿import { useLocale } from "@/lib/locale-context";
+import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { trpc } from "@/providers/trpc";
 import { useToast } from "@/hooks/useToast";
@@ -18,11 +18,11 @@ export default function UpgradeModal({ onClose }: UpgradeModalProps) {
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 px-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 px-4 backdrop-blur-sm">
       <div className="relative w-full max-w-md rounded-2xl border border-outline-variant bg-surface-cream p-8 shadow-float">
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-lg border-2 border-ink-light p-1 text-on-surface-variant hover:border-ink hover:text-on-surface"
+          className="absolute right-4 top-4 rounded-lg border-2 border-outline-variant p-1 text-on-surface-variant hover:border-primary-DEFAULT hover:text-on-surface"
         >
           <X className="h-4 w-4" />
         </button>
@@ -50,7 +50,7 @@ export default function UpgradeModal({ onClose }: UpgradeModalProps) {
           </button>
           <button
             onClick={onClose}
-            className="w-full rounded-xl border-2 border-ink-light px-6 py-3 font-body text-sm text-on-surface-variant hover:border-ink hover:text-on-surface transition"
+            className="w-full rounded-xl border-2 border-outline-variant px-6 py-3 font-body text-sm text-on-surface-variant hover:border-primary-DEFAULT hover:text-on-surface transition"
           >
             {t(locale, "upgrade.dismiss")}
           </button>

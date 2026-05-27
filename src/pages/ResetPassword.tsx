@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router";
 import { Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
 import { trpc } from "@/providers/trpc";
@@ -19,7 +19,7 @@ export default function ResetPassword() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "resetPassword.pageTitle") + " — Jobsy.lv";
+    document.title = t(locale, "resetPassword.pageTitle") + " � Jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 
@@ -79,7 +79,7 @@ export default function ResetPassword() {
 
         <form onSubmit={handleSubmit} className="rounded-2xl border border-outline-variant bg-white p-6 shadow-card">
           {error && (
-            <div className="mb-4 rounded-xl border-2 border-need bg-need/10 px-3 py-2 font-body text-sm text-need">
+            <div className="mb-4 rounded-xl border-2 border-need bg-need/10 px-3 py-2 font-body text-sm text-secondary-DEFAULT">
               {error}
             </div>
           )}

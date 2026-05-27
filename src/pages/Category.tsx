@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -12,54 +12,54 @@ const PAGE_SIZE = 12;
 // SEO descriptions per category (Latvian)
 const CATEGORY_SEO: Record<string, { heading: string; description: string }> = {
   household: {
-    heading: "Mājsaimniecības darbi Latvijā",
+    heading: "Majsaimniecibas darbi Latvija",
     description:
-      "Atrodi palīgus mājsaimniecībai — tīrīšanai, mazgāšanai, veļai un citiem ikdienas darbiem visā Latvijā.",
+      "Atrodi paligus majsaimniecibai � tiri�anai, mazga�anai, velai un citiem ikdienas darbiem visa Latvija.",
   },
   moving: {
-    heading: "Pārvākšanās palīdzība Latvijā",
+    heading: "Parvak�anas palidziba Latvija",
     description:
-      "Pieejami pārvākšanās pakalpojumi Rīgā un visā Latvijā. Kraušanas, transporta un iesaiņošanas palīgi.",
+      "Pieejami parvak�anas pakalpojumi Riga un visa Latvija. Krau�anas, transporta un iesaino�anas paligi.",
   },
   repairs: {
-    heading: "Remontdarbi Latvijā",
+    heading: "Remontdarbi Latvija",
     description:
-      "Atrodi remontdarbiniekus elektriskiem, santehnikas, apdares un citiem remontdarbiem Latvijā.",
+      "Atrodi remontdarbiniekus elektriskiem, santehnikas, apdares un citiem remontdarbiem Latvija.",
   },
   garden: {
-    heading: "Dārza darbi Latvijā",
+    heading: "Darza darbi Latvija",
     description:
-      "Dārznieki, zāles pļāvēji un dārza palīgi visā Latvijā. Atrodi palīgu savam dārzam.",
+      "Darznieki, zales plaveji un darza paligi visa Latvija. Atrodi paligu savam darzam.",
   },
   auto: {
-    heading: "Auto pakalpojumi Latvijā",
+    heading: "Auto pakalpojumi Latvija",
     description:
-      "Auto remonta, mazgāšanas un citi automobiļu pakalpojumi Rīgā un visā Latvijā.",
+      "Auto remonta, mazga�anas un citi automobilu pakalpojumi Riga un visa Latvija.",
   },
   childcare: {
-    heading: "Bērnu pieskatīšana Latvijā",
+    heading: "Bernu pieskati�ana Latvija",
     description:
-      "Aukles un bērnu pieskatīšanas pakalpojumi visā Latvijā. Uzticami palīgi ģimenēm.",
+      "Aukles un bernu pieskati�anas pakalpojumi visa Latvija. Uzticami paligi gimenem.",
   },
   pets: {
-    heading: "Mājdzīvnieku kopšana Latvijā",
+    heading: "Majdzivnieku kop�ana Latvija",
     description:
-      "Mājdzīvnieku pieskatīšana, pastaiga un kopšana Rīgā un visā Latvijā.",
+      "Majdzivnieku pieskati�ana, pastaiga un kop�ana Riga un visa Latvija.",
   },
   it: {
-    heading: "IT pakalpojumi Latvijā",
+    heading: "IT pakalpojumi Latvija",
     description:
-      "Datorspeciālisti, web izstrādātāji un IT atbalsts privātpersonām un uzņēmumiem Latvijā.",
+      "Datorspecialisti, web izstradataji un IT atbalsts privatpersonam un uznemumiem Latvija.",
   },
   tutoring: {
-    heading: "Repetīcijas un apmācība Latvijā",
+    heading: "Repeticijas un apmaciba Latvija",
     description:
-      "Repetitori mācību priekšmetos, valodās un citās jomās bērniem un pieaugušajiem Latvijā.",
+      "Repetitori macibu priek�metos, valodas un citas jomas berniem un pieaugu�ajiem Latvija.",
   },
   other: {
-    heading: "Citi pakalpojumi Latvijā",
+    heading: "Citi pakalpojumi Latvija",
     description:
-      "Dažādi palīdzības un pakalpojumu sludinājumi, kas neietilpst citās kategorijās.",
+      "Da�adi palidzibas un pakalpojumu sludinajumi, kas neietilpst citas kategorijas.",
   },
 };
 
@@ -80,7 +80,7 @@ export default function Category() {
   // Set document title + meta description for SEO
   useEffect(() => {
     if (seo) {
-      document.title = `${seo.heading} — Jobsy.lv`;
+      document.title = `${seo.heading} � Jobsy.lv`;
       // Inject meta description
       let meta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
       const created = !meta;
@@ -91,7 +91,7 @@ export default function Category() {
       }
       meta.content = seo.description;
       return () => {
-        document.title = "jobsy.lv — Atrodi palīdzību vai piedāvā darbu";
+        document.title = "jobsy.lv � Atrodi palidzibu vai piedava darbu";
         if (created && meta) document.head.removeChild(meta);
         else if (meta) meta.content = "";
       };
@@ -134,7 +134,7 @@ export default function Category() {
             {t(locale, "postDetail.breadcrumbPosts")}
           </Link>
           <span>/</span>
-          <span className="text-ink">{catName}</span>
+          <span className="text-on-surface">{catName}</span>
         </nav>
 
         {/* SEO heading */}

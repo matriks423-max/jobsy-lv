@@ -1,4 +1,4 @@
-ï»¿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -40,7 +40,7 @@ export default function MyPosts() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "nav.myPosts") + " â€” Jobsy.lv";
+    document.title = t(locale, "nav.myPosts") + " — Jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 
@@ -111,15 +111,15 @@ export default function MyPosts() {
   const getStatusConfig = (status: string) => {
     switch (status) {
       case "active":
-        return { label: t(locale, "myPosts.statusActive"), bg: "bg-success-emerald/10", text: "text-success-emerald", border: "border-sage", icon: CheckCircle };
+        return { label: t(locale, "myPosts.statusActive"), bg: "bg-success-emerald/10", text: "text-success-emerald", border: "border-success-emerald", icon: CheckCircle };
       case "pending_payment":
-        return { label: t(locale, "myPosts.statusPending"), bg: "bg-surface-cream", text: "text-ink", border: "border-mustard", icon: Clock };
+        return { label: t(locale, "myPosts.statusPending"), bg: "bg-surface-cream", text: "text-on-surface", border: "border-accent-coral", icon: Clock };
       case "pending_review":
-        return { label: t(locale, "myPosts.statusReview"), bg: "bg-surface-cream", text: "text-ink", border: "border-mustard", icon: Clock };
+        return { label: t(locale, "myPosts.statusReview"), bg: "bg-surface-cream", text: "text-on-surface", border: "border-accent-coral", icon: Clock };
       case "rejected":
-        return { label: t(locale, "myPosts.statusRejected"), bg: "bg-need-light", text: "text-need", border: "border-need", icon: AlertCircle };
+        return { label: t(locale, "myPosts.statusRejected"), bg: "bg-surface-cream", text: "text-secondary-DEFAULT", border: "border-need", icon: AlertCircle };
       default:
-        return { label: t(locale, "myPosts.statusExpired"), bg: "bg-surface-cream", text: "text-outline", border: "border-ink-light", icon: AlertCircle };
+        return { label: t(locale, "myPosts.statusExpired"), bg: "bg-surface-cream", text: "text-outline", border: "border-outline-variant", icon: AlertCircle };
     }
   };
 
@@ -155,23 +155,23 @@ export default function MyPosts() {
               onClick={() => setTab(tVal)}
               className={`flex items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-sm font-medium transition ${
                 tab === tVal
-                  ? "border-ink bg-accent-coral text-on-surface"
-                  : "border-ink-light bg-white text-on-surface-variant hover:border-ink hover:text-on-surface"
+                  ? "border-primary-DEFAULT bg-accent-coral text-on-surface"
+                  : "border-outline-variant bg-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-on-surface"
               }`}
             >
               {tVal === "active" ? t(locale, "myPosts.tabActive") : tVal === "expired" ? t(locale, "myPosts.tabExpired") : t(locale, "myPosts.tabAll")}
-              <span className={`rounded-full px-2 py-0.5 text-xs ${tab === tVal ? "bg-ink text-cream" : "bg-surface-cream text-on-surface-variant"}`}>
+              <span className={`rounded-full px-2 py-0.5 text-xs ${tab === tVal ? "bg-primary-DEFAULT text-white" : "bg-surface-cream text-on-surface-variant"}`}>
                 {counts[tVal]}
               </span>
             </button>
           ))}
-          {/* Analytics tab â€” visible to all, locked for free users */}
+          {/* Analytics tab — visible to all, locked for free users */}
           <button
             onClick={() => setTab("analytics")}
             className={`flex items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-sm font-medium transition ${
               tab === "analytics"
-                ? "border-ink bg-ink text-cream"
-                : "border-ink-light bg-white text-on-surface-variant hover:border-ink hover:text-on-surface"
+                ? "border-primary-DEFAULT bg-primary-DEFAULT text-white"
+                : "border-outline-variant bg-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-on-surface"
             }`}
           >
             <BarChart2 className="h-3.5 w-3.5" />
@@ -197,7 +197,7 @@ export default function MyPosts() {
             <div className="rounded-2xl border border-outline-variant bg-white overflow-hidden">
               {/* Summary row */}
               {analyticsData && analyticsData.length > 0 && (
-                <div className="grid grid-cols-3 border-b-2 border-ink">
+                <div className="grid grid-cols-3 border-b border-on-surface">
                   {[
                     { icon: Eye, label: t(locale, "myPosts.analyticsViews"), value: analyticsData.reduce((s, p) => s + p.viewCount, 0) },
                     { icon: MessageSquare, label: t(locale, "myPosts.analyticsContacts"), value: analyticsData.reduce((s, p) => s + p.contactCount, 0) },
@@ -218,7 +218,7 @@ export default function MyPosts() {
                 <div className="divide-y divide-ink/10">
                   {analyticsData.map((post) => (
                     <div key={post.id} className="flex items-center gap-3 px-4 py-3">
-                      <div className={`h-10 w-1 shrink-0 rounded-full ${post.status === "active" ? "bg-sage" : "bg-ink-light"}`} />
+                      <div className={`h-10 w-1 shrink-0 rounded-full ${post.status === "active" ? "bg-success-emerald" : "bg-outline/20"}`} />
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-body text-sm font-medium text-on-surface">{post.title}</p>
                         <p className="font-mono text-xs text-on-surface-variant">
@@ -256,7 +256,7 @@ export default function MyPosts() {
                   key={post.id}
                   className="flex items-center gap-4 rounded-2xl border border-outline-variant bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:shadow-float"
                 >
-                  <div className={`h-16 w-1.5 rounded-full ${post.status === "active" ? "bg-sage" : post.status === "pending_payment" ? "bg-mustard" : "bg-ink-light"}`} />
+                  <div className={`h-16 w-1.5 rounded-full ${post.status === "active" ? "bg-success-emerald" : post.status === "pending_payment" ? "bg-accent-coral" : "bg-outline/20"}`} />
 
                   <div className="flex-1 min-w-0">
                     <div className="mb-1 flex flex-wrap items-center gap-2">
@@ -270,18 +270,18 @@ export default function MyPosts() {
                           <Zap className="h-2.5 w-2.5" />
                           {post.boostType === "bump" ? "Bump" : post.boostType === "featured" ? "Featured" : "Urgent"}
                           {getBoostTimeRemaining(post.boostExpiresAt) && (
-                            <span className="ml-0.5 opacity-70">Â· {getBoostTimeRemaining(post.boostExpiresAt)}</span>
+                            <span className="ml-0.5 opacity-70">· {getBoostTimeRemaining(post.boostExpiresAt)}</span>
                           )}
                         </span>
                       )}
                     </div>
                     <h3 className="truncate font-body text-base font-bold text-on-surface">{post.title}</h3>
                     <p className="font-body text-xs text-on-surface-variant">
-                      {post.city && `${t(locale, `cities.${post.city}` as never)} â€¢ `}
+                      {post.city && `${t(locale, `cities.${post.city}` as never)} • `}
                       {t(locale, "postDetail.published", {
                         date: new Date(post.createdAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB"),
                       })}
-                      {post.expiresAt && ` â€¢ ${t(locale, "myPosts.expires")} ${new Date(post.expiresAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}`}
+                      {post.expiresAt && ` • ${t(locale, "myPosts.expires")} ${new Date(post.expiresAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}`}
                     </p>
                   </div>
 
@@ -311,11 +311,11 @@ export default function MyPosts() {
                           title={post.filled ? t(locale, "myPosts.markOpen") : t(locale, "myPosts.markFilled")}
                           className={`rounded-lg border-2 px-2 py-2 font-body text-xs font-medium transition ${
                             post.filled
-                              ? "border-sage bg-success-emerald/10 text-success-emerald hover:bg-sage"
-                              : "border-ink-light bg-white text-on-surface-variant hover:border-ink hover:text-on-surface"
+                              ? "border-success-emerald bg-success-emerald/10 text-success-emerald hover:bg-success-emerald"
+                              : "border-outline-variant bg-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-on-surface"
                           }`}
                         >
-                          {post.filled ? "âœ“" : "â—‹"}
+                          {post.filled ? "?" : "?"}
                         </button>
                       )}
                       <button
@@ -346,7 +346,7 @@ export default function MyPosts() {
                             deleteMutation.mutate({ id: post.id });
                           }
                         }}
-                        className="rounded-lg border-2 border-need bg-need-light p-2 text-need hover:bg-need hover:text-white"
+                        className="rounded-lg border-2 border-need bg-surface-cream p-2 text-secondary-DEFAULT hover:bg-need hover:text-white"
                         title={t(locale, "createPost.deleteBtn")}
                       >
                         <Trash2 className="h-4 w-4" />

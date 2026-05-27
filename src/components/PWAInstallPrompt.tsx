@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Download, X } from "lucide-react";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -62,7 +62,7 @@ export default function PWAInstallPrompt() {
           <X className="h-4 w-4" />
         </button>
       </div>
-      <div className="border-t-2 border-ink px-4 py-3">
+      <div className="border-t border-outline-variant px-4 py-3">
         <button
           onClick={install}
           className="flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant py-2 font-body text-sm font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_#141b2b]"

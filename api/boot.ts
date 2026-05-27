@@ -471,7 +471,7 @@ app.get("/robots.txt", (c) => {
     "Sitemap: https://jobsy.lv/sitemap.xml",
     "Feed: https://jobsy.lv/feed.xml",
   ].join("\n");
-  return c.text(content, 200, { "Content-Type": "text/plain; charset=utf-8" });
+  return c.text(content, 200, { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "public, max-age=86400" });
 });
 
 // SEO: sitemap.xml — static pages + category landing pages
@@ -525,7 +525,7 @@ app.get("/sitemap.xml", async (c) => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}
 </urlset>`;
-  return c.text(xml, 200, { "Content-Type": "application/xml; charset=utf-8" });
+  return c.text(xml, 200, { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" });
 });
 
 // RSS feed — latest active posts
@@ -565,7 +565,7 @@ app.get("/feed.xml", async (c) => {
     ${items}
   </channel>
 </rss>`;
-  return c.text(xml, 200, { "Content-Type": "application/rss+xml; charset=utf-8" });
+  return c.text(xml, 200, { "Content-Type": "application/rss+xml; charset=utf-8", "Cache-Control": "public, max-age=900" });
 });
 
 // Apple Pay domain verification

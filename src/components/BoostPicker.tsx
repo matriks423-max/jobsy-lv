@@ -1,4 +1,4 @@
-﻿import { useLocale } from "@/lib/locale-context";
+import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { trpc } from "@/providers/trpc";
 import { useToast } from "@/hooks/useToast";
@@ -13,9 +13,9 @@ interface BoostPickerProps {
 }
 
 const BOOSTS = [
-  { type: "bump"     as const, icon: "🔝", cents: 100, priceLabel: "€1.00" },
-  { type: "featured" as const, icon: "⭐", cents: 200, priceLabel: "€2.00" },
-  { type: "urgent"   as const, icon: "🔴", cents:  50, priceLabel: "€0.50" },
+  { type: "bump"     as const, icon: "??", cents: 100, priceLabel: "�1.00" },
+  { type: "featured" as const, icon: "?", cents: 200, priceLabel: "�2.00" },
+  { type: "urgent"   as const, icon: "??", cents:  50, priceLabel: "�0.50" },
 ];
 
 export default function BoostPicker({
@@ -54,11 +54,11 @@ export default function BoostPicker({
   const isPending = applyMutation.isPending || creditsMutation.isPending;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 px-4 pb-4 backdrop-blur-sm sm:items-center">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-on-surface/40 px-4 pb-4 backdrop-blur-sm sm:items-center">
       <div className="relative w-full max-w-sm rounded-2xl border border-outline-variant bg-surface-cream p-6 shadow-float">
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-lg border-2 border-ink-light p-1 text-on-surface-variant hover:border-ink"
+          className="absolute right-4 top-4 rounded-lg border-2 border-outline-variant p-1 text-on-surface-variant hover:border-primary-DEFAULT"
         >
           <X className="h-4 w-4" />
         </button>
@@ -72,7 +72,7 @@ export default function BoostPicker({
         {creditBalance > 0 && (
           <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-outline-variant bg-surface-cream px-3 py-1 font-body text-xs font-medium text-on-surface">
             <Wallet className="h-3.5 w-3.5" />
-            {t(locale, "credits.balance")}: €{(creditBalance / 100).toFixed(2)}
+            {t(locale, "credits.balance")}: �{(creditBalance / 100).toFixed(2)}
           </div>
         )}
 
@@ -105,7 +105,7 @@ export default function BoostPicker({
                   <button
                     onClick={() => applyMutation.mutate({ postId, boostType: b.type })}
                     disabled={isPending}
-                    className="w-full rounded-lg border-2 border-sage bg-success-emerald/10 py-1.5 font-body text-xs font-bold text-success-emerald hover:bg-sage hover:text-white transition disabled:opacity-60"
+                    className="w-full rounded-lg border-2 border-success-emerald bg-success-emerald/10 py-1.5 font-body text-xs font-bold text-success-emerald hover:bg-success-emerald hover:text-white transition disabled:opacity-60"
                   >
                     {t(locale, "boost.freeAvailable")} ({freeBoostsRemaining})
                   </button>
@@ -114,7 +114,7 @@ export default function BoostPicker({
                     <button
                       onClick={() => creditsMutation.mutate({ postId, boostType: b.type })}
                       disabled={isPending}
-                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-outline-variant bg-surface-cream py-1.5 font-body text-xs font-bold text-on-surface hover:bg-mustard transition disabled:opacity-60"
+                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-outline-variant bg-surface-cream py-1.5 font-body text-xs font-bold text-on-surface hover:bg-accent-coral transition disabled:opacity-60"
                     >
                       <Wallet className="h-3 w-3" />
                       {t(locale, "credits.useCredits")}
@@ -122,7 +122,7 @@ export default function BoostPicker({
                     <button
                       onClick={() => applyMutation.mutate({ postId, boostType: b.type })}
                       disabled={isPending}
-                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border-2 border-ink-light bg-white py-1.5 font-body text-xs font-medium text-on-surface-variant hover:border-ink hover:text-on-surface transition disabled:opacity-60"
+                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border-2 border-outline-variant bg-white py-1.5 font-body text-xs font-medium text-on-surface-variant hover:border-primary-DEFAULT hover:text-on-surface transition disabled:opacity-60"
                     >
                       <CreditCard className="h-3 w-3" />
                       {t(locale, "credits.payCard")}

@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import { trpc } from "@/providers/trpc";
@@ -12,7 +12,7 @@ export default function ForgotPassword() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "forgotPassword.pageTitle") + " — Jobsy.lv";
+    document.title = t(locale, "forgotPassword.pageTitle") + " � Jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 
@@ -52,7 +52,7 @@ export default function ForgotPassword() {
           className="rounded-2xl border border-outline-variant bg-white p-6 shadow-card"
         >
           {forgotMutation.isError && (
-            <div className="mb-4 rounded-xl border-2 border-need bg-need/10 px-3 py-2 font-body text-sm text-need">
+            <div className="mb-4 rounded-xl border-2 border-need bg-need/10 px-3 py-2 font-body text-sm text-secondary-DEFAULT">
               {forgotMutation.error.message}
             </div>
           )}

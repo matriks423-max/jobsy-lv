@@ -1,4 +1,4 @@
-﻿import { useEffect } from "react";
+import { useEffect } from "react";
 import { useParams, Link } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -43,7 +43,7 @@ export default function UserProfile() {
   useEffect(() => {
     const prev = document.title;
     if (data?.profile?.name) {
-      document.title = `${data.profile.name} — Jobsy.lv`;
+      document.title = `${data.profile.name} � Jobsy.lv`;
     }
     return () => { document.title = prev; };
   }, [data?.profile?.name]);
@@ -96,14 +96,14 @@ export default function UserProfile() {
                   {profile.name ?? t(locale, "postDetail.notFound")}
                 </h1>
                 {profile.phoneVerified && (
-                  <span className="inline-flex items-center gap-1 rounded-full border border-sage bg-success-emerald/10 px-2 py-0.5 font-body text-xs font-medium text-success-emerald">
+                  <span className="inline-flex items-center gap-1 rounded-full border border-success-emerald bg-success-emerald/10 px-2 py-0.5 font-body text-xs font-medium text-success-emerald">
                     <ShieldCheck className="h-3 w-3" />
                     {t(locale, "settings.verified")}
                   </span>
                 )}
                 {isBusiness && (
-                  <span className="inline-flex items-center gap-1 rounded-full border border-ink bg-ink px-2 py-0.5 font-mono text-xs font-bold text-cream">
-                    🏢 Business
+                  <span className="inline-flex items-center gap-1 rounded-full border border-primary-DEFAULT bg-primary-DEFAULT px-2 py-0.5 font-mono text-xs font-bold text-white">
+                    ?? Business
                   </span>
                 )}
               </div>
@@ -142,8 +142,8 @@ export default function UserProfile() {
 
           {/* Business description */}
           {isBusiness && profile.companyName && (
-            <div className="mt-6 rounded-xl border-2 border-ink-light bg-surface-cream p-4">
-              <p className="mb-1 font-body text-sm font-bold text-on-surface">🏢 {profile.companyName}</p>
+            <div className="mt-6 rounded-xl border-2 border-outline-variant bg-surface-cream p-4">
+              <p className="mb-1 font-body text-sm font-bold text-on-surface">?? {profile.companyName}</p>
               {profile.companyDescription && (
                 <p className="font-body text-sm text-on-surface-variant">{profile.companyDescription}</p>
               )}
@@ -178,10 +178,10 @@ export default function UserProfile() {
                     to={`/post/${post.id}`}
                     className="flex items-center gap-4 rounded-2xl border border-outline-variant bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-card"
                   >
-                    <div className={`h-12 w-1 shrink-0 rounded-full ${post.type === "need" ? "bg-need" : "bg-sage"}`} />
+                    <div className={`h-12 w-1 shrink-0 rounded-full ${post.type === "need" ? "bg-need" : "bg-success-emerald"}`} />
                     <div className="flex-1 min-w-0">
                       <div className="mb-1 flex flex-wrap items-center gap-1.5">
-                        <span className="inline-flex items-center gap-1 rounded-full border border-ink bg-surface-cream px-2 py-0.5 font-body text-[10px] font-medium uppercase text-on-surface">
+                        <span className="inline-flex items-center gap-1 rounded-full border border-primary-DEFAULT bg-surface-cream px-2 py-0.5 font-body text-[10px] font-medium uppercase text-on-surface">
                           <CategoryIcon className="h-3 w-3" />
                           {t(locale, `categories.${post.category}` as never)}
                         </span>
@@ -225,7 +225,7 @@ export default function UserProfile() {
               {reviews.map((r) => (
                 <div key={r.id} className="rounded-2xl border border-outline-variant bg-white p-5">
                   <div className="mb-2 flex items-center justify-between">
-                    <p className="font-body text-sm font-bold text-on-surface">{r.reviewerName ?? "—"}</p>
+                    <p className="font-body text-sm font-bold text-on-surface">{r.reviewerName ?? "�"}</p>
                     <div className="flex gap-0.5">
                       {[1, 2, 3, 4, 5].map((s) => (
                         <Star
