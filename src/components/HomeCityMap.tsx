@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+﻿import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
@@ -20,7 +20,7 @@ export default function HomeCityMap() {
     <MapContainer
       bounds={[[55.57, 20.87], [58.19, 28.34]]}
       boundsOptions={{ padding: [16, 16] }}
-      className="h-[400px] w-full rounded-2xl border-2 border-ink md:h-[520px]"
+      className="h-[400px] w-full rounded-2xl border border-outline-variant md:h-[520px]"
       scrollWheelZoom={false}
       zoomControl={true}
     >

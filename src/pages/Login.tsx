@@ -90,29 +90,29 @@ export default function Login() {
   const hasGoogle = !!googleClientId && googleClientId !== "your_google_client_id.apps.googleusercontent.com";
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 noise-bg">
+    <div className="flex min-h-screen items-center justify-center bg-surface-off-white px-4">
       <div className="w-full max-w-md">
-        <Link to="/" className="mb-6 inline-flex items-center gap-2 font-body text-sm text-ink-muted hover:text-ink">
+        <Link to="/" className="mb-6 inline-flex items-center gap-2 font-label text-label-sm text-on-surface-variant transition-colors hover:text-primary-DEFAULT">
           <ArrowLeft className="h-4 w-4" />
           {t(locale, "login.back")}
         </Link>
 
-        <Card className="border-2 border-ink bg-white shadow-float">
+        <Card className="border border-outline-variant bg-white shadow-card">
           <CardContent className="p-8">
             {/* Toggle tabs */}
-            <div className="mb-6 flex rounded-xl border-2 border-ink p-1">
+            <div className="mb-6 flex rounded-lg border border-outline-variant bg-surface-cream p-1">
               <button
                 onClick={() => setMode("login")}
-                className={`flex-1 rounded-lg py-2 font-body text-sm font-medium transition ${
-                  mode === "login" ? "bg-coral text-ink" : "text-ink-muted hover:text-ink"
+                className={`flex-1 rounded-md py-2 font-label text-label-sm transition-colors duration-150 ${
+                  mode === "login" ? "bg-primary-DEFAULT text-white shadow-xs" : "text-on-surface-variant hover:text-primary-DEFAULT"
                 }`}
               >
                 {t(locale, "login.loginTab")}
               </button>
               <button
                 onClick={() => setMode("register")}
-                className={`flex-1 rounded-lg py-2 font-body text-sm font-medium transition ${
-                  mode === "register" ? "bg-coral text-ink" : "text-ink-muted hover:text-ink"
+                className={`flex-1 rounded-md py-2 font-label text-label-sm transition-colors duration-150 ${
+                  mode === "register" ? "bg-primary-DEFAULT text-white shadow-xs" : "text-on-surface-variant hover:text-primary-DEFAULT"
                 }`}
               >
                 {t(locale, "login.registerTab")}
@@ -124,7 +124,7 @@ export default function Login() {
               <>
                 <button
                   onClick={() => { window.location.href = getGoogleOAuthUrl(referralCode || undefined); }}
-                  className="mb-4 flex h-12 w-full items-center justify-center gap-3 rounded-xl border-2 border-ink bg-white font-body text-sm font-medium text-ink transition hover:-translate-y-0.5 hover:bg-cream-dark hover:shadow-card"
+                  className="mb-4 flex h-12 w-full items-center justify-center gap-3 rounded-lg border border-outline-variant bg-white font-label text-label-sm text-on-surface shadow-card transition-all hover:-translate-y-0.5 hover:border-primary-DEFAULT hover:shadow-card-hover"
                 >
                   <svg className="h-5 w-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -135,9 +135,9 @@ export default function Login() {
                   {mode === "login" ? t(locale, "login.googleLogin") : t(locale, "login.googleRegister")}
                 </button>
                 <div className="mb-4 flex items-center gap-3">
-                  <div className="h-px flex-1 bg-ink-light" />
-                  <span className="font-body text-xs text-ink-light">{t(locale, "login.orEmail")}</span>
-                  <div className="h-px flex-1 bg-ink-light" />
+                  <div className="h-px flex-1 bg-outline-variant" />
+                  <span className="font-label text-label-sm text-outline">{t(locale, "login.orEmail")}</span>
+                  <div className="h-px flex-1 bg-outline-variant" />
                 </div>
               </>
             )}
@@ -146,51 +146,51 @@ export default function Login() {
             <div className="space-y-4">
               {mode === "register" && (
                 <div>
-                  <label className="mb-1 block font-body text-sm font-medium text-ink">{t(locale, "login.nameLabel")}</label>
+                  <label className="mb-1 block font-label text-label-sm text-on-surface-variant">{t(locale, "login.nameLabel")}</label>
                   <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={t(locale, "login.namePlaceholder")}
-                    className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-coral"
+                    className="h-12 rounded-lg border-outline-variant bg-surface-cream font-body focus:border-primary-DEFAULT"
                   />
-                  {errors.name && <p className="mt-1 font-body text-xs text-need">{errors.name}</p>}
+                  {errors.name && <p className="mt-1 font-label text-label-sm text-error">{errors.name}</p>}
                 </div>
               )}
 
               <div>
-                <label className="mb-1 block font-body text-sm font-medium text-ink">{t(locale, "login.emailLabel")}</label>
+                <label className="mb-1 block font-label text-label-sm text-on-surface-variant">{t(locale, "login.emailLabel")}</label>
                 <Input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t(locale, "login.emailPlaceholder")}
-                  className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-coral"
+                  className="h-12 rounded-lg border-outline-variant bg-surface-cream font-body focus:border-primary-DEFAULT"
                 />
-                {errors.email && <p className="mt-1 font-body text-xs text-need">{errors.email}</p>}
+                {errors.email && <p className="mt-1 font-label text-label-sm text-error">{errors.email}</p>}
               </div>
 
               <div>
-                <label className="mb-1 block font-body text-sm font-medium text-ink">{t(locale, "login.passwordLabel")}</label>
+                <label className="mb-1 block font-label text-label-sm text-on-surface-variant">{t(locale, "login.passwordLabel")}</label>
                 <div className="relative">
                   <Input
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={mode === "register" ? t(locale, "login.passwordPlaceholderMin") : t(locale, "login.passwordPlaceholderLogin")}
-                    className="h-12 rounded-xl border-2 border-ink-light bg-white font-body pr-10 focus:border-coral"
+                    className="h-12 rounded-lg border-outline-variant bg-surface-cream font-body pr-10 focus:border-primary-DEFAULT"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-outline"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
-                {errors.password && <p className="mt-1 font-body text-xs text-need">{errors.password}</p>}
+                {errors.password && <p className="mt-1 font-label text-label-sm text-error">{errors.password}</p>}
                 {mode === "login" && (
                   <div className="mt-1 text-right">
-                    <Link to="/forgot-password" className="font-body text-xs text-coral hover:underline">
+                    <Link to="/forgot-password" className="font-label text-label-sm text-primary-DEFAULT hover:underline">
                       {t(locale, "login.forgotPassword")}
                     </Link>
                   </div>
@@ -199,9 +199,9 @@ export default function Login() {
 
               {mode === "register" && (
                 <div>
-                  <label className="mb-1 block font-body text-sm font-medium text-ink">
+                  <label className="mb-1 block font-label text-label-sm text-on-surface-variant">
                     <span className="flex items-center gap-1">
-                      <Gift className="h-3.5 w-3.5 text-coral" />
+                      <Gift className="h-3.5 w-3.5 text-accent-coral" />
                       {t(locale, "login.referralLabel")}
                     </span>
                   </label>
@@ -209,15 +209,15 @@ export default function Login() {
                     value={referralCode}
                     onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
                     placeholder={t(locale, "login.referralPlaceholder")}
-                    className="h-12 rounded-xl border-2 border-ink-light bg-white font-body uppercase focus:border-coral"
+                    className="h-12 rounded-lg border-outline-variant bg-surface-cream font-body uppercase focus:border-primary-DEFAULT"
                   />
                 </div>
               )}
 
-              <Button
+              <button
                 onClick={handleSubmit}
                 disabled={loginMutation.isPending || registerMutation.isPending}
-                className="h-12 w-full rounded-xl border-2 border-ink bg-coral font-body text-base font-medium text-ink hover:bg-coral-hover"
+                className="flex h-12 w-full items-center justify-center rounded-lg bg-primary-DEFAULT font-label text-label-md font-bold text-white transition-all hover:bg-on-primary-fixed-variant active:scale-[0.99] disabled:opacity-60"
               >
                 {loginMutation.isPending || registerMutation.isPending ? (
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -227,7 +227,7 @@ export default function Login() {
                   <UserPlus className="mr-2 h-5 w-5" />
                 )}
                 {mode === "login" ? t(locale, "login.submitLogin") : t(locale, "login.submitRegister")}
-              </Button>
+              </button>
             </div>
           </CardContent>
         </Card>

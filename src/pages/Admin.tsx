@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
@@ -33,12 +33,12 @@ const STATUS_LABELS: Record<string, string> = {
   pending_payment: "Pending Payment", expired: "Expired", rejected: "Rejected", closed: "Closed",
 };
 const STATUS_COLORS: Record<string, string> = {
-  active: "bg-sage-light text-sage border-sage",
-  pending_review: "bg-mustard-light text-ink border-mustard",
-  pending_payment: "bg-mustard-light text-ink border-mustard",
-  expired: "bg-cream-dark text-ink-muted border-ink-light",
+  active: "bg-success-emerald/10 text-success-emerald border-sage",
+  pending_review: "bg-mustard-light text-on-surface border-mustard",
+  pending_payment: "bg-mustard-light text-on-surface border-mustard",
+  expired: "bg-surface-cream text-on-surface-variant border-ink-light",
   rejected: "bg-need-light text-need border-need",
-  closed: "bg-cream-dark text-ink-muted border-ink-light",
+  closed: "bg-surface-cream text-on-surface-variant border-ink-light",
 };
 
 export default function Admin() {
@@ -49,7 +49,7 @@ export default function Admin() {
   const [userSearch, setUserSearch] = useState("");
   const [postStatus, setPostStatus] = useState("");
 
-  useEffect(() => { document.title = "Admin — jobsy.lv"; }, []);
+  useEffect(() => { document.title = "Admin — Jobsy.lv"; }, []);
 
   useEffect(() => {
     if (!authLoading && (!isAuthenticated || user?.role !== "admin")) {
@@ -105,7 +105,7 @@ export default function Admin() {
 
   if (authLoading) return (
     <div className="flex min-h-screen items-center justify-center">
-      <Loader2 className="h-8 w-8 animate-spin text-coral" />
+      <Loader2 className="h-8 w-8 animate-spin text-accent-coral" />
     </div>
   );
 
@@ -122,16 +122,16 @@ export default function Admin() {
   ];
 
   return (
-    <div className="min-h-screen px-4 py-8 noise-bg">
+    <div className="min-h-screen px-4 py-8">
       <div className="mx-auto max-w-5xl">
 
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <ShieldCheck className="h-7 w-7 text-coral" />
-            <h1 className="font-display text-3xl font-bold text-ink">Admin</h1>
+            <ShieldCheck className="h-7 w-7 text-accent-coral" />
+            <h1 className="font-headline text-3xl font-bold text-on-surface">Admin</h1>
           </div>
-          <span className="rounded-full border-2 border-ink bg-white px-3 py-1 font-mono text-xs text-ink-muted">
+          <span className="rounded-full border border-outline-variant bg-white px-3 py-1 font-mono text-xs text-on-surface-variant">
             {user.email}
           </span>
         </div>
@@ -141,7 +141,7 @@ export default function Admin() {
           {TABS.map((t) => (
             <button key={t.key} onClick={() => setTab(t.key)}
               className={`flex items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-sm font-medium transition ${
-                tab === t.key ? "border-ink bg-coral text-ink" : "border-ink-light bg-white text-ink-muted hover:border-ink hover:text-ink"
+                tab === t.key ? "border-ink bg-accent-coral text-on-surface" : "border-ink-light bg-white text-on-surface-variant hover:border-ink hover:text-on-surface"
               }`}>
               {t.icon}{t.label}
               {!!t.badge && (
@@ -159,17 +159,17 @@ export default function Admin() {
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
               {[
                 { label: "Total Users", value: stats?.totalUsers, color: "text-coral" },
-                { label: "Active Posts", value: stats?.activePosts, color: "text-sage" },
+                { label: "Active Posts", value: stats?.activePosts, color: "text-success-emerald" },
                 { label: "Posts Today", value: stats?.postsToday, color: "text-mustard" },
                 { label: "Signups Today", value: stats?.usersToday, color: "text-coral" },
                 { label: "Total Posts", value: stats?.totalPosts, color: "text-ink" },
-                { label: "Business Users", value: stats?.businessUsers, color: "text-sage" },
+                { label: "Business Users", value: stats?.businessUsers, color: "text-success-emerald" },
                 { label: "Pending Review", value: stats?.pendingCount, color: "text-mustard" },
                 { label: "Open Reports", value: stats?.reportsCount, color: "text-need" },
               ].map((s) => (
-                <div key={s.label} className="rounded-2xl border-2 border-ink bg-white p-5 text-center">
+                <div key={s.label} className="rounded-2xl border border-outline-variant bg-white p-5 text-center">
                   <p className={`font-mono text-3xl font-bold ${s.color}`}>{s.value ?? "—"}</p>
-                  <p className="mt-1 font-body text-xs text-ink-muted">{s.label}</p>
+                  <p className="mt-1 font-body text-xs text-on-surface-variant">{s.label}</p>
                 </div>
               ))}
             </div>
@@ -177,11 +177,11 @@ export default function Admin() {
               {[
                 { label: "Interests Sent", value: stats?.totalInterests, color: "text-coral" },
                 { label: "Reviews Left", value: stats?.totalReviews, color: "text-mustard" },
-                { label: "Verified Phones", value: stats?.verifiedPhones, color: "text-sage" },
+                { label: "Verified Phones", value: stats?.verifiedPhones, color: "text-success-emerald" },
               ].map((s) => (
-                <div key={s.label} className="rounded-2xl border-2 border-ink bg-white p-5 text-center">
+                <div key={s.label} className="rounded-2xl border border-outline-variant bg-white p-5 text-center">
                   <p className={`font-mono text-3xl font-bold ${s.color}`}>{s.value ?? "—"}</p>
-                  <p className="mt-1 font-body text-xs text-ink-muted">{s.label}</p>
+                  <p className="mt-1 font-body text-xs text-on-surface-variant">{s.label}</p>
                 </div>
               ))}
             </div>
@@ -192,13 +192,13 @@ export default function Admin() {
         {tab === "users" && (
           <div>
             <div className="mb-4 flex gap-2">
-              <div className="flex flex-1 items-center gap-2 rounded-xl border-2 border-ink bg-white px-4 py-2">
-                <Search className="h-4 w-4 text-ink-muted" />
+              <div className="flex flex-1 items-center gap-2 rounded-xl border border-outline-variant bg-white px-4 py-2">
+                <Search className="h-4 w-4 text-on-surface-variant" />
                 <input
                   value={userSearch}
                   onChange={(e) => setUserSearch(e.target.value)}
                   placeholder="Search by email or name..."
-                  className="flex-1 bg-transparent font-body text-sm text-ink outline-none placeholder:text-ink-muted"
+                  className="flex-1 bg-transparent font-body text-sm text-on-surface outline-none placeholder:text-on-surface-variant"
                 />
               </div>
               {users && users.length > 0 && (
@@ -210,7 +210,7 @@ export default function Admin() {
                     ];
                     downloadCsv(`jobsy-users-${new Date().toISOString().split("T")[0]}.csv`, rows as string[][]);
                   }}
-                  className="flex items-center gap-2 rounded-xl border-2 border-ink bg-white px-4 py-2 font-body text-sm font-medium text-ink hover:bg-cream-dark transition"
+                  className="flex items-center gap-2 rounded-xl border border-outline-variant bg-white px-4 py-2 font-body text-sm font-medium text-on-surface hover:bg-surface-cream transition"
                   title="Export CSV"
                 >
                   <Download className="h-4 w-4" />
@@ -220,21 +220,21 @@ export default function Admin() {
             </div>
             <div className="space-y-3">
               {usersLoading ? (
-                [...Array(5)].map((_, i) => <Skeleton key={i} className="h-16 rounded-2xl border-2 border-ink" />)
+                [...Array(5)].map((_, i) => <Skeleton key={i} className="h-16 rounded-2xl border border-outline-variant" />)
               ) : users?.map((u) => (
-                <div key={u.id} className="flex items-center gap-3 rounded-2xl border-2 border-ink bg-white px-5 py-3">
+                <div key={u.id} className="flex items-center gap-3 rounded-2xl border border-outline-variant bg-white px-5 py-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="font-body text-sm font-bold text-ink truncate">{u.email}</p>
-                      {u.role === "admin" && <span className="rounded bg-coral px-1.5 py-0.5 font-mono text-[10px] font-bold text-ink">ADMIN</span>}
+                      <p className="font-body text-sm font-bold text-on-surface truncate">{u.email}</p>
+                      {u.role === "admin" && <span className="rounded bg-accent-coral px-1.5 py-0.5 font-mono text-[10px] font-bold text-on-surface">ADMIN</span>}
                       {u.role === "banned" && <span className="rounded bg-need-light px-1.5 py-0.5 font-mono text-[10px] font-bold text-need">BANNED</span>}
-                      {u.plan === "business" && <span className="rounded bg-mustard-light px-1.5 py-0.5 font-mono text-[10px] font-bold text-ink">🏢 BUSINESS</span>}
+                      {u.plan === "business" && <span className="rounded bg-mustard-light px-1.5 py-0.5 font-mono text-[10px] font-bold text-on-surface">🏢 BUSINESS</span>}
                     </div>
-                    <p className="font-mono text-xs text-ink-muted">
+                    <p className="font-mono text-xs text-on-surface-variant">
                       #{u.id} · {u.name ?? "—"} · {u.authMethod} · joined {new Date(u.createdAt).toLocaleDateString()} · {u.postCount ?? 0} posts
                     </p>
                     {u.phoneVerified && (
-                      <span className="mt-1 flex items-center gap-1 font-mono text-[10px] text-sage">
+                      <span className="mt-1 flex items-center gap-1 font-mono text-[10px] text-success-emerald">
                         <Phone className="h-3 w-3" /> phone verified
                       </span>
                     )}
@@ -242,7 +242,7 @@ export default function Admin() {
                   <div className="flex shrink-0 gap-1">
                     {u.role === "banned" ? (
                       <button onClick={() => setRoleMutation.mutate({ userId: u.id, role: "user" })}
-                        className="flex items-center gap-1 rounded-lg border-2 border-sage bg-sage-light px-3 py-1.5 font-body text-xs font-medium text-sage hover:bg-sage hover:text-white transition">
+                        className="flex items-center gap-1 rounded-lg border-2 border-sage bg-success-emerald/10 px-3 py-1.5 font-body text-xs font-medium text-success-emerald hover:bg-sage hover:text-white transition">
                         <UserCheck className="h-3 w-3" /> Unban
                       </button>
                     ) : u.role !== "admin" ? (
@@ -265,7 +265,7 @@ export default function Admin() {
               {STATUS_OPTIONS.map((s) => (
                 <button key={s} onClick={() => setPostStatus(s)}
                   className={`rounded-full border-2 px-3 py-1 font-body text-xs font-medium transition ${
-                    postStatus === s ? "border-ink bg-ink text-cream" : "border-ink-light bg-white text-ink-muted hover:border-ink"
+                    postStatus === s ? "border-ink bg-ink text-cream" : "border-ink-light bg-white text-on-surface-variant hover:border-ink"
                   }`}>
                   {STATUS_LABELS[s]}
                 </button>
@@ -279,7 +279,7 @@ export default function Admin() {
                     ];
                     downloadCsv(`jobsy-posts-${new Date().toISOString().split("T")[0]}.csv`, rows as string[][]);
                   }}
-                  className="ml-auto flex items-center gap-2 rounded-xl border-2 border-ink bg-white px-4 py-1.5 font-body text-xs font-medium text-ink hover:bg-cream-dark transition"
+                  className="ml-auto flex items-center gap-2 rounded-xl border border-outline-variant bg-white px-4 py-1.5 font-body text-xs font-medium text-on-surface hover:bg-surface-cream transition"
                   title="Export CSV"
                 >
                   <Download className="h-3.5 w-3.5" />
@@ -289,23 +289,23 @@ export default function Admin() {
             </div>
             <div className="space-y-3">
               {postsLoading ? (
-                [...Array(5)].map((_, i) => <Skeleton key={i} className="h-16 rounded-2xl border-2 border-ink" />)
+                [...Array(5)].map((_, i) => <Skeleton key={i} className="h-16 rounded-2xl border border-outline-variant" />)
               ) : allPosts?.map((p) => (
-                <div key={p.id} className="flex items-center gap-3 rounded-2xl border-2 border-ink bg-white px-5 py-3">
+                <div key={p.id} className="flex items-center gap-3 rounded-2xl border border-outline-variant bg-white px-5 py-3">
                   <div className="flex-1 min-w-0">
                     <div className="mb-1 flex items-center gap-2">
-                      <span className={`rounded border px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase ${STATUS_COLORS[p.status] ?? "bg-cream-dark text-ink-muted"}`}>
+                      <span className={`rounded border px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase ${STATUS_COLORS[p.status] ?? "bg-surface-cream text-on-surface-variant"}`}>
                         {p.status.replace("_", " ")}
                       </span>
-                      <span className="font-mono text-xs text-ink-muted">{p.category} · {p.city ?? "—"}</span>
-                      {!p.wasFree && <span className="rounded bg-mustard-light px-1.5 py-0.5 font-mono text-[10px] text-ink">PAID</span>}
+                      <span className="font-mono text-xs text-on-surface-variant">{p.category} · {p.city ?? "—"}</span>
+                      {!p.wasFree && <span className="rounded bg-mustard-light px-1.5 py-0.5 font-mono text-[10px] text-on-surface">PAID</span>}
                     </div>
-                    <p className="font-body text-sm font-bold text-ink truncate">{p.title}</p>
-                    <p className="font-mono text-xs text-ink-muted">#{p.id} · user #{p.userId} · <Eye className="inline h-3 w-3" /> {p.viewCount} · {new Date(p.createdAt).toLocaleDateString()}</p>
+                    <p className="font-body text-sm font-bold text-on-surface truncate">{p.title}</p>
+                    <p className="font-mono text-xs text-on-surface-variant">#{p.id} · user #{p.userId} · <Eye className="inline h-3 w-3" /> {p.viewCount} · {new Date(p.createdAt).toLocaleDateString()}</p>
                   </div>
                   <div className="flex shrink-0 gap-1">
                     <Link to={`/post/${p.id}`} target="_blank">
-                      <button className="rounded-lg border-2 border-ink bg-white p-2 hover:bg-cream-dark"><Eye className="h-3.5 w-3.5" /></button>
+                      <button className="rounded-lg border border-outline-variant bg-white p-2 hover:bg-surface-cream"><Eye className="h-3.5 w-3.5" /></button>
                     </Link>
                     <button onClick={() => { if (confirm(`Delete "${p.title}"?`)) deletePostMutation.mutate({ postId: p.id }); }}
                       className="rounded-lg border-2 border-need bg-need-light p-2 text-need hover:bg-need hover:text-white transition">
@@ -322,30 +322,30 @@ export default function Admin() {
         {tab === "pending" && (
           <div className="space-y-4">
             {pendingLoading ? (
-              [...Array(3)].map((_, i) => <Skeleton key={i} className="h-32 rounded-2xl border-2 border-ink" />)
+              [...Array(3)].map((_, i) => <Skeleton key={i} className="h-32 rounded-2xl border border-outline-variant" />)
             ) : !pendingPosts?.length ? (
               <div className="flex flex-col items-center py-16">
-                <CheckCircle className="mb-4 h-12 w-12 text-sage" />
-                <p className="font-body text-ink-muted">No posts pending review</p>
+                <CheckCircle className="mb-4 h-12 w-12 text-success-emerald" />
+                <p className="font-body text-on-surface-variant">No posts pending review</p>
               </div>
             ) : pendingPosts.map((post) => (
-              <div key={post.id} className="rounded-2xl border-2 border-ink bg-white p-5 shadow-card">
+              <div key={post.id} className="rounded-2xl border border-outline-variant bg-white p-5 shadow-card">
                 <div className="mb-3 flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="mb-1 flex items-center gap-2">
-                      <span className="rounded bg-mustard-light px-2 py-0.5 font-mono text-[10px] font-medium uppercase text-ink">{post.category}</span>
-                      <span className="font-mono text-xs text-ink-muted">#{post.id} · {post.type}</span>
+                      <span className="rounded bg-mustard-light px-2 py-0.5 font-mono text-[10px] font-medium uppercase text-on-surface">{post.category}</span>
+                      <span className="font-mono text-xs text-on-surface-variant">#{post.id} · {post.type}</span>
                     </div>
-                    <h3 className="font-body text-lg font-bold text-ink">{post.title}</h3>
-                    {post.description && <p className="mt-1 font-body text-sm text-ink-muted line-clamp-3">{post.description}</p>}
-                    <p className="mt-2 font-mono text-xs text-ink-light">{new Date(post.createdAt).toLocaleString("lv-LV")}{post.city && ` · ${post.city}`}</p>
+                    <h3 className="font-body text-lg font-bold text-on-surface">{post.title}</h3>
+                    {post.description && <p className="mt-1 font-body text-sm text-on-surface-variant line-clamp-3">{post.description}</p>}
+                    <p className="mt-2 font-mono text-xs text-outline">{new Date(post.createdAt).toLocaleString("lv-LV")}{post.city && ` · ${post.city}`}</p>
                   </div>
                   <div className="flex shrink-0 gap-2">
-                    <a href={`/post/${post.id}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border-2 border-ink bg-white p-2 hover:bg-cream-dark">
+                    <a href={`/post/${post.id}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-outline-variant bg-white p-2 hover:bg-surface-cream">
                       <Eye className="h-4 w-4" />
                     </a>
                     <button onClick={() => approveMutation.mutate({ postId: post.id })} disabled={approveMutation.isPending}
-                      className="flex items-center gap-1 rounded-xl border-2 border-sage bg-sage-light px-3 py-2 font-body text-sm text-sage hover:bg-sage hover:text-white transition">
+                      className="flex items-center gap-1 rounded-xl border-2 border-sage bg-success-emerald/10 px-3 py-2 font-body text-sm text-success-emerald hover:bg-sage hover:text-white transition">
                       <CheckCircle className="h-4 w-4" /> Approve
                     </button>
                     <button onClick={() => rejectMutation.mutate({ postId: post.id })} disabled={rejectMutation.isPending}
@@ -363,11 +363,11 @@ export default function Admin() {
         {tab === "reports" && (
           <div className="space-y-4">
             {reportsLoading ? (
-              [...Array(3)].map((_, i) => <Skeleton key={i} className="h-32 rounded-2xl border-2 border-ink" />)
+              [...Array(3)].map((_, i) => <Skeleton key={i} className="h-32 rounded-2xl border border-outline-variant" />)
             ) : !reports?.length ? (
               <div className="flex flex-col items-center py-16">
-                <AlertTriangle className="mb-4 h-12 w-12 text-ink-light" />
-                <p className="font-body text-ink-muted">No pending reports</p>
+                <AlertTriangle className="mb-4 h-12 w-12 text-outline" />
+                <p className="font-body text-on-surface-variant">No pending reports</p>
               </div>
             ) : reports.map((report) => (
               <div key={report.id} className="rounded-2xl border-2 border-need bg-white p-5 shadow-card">
@@ -375,18 +375,18 @@ export default function Admin() {
                   <div className="flex-1">
                     <div className="mb-1 flex items-center gap-2">
                       <span className="rounded bg-need-light px-2 py-0.5 font-mono text-[10px] font-medium uppercase text-need">{report.reason}</span>
-                      <span className="font-mono text-xs text-ink-muted">Post #{report.postId}</span>
+                      <span className="font-mono text-xs text-on-surface-variant">Post #{report.postId}</span>
                     </div>
-                    {report.details && <p className="font-body text-sm text-ink-muted">{report.details}</p>}
-                    <p className="mt-2 font-mono text-xs text-ink-light">Reported {new Date(report.createdAt).toLocaleString("lv-LV")}</p>
+                    {report.details && <p className="font-body text-sm text-on-surface-variant">{report.details}</p>}
+                    <p className="mt-2 font-mono text-xs text-outline">Reported {new Date(report.createdAt).toLocaleString("lv-LV")}</p>
                   </div>
                   <div className="flex shrink-0 flex-col gap-2">
                     <a href={`/post/${report.postId}`} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1 rounded-xl border-2 border-ink bg-white px-3 py-2 font-body text-xs hover:bg-cream-dark">
+                      className="flex items-center gap-1 rounded-xl border border-outline-variant bg-white px-3 py-2 font-body text-xs hover:bg-surface-cream">
                       <Eye className="h-3.5 w-3.5" /> View
                     </a>
                     <button onClick={() => resolveMutation.mutate({ reportId: report.id, action: "dismiss" })} disabled={resolveMutation.isPending}
-                      className="rounded-xl border-2 border-ink-light bg-cream-dark px-3 py-2 font-body text-xs text-ink-muted hover:border-ink hover:text-ink transition">
+                      className="rounded-xl border-2 border-ink-light bg-surface-cream px-3 py-2 font-body text-xs text-on-surface-variant hover:border-ink hover:text-on-surface transition">
                       Dismiss
                     </button>
                     <button onClick={() => { if (confirm(`Delete post #${report.postId}?`)) resolveMutation.mutate({ reportId: report.id, action: "delete" }); }}
@@ -410,12 +410,12 @@ export default function Admin() {
         {tab === "queue" && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="font-display text-xl font-bold text-ink">Social Queue</h2>
+              <h2 className="font-headline text-xl font-bold text-on-surface">Social Queue</h2>
               <div className="flex gap-2">
                 {(["", "pending", "posted", "failed"] as const).map((s) => (
                   <button key={s} onClick={() => setQueueStatus(s)}
                     className={`rounded-full border-2 px-3 py-1 font-body text-xs font-medium transition ${
-                      queueStatus === s ? "border-ink bg-coral text-ink" : "border-ink-light bg-white text-ink-muted hover:border-ink"
+                      queueStatus === s ? "border-ink bg-accent-coral text-on-surface" : "border-ink-light bg-white text-on-surface-variant hover:border-ink"
                     }`}>
                     {s === "" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
                   </button>
@@ -426,8 +426,8 @@ export default function Admin() {
               <div className="space-y-2">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-14 rounded-xl" />)}</div>
             ) : !socialQueueData?.length ? (
               <div className="rounded-2xl border-2 border-ink-light bg-white p-8 text-center">
-                <Share2 className="mx-auto mb-3 h-8 w-8 text-ink-light" />
-                <p className="font-body text-sm text-ink-muted">No queue items{queueStatus ? ` with status "${queueStatus}"` : ""}.</p>
+                <Share2 className="mx-auto mb-3 h-8 w-8 text-outline" />
+                <p className="font-body text-sm text-on-surface-variant">No queue items{queueStatus ? ` with status "${queueStatus}"` : ""}.</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -435,16 +435,16 @@ export default function Admin() {
                   <div key={item.id} className="flex items-center gap-3 rounded-xl border-2 border-ink-light bg-white px-4 py-3">
                     <span className="text-lg">{item.boostType === "bump" ? "🔝" : "⭐"}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="truncate font-body text-sm font-medium text-ink">
+                      <p className="truncate font-body text-sm font-medium text-on-surface">
                         #{item.postId} — {item.postTitle ?? "unknown"}
                       </p>
-                      <p className="font-mono text-xs text-ink-muted">
+                      <p className="font-mono text-xs text-on-surface-variant">
                         {item.boostType} · queued {new Date(item.createdAt).toLocaleString()}
                       </p>
                     </div>
                     <span className={`rounded-full border-2 px-2.5 py-0.5 font-mono text-xs font-bold ${
-                      item.status === "pending" ? "border-mustard bg-mustard-light text-ink" :
-                      item.status === "posted" ? "border-sage bg-sage-light text-sage" :
+                      item.status === "pending" ? "border-mustard bg-mustard-light text-on-surface" :
+                      item.status === "posted" ? "border-sage bg-success-emerald/10 text-success-emerald" :
                       "border-need bg-need-light text-need"
                     }`}>
                       {item.status}
@@ -459,24 +459,24 @@ export default function Admin() {
         {/* ── CREDITS ── */}
         {tab === "credits" && (
           <div className="space-y-6">
-            <div className="rounded-2xl border-2 border-ink bg-white p-6">
+            <div className="rounded-2xl border border-outline-variant bg-white p-6">
               <div className="mb-4 flex items-center gap-2">
-                <Wallet className="h-5 w-5 text-coral" />
-                <h2 className="font-display text-xl font-bold text-ink">Grant Credits</h2>
+                <Wallet className="h-5 w-5 text-accent-coral" />
+                <h2 className="font-headline text-xl font-bold text-on-surface">Grant Credits</h2>
               </div>
               <div className="space-y-4">
                 <div>
-                  <label className="mb-1 block font-body text-xs font-medium text-ink">User Email</label>
+                  <label className="mb-1 block font-body text-xs font-medium text-on-surface">User Email</label>
                   <input
                     type="email"
                     value={grantEmail}
                     onChange={(e) => setGrantEmail(e.target.value)}
                     placeholder="user@example.com"
-                    className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-ink outline-none focus:border-ink"
+                    className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-ink"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block font-body text-xs font-medium text-ink">Amount (€)</label>
+                  <label className="mb-1 block font-body text-xs font-medium text-on-surface">Amount (€)</label>
                   <input
                     type="number"
                     min="0.01"
@@ -485,18 +485,18 @@ export default function Admin() {
                     value={grantEuros}
                     onChange={(e) => setGrantEuros(e.target.value)}
                     placeholder="5.00"
-                    className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-ink outline-none focus:border-ink"
+                    className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-ink"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block font-body text-xs font-medium text-ink">Note (optional)</label>
+                  <label className="mb-1 block font-body text-xs font-medium text-on-surface">Note (optional)</label>
                   <input
                     type="text"
                     value={grantNote}
                     onChange={(e) => setGrantNote(e.target.value)}
                     placeholder="Promotion May 2026"
                     maxLength={200}
-                    className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-ink outline-none focus:border-ink"
+                    className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-ink"
                   />
                 </div>
                 <button
@@ -508,7 +508,7 @@ export default function Admin() {
                     }
                   }}
                   disabled={grantCreditsMutation.isPending}
-                  className="flex items-center gap-2 rounded-xl border-2 border-ink bg-coral px-5 py-2.5 font-body text-sm font-semibold text-ink hover:opacity-90 transition disabled:opacity-60"
+                  className="flex items-center gap-2 rounded-xl border border-outline-variant bg-accent-coral px-5 py-2.5 font-body text-sm font-semibold text-on-surface hover:opacity-90 transition disabled:opacity-60"
                 >
                   {grantCreditsMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wallet className="h-4 w-4" />}
                   Grant Credits

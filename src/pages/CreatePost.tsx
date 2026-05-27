@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -74,7 +74,7 @@ export default function CreatePost() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = (isEditing ? t(locale, "createPost.editPageTitle") : t(locale, "nav.createPost")) + " — jobsy.lv";
+    document.title = (isEditing ? t(locale, "createPost.editPageTitle") : t(locale, "nav.createPost")) + " — Jobsy.lv";
     return () => { document.title = prev; };
   }, [locale, isEditing]);
 
@@ -205,31 +205,31 @@ export default function CreatePost() {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center noise-bg">
-        <Loader2 className="h-8 w-8 animate-spin text-coral" />
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-accent-coral" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen px-4 py-8 noise-bg">
+    <div className="min-h-screen px-4 py-8">
       <div className="mx-auto max-w-2xl">
         {/* Header */}
         <div className="mb-8 flex items-start justify-between">
           <div>
-            <h1 className="mb-3 font-display text-3xl font-bold text-ink md:text-4xl">
+            <h1 className="mb-3 font-headline text-3xl font-bold text-on-surface md:text-4xl">
               {isEditing ? t(locale, "createPost.editTitle") : t(locale, "createPost.title")}
             </h1>
             {!isEditing && (
               <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-sage bg-sage-light px-3 py-1.5 font-body text-xs font-medium text-sage">
+                <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-sage bg-success-emerald/10 px-3 py-1.5 font-body text-xs font-medium text-success-emerald">
                   {t(locale, "createPost.freeBadge")}
                 </span>
                 {subStatus && user?.plan !== "business" && (
                   <span className={`inline-flex items-center gap-1 rounded-full border-2 px-3 py-1.5 font-body text-xs font-medium ${
                     (subStatus.activePostCount ?? 0) >= 1
                       ? "border-need bg-need-light text-need"
-                      : "border-ink-light bg-cream text-ink-muted"
+                      : "border-ink-light bg-surface-cream text-on-surface-variant"
                   }`}>
                     {subStatus.activePostCount ?? 0}/1 {t(locale, "pricing.freePostsPerMonth")}
                   </span>
@@ -250,11 +250,11 @@ export default function CreatePost() {
         </div>
 
         {/* Form */}
-        <div className="rounded-3xl border-2 border-ink bg-white p-6 md:p-8">
+        <div className="rounded-3xl border border-outline-variant bg-white p-6 md:p-8">
           {/* Type Selection */}
           {!isEditing && (
             <div className="mb-6">
-              <label className="mb-3 block font-body text-sm font-bold text-ink">
+              <label className="mb-3 block font-body text-sm font-bold text-on-surface">
                 {t(locale, "createPost.typeLabel")}
               </label>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -264,10 +264,10 @@ export default function CreatePost() {
                   className={`flex flex-col items-center gap-3 rounded-xl border-2 p-6 transition ${
                     type === "need"
                       ? "border-need bg-need-light shadow-card-need scale-[1.02]"
-                      : "border-ink-light bg-cream opacity-70 hover:opacity-100"
+                      : "border-ink-light bg-surface-cream opacity-70 hover:opacity-100"
                   }`}
                 >
-                  <HandHelping className={`h-8 w-8 ${type === "need" ? "text-need" : "text-ink-muted"}`} />
+                  <HandHelping className={`h-8 w-8 ${type === "need" ? "text-need" : "text-on-surface-variant"}`} />
                   <span className="font-body text-sm font-bold">
                     {t(locale, "createPost.typeNeed")}
                   </span>
@@ -277,11 +277,11 @@ export default function CreatePost() {
                   onClick={() => setType("offer")}
                   className={`flex flex-col items-center gap-3 rounded-xl border-2 p-6 transition ${
                     type === "offer"
-                      ? "border-sage bg-sage-light shadow-card-sage scale-[1.02]"
-                      : "border-ink-light bg-cream opacity-70 hover:opacity-100"
+                      ? "border-sage bg-success-emerald/10 shadow-card-sage scale-[1.02]"
+                      : "border-ink-light bg-surface-cream opacity-70 hover:opacity-100"
                   }`}
                 >
-                  <Wrench className={`h-8 w-8 ${type === "offer" ? "text-sage" : "text-ink-muted"}`} />
+                  <Wrench className={`h-8 w-8 ${type === "offer" ? "text-success-emerald" : "text-on-surface-variant"}`} />
                   <span className="font-body text-sm font-bold">
                     {t(locale, "createPost.typeOffer")}
                   </span>
@@ -292,18 +292,18 @@ export default function CreatePost() {
 
           {/* Category */}
           <div className="mb-6">
-            <label className="mb-2 block font-body text-sm font-bold text-ink">
+            <label className="mb-2 block font-body text-sm font-bold text-on-surface">
               {t(locale, "createPost.categoryLabel")}
             </label>
             <Select value={category} onValueChange={setCategory}>
               <SelectTrigger
                 className={`h-12 rounded-xl border-2 ${
                   errors.category ? "border-need" : "border-ink-light"
-                } bg-white font-body focus:border-coral`}
+                } bg-white font-body focus:border-primary-DEFAULT`}
               >
                 <SelectValue placeholder={t(locale, "createPost.selectPlaceholder")} />
               </SelectTrigger>
-              <SelectContent className="border-2 border-ink">
+              <SelectContent className="border border-outline-variant">
                 {CATEGORIES.map((c) => (
                   <SelectItem key={c.key} value={c.key}>
                     {t(locale, `categories.${c.key}` as never)}
@@ -318,7 +318,7 @@ export default function CreatePost() {
 
           {/* Title */}
           <div className="mb-6">
-            <label className="mb-2 block font-body text-sm font-bold text-ink">
+            <label className="mb-2 block font-body text-sm font-bold text-on-surface">
               {t(locale, "createPost.titleLabel")}
             </label>
             <Input
@@ -327,14 +327,14 @@ export default function CreatePost() {
               placeholder={t(locale, "createPost.titlePlaceholder")}
               className={`h-12 rounded-xl border-2 ${
                 errors.title ? "border-need" : "border-ink-light"
-              } bg-white font-body focus:border-coral`}
+              } bg-white font-body focus:border-primary-DEFAULT`}
               maxLength={80}
             />
             <div className="mt-1 flex justify-between">
               {errors.title && (
                 <p className="font-body text-xs text-need">{errors.title}</p>
               )}
-              <span className="ml-auto font-mono text-xs text-ink-light">
+              <span className="ml-auto font-mono text-xs text-outline">
                 {title.length}/80
               </span>
             </div>
@@ -342,7 +342,7 @@ export default function CreatePost() {
 
           {/* Description */}
           <div className="mb-6">
-            <label className="mb-2 block font-body text-sm font-bold text-ink">
+            <label className="mb-2 block font-body text-sm font-bold text-on-surface">
               {t(locale, "createPost.descLabel")}
             </label>
             <Textarea
@@ -351,14 +351,14 @@ export default function CreatePost() {
               placeholder={t(locale, "createPost.descPlaceholder")}
               className={`min-h-[120px] resize-y rounded-xl border-2 ${
                 errors.description ? "border-need" : "border-ink-light"
-              } bg-white font-body focus:border-coral`}
+              } bg-white font-body focus:border-primary-DEFAULT`}
               maxLength={500}
             />
             <div className="mt-1 flex justify-between">
               {errors.description && (
                 <p className="font-body text-xs text-need">{errors.description}</p>
               )}
-              <span className="ml-auto font-mono text-xs text-ink-light">
+              <span className="ml-auto font-mono text-xs text-outline">
                 {description.length}/500
               </span>
             </div>
@@ -366,14 +366,14 @@ export default function CreatePost() {
 
           {/* Image Upload */}
           <div className="mb-6">
-            <label className="mb-2 block font-body text-sm font-bold text-ink">
+            <label className="mb-2 block font-body text-sm font-bold text-on-surface">
               {t(locale, "createPost.imagesLabel")} ({images.length}/5)
             </label>
             <div className="flex flex-wrap gap-3">
               {images.map((img, idx) => (
                 <div
                   key={idx}
-                  className="relative h-24 w-24 overflow-hidden rounded-xl border-2 border-ink"
+                  className="relative h-24 w-24 overflow-hidden rounded-xl border border-outline-variant"
                 >
                   <img
                     src={img}
@@ -392,14 +392,14 @@ export default function CreatePost() {
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
-                  className="flex h-24 w-24 flex-col items-center justify-center rounded-xl border-2 border-dashed border-ink-light bg-cream hover:border-ink"
+                  className="flex h-24 w-24 flex-col items-center justify-center rounded-xl border-2 border-dashed border-ink-light bg-surface-cream hover:border-ink"
                 >
                   {uploading ? (
-                    <Loader2 className="h-5 w-5 animate-spin text-ink-muted" />
+                    <Loader2 className="h-5 w-5 animate-spin text-on-surface-variant" />
                   ) : (
                     <>
-                      <ImagePlus className="h-6 w-6 text-ink-muted" />
-                      <span className="mt-1 text-[10px] text-ink-muted">
+                      <ImagePlus className="h-6 w-6 text-on-surface-variant" />
+                      <span className="mt-1 text-[10px] text-on-surface-variant">
                         {t(locale, "createPost.imagesAdd")}
                       </span>
                     </>
@@ -419,14 +419,14 @@ export default function CreatePost() {
           {/* City + Region */}
           <div className="mb-6 grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-2 block font-body text-sm font-bold text-ink">
+              <label className="mb-2 block font-body text-sm font-bold text-on-surface">
                 {t(locale, "createPost.cityLabel")}
               </label>
               <Select value={city} onValueChange={setCity}>
-                <SelectTrigger className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-coral">
+                <SelectTrigger className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-primary-DEFAULT">
                   <SelectValue placeholder={t(locale, "createPost.selectPlaceholder")} />
                 </SelectTrigger>
-                <SelectContent className="border-2 border-ink">
+                <SelectContent className="border border-outline-variant">
                   {CITIES.map((c) => (
                     <SelectItem key={c} value={c}>
                       {t(locale, `cities.${c}` as never)}
@@ -436,14 +436,14 @@ export default function CreatePost() {
               </Select>
             </div>
             <div>
-              <label className="mb-2 block font-body text-sm font-bold text-ink">
+              <label className="mb-2 block font-body text-sm font-bold text-on-surface">
                 {t(locale, "createPost.regionLabel")}
               </label>
               <Input
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
                 placeholder={t(locale, "createPost.regionPlaceholder")}
-                className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-coral"
+                className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-primary-DEFAULT"
               />
             </div>
           </div>
@@ -451,25 +451,25 @@ export default function CreatePost() {
           {/* Budget + When */}
           <div className="mb-8 grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-2 block font-body text-sm font-bold text-ink">
+              <label className="mb-2 block font-body text-sm font-bold text-on-surface">
                 {t(locale, "createPost.budgetLabel")}
               </label>
               <Input
                 value={budgetText}
                 onChange={(e) => setBudgetText(e.target.value)}
                 placeholder={t(locale, "createPost.budgetPlaceholder")}
-                className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-coral"
+                className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-primary-DEFAULT"
               />
             </div>
             <div>
-              <label className="mb-2 block font-body text-sm font-bold text-ink">
+              <label className="mb-2 block font-body text-sm font-bold text-on-surface">
                 {t(locale, "createPost.whenLabel")}
               </label>
               <Input
                 value={whenText}
                 onChange={(e) => setWhenText(e.target.value)}
                 placeholder={t(locale, "createPost.whenPlaceholder")}
-                className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-coral"
+                className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-primary-DEFAULT"
               />
             </div>
           </div>
@@ -478,7 +478,7 @@ export default function CreatePost() {
           <Button
             onClick={handleSubmit}
             disabled={createMutation.isPending || updateMutation.isPending}
-            className="h-14 w-full rounded-xl border-2 border-ink bg-coral font-body text-base font-medium text-ink hover:-translate-y-0.5 hover:bg-coral-hover hover:shadow-card-coral"
+            className="h-14 w-full rounded-xl border border-outline-variant bg-accent-coral font-body text-base font-medium text-on-surface hover:-translate-y-0.5 hover:bg-[#e56a3a] hover:shadow-card-coral"
           >
             {createMutation.isPending || updateMutation.isPending ? (
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -495,22 +495,22 @@ export default function CreatePost() {
 
         {/* Info Banner */}
         {!isEditing && (
-          <div className="mt-6 flex items-start gap-3 rounded-2xl border-2 border-ink-light bg-cream-dark p-5">
-            <Info className="mt-0.5 h-5 w-5 shrink-0 text-ink-muted" />
+          <div className="mt-6 flex items-start gap-3 rounded-2xl border-2 border-ink-light bg-surface-cream p-5">
+            <Info className="mt-0.5 h-5 w-5 shrink-0 text-on-surface-variant" />
             <div>
-              <p className="font-body text-sm text-ink-muted">
+              <p className="font-body text-sm text-on-surface-variant">
                 {t(locale, "createPost.info")}
               </p>
               <div className="mt-2 flex gap-3">
                 <Link
                   to="/privacy"
-                  className="font-body text-xs text-coral underline hover:text-coral-hover"
+                  className="font-body text-xs text-accent-coral underline hover:text-accent-coral-hover"
                 >
                   {t(locale, "createPost.privacy")}
                 </Link>
                 <Link
                   to="/terms"
-                  className="font-body text-xs text-coral underline hover:text-coral-hover"
+                  className="font-body text-xs text-accent-coral underline hover:text-accent-coral-hover"
                 >
                   {t(locale, "createPost.terms")}
                 </Link>
@@ -525,20 +525,20 @@ export default function CreatePost() {
 
       {/* Delete Dialog */}
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <DialogContent className="border-2 border-ink bg-white">
+        <DialogContent className="border border-outline-variant bg-white">
           <DialogHeader>
-            <DialogTitle className="font-display text-xl font-bold text-ink">
+            <DialogTitle className="font-headline text-xl font-bold text-on-surface">
               {t(locale, "createPost.deleteTitle")}
             </DialogTitle>
           </DialogHeader>
-          <p className="font-body text-sm text-ink-muted">
+          <p className="font-body text-sm text-on-surface-variant">
             {t(locale, "createPost.deleteDesc")}
           </p>
           <div className="flex gap-3">
             <Button
               variant="outline"
               onClick={() => setShowDeleteDialog(false)}
-              className="flex-1 rounded-xl border-2 border-ink"
+              className="flex-1 rounded-xl border border-outline-variant"
             >
               {t(locale, "createPost.deleteCancel")}
             </Button>

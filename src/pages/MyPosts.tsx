@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -40,7 +40,7 @@ export default function MyPosts() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "nav.myPosts") + " — jobsy.lv";
+    document.title = t(locale, "nav.myPosts") + " — Jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 
@@ -111,7 +111,7 @@ export default function MyPosts() {
   const getStatusConfig = (status: string) => {
     switch (status) {
       case "active":
-        return { label: t(locale, "myPosts.statusActive"), bg: "bg-sage-light", text: "text-sage", border: "border-sage", icon: CheckCircle };
+        return { label: t(locale, "myPosts.statusActive"), bg: "bg-success-emerald/10", text: "text-success-emerald", border: "border-sage", icon: CheckCircle };
       case "pending_payment":
         return { label: t(locale, "myPosts.statusPending"), bg: "bg-mustard-light", text: "text-ink", border: "border-mustard", icon: Clock };
       case "pending_review":
@@ -119,7 +119,7 @@ export default function MyPosts() {
       case "rejected":
         return { label: t(locale, "myPosts.statusRejected"), bg: "bg-need-light", text: "text-need", border: "border-need", icon: AlertCircle };
       default:
-        return { label: t(locale, "myPosts.statusExpired"), bg: "bg-cream-dark", text: "text-ink-light", border: "border-ink-light", icon: AlertCircle };
+        return { label: t(locale, "myPosts.statusExpired"), bg: "bg-surface-cream", text: "text-outline", border: "border-ink-light", icon: AlertCircle };
     }
   };
 
@@ -133,14 +133,14 @@ export default function MyPosts() {
   };
 
   return (
-    <div className="min-h-screen px-4 py-8 noise-bg">
+    <div className="min-h-screen px-4 py-8">
       <div className="mx-auto max-w-4xl">
         {/* Header */}
         <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <h1 className="font-display text-3xl font-bold text-ink md:text-4xl">{t(locale, "myPosts.title")}</h1>
+          <h1 className="font-headline text-3xl font-bold text-on-surface md:text-4xl">{t(locale, "myPosts.title")}</h1>
           <Button
             onClick={() => navigate("/create")}
-            className="h-12 rounded-xl border-2 border-ink bg-coral px-6 font-body font-medium text-ink hover:bg-coral-hover"
+            className="h-12 rounded-xl border border-outline-variant bg-accent-coral px-6 font-body font-medium text-on-surface hover:bg-[#e56a3a]"
           >
             <Plus className="mr-2 h-4 w-4" />
             {t(locale, "myPosts.newPost")}
@@ -155,12 +155,12 @@ export default function MyPosts() {
               onClick={() => setTab(tVal)}
               className={`flex items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-sm font-medium transition ${
                 tab === tVal
-                  ? "border-ink bg-coral text-ink"
-                  : "border-ink-light bg-white text-ink-muted hover:border-ink hover:text-ink"
+                  ? "border-ink bg-accent-coral text-on-surface"
+                  : "border-ink-light bg-white text-on-surface-variant hover:border-ink hover:text-on-surface"
               }`}
             >
               {tVal === "active" ? t(locale, "myPosts.tabActive") : tVal === "expired" ? t(locale, "myPosts.tabExpired") : t(locale, "myPosts.tabAll")}
-              <span className={`rounded-full px-2 py-0.5 text-xs ${tab === tVal ? "bg-ink text-cream" : "bg-cream-dark text-ink-muted"}`}>
+              <span className={`rounded-full px-2 py-0.5 text-xs ${tab === tVal ? "bg-ink text-cream" : "bg-surface-cream text-on-surface-variant"}`}>
                 {counts[tVal]}
               </span>
             </button>
@@ -171,30 +171,30 @@ export default function MyPosts() {
             className={`flex items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-sm font-medium transition ${
               tab === "analytics"
                 ? "border-ink bg-ink text-cream"
-                : "border-ink-light bg-white text-ink-muted hover:border-ink hover:text-ink"
+                : "border-ink-light bg-white text-on-surface-variant hover:border-ink hover:text-on-surface"
             }`}
           >
             <BarChart2 className="h-3.5 w-3.5" />
             {t(locale, "myPosts.analyticsTab")}
-            {subStatus?.plan !== "business" && <Lock className="h-3 w-3 text-ink-light" />}
+            {subStatus?.plan !== "business" && <Lock className="h-3 w-3 text-outline" />}
           </button>
         </div>
 
         {/* Analytics Panel */}
         {tab === "analytics" && (
           subStatus?.plan !== "business" ? (
-            <div className="flex flex-col items-center rounded-2xl border-2 border-ink bg-white py-14 text-center">
-              <Lock className="mb-3 h-10 w-10 text-ink-light" />
-              <p className="mb-1 font-body font-bold text-ink">{t(locale, "myPosts.analyticsBusinessOnly")}</p>
+            <div className="flex flex-col items-center rounded-2xl border border-outline-variant bg-white py-14 text-center">
+              <Lock className="mb-3 h-10 w-10 text-outline" />
+              <p className="mb-1 font-body font-bold text-on-surface">{t(locale, "myPosts.analyticsBusinessOnly")}</p>
               <a
                 href="/pricing"
-                className="mt-4 inline-flex items-center gap-2 rounded-xl border-2 border-ink bg-coral px-5 py-2.5 font-body text-sm font-medium text-ink hover:bg-coral-hover"
+                className="mt-4 inline-flex items-center gap-2 rounded-xl border border-outline-variant bg-accent-coral px-5 py-2.5 font-body text-sm font-medium text-on-surface hover:bg-[#e56a3a]"
               >
                 {t(locale, "myPosts.analyticsUpgrade")}
               </a>
             </div>
           ) : (
-            <div className="rounded-2xl border-2 border-ink bg-white overflow-hidden">
+            <div className="rounded-2xl border border-outline-variant bg-white overflow-hidden">
               {/* Summary row */}
               {analyticsData && analyticsData.length > 0 && (
                 <div className="grid grid-cols-3 border-b-2 border-ink">
@@ -204,28 +204,28 @@ export default function MyPosts() {
                     { icon: Heart, label: t(locale, "myPosts.analyticsInterests"), value: analyticsData.reduce((s, p) => s + p.interestCount, 0) },
                   ].map(({ icon: Icon, label, value }) => (
                     <div key={label} className="flex flex-col items-center py-4 text-center">
-                      <Icon className="mb-1 h-4 w-4 text-ink-muted" />
-                      <span className="font-display text-2xl font-bold text-coral">{value}</span>
-                      <span className="font-body text-xs text-ink-muted">{label}</span>
+                      <Icon className="mb-1 h-4 w-4 text-on-surface-variant" />
+                      <span className="font-headline text-2xl font-bold text-accent-coral">{value}</span>
+                      <span className="font-body text-xs text-on-surface-variant">{label}</span>
                     </div>
                   ))}
                 </div>
               )}
               {/* Per-post table */}
               {!analyticsData || analyticsData.length === 0 ? (
-                <div className="py-12 text-center font-body text-ink-muted">{t(locale, "myPosts.analyticsEmpty")}</div>
+                <div className="py-12 text-center font-body text-on-surface-variant">{t(locale, "myPosts.analyticsEmpty")}</div>
               ) : (
                 <div className="divide-y divide-ink/10">
                   {analyticsData.map((post) => (
                     <div key={post.id} className="flex items-center gap-3 px-4 py-3">
                       <div className={`h-10 w-1 shrink-0 rounded-full ${post.status === "active" ? "bg-sage" : "bg-ink-light"}`} />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-body text-sm font-medium text-ink">{post.title}</p>
-                        <p className="font-mono text-xs text-ink-muted">
+                        <p className="truncate font-body text-sm font-medium text-on-surface">{post.title}</p>
+                        <p className="font-mono text-xs text-on-surface-variant">
                           {new Date(post.createdAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}
                         </p>
                       </div>
-                      <div className="flex items-center gap-4 shrink-0 font-mono text-xs text-ink-muted">
+                      <div className="flex items-center gap-4 shrink-0 font-mono text-xs text-on-surface-variant">
                         <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{post.viewCount}</span>
                         <span className="flex items-center gap-1"><MessageSquare className="h-3 w-3" />{post.contactCount}</span>
                         <span className="flex items-center gap-1"><Heart className="h-3 w-3" />{post.interestCount}</span>
@@ -242,7 +242,7 @@ export default function MyPosts() {
         {tab !== "analytics" && (isLoading ? (
           <div className="space-y-4">
             {[...Array(3)].map((_, i) => (
-              <Skeleton key={i} className="h-24 rounded-2xl border-2 border-ink" />
+              <Skeleton key={i} className="h-24 rounded-2xl border border-outline-variant" />
             ))}
           </div>
         ) : filtered.length > 0 ? (
@@ -254,7 +254,7 @@ export default function MyPosts() {
               return (
                 <div
                   key={post.id}
-                  className="flex items-center gap-4 rounded-2xl border-2 border-ink bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:shadow-float"
+                  className="flex items-center gap-4 rounded-2xl border border-outline-variant bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:shadow-float"
                 >
                   <div className={`h-16 w-1.5 rounded-full ${post.status === "active" ? "bg-sage" : post.status === "pending_payment" ? "bg-mustard" : "bg-ink-light"}`} />
 
@@ -264,9 +264,9 @@ export default function MyPosts() {
                         <StatusIcon className="h-3 w-3" />
                         {status.label}
                       </span>
-                      <span className="font-body text-xs text-ink-muted">{t(locale, `categories.${post.category}` as never)}</span>
+                      <span className="font-body text-xs text-on-surface-variant">{t(locale, `categories.${post.category}` as never)}</span>
                       {post.boostType !== "none" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date() && (
-                        <span className="flex items-center gap-0.5 rounded-full border border-coral bg-coral/10 px-1.5 py-0.5 font-mono text-[10px] text-coral">
+                        <span className="flex items-center gap-0.5 rounded-full border border-coral bg-coral/10 px-1.5 py-0.5 font-mono text-[10px] text-accent-coral">
                           <Zap className="h-2.5 w-2.5" />
                           {post.boostType === "bump" ? "Bump" : post.boostType === "featured" ? "Featured" : "Urgent"}
                           {getBoostTimeRemaining(post.boostExpiresAt) && (
@@ -275,8 +275,8 @@ export default function MyPosts() {
                         </span>
                       )}
                     </div>
-                    <h3 className="truncate font-body text-base font-bold text-ink">{post.title}</h3>
-                    <p className="font-body text-xs text-ink-muted">
+                    <h3 className="truncate font-body text-base font-bold text-on-surface">{post.title}</h3>
+                    <p className="font-body text-xs text-on-surface-variant">
                       {post.city && `${t(locale, `cities.${post.city}` as never)} • `}
                       {t(locale, "postDetail.published", {
                         date: new Date(post.createdAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB"),
@@ -287,18 +287,18 @@ export default function MyPosts() {
 
                   <div className="flex items-center gap-3">
                     <div className="hidden flex-col items-end sm:flex">
-                      <span className={`flex items-center gap-1 font-mono text-xs ${post.boostType !== "none" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date() ? "text-coral font-semibold" : "text-ink-light"}`}>
+                      <span className={`flex items-center gap-1 font-mono text-xs ${post.boostType !== "none" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date() ? "text-coral font-semibold" : "text-outline"}`}>
                         {post.boostType !== "none" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date()
                           ? <TrendingUp className="h-3 w-3" />
                           : <Eye className="h-3 w-3" />
                         }
                         {post.viewCount}
                       </span>
-                      <span className="flex items-center gap-1 font-mono text-xs text-ink-light">
+                      <span className="flex items-center gap-1 font-mono text-xs text-outline">
                         <MessageSquare className="h-3 w-3" /> {post.contactCount}
                       </span>
                       {post.type === "need" && (
-                        <span className="flex items-center gap-1 font-mono text-xs text-coral">
+                        <span className="flex items-center gap-1 font-mono text-xs text-accent-coral">
                           <Heart className="h-3 w-3" /> {item.interestCount ?? 0}
                         </span>
                       )}
@@ -311,8 +311,8 @@ export default function MyPosts() {
                           title={post.filled ? t(locale, "myPosts.markOpen") : t(locale, "myPosts.markFilled")}
                           className={`rounded-lg border-2 px-2 py-2 font-body text-xs font-medium transition ${
                             post.filled
-                              ? "border-sage bg-sage-light text-sage hover:bg-sage"
-                              : "border-ink-light bg-white text-ink-muted hover:border-ink hover:text-ink"
+                              ? "border-sage bg-success-emerald/10 text-success-emerald hover:bg-sage"
+                              : "border-ink-light bg-white text-on-surface-variant hover:border-ink hover:text-on-surface"
                           }`}
                         >
                           {post.filled ? "✓" : "○"}
@@ -320,13 +320,13 @@ export default function MyPosts() {
                       )}
                       <button
                         onClick={() => setBoostingPostId(post.id)}
-                        className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark"
+                        className="rounded-lg border border-outline-variant bg-white p-2 text-on-surface hover:bg-surface-cream"
                         title={t(locale, "boost.title")}
                       >
                         <Zap className="h-4 w-4" />
                       </button>
                       <Link to={`/edit/${post.id}`}>
-                        <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title={t(locale, "createPost.editTitle")}>
+                        <button className="rounded-lg border border-outline-variant bg-white p-2 text-on-surface hover:bg-surface-cream" title={t(locale, "createPost.editTitle")}>
                           <Pencil className="h-4 w-4" />
                         </button>
                       </Link>
@@ -334,7 +334,7 @@ export default function MyPosts() {
                         <button
                           onClick={() => renewMutation.mutate({ postId: post.id })}
                           disabled={renewMutation.isPending}
-                          className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark"
+                          className="rounded-lg border border-outline-variant bg-white p-2 text-on-surface hover:bg-surface-cream"
                           title={t(locale, "myPosts.renewTooltip")}
                         >
                           <RefreshCw className="h-4 w-4" />
@@ -352,7 +352,7 @@ export default function MyPosts() {
                         <Trash2 className="h-4 w-4" />
                       </button>
                       <Link to={`/post/${post.id}`}>
-                        <button className="rounded-lg border-2 border-ink bg-white p-2 text-ink hover:bg-cream-dark" title={t(locale, "browse.viewPost")}>
+                        <button className="rounded-lg border border-outline-variant bg-white p-2 text-on-surface hover:bg-surface-cream" title={t(locale, "browse.viewPost")}>
                           <ArrowRight className="h-4 w-4" />
                         </button>
                       </Link>
@@ -364,9 +364,9 @@ export default function MyPosts() {
           </div>
         ) : (
           <div className="flex flex-col items-center py-16">
-            <FileText className="mb-4 h-12 w-12 text-ink-light" />
-            <p className="mb-4 font-body text-ink-muted">{t(locale, "myPosts.empty")}</p>
-            <Button onClick={() => navigate("/create")} className="rounded-xl border-2 border-ink bg-coral">
+            <FileText className="mb-4 h-12 w-12 text-outline" />
+            <p className="mb-4 font-body text-on-surface-variant">{t(locale, "myPosts.empty")}</p>
+            <Button onClick={() => navigate("/create")} className="rounded-xl border border-outline-variant bg-coral">
               <Plus className="mr-2 h-4 w-4" />
               {t(locale, "myPosts.emptyBtn")}
             </Button>

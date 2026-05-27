@@ -1,4 +1,4 @@
-import { useLocale } from "@/lib/locale-context";
+﻿import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { trpc } from "@/providers/trpc";
 import { useToast } from "@/hooks/useToast";
@@ -55,22 +55,22 @@ export default function BoostPicker({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 px-4 pb-4 backdrop-blur-sm sm:items-center">
-      <div className="relative w-full max-w-sm rounded-2xl border-2 border-ink bg-cream p-6 shadow-float">
+      <div className="relative w-full max-w-sm rounded-2xl border border-outline-variant bg-surface-cream p-6 shadow-float">
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-lg border-2 border-ink-light p-1 text-ink-muted hover:border-ink"
+          className="absolute right-4 top-4 rounded-lg border-2 border-ink-light p-1 text-on-surface-variant hover:border-ink"
         >
           <X className="h-4 w-4" />
         </button>
 
-        <h3 className="mb-1 font-display text-xl font-bold text-ink">
+        <h3 className="mb-1 font-headline text-xl font-bold text-on-surface">
           {t(locale, "boost.selectBoost")}
         </h3>
-        <p className="mb-1 font-body text-xs text-ink-muted">{t(locale, "boost.duration")}</p>
+        <p className="mb-1 font-body text-xs text-on-surface-variant">{t(locale, "boost.duration")}</p>
 
         {/* Credit balance badge */}
         {creditBalance > 0 && (
-          <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-mustard-light px-3 py-1 font-body text-xs font-medium text-ink">
+          <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-outline-variant bg-mustard-light px-3 py-1 font-body text-xs font-medium text-on-surface">
             <Wallet className="h-3.5 w-3.5" />
             {t(locale, "credits.balance")}: €{(creditBalance / 100).toFixed(2)}
           </div>
@@ -84,20 +84,20 @@ export default function BoostPicker({
             return (
               <div
                 key={b.type}
-                className="rounded-xl border-2 border-ink bg-white p-3"
+                className="rounded-xl border border-outline-variant bg-white p-3"
               >
                 {/* Boost info row */}
                 <div className="mb-2 flex items-center gap-3">
                   <span className="text-2xl">{b.icon}</span>
                   <div className="flex-1">
-                    <p className="font-body text-sm font-bold text-ink">
+                    <p className="font-body text-sm font-bold text-on-surface">
                       {t(locale, `boost.${b.type}` as never)}
                     </p>
-                    <p className="font-body text-xs text-ink-muted">
+                    <p className="font-body text-xs text-on-surface-variant">
                       {t(locale, `boost.${b.type}Desc` as never)}
                     </p>
                   </div>
-                  <span className="font-mono text-sm font-bold text-ink">{b.priceLabel}</span>
+                  <span className="font-mono text-sm font-bold text-on-surface">{b.priceLabel}</span>
                 </div>
 
                 {/* Payment buttons */}
@@ -105,7 +105,7 @@ export default function BoostPicker({
                   <button
                     onClick={() => applyMutation.mutate({ postId, boostType: b.type })}
                     disabled={isPending}
-                    className="w-full rounded-lg border-2 border-sage bg-sage-light py-1.5 font-body text-xs font-bold text-sage hover:bg-sage hover:text-white transition disabled:opacity-60"
+                    className="w-full rounded-lg border-2 border-sage bg-success-emerald/10 py-1.5 font-body text-xs font-bold text-success-emerald hover:bg-sage hover:text-white transition disabled:opacity-60"
                   >
                     {t(locale, "boost.freeAvailable")} ({freeBoostsRemaining})
                   </button>
@@ -114,7 +114,7 @@ export default function BoostPicker({
                     <button
                       onClick={() => creditsMutation.mutate({ postId, boostType: b.type })}
                       disabled={isPending}
-                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border-2 border-ink bg-mustard-light py-1.5 font-body text-xs font-bold text-ink hover:bg-mustard transition disabled:opacity-60"
+                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-outline-variant bg-mustard-light py-1.5 font-body text-xs font-bold text-on-surface hover:bg-mustard transition disabled:opacity-60"
                     >
                       <Wallet className="h-3 w-3" />
                       {t(locale, "credits.useCredits")}
@@ -122,7 +122,7 @@ export default function BoostPicker({
                     <button
                       onClick={() => applyMutation.mutate({ postId, boostType: b.type })}
                       disabled={isPending}
-                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border-2 border-ink-light bg-white py-1.5 font-body text-xs font-medium text-ink-muted hover:border-ink hover:text-ink transition disabled:opacity-60"
+                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border-2 border-ink-light bg-white py-1.5 font-body text-xs font-medium text-on-surface-variant hover:border-ink hover:text-on-surface transition disabled:opacity-60"
                     >
                       <CreditCard className="h-3 w-3" />
                       {t(locale, "credits.payCard")}
@@ -132,7 +132,7 @@ export default function BoostPicker({
                   <button
                     onClick={() => applyMutation.mutate({ postId, boostType: b.type })}
                     disabled={isPending}
-                    className="flex w-full items-center justify-center gap-1.5 rounded-lg border-2 border-ink bg-white py-1.5 font-body text-xs font-medium text-ink hover:bg-cream-dark transition disabled:opacity-60"
+                    className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-outline-variant bg-white py-1.5 font-body text-xs font-medium text-on-surface hover:bg-surface-cream transition disabled:opacity-60"
                   >
                     <CreditCard className="h-3 w-3" />
                     {t(locale, "credits.payCard")} {b.priceLabel}

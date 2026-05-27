@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { useTheme, type Theme } from "@/lib/theme-context";
@@ -103,7 +103,7 @@ export default function Settings() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "nav.settings") + " — jobsy.lv";
+    document.title = t(locale, "nav.settings") + " — Jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 
@@ -131,8 +131,8 @@ export default function Settings() {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center noise-bg">
-        <Loader2 className="h-8 w-8 animate-spin text-coral" />
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-accent-coral" />
       </div>
     );
   }
@@ -141,17 +141,17 @@ export default function Settings() {
   const canVerify = !!phone && !phoneChanged && !profile?.phoneVerified;
 
   return (
-    <div className="min-h-screen px-4 py-8 noise-bg">
+    <div className="min-h-screen px-4 py-8">
       <div className="mx-auto max-w-xl">
-        <h1 className="mb-8 font-display text-3xl font-bold text-ink md:text-4xl">
+        <h1 className="mb-8 font-headline text-3xl font-bold text-on-surface md:text-4xl">
           {t(locale, "settings.title")}
         </h1>
 
         {/* Profile section */}
-        <div className="mb-6 rounded-3xl border-2 border-ink bg-white p-6 md:p-8">
+        <div className="mb-6 rounded-3xl border border-outline-variant bg-white p-6 md:p-8">
           <div className="mb-6 flex items-center gap-3">
-            <User className="h-5 w-5 text-coral" />
-            <h2 className="font-body text-lg font-bold text-ink">
+            <User className="h-5 w-5 text-accent-coral" />
+            <h2 className="font-body text-lg font-bold text-on-surface">
               {t(locale, "settings.profileSection")}
             </h2>
           </div>
@@ -178,8 +178,8 @@ export default function Settings() {
             <div className="space-y-4">
               {/* Name */}
               <div>
-                <label className="mb-2 flex items-center gap-1.5 font-body text-sm font-bold text-ink">
-                  <Edit3 className="h-3.5 w-3.5 text-coral" />
+                <label className="mb-2 flex items-center gap-1.5 font-body text-sm font-bold text-on-surface">
+                  <Edit3 className="h-3.5 w-3.5 text-accent-coral" />
                   {t(locale, "settings.name")}
                 </label>
                 <Input
@@ -187,19 +187,19 @@ export default function Settings() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={t(locale, "settings.namePlaceholder")}
-                  className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-coral"
+                  className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-primary-DEFAULT"
                 />
               </div>
 
               {/* Email — read only */}
               <div>
-                <label className="mb-2 flex items-center gap-1.5 font-body text-sm font-bold text-ink">
-                  <Mail className="h-3.5 w-3.5 text-coral" />
+                <label className="mb-2 flex items-center gap-1.5 font-body text-sm font-bold text-on-surface">
+                  <Mail className="h-3.5 w-3.5 text-accent-coral" />
                   {t(locale, "settings.email")}
                 </label>
-                <div className="flex h-12 items-center rounded-xl border-2 border-ink-light bg-cream-dark px-4 font-body text-sm text-ink-muted">
+                <div className="flex h-12 items-center rounded-xl border-2 border-ink-light bg-surface-cream px-4 font-body text-sm text-on-surface-variant">
                   {profile?.email ?? "—"}
-                  <span className="ml-auto rounded bg-cream px-2 py-0.5 font-mono text-[10px] text-ink-light">
+                  <span className="ml-auto rounded bg-surface-cream px-2 py-0.5 font-mono text-[10px] text-outline">
                     {t(locale, "settings.emailReadOnly")}
                   </span>
                 </div>
@@ -207,11 +207,11 @@ export default function Settings() {
 
               {/* Phone */}
               <div>
-                <label className="mb-2 flex items-center gap-1.5 font-body text-sm font-bold text-ink">
-                  <Phone className="h-3.5 w-3.5 text-coral" />
+                <label className="mb-2 flex items-center gap-1.5 font-body text-sm font-bold text-on-surface">
+                  <Phone className="h-3.5 w-3.5 text-accent-coral" />
                   {t(locale, "settings.phone")}
                   {profile?.phoneVerified && (
-                    <span className="ml-1 inline-flex items-center gap-1 rounded-full border border-sage bg-sage-light px-2 py-0.5 font-body text-[10px] font-medium text-sage">
+                    <span className="ml-1 inline-flex items-center gap-1 rounded-full border border-sage bg-success-emerald/10 px-2 py-0.5 font-body text-[10px] font-medium text-success-emerald">
                       <ShieldCheck className="h-3 w-3" />
                       {t(locale, "settings.verified")}
                     </span>
@@ -222,9 +222,9 @@ export default function Settings() {
                   value={phone}
                   onChange={(e) => { setPhone(e.target.value); setOtpSent(false); setOtpCode(""); }}
                   placeholder="+371 2X XXX XXX"
-                  className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-coral"
+                  className="h-12 rounded-xl border-2 border-ink-light bg-white font-body focus:border-primary-DEFAULT"
                 />
-                <p className="mt-1 font-body text-xs text-ink-light">
+                <p className="mt-1 font-body text-xs text-outline">
                   {t(locale, "settings.phoneHint")}
                 </p>
 
@@ -233,7 +233,7 @@ export default function Settings() {
                   <button
                     onClick={() => sendOtpMutation.mutate({ phone })}
                     disabled={sendOtpMutation.isPending}
-                    className="mt-2 inline-flex items-center gap-1.5 rounded-lg border-2 border-ink bg-mustard-light px-4 py-2 font-body text-sm font-medium text-ink hover:bg-mustard-light/70"
+                    className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-outline-variant bg-mustard-light px-4 py-2 font-body text-sm font-medium text-on-surface hover:bg-mustard-light/70"
                   >
                     {sendOtpMutation.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ShieldCheck className="h-3.5 w-3.5" />}
                     {t(locale, "settings.verifyPhone")}
@@ -250,12 +250,12 @@ export default function Settings() {
                       value={otpCode}
                       onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
                       placeholder="_ _ _ _ _ _"
-                      className="h-12 w-36 rounded-xl border-2 border-ink bg-white text-center font-mono text-lg tracking-widest focus:border-coral"
+                      className="h-12 w-36 rounded-xl border border-outline-variant bg-white text-center font-mono text-lg tracking-widest focus:border-primary-DEFAULT"
                     />
                     <Button
                       onClick={() => verifyOtpMutation.mutate({ phone, code: otpCode })}
                       disabled={otpCode.length !== 6 || verifyOtpMutation.isPending}
-                      className="h-12 rounded-xl border-2 border-ink bg-sage px-4 font-body font-medium text-ink hover:bg-sage/80 disabled:opacity-50"
+                      className="h-12 rounded-xl border border-outline-variant bg-sage px-4 font-body font-medium text-on-surface hover:bg-sage/80 disabled:opacity-50"
                     >
                       {verifyOtpMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : t(locale, "settings.otpConfirm")}
                     </Button>
@@ -266,7 +266,7 @@ export default function Settings() {
               <Button
                 onClick={() => updateMutation.mutate({ phone, name: name || undefined })}
                 disabled={updateMutation.isPending || saved}
-                className="h-12 w-full rounded-xl border-2 border-ink bg-coral font-body font-medium text-ink hover:bg-coral-hover"
+                className="h-12 w-full rounded-xl border border-outline-variant bg-accent-coral font-body font-medium text-on-surface hover:bg-[#e56a3a]"
               >
                 {updateMutation.isPending ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -280,28 +280,28 @@ export default function Settings() {
         </div>
 
         {/* My Alerts section */}
-        <div className="mb-6 rounded-3xl border-2 border-ink bg-white p-6 md:p-8">
+        <div className="mb-6 rounded-3xl border border-outline-variant bg-white p-6 md:p-8">
           <div className="mb-6 flex items-center gap-3">
-            <Bell className="h-5 w-5 text-coral" />
-            <h2 className="font-body text-lg font-bold text-ink">
+            <Bell className="h-5 w-5 text-accent-coral" />
+            <h2 className="font-body text-lg font-bold text-on-surface">
               {t(locale, "settings.alertsSection")}
             </h2>
           </div>
           {!savedSearches || savedSearches.length === 0 ? (
-            <p className="font-body text-sm text-ink-muted">{t(locale, "settings.alertsEmpty")}</p>
+            <p className="font-body text-sm text-on-surface-variant">{t(locale, "settings.alertsEmpty")}</p>
           ) : (
             <ul className="space-y-3">
               {savedSearches.map((s) => (
-                <li key={s.id} className="flex items-center justify-between gap-3 rounded-xl border-2 border-ink-light bg-cream p-3">
+                <li key={s.id} className="flex items-center justify-between gap-3 rounded-xl border-2 border-ink-light bg-surface-cream p-3">
                   <div>
-                    <p className="font-body text-sm font-bold text-ink">{s.label}</p>
-                    <p className="font-mono text-xs text-ink-light">
+                    <p className="font-body text-sm font-bold text-on-surface">{s.label}</p>
+                    <p className="font-mono text-xs text-outline">
                       {s.type} {s.category ? `· ${s.category}` : ""} {s.city ? `· ${s.city}` : ""} {s.keyword ? `· "${s.keyword}"` : ""}
                     </p>
                   </div>
                   <button
                     onClick={() => deleteSearchMutation.mutate({ id: s.id })}
-                    className="rounded-lg border border-ink-light p-2 text-ink-muted hover:border-need hover:text-need"
+                    className="rounded-lg border border-ink-light p-2 text-on-surface-variant hover:border-need hover:text-need"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -312,17 +312,17 @@ export default function Settings() {
         </div>
 
         {/* Business Plan */}
-        <div className="mb-6 rounded-2xl border-2 border-ink bg-white p-6">
+        <div className="mb-6 rounded-2xl border border-outline-variant bg-white p-6">
           <div className="mb-4 flex items-center gap-2">
-            <Building2 className="h-5 w-5 text-coral" />
-            <h2 className="font-display text-xl font-bold text-ink">
+            <Building2 className="h-5 w-5 text-accent-coral" />
+            <h2 className="font-headline text-xl font-bold text-on-surface">
               {t(locale, "settings.businessProfile")}
             </h2>
           </div>
 
           {/* Plan status */}
-          <div className={`mb-4 rounded-xl border-2 px-4 py-3 ${subStatus?.plan === "business" ? "border-sage bg-sage/10" : subStatus?.plan === "pro" ? "border-ink bg-ink/5" : "border-ink-light bg-cream-dark"}`}>
-            <p className="font-body text-sm font-bold text-ink">
+          <div className={`mb-4 rounded-xl border-2 px-4 py-3 ${subStatus?.plan === "business" ? "border-sage bg-sage/10" : subStatus?.plan === "pro" ? "border-ink bg-ink/5" : "border-ink-light bg-surface-cream"}`}>
+            <p className="font-body text-sm font-bold text-on-surface">
               {subStatus?.plan === "business"
                 ? t(locale, "settings.currentPlanBusiness")
                 : subStatus?.plan === "pro"
@@ -330,12 +330,12 @@ export default function Settings() {
                 : t(locale, "settings.currentPlanFree")}
             </p>
             {subStatus?.plan === "free" && (
-              <p className="mt-0.5 font-body text-xs text-ink-muted">
+              <p className="mt-0.5 font-body text-xs text-on-surface-variant">
                 {subStatus.activePostCount}/1 {t(locale, "pricing.freePostsPerMonth")}
               </p>
             )}
             {subStatus?.plan === "business" && (
-              <p className="mt-0.5 font-body text-xs text-ink-muted">
+              <p className="mt-0.5 font-body text-xs text-on-surface-variant">
                 {subStatus.freeBoostsRemaining} {t(locale, "settings.freeBoostsRemaining")}
               </p>
             )}
@@ -345,30 +345,30 @@ export default function Settings() {
           {subStatus?.plan === "business" && (
             <div className="mb-4 space-y-3">
               <div>
-                <label className="mb-1 block font-body text-xs font-medium text-ink">
+                <label className="mb-1 block font-body text-xs font-medium text-on-surface">
                   {t(locale, "settings.companyName")}
                 </label>
                 <input
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-ink outline-none focus:border-ink"
+                  className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-ink"
                   placeholder={t(locale, "settings.companyNamePlaceholder")}
                 />
               </div>
               <div>
-                <label className="mb-1 block font-body text-xs font-medium text-ink">
+                <label className="mb-1 block font-body text-xs font-medium text-on-surface">
                   {t(locale, "settings.companyWebsite")}
                 </label>
                 <input
                   value={companyWebsite}
                   onChange={(e) => setCompanyWebsite(e.target.value)}
                   type="url"
-                  className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-ink outline-none focus:border-ink"
+                  className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-ink"
                   placeholder="https://..."
                 />
               </div>
               <div>
-                <label className="mb-1 block font-body text-xs font-medium text-ink">
+                <label className="mb-1 block font-body text-xs font-medium text-on-surface">
                   {t(locale, "settings.companyDescription")}
                 </label>
                 <textarea
@@ -376,13 +376,13 @@ export default function Settings() {
                   onChange={(e) => setCompanyDescription(e.target.value)}
                   rows={3}
                   maxLength={300}
-                  className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-ink outline-none focus:border-ink resize-none"
+                  className="w-full rounded-xl border-2 border-ink-light bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-ink resize-none"
                 />
               </div>
               <button
                 onClick={() => updateMutation.mutate({ companyName, companyWebsite, companyDescription })}
                 disabled={updateMutation.isPending}
-                className="rounded-xl border-2 border-ink bg-ink px-4 py-2 font-body text-sm text-cream hover:opacity-80 transition"
+                className="rounded-xl border border-outline-variant bg-ink px-4 py-2 font-body text-sm text-cream hover:opacity-80 transition"
               >
                 {t(locale, "settings.save")}
               </button>
@@ -394,7 +394,7 @@ export default function Settings() {
             <button
               onClick={() => portalMutation.mutate()}
               disabled={portalMutation.isPending}
-              className="flex items-center gap-2 rounded-xl border-2 border-ink-light bg-white px-4 py-2 font-body text-sm text-ink-muted hover:border-ink hover:text-ink transition"
+              className="flex items-center gap-2 rounded-xl border-2 border-ink-light bg-white px-4 py-2 font-body text-sm text-on-surface-variant hover:border-ink hover:text-on-surface transition"
             >
               <CreditCard className="h-4 w-4" />
               {t(locale, "settings.manageBilling")}
@@ -403,7 +403,7 @@ export default function Settings() {
             <button
               onClick={() => upgradeMutation.mutate()}
               disabled={upgradeMutation.isPending}
-              className="flex items-center gap-2 rounded-xl border-2 border-ink bg-coral px-4 py-2 font-body text-sm font-semibold text-ink hover:opacity-90 transition"
+              className="flex items-center gap-2 rounded-xl border border-outline-variant bg-accent-coral px-4 py-2 font-body text-sm font-semibold text-on-surface hover:opacity-90 transition"
             >
               <Building2 className="h-4 w-4" />
               {t(locale, "settings.upgradeToBusiness")}
@@ -413,37 +413,37 @@ export default function Settings() {
 
         {/* Credit Wallet section */}
         {((subStatus?.creditBalance ?? 0) > 0 || (creditHistory && creditHistory.length > 0)) && (
-          <div className="mb-6 rounded-2xl border-2 border-ink bg-white p-6">
+          <div className="mb-6 rounded-2xl border border-outline-variant bg-white p-6">
             <div className="mb-4 flex items-center gap-2">
-              <Wallet className="h-5 w-5 text-coral" />
-              <h2 className="font-display text-xl font-bold text-ink">
+              <Wallet className="h-5 w-5 text-accent-coral" />
+              <h2 className="font-headline text-xl font-bold text-on-surface">
                 {t(locale, "credits.historyTitle")}
               </h2>
               {(subStatus?.creditBalance ?? 0) > 0 && (
-                <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-mustard-light px-3 py-1 font-body text-xs font-bold text-ink">
+                <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-outline-variant bg-mustard-light px-3 py-1 font-body text-xs font-bold text-on-surface">
                   {t(locale, "credits.balance")}: €{((subStatus?.creditBalance ?? 0) / 100).toFixed(2)}
                 </span>
               )}
             </div>
 
             {!creditHistory || creditHistory.length === 0 ? (
-              <p className="font-body text-sm text-ink-muted">{t(locale, "credits.noHistory")}</p>
+              <p className="font-body text-sm text-on-surface-variant">{t(locale, "credits.noHistory")}</p>
             ) : (
               <ul className="space-y-2">
                 {creditHistory.map((tx) => (
-                  <li key={tx.id} className="flex items-center gap-3 rounded-xl border border-ink-light bg-cream px-4 py-2.5">
+                  <li key={tx.id} className="flex items-center gap-3 rounded-xl border border-ink-light bg-surface-cream px-4 py-2.5">
                     {tx.amount > 0 ? (
-                      <ArrowDownLeft className="h-4 w-4 shrink-0 text-sage" />
+                      <ArrowDownLeft className="h-4 w-4 shrink-0 text-success-emerald" />
                     ) : (
-                      <ArrowUpRight className="h-4 w-4 shrink-0 text-coral" />
+                      <ArrowUpRight className="h-4 w-4 shrink-0 text-accent-coral" />
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="truncate font-body text-sm text-ink">{tx.description}</p>
-                      <p className="font-mono text-xs text-ink-light">
+                      <p className="truncate font-body text-sm text-on-surface">{tx.description}</p>
+                      <p className="font-mono text-xs text-outline">
                         {new Date(tx.createdAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}
                       </p>
                     </div>
-                    <span className={`font-mono text-sm font-bold shrink-0 ${tx.amount > 0 ? "text-sage" : "text-coral"}`}>
+                    <span className={`font-mono text-sm font-bold shrink-0 ${tx.amount > 0 ? "text-success-emerald" : "text-coral"}`}>
                       {tx.amount > 0 ? "+" : ""}€{(tx.amount / 100).toFixed(2)}
                     </span>
                   </li>
@@ -454,10 +454,10 @@ export default function Settings() {
         )}
 
         {/* Theme section */}
-        <div className="rounded-3xl border-2 border-ink bg-white p-6 md:p-8">
+        <div className="rounded-3xl border border-outline-variant bg-white p-6 md:p-8">
           <div className="mb-6 flex items-center gap-3">
-            <Palette className="h-5 w-5 text-coral" />
-            <h2 className="font-body text-lg font-bold text-ink">
+            <Palette className="h-5 w-5 text-accent-coral" />
+            <h2 className="font-body text-lg font-bold text-on-surface">
               {t(locale, "settings.themeSection")}
             </h2>
           </div>
@@ -473,14 +473,14 @@ export default function Settings() {
                 }`}
               >
                 <div
-                  className="h-10 w-10 rounded-full border-2 border-ink"
+                  className="h-10 w-10 rounded-full border border-outline-variant"
                   style={{ backgroundColor: opt.preview }}
                 />
-                <span className="font-body text-xs font-medium text-ink">
+                <span className="font-body text-xs font-medium text-on-surface">
                   {t(locale, opt.labelKey)}
                 </span>
                 {theme === opt.value && (
-                  <CheckCircle className="h-4 w-4 text-coral" />
+                  <CheckCircle className="h-4 w-4 text-accent-coral" />
                 )}
               </button>
             ))}

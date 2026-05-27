@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+﻿import { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { Link } from "react-router";
 import L from "leaflet";
@@ -69,7 +69,7 @@ export default function JobMap({ posts }: JobMapProps) {
     <MapContainer
       center={[56.88, 24.6]}
       zoom={8}
-      className="h-[380px] w-full rounded-2xl border-2 border-ink md:h-[520px]"
+      className="h-[380px] w-full rounded-2xl border border-outline-variant md:h-[520px]"
       scrollWheelZoom={false}
     >
       <TileLayer

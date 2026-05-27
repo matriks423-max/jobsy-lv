@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+﻿import { useEffect } from "react";
 import { Link } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -9,7 +9,7 @@ export default function Terms() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = "Lietošanas noteikumi — jobsy.lv";
+    document.title = "Lietošanas noteikumi — Jobsy.lv";
     return () => { document.title = prev; };
   }, []);
 
@@ -17,7 +17,7 @@ export default function Terms() {
     {
       title: "Vispārīgie noteikumi",
       content:
-        "Lietojot jobsy.lv, tu piekrīti šiem noteikumiem. Platforma ir paredzēta personiskai, nekomerciālai lietošanai. Aizliegts izmantot platformu nelikumīgiem nolūkiem, krāpšanai vai aizskaroša satura publicēšanai.",
+        "Lietojot Jobsy.lv, tu piekrīti šiem noteikumiem. Platforma ir paredzēta personiskai, nekomerciālai lietošanai. Aizliegts izmantot platformu nelikumīgiem nolūkiem, krāpšanai vai aizskaroša satura publicēšanai.",
     },
     {
       title: "Sludinājumi",
@@ -52,23 +52,23 @@ export default function Terms() {
   ];
 
   return (
-    <div className="min-h-screen px-4 py-8 noise-bg">
+    <div className="min-h-screen px-4 py-8">
       <div className="mx-auto max-w-3xl">
         <Link
           to="/"
-          className="mb-6 inline-flex items-center gap-2 font-body text-sm text-ink-muted hover:text-ink"
+          className="mb-6 inline-flex items-center gap-2 font-body text-sm text-on-surface-variant hover:text-on-surface"
         >
           <ArrowLeft className="h-4 w-4" />
           Atpakaļ
         </Link>
 
         <div className="mb-8 flex items-center gap-3">
-          <FileText className="h-8 w-8 text-coral" />
+          <FileText className="h-8 w-8 text-accent-coral" />
           <div>
-            <h1 className="font-display text-3xl font-bold text-ink md:text-4xl">
+            <h1 className="font-headline text-3xl font-bold text-on-surface md:text-4xl">
               {t(locale, "footer.terms")}
             </h1>
-            <p className="font-body text-sm text-ink-muted">
+            <p className="font-body text-sm text-on-surface-variant">
               Pēdējo reizi atjaunots: 2025. gada 1. janvārī
             </p>
           </div>
@@ -76,11 +76,11 @@ export default function Terms() {
 
         <div className="space-y-8">
           {sections.map((section, i) => (
-            <div key={i} className="rounded-2xl border-2 border-ink bg-white p-6">
-              <h2 className="mb-3 font-body text-xl font-bold text-ink">
+            <div key={i} className="rounded-2xl border border-outline-variant bg-white p-6">
+              <h2 className="mb-3 font-body text-xl font-bold text-on-surface">
                 {section.title}
               </h2>
-              <p className="font-body text-sm leading-relaxed text-ink-muted">
+              <p className="font-body text-sm leading-relaxed text-on-surface-variant">
                 {section.content}
               </p>
             </div>

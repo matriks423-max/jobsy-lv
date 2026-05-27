@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -80,7 +80,7 @@ export default function Category() {
   // Set document title + meta description for SEO
   useEffect(() => {
     if (seo) {
-      document.title = `${seo.heading} — jobsy.lv`;
+      document.title = `${seo.heading} — Jobsy.lv`;
       // Inject meta description
       let meta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
       const created = !meta;
@@ -122,15 +122,15 @@ export default function Category() {
   if (!catInfo) return null;
 
   return (
-    <div className="min-h-screen px-4 py-6 noise-bg">
-      <div className="mx-auto max-w-6xl">
+    <div className="min-h-screen px-4 py-6">
+      <div className="mx-auto max-w-container-max-width">
         {/* Breadcrumb */}
-        <nav className="mb-3 flex items-center gap-2 font-body text-sm text-ink-muted">
-          <Link to="/" className="hover:text-ink">
+        <nav className="mb-3 flex items-center gap-2 font-body text-sm text-on-surface-variant">
+          <Link to="/" className="hover:text-on-surface">
             {t(locale, "postDetail.breadcrumbHome")}
           </Link>
           <span>/</span>
-          <Link to="/browse" className="hover:text-ink">
+          <Link to="/browse" className="hover:text-on-surface">
             {t(locale, "postDetail.breadcrumbPosts")}
           </Link>
           <span>/</span>
@@ -139,11 +139,11 @@ export default function Category() {
 
         {/* SEO heading */}
         <div className="mb-6">
-          <h1 className="font-display text-3xl font-bold text-ink md:text-4xl">
+          <h1 className="font-headline text-3xl font-bold text-on-surface md:text-4xl">
             {seo?.heading ?? catName}
           </h1>
           {seo?.description && (
-            <p className="mt-2 max-w-2xl font-body text-base text-ink-muted">
+            <p className="mt-2 max-w-2xl font-body text-base text-on-surface-variant">
               {seo.description}
             </p>
           )}
@@ -158,12 +158,12 @@ export default function Category() {
           </div>
         ) : posts.length === 0 ? (
           <div className="py-20 text-center">
-            <p className="font-body text-lg text-ink-muted">
+            <p className="font-body text-lg text-on-surface-variant">
               {t(locale, "browse.noResults")}
             </p>
             <Link
               to="/create"
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border-2 border-ink bg-coral px-6 py-3 font-body text-sm font-medium text-ink hover:bg-coral-hover"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-outline-variant bg-accent-coral px-6 py-3 font-body text-sm font-medium text-on-surface hover:bg-[#e56a3a]"
             >
               <Plus className="h-4 w-4" />
               {t(locale, "myPosts.newPost")}
@@ -183,16 +183,16 @@ export default function Category() {
                 <button
                   onClick={() => setPage((p) => Math.max(0, p - 1))}
                   disabled={page === 0}
-                  className="flex items-center gap-1 rounded-xl border-2 border-ink px-4 py-2 font-body text-sm font-medium disabled:opacity-40"
+                  className="flex items-center gap-1 rounded-xl border border-outline-variant px-4 py-2 font-body text-sm font-medium disabled:opacity-40"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   {t(locale, "browse.prev")}
                 </button>
-                <span className="font-mono text-sm text-ink-muted">{page + 1}</span>
+                <span className="font-mono text-sm text-on-surface-variant">{page + 1}</span>
                 <button
                   onClick={() => setPage((p) => p + 1)}
                   disabled={!hasMore}
-                  className="flex items-center gap-1 rounded-xl border-2 border-ink px-4 py-2 font-body text-sm font-medium disabled:opacity-40"
+                  className="flex items-center gap-1 rounded-xl border border-outline-variant px-4 py-2 font-body text-sm font-medium disabled:opacity-40"
                 >
                   {t(locale, "browse.next")}
                   <ChevronRight className="h-4 w-4" />
@@ -203,16 +203,16 @@ export default function Category() {
         )}
 
         {/* CTA */}
-        <div className="mt-8 rounded-2xl border-2 border-ink bg-cream-dark p-6 text-center">
-          <p className="font-display text-xl font-bold text-ink">
+        <div className="mt-8 rounded-2xl border border-outline-variant bg-surface-cream p-6 text-center">
+          <p className="font-headline text-xl font-bold text-on-surface">
             {t(locale, "category.ctaHeading", { cat: catName.toLowerCase() })}
           </p>
-          <p className="mt-1 font-body text-sm text-ink-muted">
+          <p className="mt-1 font-body text-sm text-on-surface-variant">
             {t(locale, "category.ctaSubtitle")}
           </p>
           <Link
             to="/create"
-            className="mt-4 inline-flex items-center gap-2 rounded-xl border-2 border-ink bg-coral px-6 py-3 font-body text-sm font-medium text-ink hover:bg-coral-hover"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl border border-outline-variant bg-accent-coral px-6 py-3 font-body text-sm font-medium text-on-surface hover:bg-[#e56a3a]"
           >
             <Plus className="h-4 w-4" />
             {t(locale, "nav.createPost")}

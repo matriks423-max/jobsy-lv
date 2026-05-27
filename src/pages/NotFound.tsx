@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -11,7 +11,7 @@ export default function NotFound() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = "404 — jobsy.lv";
+    document.title = "404 — Jobsy.lv";
     return () => { document.title = prev; };
   }, []);
 
@@ -21,20 +21,20 @@ export default function NotFound() {
   };
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center px-4 noise-bg">
+    <div className="flex min-h-[80vh] items-center justify-center px-4">
       <div className="w-full max-w-md text-center">
         {/* Large seasonal 404 */}
         <div
-          className="mb-2 font-display text-[120px] font-bold leading-none"
+          className="mb-2 font-headline text-[120px] font-bold leading-none"
           style={{ color: "var(--coral)", opacity: 0.15 }}
         >
           404
         </div>
         <div className="-mt-16 mb-6">
-          <h1 className="font-display text-3xl font-bold text-ink">
+          <h1 className="font-headline text-3xl font-bold text-on-surface">
             {t(locale, "notFound.title")}
           </h1>
-          <p className="mt-2 font-body text-ink-muted">
+          <p className="mt-2 font-body text-on-surface-variant">
             {t(locale, "notFound.subtitle")}
           </p>
         </div>
@@ -42,18 +42,18 @@ export default function NotFound() {
         {/* Quick search */}
         <form onSubmit={handleSearch} className="mb-6 flex gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-on-surface-variant" />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t(locale, "hero.searchPlaceholder")}
-              className="w-full rounded-xl border-2 border-ink bg-white py-2.5 pl-10 pr-4 font-body text-sm outline-none focus:border-coral"
+              className="w-full rounded-xl border border-outline-variant bg-white py-2.5 pl-10 pr-4 font-body text-sm outline-none focus:border-primary-DEFAULT"
             />
           </div>
           <button
             type="submit"
-            className="rounded-xl border-2 border-ink px-4 py-2.5 font-body text-sm font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_var(--ink)]"
+            className="rounded-xl border border-outline-variant px-4 py-2.5 font-body text-sm font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_var(--ink)]"
             style={{ background: "var(--coral)" }}
           >
             {t(locale, "hero.searchBtn")}
@@ -62,7 +62,7 @@ export default function NotFound() {
 
         <Link
           to="/"
-          className="inline-flex items-center gap-2 font-body text-sm text-coral hover:underline"
+          className="inline-flex items-center gap-2 font-body text-sm text-accent-coral hover:underline"
         >
           <ArrowLeft className="h-4 w-4" />
           {t(locale, "notFound.backBtn")}
