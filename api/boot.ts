@@ -443,10 +443,8 @@ app.get("/kategorija/:slug", async (c, next) => {
 
 // AI/LLM crawler discovery
 app.get("/llms.txt", async (c) => {
-  const { readFileSync } = await import("fs");
-  const { join } = await import("path");
   try {
-    const content = readFileSync(join(process.cwd(), "public", "llms.txt"), "utf-8");
+    const content = await readFile(path.join(process.cwd(), "public", "llms.txt"), "utf-8");
     return c.text(content, 200, { "Content-Type": "text/plain; charset=utf-8" });
   } catch {
     return c.text("Not found", 404);
@@ -570,10 +568,8 @@ app.get("/feed.xml", async (c) => {
 
 // Apple Pay domain verification
 app.get("/.well-known/apple-developer-merchantid-domain-association", async (c) => {
-  const { readFileSync } = await import("fs");
-  const { join } = await import("path");
   try {
-    const file = readFileSync(join(process.cwd(), "public", "apple-developer-merchantid-domain-association"));
+    const file = await readFile(path.join(process.cwd(), "public", "apple-developer-merchantid-domain-association"));
     return new Response(file, { headers: { "Content-Type": "application/octet-stream" } });
   } catch {
     return c.text("Not found", 404);
