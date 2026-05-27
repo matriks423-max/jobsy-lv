@@ -24,6 +24,8 @@ import {
   Zap,
   RefreshCw,
   TrendingUp,
+  BarChart2,
+  Lock,
 } from "lucide-react";
 
 export default function MyPosts() {
@@ -31,7 +33,7 @@ export default function MyPosts() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: true });
   const { toast } = useToast();
-  const [tab, setTab] = useState<"active" | "expired" | "all">("active");
+  const [tab, setTab] = useState<"active" | "expired" | "all" | "analytics">("active");
   const [boostingPostId, setBoostingPostId] = useState<number | null>(null);
   const { data: subStatus } = trpc.subscription.status.useQuery(undefined, { enabled: isAuthenticated ?? false });
   const [searchParams, setSearchParams] = useSearchParams();
@@ -53,6 +55,9 @@ export default function MyPosts() {
 
   const { data, isLoading } = trpc.posts.myPosts.useQuery(undefined, {
     enabled: isAuthenticated ?? false,
+  });
+  const { data: analyticsData } = trpc.posts.myAnalytics.useQuery(undefined, {
+    enabled: (isAuthenticated ?? false) && subStatus?.plan === "business",
   });
 
   const utils = trpc.useUtils();
@@ -143,7 +148,7 @@ export default function MyPosts() {
         </div>
 
         {/* Tabs */}
-        <div className="mb-6 flex gap-2">
+        <div className="mb-6 flex flex-wrap gap-2">
           {(["active", "expired", "all"] as const).map((tVal) => (
             <button
               key={tVal}
@@ -160,10 +165,81 @@ export default function MyPosts() {
               </span>
             </button>
           ))}
+          {/* Analytics tab — visible to all, locked for free users */}
+          <button
+            onClick={() => setTab("analytics")}
+            className={`flex items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-sm font-medium transition ${
+              tab === "analytics"
+                ? "border-ink bg-ink text-cream"
+                : "border-ink-light bg-white text-ink-muted hover:border-ink hover:text-ink"
+            }`}
+          >
+            <BarChart2 className="h-3.5 w-3.5" />
+            {t(locale, "myPosts.analyticsTab")}
+            {subStatus?.plan !== "business" && <Lock className="h-3 w-3 text-ink-light" />}
+          </button>
         </div>
 
+        {/* Analytics Panel */}
+        {tab === "analytics" && (
+          subStatus?.plan !== "business" ? (
+            <div className="flex flex-col items-center rounded-2xl border-2 border-ink bg-white py-14 text-center">
+              <Lock className="mb-3 h-10 w-10 text-ink-light" />
+              <p className="mb-1 font-body font-bold text-ink">{t(locale, "myPosts.analyticsBusinessOnly")}</p>
+              <a
+                href="/pricing"
+                className="mt-4 inline-flex items-center gap-2 rounded-xl border-2 border-ink bg-coral px-5 py-2.5 font-body text-sm font-medium text-ink hover:bg-coral-hover"
+              >
+                {t(locale, "myPosts.analyticsUpgrade")}
+              </a>
+            </div>
+          ) : (
+            <div className="rounded-2xl border-2 border-ink bg-white overflow-hidden">
+              {/* Summary row */}
+              {analyticsData && analyticsData.length > 0 && (
+                <div className="grid grid-cols-3 border-b-2 border-ink">
+                  {[
+                    { icon: Eye, label: t(locale, "myPosts.analyticsViews"), value: analyticsData.reduce((s, p) => s + p.viewCount, 0) },
+                    { icon: MessageSquare, label: t(locale, "myPosts.analyticsContacts"), value: analyticsData.reduce((s, p) => s + p.contactCount, 0) },
+                    { icon: Heart, label: t(locale, "myPosts.analyticsInterests"), value: analyticsData.reduce((s, p) => s + p.interestCount, 0) },
+                  ].map(({ icon: Icon, label, value }) => (
+                    <div key={label} className="flex flex-col items-center py-4 text-center">
+                      <Icon className="mb-1 h-4 w-4 text-ink-muted" />
+                      <span className="font-display text-2xl font-bold text-coral">{value}</span>
+                      <span className="font-body text-xs text-ink-muted">{label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {/* Per-post table */}
+              {!analyticsData || analyticsData.length === 0 ? (
+                <div className="py-12 text-center font-body text-ink-muted">{t(locale, "myPosts.analyticsEmpty")}</div>
+              ) : (
+                <div className="divide-y divide-ink/10">
+                  {analyticsData.map((post) => (
+                    <div key={post.id} className="flex items-center gap-3 px-4 py-3">
+                      <div className={`h-10 w-1 shrink-0 rounded-full ${post.status === "active" ? "bg-sage" : "bg-ink-light"}`} />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-body text-sm font-medium text-ink">{post.title}</p>
+                        <p className="font-mono text-xs text-ink-muted">
+                          {new Date(post.createdAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-4 shrink-0 font-mono text-xs text-ink-muted">
+                        <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{post.viewCount}</span>
+                        <span className="flex items-center gap-1"><MessageSquare className="h-3 w-3" />{post.contactCount}</span>
+                        <span className="flex items-center gap-1"><Heart className="h-3 w-3" />{post.interestCount}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )
+        )}
+
         {/* Posts List */}
-        {isLoading ? (
+        {tab !== "analytics" && (isLoading ? (
           <div className="space-y-4">
             {[...Array(3)].map((_, i) => (
               <Skeleton key={i} className="h-24 rounded-2xl border-2 border-ink" />
@@ -295,7 +371,7 @@ export default function MyPosts() {
               {t(locale, "myPosts.emptyBtn")}
             </Button>
           </div>
-        )}
+        ))}
       </div>
       {boostingPostId !== null && (
         <BoostPicker

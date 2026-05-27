@@ -97,6 +97,46 @@ export const postsRouter = createRouter({
       });
     }),
 
+  myAnalytics: authedQuery.query(async ({ ctx }) => {
+    const userPosts = await getDb()
+      .select({
+        id: schema.posts.id,
+        title: schema.posts.title,
+        status: schema.posts.status,
+        viewCount: schema.posts.viewCount,
+        createdAt: schema.posts.createdAt,
+      })
+      .from(schema.posts)
+      .where(eq(schema.posts.userId, ctx.user.id))
+      .orderBy(desc(schema.posts.createdAt));
+
+    if (userPosts.length === 0) return [];
+
+    const postIds = userPosts.map((p) => p.id);
+
+    const [contactCounts, interestCounts] = await Promise.all([
+      getDb()
+        .select({ postId: schema.contacts.postId, cnt: count() })
+        .from(schema.contacts)
+        .where(inArray(schema.contacts.postId, postIds))
+        .groupBy(schema.contacts.postId),
+      getDb()
+        .select({ postId: schema.interests.postId, cnt: count() })
+        .from(schema.interests)
+        .where(inArray(schema.interests.postId, postIds))
+        .groupBy(schema.interests.postId),
+    ]);
+
+    const contactMap = new Map(contactCounts.map((r) => [r.postId, r.cnt]));
+    const interestMap = new Map(interestCounts.map((r) => [r.postId, r.cnt]));
+
+    return userPosts.map((post) => ({
+      ...post,
+      contactCount: contactMap.get(post.id) ?? 0,
+      interestCount: interestMap.get(post.id) ?? 0,
+    }));
+  }),
+
   getById: publicQuery
     .input(z.object({ id: z.number() }))
     .query(async ({ input }) => {
