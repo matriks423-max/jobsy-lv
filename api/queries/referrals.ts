@@ -1,4 +1,4 @@
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import * as schema from "@db/schema";
 import type { InsertReferral } from "@db/schema";
 import { getDb } from "./connection";
@@ -35,30 +35,3 @@ export async function atomicRewardReferral(referredId: number): Promise<number |
   return affected > 0 ? referral.referrerId : null;
 }
 
-// kept for compatibility — no longer used in reward flow
-export async function markReferralPostMade(referredId: number) {
-  await getDb()
-    .update(schema.referrals)
-    .set({ postMade: true })
-    .where(eq(schema.referrals.referredId, referredId));
-}
-
-export async function markReferralRewarded(referredId: number) {
-  await getDb()
-    .update(schema.referrals)
-    .set({ rewarded: true })
-    .where(eq(schema.referrals.referredId, referredId));
-}
-
-export async function getPendingReferrals(referrerId: number) {
-  return getDb()
-    .select()
-    .from(schema.referrals)
-    .where(
-      and(
-        eq(schema.referrals.referrerId, referrerId),
-        eq(schema.referrals.postMade, true),
-        eq(schema.referrals.rewarded, false)
-      )
-    );
-}
