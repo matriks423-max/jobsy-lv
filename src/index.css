@@ -4,130 +4,42 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
 
-/* ─── Theme: Warm Cream (default) ─────────────────────────── */
+/* ─── Emerald Executive Design System ─────────────────────── */
 :root {
-  --cream:        #F5F1E8;
-  --cream-dark:   #EDE8DC;
-  --ink:          #1A1A1A;
-  --ink-muted:    #6B6560;
-  --ink-light:    #A39E98;
-  --card-bg:      #FFFFFF;
-  --coral:        #E8826B;
-  --coral-hover:  #D4705A;
-  --coral-light:  #F5D5CE;
-  --mustard:      #F4C95D;
-  --mustard-light:#F9E8B8;
-  --sage:         #A4C3A2;
-  --sage-light:   #D4E5D3;
-  --need:         #C75B5B;
-  --need-light:   #E8C5C5;
-}
+  /* Brand */
+  --emerald:        #064e3b;
+  --emerald-deep:   #003527;
+  --emerald-light:  #95d3ba;
+  --coral-accent:   #FF7F50;
 
-/* ─── Theme: Dark Editorial ────────────────────────────────── */
-[data-theme="dark"] {
-  --cream:        #1C1814;
-  --cream-dark:   #262118;
-  --ink:          #EDE8DE;
-  --ink-muted:    #B0AAA3;
-  --ink-light:    #6B6560;
-  --card-bg:      #302820;
-  --coral:        #F09070;
-  --coral-hover:  #E07860;
-  --coral-light:  #4A281A;
-  --mustard:      #F5D070;
-  --mustard-light:#3A3010;
-  --sage:         #A4C3A2;
-  --sage-light:   #1C3020;
-  --need:         #E07070;
-  --need-light:   #3A1818;
-}
+  /* Surfaces */
+  --cream:          #F5F1E8;
+  --cream-dark:     #EDE9D8;
+  --off-white:      #F9FAF7;
+  --card-bg:        #FFFFFF;
 
-/* ─── Theme: Terracotta Linen ──────────────────────────────── */
-[data-theme="terracotta"] {
-  --cream:        #F7F0E6;
-  --cream-dark:   #EDE4D8;
-  --ink:          #2C2416;
-  --ink-muted:    #7A6856;
-  --ink-light:    #B0A090;
-  --card-bg:      #FDFAF5;
-  --coral:        #C4603A;
-  --coral-hover:  #A84E30;
-  --coral-light:  #F0D8CC;
-  --mustard:      #F5C842;
-  --mustard-light:#F5E8C0;
-  --sage:         #6B8F71;
-  --sage-light:   #D0E0D2;
-  --need:         #C75B5B;
-  --need-light:   #F0D0D0;
-}
+  /* Text */
+  --ink:            #141b2b;
+  --ink-muted:      #404944;
+  --ink-light:      #707974;
 
-/* ─── Season: Spring (Mar–May) ────────────────────────────── */
-[data-season="spring"] {
-  --coral:        #6BAD6A;
-  --coral-hover:  #5A9A59;
-  --coral-light:  #D4EDDA;
-  --mustard:      #F7C873;
-  --mustard-light:#FEF3D0;
-  --sage:         #A8C5A0;
-  --sage-light:   #E0EED8;
-  --season-hero-from: #F2FBF0;
-  --season-hero-to:   #FBF9F0;
-}
-
-/* ─── Season: Summer (Jun–Aug) ─────────────────────────────── */
-[data-season="summer"] {
-  /* Summer uses base defaults — only hero gradient needed */
-  --season-hero-from: #FBF6EE;
-  --season-hero-to:   #F5F1E8;
-}
-
-/* ─── Season: Autumn (Sep–Nov) ─────────────────────────────── */
-[data-season="autumn"] {
-  --coral:        #C4632A;
-  --coral-hover:  #A85520;
-  --coral-light:  #F5E0CC;
-  --mustard:      #D4A832;
-  --mustard-light:#F7EBC8;
-  --sage:         #8FAD6A;
-  --sage-light:   #DDE8CC;
-  --season-hero-from: #FBF5EE;
-  --season-hero-to:   #F7EEE0;
-}
-
-/* ─── Season: Winter (Dec–Feb) ─────────────────────────────── */
-[data-season="winter"] {
-  --coral:        #5B8AC4;
-  --coral-hover:  #4A72A8;
-  --coral-light:  #D8E8F8;
-  --mustard:      #C4B8A0;
-  --mustard-light:#EDE8DC;
-  --sage:         #8EB8D4;
-  --sage-light:   #D8EDF8;
-  --season-hero-from: #EFF4FA;
-  --season-hero-to:   #E4EDF8;
-}
-
-/* ─── Seasonal top accent line ─────────────────────────────── */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--coral);
-  z-index: 9999;
-  pointer-events: none;
-  transition: background 0.5s ease;
+  /* Legacy aliases */
+  --sage:           #059669;
+  --sage-light:     #d1fae5;
+  --need:           #006c49;
+  --need-light:     #dcfce7;
+  --mustard:        #d4a017;
+  --mustard-light:  #fdf6dc;
 }
 
 /* ─── Navbar scroll blur ───────────────────────────────────── */
 nav.navbar-scrolled {
-  background-color: color-mix(in srgb, var(--cream) 88%, transparent);
+  background-color: rgba(249, 250, 247, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px 0 rgba(6,78,59,0.05);
 }
 
 /* ─── Particle animations ──────────────────────────────────── */
@@ -175,26 +87,34 @@ nav.navbar-scrolled {
 
 @layer base {
   :root {
-    --background: 40 33% 94%;
-    --foreground: 0 0% 10%;
+    --background: 150 10% 97%;
+    --foreground: 220 35% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card-foreground: 220 35% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
-    --primary: 12 72% 66%;
-    --primary-foreground: 0 0% 10%;
-    --secondary: 42 88% 66%;
-    --secondary-foreground: 0 0% 10%;
-    --muted: 36 20% 90%;
-    --muted-foreground: 24 5% 42%;
-    --accent: 36 20% 90%;
-    --accent-foreground: 0 0% 10%;
-    --destructive: 0 50% 50%;
+    --popover-foreground: 220 35% 12%;
+    --primary: 161 100% 17%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 155 100% 21%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 230 30% 95%;
+    --muted-foreground: 155 8% 40%;
+    --accent: 230 30% 95%;
+    --accent-foreground: 220 35% 12%;
+    --destructive: 0 72% 42%;
     --destructive-foreground: 0 0% 100%;
-    --border: 30 10% 80%;
-    --input: 30 10% 80%;
-    --ring: 12 72% 66%;
-    --radius: 14px;
+    --border: 155 15% 85%;
+    --input: 155 15% 85%;
+    --ring: 161 100% 17%;
+    --radius: 8px;
+    --sidebar-background: 150 10% 97%;
+    --sidebar-foreground: 220 35% 12%;
+    --sidebar-primary: 161 100% 17%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 230 30% 95%;
+    --sidebar-accent-foreground: 220 35% 12%;
+    --sidebar-border: 155 15% 85%;
+    --sidebar-ring: 161 100% 17%;
   }
 
   html {
@@ -202,28 +122,21 @@ nav.navbar-scrolled {
   }
 
   body {
-    font-family: 'Geist', system-ui, sans-serif;
-    background-color: var(--cream);
-    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #F9FAF7;
+    color: #141b2b;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transition: background-color 0.3s ease, color 0.3s ease;
     overflow-x: hidden;
   }
 
-  /* bg-white cards follow card-bg theme variable */
-  [data-theme="dark"] .bg-white,
-  [data-theme="terracotta"] .bg-white {
-    background-color: var(--card-bg);
-  }
-
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
     font-weight: 700;
   }
 
   input, textarea, select {
-    font-family: 'Geist', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
   }
 }
 

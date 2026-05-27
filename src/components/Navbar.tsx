@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -32,69 +31,82 @@ export default function Navbar() {
   const { locale, setLocale } = useLocale();
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  return (
-    <nav className={`sticky top-0 z-50 border-b-2 border-ink bg-cream noise-bg transition-all duration-300${scrolled ? ' navbar-scrolled' : ''}`}>
-      <div className="mx-auto flex h-[60px] max-w-7xl items-center justify-between px-4 lg:px-6">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-1">
-          <span className="font-display text-2xl font-bold italic text-ink">
-            jobsy
-          </span>
-          <span className="inline-block h-2 w-2 rounded-full" style={{ background: 'var(--coral)' }} />
-        </Link>
+  const isActive = (path: string) => location.pathname === path;
 
-        {/* Desktop Nav */}
-        <div className="hidden items-center gap-6 md:flex">
-          <Link
-            to="/browse"
-            className="font-body text-sm font-medium text-ink-muted hover:text-ink"
-          >
-            {t(locale, "nav.browse")}
+  return (
+    <nav
+      className={`sticky top-0 z-50 bg-surface-off-white transition-all duration-300 ${
+        scrolled ? "navbar-scrolled" : "shadow-nav"
+      }`}
+    >
+      <div className="mx-auto flex h-16 max-w-container-max-width items-center justify-between px-margin-desktop">
+        {/* Logo */}
+        <div className="flex items-center gap-stack-gap-lg">
+          <Link to="/" className="flex items-center gap-2">
+            <span className="font-headline text-headline-sm font-bold text-primary-DEFAULT">
+              Jobsy
+            </span>
           </Link>
-          <Link
-            to="/pricing"
-            className="font-body text-sm font-medium text-ink-muted hover:text-ink"
-          >
-            {t(locale, "nav.pricing")}
-          </Link>
-          {isAuthenticated && (
+
+          {/* Desktop Nav Links */}
+          <div className="hidden items-center gap-stack-gap-md md:flex">
             <Link
-              to="/my-posts"
-              className="font-body text-sm font-medium text-ink-muted hover:text-ink"
+              to="/browse"
+              className={`font-label text-label-md transition-colors duration-200 ${
+                isActive("/browse")
+                  ? "border-b-2 border-primary-DEFAULT pb-0.5 font-bold text-primary-DEFAULT"
+                  : "text-on-surface-variant hover:text-primary-DEFAULT"
+              }`}
             >
-              {t(locale, "nav.myPosts")}
+              {t(locale, "nav.browse")}
             </Link>
-          )}
-          <Button
-            onClick={() => navigate("/create")}
-            className="h-9 rounded-md border-2 border-ink bg-coral px-4 font-body text-sm font-medium text-ink hover:-translate-y-0.5 hover:bg-coral-hover hover:shadow-card-coral"
-          >
-            <Plus className="mr-1 h-4 w-4" />
-            {t(locale, "nav.createPost")}
-          </Button>
+            <Link
+              to="/pricing"
+              className={`font-label text-label-md transition-colors duration-200 ${
+                isActive("/pricing")
+                  ? "border-b-2 border-primary-DEFAULT pb-0.5 font-bold text-primary-DEFAULT"
+                  : "text-on-surface-variant hover:text-primary-DEFAULT"
+              }`}
+            >
+              {t(locale, "nav.pricing")}
+            </Link>
+            {isAuthenticated && (
+              <Link
+                to="/my-posts"
+                className={`font-label text-label-md transition-colors duration-200 ${
+                  isActive("/my-posts")
+                    ? "border-b-2 border-primary-DEFAULT pb-0.5 font-bold text-primary-DEFAULT"
+                    : "text-on-surface-variant hover:text-primary-DEFAULT"
+                }`}
+              >
+                {t(locale, "nav.myPosts")}
+              </Link>
+            )}
+          </div>
         </div>
 
-        {/* Right side: Lang + Auth */}
-        <div className="hidden items-center gap-4 md:flex">
+        {/* Right side */}
+        <div className="hidden items-center gap-stack-gap-md md:flex">
           {/* Language switcher */}
           <div className="flex items-center gap-1">
             {(["lv", "ru", "en"] as const).map((l) => (
               <button
                 key={l}
                 onClick={() => setLocale(l)}
-                className={`px-1.5 py-1 font-body text-sm font-medium ${
+                className={`px-1.5 py-1 font-label text-label-md transition-colors duration-200 ${
                   locale === l
-                    ? "text-coral underline decoration-2 underline-offset-4"
-                    : "text-ink-light hover:text-ink"
+                    ? "font-bold text-primary-DEFAULT underline decoration-2 underline-offset-4"
+                    : "text-on-surface-variant hover:text-primary-DEFAULT"
                 }`}
               >
                 {l.toUpperCase()}
@@ -106,7 +118,7 @@ export default function Navbar() {
           {isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 rounded-full border-2 border-ink p-0.5 pr-3 transition hover:-translate-y-0.5">
+                <button className="flex items-center gap-2 rounded-lg border border-outline px-3 py-1.5 transition-all duration-200 hover:border-primary-DEFAULT hover:bg-surface-cream">
                   {user.avatar ? (
                     <img
                       src={user.avatar}
@@ -114,18 +126,18 @@ export default function Navbar() {
                       className="h-7 w-7 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-coral-light">
-                      <User className="h-4 w-4 text-coral" />
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-surface-container text-primary-DEFAULT">
+                      <User className="h-4 w-4" />
                     </div>
                   )}
-                  <span className="font-body text-sm font-medium text-ink">
+                  <span className="font-label text-label-md font-medium text-on-surface">
                     {user.name?.split(" ")[0] ?? "User"}
                   </span>
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="w-48 border-2 border-ink bg-white"
+                className="w-48 border border-outline-variant bg-white shadow-card"
               >
                 <DropdownMenuItem onClick={() => navigate("/my-posts")}>
                   <List className="mr-2 h-4 w-4" />
@@ -141,7 +153,7 @@ export default function Navbar() {
                 </DropdownMenuItem>
                 {user.role === "admin" && (
                   <DropdownMenuItem onClick={() => navigate("/admin")}>
-                    <Shield className="mr-2 h-4 w-4 text-coral" />
+                    <Shield className="mr-2 h-4 w-4 text-accent-coral" />
                     Admin
                   </DropdownMenuItem>
                 )}
@@ -152,34 +164,41 @@ export default function Navbar() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button
-              variant="outline"
+            <button
               onClick={() => navigate("/login")}
-              className="h-9 rounded-md border-2 border-ink bg-transparent font-body text-sm font-medium text-ink hover:bg-cream-dark"
+              className="px-4 py-2 font-label text-label-md text-on-surface-variant transition-colors duration-200 hover:rounded-lg hover:bg-surface-cream hover:text-primary-DEFAULT"
             >
               {t(locale, "nav.login")}
-            </Button>
+            </button>
           )}
+
+          {/* CTA */}
+          <button
+            onClick={() => navigate("/create")}
+            className="animate-pulse-emerald rounded-lg bg-primary-DEFAULT px-6 py-2.5 font-label text-label-md font-bold text-white shadow-sm transition-all duration-300 hover:bg-on-primary-fixed-variant hover:shadow-md active:scale-95"
+          >
+            {t(locale, "nav.createPost")}
+          </button>
         </div>
 
         {/* Mobile hamburger */}
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetTrigger asChild className="md:hidden">
-            <button className="rounded-md border-2 border-ink p-2">
+            <button className="rounded-lg border border-outline p-2 text-on-surface transition-colors hover:border-primary-DEFAULT hover:bg-surface-cream">
               <Menu className="h-5 w-5" />
             </button>
           </SheetTrigger>
           <SheetContent
             side="right"
-            className="w-80 border-l-2 border-ink bg-cream p-0"
+            className="w-80 border-l border-outline-variant bg-surface-off-white p-0"
           >
             <div className="flex h-full flex-col">
-              <div className="flex items-center justify-between border-b-2 border-ink p-4">
-                <span className="font-display text-xl font-bold italic text-ink">
-                  jobsy
+              <div className="flex items-center justify-between border-b border-outline-variant p-4">
+                <span className="font-headline text-xl font-bold text-primary-DEFAULT">
+                  Jobsy
                 </span>
                 <SheetClose asChild>
-                  <button className="rounded-md border-2 border-ink p-2">
+                  <button className="rounded-lg border border-outline p-2 text-on-surface transition-colors hover:border-primary-DEFAULT">
                     <X className="h-5 w-5" />
                   </button>
                 </SheetClose>
@@ -188,14 +207,14 @@ export default function Navbar() {
                 <Link
                   to="/browse"
                   onClick={() => setMobileOpen(false)}
-                  className="rounded-lg border-2 border-ink bg-white px-4 py-3 font-body font-medium text-ink"
+                  className="rounded-lg bg-white px-4 py-3 font-label text-label-md font-medium text-on-surface shadow-card transition-colors hover:bg-surface-cream"
                 >
                   {t(locale, "nav.browse")}
                 </Link>
                 <Link
                   to="/pricing"
                   onClick={() => setMobileOpen(false)}
-                  className="rounded-lg border-2 border-ink bg-white px-4 py-3 font-body font-medium text-ink"
+                  className="rounded-lg bg-white px-4 py-3 font-label text-label-md font-medium text-on-surface shadow-card transition-colors hover:bg-surface-cream"
                 >
                   {t(locale, "nav.pricing")}
                 </Link>
@@ -203,7 +222,7 @@ export default function Navbar() {
                   <Link
                     to="/my-posts"
                     onClick={() => setMobileOpen(false)}
-                    className="rounded-lg border-2 border-ink bg-white px-4 py-3 font-body font-medium text-ink"
+                    className="rounded-lg bg-white px-4 py-3 font-label text-label-md font-medium text-on-surface shadow-card transition-colors hover:bg-surface-cream"
                   >
                     {t(locale, "nav.myPosts")}
                   </Link>
@@ -211,24 +230,24 @@ export default function Navbar() {
                 <Link
                   to="/create"
                   onClick={() => setMobileOpen(false)}
-                  className="rounded-lg border-2 border-ink bg-coral px-4 py-3 font-body font-medium text-ink"
+                  className="flex items-center gap-2 rounded-lg bg-primary-DEFAULT px-4 py-3 font-label text-label-md font-bold text-white transition-all hover:bg-on-primary-fixed-variant"
                 >
-                  <Plus className="mr-2 inline h-4 w-4" />
+                  <Plus className="h-4 w-4" />
                   {t(locale, "nav.createPost")}
                 </Link>
               </div>
-              <div className="mt-auto border-t-2 border-ink p-4">
+              <div className="mt-auto border-t border-outline-variant p-4">
                 <div className="mb-4 flex items-center gap-2">
-                  <Globe className="h-4 w-4 text-ink-muted" />
+                  <Globe className="h-4 w-4 text-on-surface-variant" />
                   <div className="flex gap-1">
                     {(["lv", "ru", "en"] as const).map((l) => (
                       <button
                         key={l}
                         onClick={() => setLocale(l)}
-                        className={`px-2 py-1 font-body text-sm font-medium ${
+                        className={`rounded px-2 py-1 font-label text-label-sm font-medium transition-colors ${
                           locale === l
-                            ? "rounded bg-coral text-ink"
-                            : "text-ink-muted"
+                            ? "bg-primary-container text-on-primary-container"
+                            : "text-on-surface-variant hover:text-primary-DEFAULT"
                         }`}
                       >
                         {l.toUpperCase()}
@@ -245,35 +264,32 @@ export default function Navbar() {
                         className="h-10 w-10 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-coral-light">
-                        <User className="h-5 w-5 text-coral" />
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-container text-primary-DEFAULT">
+                        <User className="h-5 w-5" />
                       </div>
                     )}
                     <div className="flex-1">
-                      <p className="font-body text-sm font-medium text-ink">
+                      <p className="font-label text-label-md font-medium text-on-surface">
                         {user.name}
                       </p>
                       <div className="flex gap-3">
                         <button
                           onClick={() => { navigate("/settings"); setMobileOpen(false); }}
-                          className="font-body text-xs text-ink-light hover:text-ink"
+                          className="font-label text-label-sm text-on-surface-variant hover:text-primary-DEFAULT"
                         >
                           {t(locale, "nav.settings")}
                         </button>
                         {user.role === "admin" && (
                           <button
                             onClick={() => { navigate("/admin"); setMobileOpen(false); }}
-                            className="font-body text-xs text-coral hover:text-coral/70"
+                            className="font-label text-label-sm text-accent-coral"
                           >
                             Admin
                           </button>
                         )}
                         <button
-                          onClick={() => {
-                            logout();
-                            setMobileOpen(false);
-                          }}
-                          className="font-body text-xs text-ink-light hover:text-coral"
+                          onClick={() => { logout(); setMobileOpen(false); }}
+                          className="font-label text-label-sm text-on-surface-variant hover:text-primary-DEFAULT"
                         >
                           {t(locale, "nav.logout")}
                         </button>
@@ -281,15 +297,12 @@ export default function Navbar() {
                     </div>
                   </div>
                 ) : (
-                  <Button
-                    onClick={() => {
-                      navigate("/login");
-                      setMobileOpen(false);
-                    }}
-                    className="w-full rounded-md border-2 border-ink bg-coral font-body font-medium text-ink hover:bg-coral-hover"
+                  <button
+                    onClick={() => { navigate("/login"); setMobileOpen(false); }}
+                    className="w-full rounded-lg border border-outline bg-white px-4 py-2.5 font-label text-label-md font-medium text-on-surface shadow-card transition-colors hover:bg-surface-cream"
                   >
                     {t(locale, "nav.login")}
-                  </Button>
+                  </button>
                 )}
               </div>
             </div>
