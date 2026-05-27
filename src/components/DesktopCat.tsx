@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./DesktopCat.css";
 
-type CatState = "idle" | "walking" | "running" | "sleeping" | "spooked" | "grooming" | "stretching" | "happy";
+type CatState = "idle" | "walking" | "running" | "zooming" | "sleeping" | "spooked" | "grooming" | "stretching" | "happy";
 
 const W = 80;   // SVG width
 const H = 68;   // SVG height
-const WALK_PX = 1.1;
-const RUN_PX  = 3.6;
+const WALK_PX  = 1.1;
+const RUN_PX   = 3.6;
+const ZOOM_PX  = 5.2;
 
 const BUBBLES_IDLE  = ["~", "...", "♪", "zz?"];
 const BUBBLES_HAPPY = ["miau!", "♥", "purr~", "^•ᴗ•^"];
@@ -59,16 +60,41 @@ export default function DesktopCat() {
       if (stateRef.current !== "idle") return;
       const roll = Math.random();
 
-      if (roll < 0.40) {
+      if (roll < 0.42) {
         // Walk somewhere
         const d = Math.random() > 0.5 ? 1 : -1;
-        const tx = clamp(xRef.current + d * (100 + Math.random() * 260));
+        const tx = clamp(xRef.current + d * (120 + Math.random() * 320));
         targetRef.current = tx;
         setFlipped(tx < xRef.current);
         setState("walking");
         stateRef.current = "walking";
+        // occasionally chirp while walking
+        if (Math.random() < 0.35) {
+          setTimeout(() => {
+            if (stateRef.current === "walking") showBubble(["~", "♪", "..."][Math.floor(Math.random() * 3)], 1200);
+          }, 400 + Math.random() * 600);
+        }
 
-      } else if (roll < 0.51) {
+      } else if (roll < 0.47) {
+        // ZOOMIES — sprint to edge, then back
+        const goRight = xRef.current < window.innerWidth / 2;
+        const edge1 = clamp(goRight ? window.innerWidth - W * 1.5 : W * 1.5);
+        const edge2 = clamp(goRight ? W * 2 : window.innerWidth - W * 2);
+        targetRef.current = edge1;
+        setFlipped(!goRight);
+        setState("zooming");
+        stateRef.current = "zooming";
+        showBubble("!!", 900);
+        // after reaching edge1, zoom back
+        const zoomBack = () => {
+          if (stateRef.current !== "zooming") return;
+          targetRef.current = edge2;
+          setFlipped(goRight);
+          timerRef.current = setTimeout(goIdle, 1800);
+        };
+        timerRef.current = setTimeout(zoomBack, 1200 + Math.abs(edge1 - xRef.current) / ZOOM_PX * 16);
+
+      } else if (roll < 0.55) {
         // Sleep, then stretch on wake
         setState("sleeping");
         stateRef.current = "sleeping";
@@ -78,20 +104,20 @@ export default function DesktopCat() {
           stateRef.current = "stretching";
           showBubble("stretch~", 1500);
           timerRef.current = setTimeout(goIdle, 1800);
-        }, 7000 + Math.random() * 9000);
+        }, 5000 + Math.random() * 7000);
 
-      } else if (roll < 0.67) {
+      } else if (roll < 0.72) {
         // Groom
         setState("grooming");
         stateRef.current = "grooming";
         showBubble(BUBBLES_GROOM[Math.floor(Math.random() * BUBBLES_GROOM.length)], 2200);
-        timerRef.current = setTimeout(goIdle, 3000 + Math.random() * 2500);
+        timerRef.current = setTimeout(goIdle, 2500 + Math.random() * 2000);
 
       } else {
         // Stay idle a bit more
         goIdle();
       }
-    }, 1500 + Math.random() * 5500);
+    }, 600 + Math.random() * 2800);
   }, [clearTimer, clamp, showBubble]);
 
   // RAF movement loop
@@ -100,9 +126,9 @@ export default function DesktopCat() {
     const tick = () => {
       const s  = stateRef.current;
       const tx = targetRef.current;
-      if ((s === "walking" || s === "running") && tx !== null) {
+      if ((s === "walking" || s === "running" || s === "zooming") && tx !== null) {
         const dx    = tx - xRef.current;
-        const speed = s === "running" ? RUN_PX : WALK_PX;
+        const speed = s === "zooming" ? ZOOM_PX : s === "running" ? RUN_PX : WALK_PX;
         if (Math.abs(dx) <= speed + 0.5) {
           xRef.current = tx;
           setX(tx);

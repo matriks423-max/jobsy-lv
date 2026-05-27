@@ -102,10 +102,10 @@ export default function Pricing() {
         </div>
 
         {/* Tier cards — 3 columns */}
-        <div className="mb-10 grid gap-6 md:grid-cols-3">
+        <div className="mb-10 grid gap-6 md:grid-cols-3 items-stretch">
 
           {/* Free */}
-          <div className="rounded-2xl border-2 border-ink bg-white p-6">
+          <div className="flex flex-col rounded-2xl border-2 border-ink bg-white p-6">
             <div className="mb-5">
               <p className="font-body text-xs font-medium uppercase tracking-widest text-ink-muted">
                 {t(locale, "pricing.free")}
@@ -115,7 +115,7 @@ export default function Pricing() {
                 {t(locale, "pricing.freeForever")}
               </p>
             </div>
-            <ul className="mb-6 space-y-2.5">
+            <ul className="mb-6 flex-1 space-y-2.5">
               {FREE_FEATURES.map((f) => (
                 <li key={f} className="flex items-start gap-2 font-body text-sm text-ink">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-sage" />
@@ -138,7 +138,7 @@ export default function Pricing() {
           </div>
 
           {/* Pro */}
-          <div className="relative rounded-2xl border-2 border-ink bg-white p-6">
+          <div className="relative flex flex-col rounded-2xl border-2 border-ink bg-white p-6">
             <div className="absolute -top-3 left-6 rounded-full border-2 border-ink bg-mustard-light px-3 py-0.5 font-mono text-xs font-bold text-ink uppercase">
               {t(locale, "pricing.pro")}
             </div>
@@ -154,7 +154,7 @@ export default function Pricing() {
                 {t(locale, "pricing.cancelAnytime")}
               </p>
             </div>
-            <ul className="mb-6 space-y-2.5">
+            <ul className="mb-6 flex-1 space-y-2.5">
               {PRO_FEATURES.map((f) => (
                 <li key={f} className="flex items-start gap-2 font-body text-sm text-ink">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-sage" />
@@ -186,7 +186,7 @@ export default function Pricing() {
           </div>
 
           {/* Business */}
-          <div className="relative rounded-2xl border-2 border-ink bg-ink p-6 text-cream shadow-card">
+          <div className="relative flex flex-col rounded-2xl border-2 border-ink bg-ink p-6 text-cream shadow-card">
             <div className="absolute -top-3 left-6 rounded-full border-2 border-ink bg-coral px-3 py-0.5 font-mono text-xs font-bold text-ink uppercase">
               {t(locale, "pricing.mostPopular")}
             </div>
@@ -202,7 +202,7 @@ export default function Pricing() {
                 {t(locale, "pricing.cancelAnytime")}
               </p>
             </div>
-            <ul className="mb-6 space-y-2.5">
+            <ul className="mb-6 flex-1 space-y-2.5">
               {BUSINESS_FEATURES.map((f) => (
                 <li key={f} className="flex items-start gap-2 font-body text-sm text-cream">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-coral" />

@@ -22,7 +22,7 @@
 /* ── TAIL ────────────────────────────────────────────────────────────── */
 .cat-tail-group {
   transform-origin: 16px 46px;
-  animation: tailIdle 2.2s ease-in-out infinite;
+  animation: tailIdle 1.6s ease-in-out infinite;
 }
 @keyframes tailIdle {
   0%, 100% { transform: rotate(0deg);   }
@@ -111,6 +111,30 @@
 .desktop-cat--running .cat-leg-fr,
 .desktop-cat--running .cat-leg-bl {
   animation: legB 0.18s ease-in-out infinite;
+}
+
+/* ── ZOOMING (zoomies!) ──────────────────────────────────────────────── */
+.desktop-cat--zooming .cat-body-group {
+  animation: zoomBob 0.12s ease-in-out infinite;
+}
+@keyframes zoomBob {
+  0%, 100% { transform: translateY(0px)  scaleX(1.12); }
+  50%       { transform: translateY(-9px) scaleX(0.94); }
+}
+.desktop-cat--zooming .cat-tail-group {
+  animation: tailZoom 0.12s ease-in-out infinite;
+}
+@keyframes tailZoom {
+  0%, 100% { transform: rotate(-35deg); }
+  50%       { transform: rotate(-10deg); }
+}
+.desktop-cat--zooming .cat-leg-fl,
+.desktop-cat--zooming .cat-leg-br {
+  animation: legA 0.12s ease-in-out infinite;
+}
+.desktop-cat--zooming .cat-leg-fr,
+.desktop-cat--zooming .cat-leg-bl {
+  animation: legB 0.12s ease-in-out infinite;
 }
 
 /* ── SPOOKED ─────────────────────────────────────────────────────────── */
