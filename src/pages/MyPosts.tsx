@@ -366,7 +366,7 @@ export default function MyPosts() {
           <div className="flex flex-col items-center py-16">
             <FileText className="mb-4 h-12 w-12 text-outline" />
             <p className="mb-4 font-body text-on-surface-variant">{t(locale, "myPosts.empty")}</p>
-            <Button onClick={() => navigate("/create")} className="rounded-xl border border-outline-variant bg-coral">
+            <Button onClick={() => navigate("/create")} className="rounded-xl border border-outline-variant bg-accent-coral">
               <Plus className="mr-2 h-4 w-4" />
               {t(locale, "myPosts.emptyBtn")}
             </Button>

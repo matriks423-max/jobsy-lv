@@ -98,13 +98,9 @@ module.exports = {
         "on-error-container": "#93000a",
         "accent-coral": "#FF7F50",
         "success-emerald": "#059669",
-        // Legacy aliases (for backward compat during migration)
-        cream: { DEFAULT: "#F5F1E8", dark: "#EDE9D8" },
-        ink: { DEFAULT: "#141b2b", muted: "#404944", light: "#707974" },
-        coral: { DEFAULT: "#FF7F50", hover: "#e56a3a", light: "#fff0eb" },
-        mustard: { DEFAULT: "#d4a017", light: "#fdf6dc" },
-        sage: { DEFAULT: "#059669", light: "#d1fae5" },
+        // Post-type semantic colors (still used in UI for "need" post type indicator)
         need: { DEFAULT: "#006c49", light: "#dcfce7" },
+        // shadcn accent token
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",

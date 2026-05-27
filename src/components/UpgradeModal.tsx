@@ -27,7 +27,7 @@ export default function UpgradeModal({ onClose }: UpgradeModalProps) {
           <X className="h-4 w-4" />
         </button>
 
-        <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl border border-outline-variant bg-coral">
+        <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl border border-outline-variant bg-accent-coral">
           <Zap className="h-6 w-6 text-on-surface" />
         </div>
 
