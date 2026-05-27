@@ -329,7 +329,7 @@ export default function Settings() {
             </p>
             {subStatus?.plan === "free" && (
               <p className="mt-0.5 font-body text-xs text-ink-muted">
-                {subStatus.monthlyPostCount}/10 {t(locale, "settings.postsThisMonth")}
+                {subStatus.activePostCount}/1 {t(locale, "pricing.freePostsPerMonth")}
               </p>
             )}
             {subStatus?.plan === "business" && (

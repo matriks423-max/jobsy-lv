@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq, desc, sql, gte, count, inArray } from "drizzle-orm";
+import { eq, desc, sql, gte, count, inArray, and } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
@@ -203,18 +203,15 @@ export const postsRouter = createRouter({
 
       // Plan-based posting logic
       if (ctx.user.plan !== "business") {
-        // Free tier: enforce monthly limit of 10 posts
-        const today = new Date();
-        const thisMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-01`;
-
-        if (profile.monthlyPostReset !== thisMonth) {
-          // New month — reset counter
-          await updateProfile(ctx.user.id, { monthlyPostCount: 0, monthlyPostReset: thisMonth });
-          profile.monthlyPostCount = 0;
-        }
-
-        const FREE_MONTHLY_LIMIT = 10;
-        if (profile.monthlyPostCount >= FREE_MONTHLY_LIMIT) {
+        // Free tier: 1 active post at a time
+        const [{ cnt }] = await getDb()
+          .select({ cnt: count() })
+          .from(schema.posts)
+          .where(and(
+            eq(schema.posts.userId, ctx.user.id),
+            inArray(schema.posts.status, ["active", "pending_review"]),
+          ));
+        if (cnt >= 1) {
           // Try spending a referral credit before blocking
           const creditUsed = profile.freePostCredits > 0
             ? await useFreePostCredit(ctx.user.id)
@@ -222,7 +219,7 @@ export const postsRouter = createRouter({
           if (!creditUsed) {
             throw new TRPCError({
               code: "FORBIDDEN",
-              message: "Monthly limit reached — upgrade to Business",
+              message: "Free plan: 1 active post at a time — upgrade to Business",
             });
           }
         }
@@ -359,14 +356,15 @@ export const postsRouter = createRouter({
 
       // Plan limit check for free users
       if (ctx.user.plan !== "business") {
-        const today = new Date();
-        const thisMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-01`;
-        if (profile.monthlyPostReset !== thisMonth) {
-          await updateProfile(ctx.user.id, { monthlyPostCount: 0, monthlyPostReset: thisMonth });
-          profile.monthlyPostCount = 0;
-        }
-        if (profile.monthlyPostCount >= 10) {
-          throw new TRPCError({ code: "FORBIDDEN", message: "Monthly limit reached — upgrade to Business" });
+        const [{ cnt }] = await getDb()
+          .select({ cnt: count() })
+          .from(schema.posts)
+          .where(and(
+            eq(schema.posts.userId, ctx.user.id),
+            inArray(schema.posts.status, ["active", "pending_review"]),
+          ));
+        if (cnt >= 1) {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Free plan: 1 active post at a time — upgrade to Business" });
         }
       }
 

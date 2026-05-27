@@ -5,7 +5,7 @@ import { createSubscriptionCheckout, createBillingPortal } from "./stripe";
 import { getProfileByUserId, grantCredits, getCreditTransactions } from "./queries/profiles";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and, count, inArray } from "drizzle-orm";
 
 export const subscriptionRouter = createRouter({
   createCheckout: authedQuery.mutation(async ({ ctx }) => {
@@ -26,11 +26,18 @@ export const subscriptionRouter = createRouter({
 
   status: authedQuery.query(async ({ ctx }) => {
     const profile = await getProfileByUserId(ctx.user.id);
+    const [{ cnt: activePostCount }] = await getDb()
+      .select({ cnt: count() })
+      .from(schema.posts)
+      .where(and(
+        eq(schema.posts.userId, ctx.user.id),
+        inArray(schema.posts.status, ["active", "pending_review"]),
+      ));
     return {
       plan: ctx.user.plan as "free" | "business",
       planExpiresAt: ctx.user.planExpiresAt ?? null,
       freeBoostsRemaining: profile?.freeBoostsRemaining ?? 0,
-      monthlyPostCount: profile?.monthlyPostCount ?? 0,
+      activePostCount,
       creditBalance: profile?.creditBalance ?? 0,
     };
   }),

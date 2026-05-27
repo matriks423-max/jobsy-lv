@@ -42,14 +42,6 @@ export default function Pricing() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const boostAlaCarte = t(locale, "pricing.boostAlaCarte");
-
-  const FREE_FEATURES = [
-    t(locale, "pricing.freePostsPerMonth"),
-    t(locale, "pricing.contactFree"),
-    boostAlaCarte,
-  ];
-
   const BUSINESS_FEATURES = [
     t(locale, "pricing.unlimitedPosts"),
     t(locale, "pricing.companyProfile"),
@@ -57,7 +49,7 @@ export default function Pricing() {
     t(locale, "pricing.analytics"),
     t(locale, "pricing.freeBoosts"),
     t(locale, "pricing.contactFree"),
-    boostAlaCarte,
+    t(locale, "pricing.boostPrices"),
     t(locale, "pricing.cancelAnytime"),
   ];
 
@@ -95,12 +87,21 @@ export default function Pricing() {
               </p>
             </div>
             <ul className="mb-8 space-y-3">
-              {FREE_FEATURES.map((f) => (
-                <li key={f} className="flex items-center gap-2 font-body text-sm text-ink">
-                  <Check className="h-4 w-4 shrink-0 text-sage" />
-                  {f}
-                </li>
-              ))}
+              <li className="flex items-start gap-2 font-body text-sm text-ink">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-sage" />
+                <span>
+                  <span className="font-semibold">{t(locale, "pricing.freePostsPerMonth")}</span>
+                  <span className="ml-1 font-body text-xs text-ink-muted">— {t(locale, "pricing.freePostNote")}</span>
+                </span>
+              </li>
+              <li className="flex items-center gap-2 font-body text-sm text-ink">
+                <Check className="h-4 w-4 shrink-0 text-sage" />
+                {t(locale, "pricing.contactFree")}
+              </li>
+              <li className="flex items-center gap-2 font-body text-sm text-ink">
+                <Check className="h-4 w-4 shrink-0 text-sage" />
+                {t(locale, "pricing.boostPrices")}
+              </li>
             </ul>
             {isBusiness ? (
               <div className="rounded-xl border-2 border-ink-light bg-cream-dark px-4 py-3 text-center font-body text-sm text-ink-muted">
@@ -197,6 +198,7 @@ export default function Pricing() {
             {[
               { q: t(locale, "pricing.faq1q"), a: t(locale, "pricing.faq1a") },
               { q: t(locale, "pricing.faq2q"), a: t(locale, "pricing.faq2a") },
+              { q: t(locale, "pricing.faq3q"), a: t(locale, "pricing.faq3a") },
             ].map(({ q, a }) => (
               <details key={q} className="group border-b border-ink-light pb-4">
                 <summary className="flex cursor-pointer items-center justify-between font-body text-sm font-semibold text-ink">

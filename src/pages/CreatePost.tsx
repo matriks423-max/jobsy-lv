@@ -103,7 +103,7 @@ export default function CreatePost() {
       navigate(`/success?post=${data.postId}&free=true${reviewParam}`);
     },
     onError: (err) => {
-      if (err.message.includes("Monthly limit")) {
+      if (err.message.includes("Monthly limit") || err.message.includes("1 active post")) {
         setShowUpgrade(true);
       } else {
         toast(err.message, "error");
@@ -227,13 +227,11 @@ export default function CreatePost() {
                 </span>
                 {subStatus && user?.plan !== "business" && (
                   <span className={`inline-flex items-center gap-1 rounded-full border-2 px-3 py-1.5 font-body text-xs font-medium ${
-                    subStatus.monthlyPostCount >= 10
+                    (subStatus.activePostCount ?? 0) >= 1
                       ? "border-need bg-need-light text-need"
-                      : subStatus.monthlyPostCount >= 8
-                      ? "border-amber-400 bg-amber-50 text-amber-700"
                       : "border-ink-light bg-cream text-ink-muted"
                   }`}>
-                    {subStatus.monthlyPostCount}/10 {t(locale, "createPost.postsThisMonth")}
+                    {subStatus.activePostCount ?? 0}/1 {t(locale, "pricing.freePostsPerMonth")}
                   </span>
                 )}
               </div>
