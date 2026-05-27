@@ -77,7 +77,6 @@ export default function Browse() {
     (searchParams.get("sort") as never) ?? "newest"
   );
   const [page, setPage] = useState(Number(searchParams.get("page") ?? "0"));
-  // Default to list when a search query is active, map otherwise
   const [viewMode, setViewMode] = useState<"list" | "map">(
     searchParams.get("search") ? "list" : "map"
   );
@@ -108,18 +107,17 @@ export default function Browse() {
     search: listInput.search,
   }, { staleTime: 30 * 1000 });
 
-  // Set page title + meta description
   useEffect(() => {
     const prev = document.title;
     document.title = debouncedSearch
-      ? `"${debouncedSearch}" — jobsy.lv`
-      : t(locale, "browse.title") + " — jobsy.lv";
+      ? `"${debouncedSearch}" — Jobsy.lv`
+      : t(locale, "browse.title") + " — Jobsy.lv";
 
     const desc = locale === "lv"
-      ? "Atrodi pakalpojumu sniedzējus vai piedāvā savas prasmes Latvijā. Remontdarbi, pārvākšanās, dārzkopība, IT, bērnkopība un vēl."
+      ? "Atrodi pakalpojumu sniedzējus vai piedāvā savas prasmes Latvijā."
       : locale === "ru"
-      ? "Найди исполнителей или предложи свои услуги в Латвии. Ремонт, переезд, садоводство, IT, уход за детьми и многое другое."
-      : "Find service providers or offer your skills in Latvia. Repairs, moving, gardening, IT, childcare and more.";
+      ? "Найди исполнителей или предложи свои услуги в Латвии."
+      : "Find service providers or offer your skills in Latvia.";
     let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
     const created = !metaDesc;
     if (!metaDesc) {
@@ -128,14 +126,12 @@ export default function Browse() {
       document.head.appendChild(metaDesc);
     }
     metaDesc.content = desc;
-
     return () => {
       document.title = prev;
       if (created && metaDesc) document.head.removeChild(metaDesc);
     };
   }, [locale, debouncedSearch]);
 
-  // Sync URL params
   useEffect(() => {
     const params = new URLSearchParams();
     if (type !== "all") params.set("type", type);
@@ -147,12 +143,10 @@ export default function Browse() {
     setSearchParams(params, { replace: true });
   }, [type, category, city, sort, debouncedSearch, page]);
 
-  // Scroll to top of results when page changes
   useEffect(() => {
     if (page > 0) window.scrollTo({ top: 280, behavior: "smooth" });
   }, [page]);
 
-  // "/" keyboard shortcut focuses search input
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "/" && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
@@ -165,12 +159,8 @@ export default function Browse() {
   }, []);
 
   const clearFilters = () => {
-    setType("all");
-    setCategory("all");
-    setCity("all");
-    setSort("newest");
-    setSearch("");
-    setPage(0);
+    setType("all"); setCategory("all"); setCity("all");
+    setSort("newest"); setSearch(""); setPage(0);
   };
 
   const activeFiltersCount =
@@ -180,11 +170,7 @@ export default function Browse() {
     (debouncedSearch ? 1 : 0);
 
   const saveSearchMutation = trpc.savedSearches.save.useMutation({
-    onSuccess: () => {
-      toast(t(locale, "browse.alertSaved"), "success");
-      setShowSaveAlert(false);
-      setAlertLabel("");
-    },
+    onSuccess: () => { toast(t(locale, "browse.alertSaved"), "success"); setShowSaveAlert(false); setAlertLabel(""); },
     onError: (err) => toast(err.message, "error"),
   });
 
@@ -204,35 +190,34 @@ export default function Browse() {
   };
 
   const posts = data ?? [];
-  // Use totalCount when available (precise), fall back to length heuristic
   const hasMore = totalCount !== undefined
     ? (page + 1) * PAGE_SIZE < totalCount
     : posts.length === PAGE_SIZE;
 
-  // ── Local filter panel (used in both sidebar and mobile sheet) ──
+  // ── Filter panel ──────────────────────────────────────────────
   function FilterPanel({ onClose }: { onClose?: () => void }) {
     return (
       <div className="space-y-6">
         {/* Search */}
         <div>
-          <label className="mb-2 block font-body text-xs font-bold uppercase tracking-wide text-ink-muted">
+          <label className="mb-2 block font-label text-label-sm text-on-surface-variant">
             {t(locale, "browse.searchPlaceholder")}
           </label>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-outline" />
             <input
               id="browse-search"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(0); }}
               placeholder={t(locale, "browse.searchPlaceholder")}
-              className="h-10 w-full rounded-xl border-2 border-ink bg-white pl-9 pr-3 font-body text-sm focus:border-coral focus:outline-none"
+              className="h-10 w-full rounded-lg border border-outline-variant bg-surface-off-white pl-9 pr-3 font-body text-body-sm text-on-surface focus:border-primary-DEFAULT focus:outline-none focus:ring-1 focus:ring-primary-DEFAULT/30 transition"
             />
           </div>
         </div>
 
         {/* Type */}
         <div>
-          <label className="mb-2 block font-body text-xs font-bold uppercase tracking-wide text-ink-muted">
+          <label className="mb-2 block font-label text-label-sm text-on-surface-variant">
             {t(locale, "browse.typeAll")}
           </label>
           <div className="flex gap-2">
@@ -240,10 +225,10 @@ export default function Browse() {
               <button
                 key={tVal}
                 onClick={() => { setType(tVal); setPage(0); onClose?.(); }}
-                className={`flex-1 rounded-xl border-2 py-2 font-body text-sm font-medium transition ${
+                className={`flex-1 rounded-lg py-2 font-label text-label-sm transition-colors duration-150 ${
                   type === tVal
-                    ? "border-ink bg-coral text-ink"
-                    : "border-ink-light bg-white text-ink-muted hover:border-ink"
+                    ? "bg-primary-DEFAULT text-white"
+                    : "border border-outline-variant bg-surface-off-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
                 }`}
               >
                 {tVal === "all" ? t(locale, "browse.typeAll") : tVal === "need" ? t(locale, "browse.typeNeed") : t(locale, "browse.typeOffer")}
@@ -254,14 +239,16 @@ export default function Browse() {
 
         {/* Category grid */}
         <div>
-          <label className="mb-2 block font-body text-xs font-bold uppercase tracking-wide text-ink-muted">
+          <label className="mb-2 block font-label text-label-sm text-on-surface-variant">
             {t(locale, "browse.category")}
           </label>
           <div className="grid grid-cols-2 gap-1.5">
             <button
               onClick={() => { setCategory("all"); setPage(0); }}
-              className={`flex items-center gap-1.5 rounded-lg border-2 px-2 py-1.5 font-body text-xs transition ${
-                category === "all" ? "border-ink bg-ink text-cream" : "border-ink-light bg-white text-ink hover:border-ink"
+              className={`flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-label text-label-sm transition-colors duration-150 ${
+                category === "all"
+                  ? "bg-primary-DEFAULT text-white"
+                  : "border border-outline-variant bg-surface-off-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
               }`}
             >
               <MoreHorizontal className="h-3.5 w-3.5 shrink-0" />
@@ -273,10 +260,10 @@ export default function Browse() {
                 <button
                   key={cat.key}
                   onClick={() => { setCategory(cat.key); setPage(0); onClose?.(); }}
-                  className={`flex items-center gap-1.5 rounded-lg border-2 px-2 py-1.5 font-body text-xs transition ${
+                  className={`flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-label text-label-sm transition-colors duration-150 ${
                     category === cat.key
-                      ? "border-ink bg-coral text-ink"
-                      : "border-ink-light bg-white text-ink hover:border-ink"
+                      ? "bg-primary-DEFAULT text-white"
+                      : "border border-outline-variant bg-surface-off-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
                   }`}
                 >
                   <Icon className="h-3.5 w-3.5 shrink-0" />
@@ -289,15 +276,15 @@ export default function Browse() {
 
         {/* City */}
         <div>
-          <label className="mb-2 block font-body text-xs font-bold uppercase tracking-wide text-ink-muted">
+          <label className="mb-2 block font-label text-label-sm text-on-surface-variant">
             {t(locale, "browse.city")}
           </label>
           <Select value={city} onValueChange={(v) => { setCity(v); setPage(0); }}>
-            <SelectTrigger className="w-full rounded-xl border-2 border-ink bg-white font-body text-sm">
-              <MapPin className="mr-2 h-4 w-4 text-ink-muted" />
+            <SelectTrigger className="w-full rounded-lg border border-outline-variant bg-surface-off-white font-body text-body-sm">
+              <MapPin className="mr-2 h-4 w-4 text-outline" />
               <SelectValue placeholder={t(locale, "browse.city")} />
             </SelectTrigger>
-            <SelectContent className="border-2 border-ink">
+            <SelectContent className="border border-outline-variant">
               <SelectItem value="all">{t(locale, "browse.city")}</SelectItem>
               {CITIES.map((c) => (
                 <SelectItem key={c} value={c}>{t(locale, `cities.${c}` as never)}</SelectItem>
@@ -308,14 +295,14 @@ export default function Browse() {
 
         {/* Sort */}
         <div>
-          <label className="mb-2 block font-body text-xs font-bold uppercase tracking-wide text-ink-muted">
+          <label className="mb-2 block font-label text-label-sm text-on-surface-variant">
             {t(locale, "browse.sort")}
           </label>
           <Select value={sort} onValueChange={(v) => { setSort(v as typeof sort); setPage(0); }}>
-            <SelectTrigger className="w-full rounded-xl border-2 border-ink bg-white font-body text-sm">
+            <SelectTrigger className="w-full rounded-lg border border-outline-variant bg-surface-off-white font-body text-body-sm">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="border-2 border-ink">
+            <SelectContent className="border border-outline-variant">
               <SelectItem value="newest">{t(locale, "browse.sortNewest")}</SelectItem>
               <SelectItem value="oldest">{t(locale, "browse.sortOldest")}</SelectItem>
               <SelectItem value="budget_asc">{t(locale, "browse.sortBudgetAsc")}</SelectItem>
@@ -328,7 +315,7 @@ export default function Browse() {
         {activeFiltersCount > 0 && isAuthenticated && (
           <button
             onClick={handleOpenSaveAlert}
-            className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-ink bg-mustard-light px-3 py-2 font-body text-sm font-medium text-ink hover:bg-mustard transition"
+            className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-outline-variant bg-surface-cream px-3 py-2 font-label text-label-sm text-on-surface transition-colors hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
           >
             <Bell className="h-3.5 w-3.5" />
             {t(locale, "browse.saveAlert")}
@@ -339,7 +326,7 @@ export default function Browse() {
         {activeFiltersCount > 0 && (
           <button
             onClick={() => { clearFilters(); onClose?.(); }}
-            className="flex w-full items-center justify-center gap-1 font-body text-sm text-coral hover:text-coral-hover"
+            className="flex w-full items-center justify-center gap-1 font-label text-label-sm text-accent-coral hover:text-[#e56a3a]"
           >
             <X className="h-4 w-4" />
             {t(locale, "browse.clear")}
@@ -350,18 +337,16 @@ export default function Browse() {
   }
 
   return (
-    <div className="min-h-screen noise-bg">
-      <div className="mx-auto max-w-7xl px-4 py-8">
+    <div className="min-h-screen bg-surface-off-white">
+      <div className="mx-auto max-w-container-max-width px-margin-mobile py-8 md:px-margin-desktop">
 
         {/* Top bar */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
-            <h1 className="font-display text-3xl font-bold text-ink md:text-4xl">
-              {debouncedSearch
-                ? `"${debouncedSearch}"`
-                : t(locale, "browse.title")}
+            <h1 className="font-headline text-headline-md font-bold text-on-surface">
+              {debouncedSearch ? `"${debouncedSearch}"` : t(locale, "browse.title")}
             </h1>
-            <p className="mt-1 font-body text-sm text-ink-muted">
+            <p className="mt-1 font-body text-body-sm text-on-surface-variant">
               {totalCount !== undefined
                 ? t(locale, "browse.showing", { count: totalCount })
                 : t(locale, "browse.showing", { count: posts.length })}
@@ -372,26 +357,25 @@ export default function Browse() {
             {/* Mobile filter button */}
             <button
               onClick={() => setShowMobileFilters(true)}
-              className="flex items-center gap-2 rounded-xl border-2 border-ink bg-white px-3 py-2 font-body text-sm font-medium md:hidden"
+              className="flex items-center gap-2 rounded-lg border border-outline-variant bg-white px-3 py-2 font-label text-label-sm shadow-card md:hidden"
             >
-              <SlidersHorizontal className="h-4 w-4" />
+              <SlidersHorizontal className="h-4 w-4 text-on-surface-variant" />
               {t(locale, "browse.filters")}
               {activeFiltersCount > 0 && (
-                <span
-                  className="rounded-full px-1.5 py-0.5 font-mono text-xs text-ink"
-                  style={{ background: 'var(--coral)' }}
-                >
+                <span className="rounded-full bg-primary-DEFAULT px-1.5 py-0.5 font-label text-label-sm text-white">
                   {activeFiltersCount}
                 </span>
               )}
             </button>
 
             {/* View toggle */}
-            <div className="flex overflow-hidden rounded-xl border-2 border-ink">
+            <div className="flex overflow-hidden rounded-lg border border-outline-variant bg-white shadow-card">
               <button
                 onClick={() => setViewMode("map")}
-                className={`flex items-center gap-1.5 px-3 py-2 font-body text-sm font-medium transition ${
-                  viewMode === "map" ? "bg-ink text-cream" : "bg-white text-ink hover:bg-cream"
+                className={`flex items-center gap-1.5 px-3 py-2 font-label text-label-sm transition-colors duration-150 ${
+                  viewMode === "map"
+                    ? "bg-primary-DEFAULT text-white"
+                    : "text-on-surface-variant hover:text-primary-DEFAULT"
                 }`}
               >
                 <Map className="h-4 w-4" />
@@ -399,8 +383,10 @@ export default function Browse() {
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`flex items-center gap-1.5 px-3 py-2 font-body text-sm font-medium transition ${
-                  viewMode === "list" ? "bg-ink text-cream" : "bg-white text-ink hover:bg-cream"
+                className={`flex items-center gap-1.5 px-3 py-2 font-label text-label-sm transition-colors duration-150 ${
+                  viewMode === "list"
+                    ? "bg-primary-DEFAULT text-white"
+                    : "text-on-surface-variant hover:text-primary-DEFAULT"
                 }`}
               >
                 <LayoutList className="h-4 w-4" />
@@ -410,29 +396,29 @@ export default function Browse() {
           </div>
         </div>
 
-        {/* Mobile active filter pills */}
+        {/* Active filter pills (mobile) */}
         {activeFiltersCount > 0 && (
           <div className="mb-4 flex flex-wrap gap-2 md:hidden">
             {type !== "all" && (
-              <span className="inline-flex items-center gap-1 rounded-full border-2 border-ink bg-coral-light px-3 py-1 font-body text-xs font-medium text-ink">
+              <span className="inline-flex items-center gap-1 rounded-full bg-surface-container px-3 py-1 font-label text-label-sm text-on-surface">
                 {type === "need" ? t(locale, "browse.typeNeed") : t(locale, "browse.typeOffer")}
                 <button onClick={() => setType("all")}><X className="h-3 w-3" /></button>
               </span>
             )}
             {category !== "all" && (
-              <span className="inline-flex items-center gap-1 rounded-full border-2 border-ink bg-mustard-light px-3 py-1 font-body text-xs font-medium text-ink">
+              <span className="inline-flex items-center gap-1 rounded-full bg-surface-container px-3 py-1 font-label text-label-sm text-on-surface">
                 {t(locale, `categories.${category}` as never)}
                 <button onClick={() => setCategory("all")}><X className="h-3 w-3" /></button>
               </span>
             )}
             {city !== "all" && (
-              <span className="inline-flex items-center gap-1 rounded-full border-2 border-ink bg-sage-light px-3 py-1 font-body text-xs font-medium text-ink">
+              <span className="inline-flex items-center gap-1 rounded-full bg-surface-container px-3 py-1 font-label text-label-sm text-on-surface">
                 {t(locale, `cities.${city}` as never)}
                 <button onClick={() => setCity("all")}><X className="h-3 w-3" /></button>
               </span>
             )}
             {debouncedSearch && (
-              <span className="inline-flex items-center gap-1 rounded-full border-2 border-ink bg-cream px-3 py-1 font-body text-xs font-medium text-ink">
+              <span className="inline-flex items-center gap-1 rounded-full bg-surface-container px-3 py-1 font-label text-label-sm text-on-surface">
                 "{debouncedSearch}"
                 <button onClick={() => setSearch("")}><X className="h-3 w-3" /></button>
               </span>
@@ -442,13 +428,13 @@ export default function Browse() {
 
         {/* Save alert inline form */}
         {showSaveAlert && (
-          <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border-2 border-ink bg-mustard-light p-4">
-            <Bell className="h-4 w-4 shrink-0 text-ink" />
+          <div className="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-outline-variant bg-surface-cream p-4">
+            <Bell className="h-4 w-4 shrink-0 text-primary-DEFAULT" />
             <Input
               value={alertLabel}
               onChange={(e) => setAlertLabel(e.target.value)}
               placeholder={t(locale, "browse.alertLabelPlaceholder")}
-              className="h-9 flex-1 min-w-[180px] rounded-lg border-2 border-ink bg-white px-3 font-body text-sm focus:border-coral focus:outline-none"
+              className="h-9 flex-1 min-w-[180px] rounded-lg border border-outline-variant bg-white px-3 font-body text-body-sm focus:border-primary-DEFAULT focus:outline-none"
             />
             <button
               onClick={() => saveSearchMutation.mutate({
@@ -459,12 +445,12 @@ export default function Browse() {
                 keyword: debouncedSearch || undefined,
               })}
               disabled={saveSearchMutation.isPending}
-              className="flex items-center gap-1.5 rounded-lg border-2 border-ink bg-ink px-4 py-1.5 font-body text-sm font-medium text-cream hover:bg-ink/80"
+              className="flex items-center gap-1.5 rounded-lg bg-primary-DEFAULT px-4 py-1.5 font-label text-label-sm text-white transition-colors hover:bg-on-primary-fixed-variant"
             >
               <Check className="h-3.5 w-3.5" />
               {t(locale, "browse.alertConfirm")}
             </button>
-            <button onClick={() => setShowSaveAlert(false)} className="text-ink-muted hover:text-ink">
+            <button onClick={() => setShowSaveAlert(false)} className="text-on-surface-variant hover:text-on-surface">
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -473,8 +459,8 @@ export default function Browse() {
         {/* Main layout: sidebar + content */}
         <div className="flex gap-6">
           {/* Desktop sidebar */}
-          <aside className="hidden w-[280px] shrink-0 md:block">
-            <div className="sticky top-24 rounded-2xl border-2 border-ink bg-white p-5">
+          <aside className="hidden w-[260px] shrink-0 md:block">
+            <div className="sticky top-24 rounded-2xl bg-white p-5 shadow-card">
               <FilterPanel />
             </div>
           </aside>
@@ -484,7 +470,7 @@ export default function Browse() {
             {/* Featured Posts */}
             {featuredPosts.length > 0 && (
               <div className="mb-8">
-                <h2 className="mb-3 font-display text-lg font-bold text-ink">
+                <h2 className="mb-3 font-headline text-headline-sm font-semibold text-on-surface">
                   {t(locale, "browse.featured")}
                 </h2>
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -492,7 +478,7 @@ export default function Browse() {
                     <PostCard key={`featured-${post.id}`} post={post} profile={profile} isBusiness={isBusiness} images={images} />
                   ))}
                 </div>
-                <div className="mt-4 border-b-2 border-ink-light" />
+                <div className="mt-6 border-b border-outline-variant" />
               </div>
             )}
 
@@ -501,27 +487,25 @@ export default function Browse() {
               <>
                 {isLoading ? (
                   <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                      <PostCardSkeleton key={i} />
-                    ))}
+                    {Array.from({ length: 6 }).map((_, i) => <PostCardSkeleton key={i} />)}
                   </div>
                 ) : posts.length === 0 ? (
                   <div className="py-16 text-center">
-                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border-2 border-ink bg-white text-2xl">
+                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-surface-cream text-2xl">
                       🔍
                     </div>
-                    <p className="font-display text-xl font-bold text-ink">
+                    <p className="font-headline text-headline-sm font-semibold text-on-surface">
                       {t(locale, "browse.noResults")}
                     </p>
                     {debouncedSearch && (
-                      <p className="font-mono text-sm text-ink-muted">"{debouncedSearch}"</p>
+                      <p className="font-mono text-body-sm text-on-surface-variant">"{debouncedSearch}"</p>
                     )}
-                    <p className="mt-2 font-body text-sm text-ink-muted">
+                    <p className="mt-2 font-body text-body-sm text-on-surface-variant">
                       {t(locale, "browse.noResultsSub")}
                     </p>
                     <button
                       onClick={clearFilters}
-                      className="mt-4 rounded-xl border-2 border-ink px-4 py-2 font-body text-sm font-medium transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_var(--ink)]"
+                      className="mt-4 rounded-lg border border-outline-variant bg-white px-4 py-2 font-label text-label-sm text-on-surface shadow-card transition-all hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
                     >
                       {t(locale, "browse.clear")}
                     </button>
@@ -540,16 +524,16 @@ export default function Browse() {
                     <button
                       onClick={() => setPage((p) => Math.max(0, p - 1))}
                       disabled={page === 0}
-                      className="flex items-center gap-1 rounded-xl border-2 border-ink px-4 py-2 font-body text-sm font-medium disabled:opacity-40"
+                      className="flex items-center gap-1 rounded-lg border border-outline-variant bg-white px-4 py-2 font-label text-label-sm text-on-surface shadow-card transition-all disabled:opacity-40 hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
                     >
                       <ChevronLeft className="h-4 w-4" />
                       {t(locale, "browse.prev")}
                     </button>
-                    <span className="font-mono text-sm text-ink-muted">{page + 1}</span>
+                    <span className="font-label text-label-sm text-on-surface-variant">{page + 1}</span>
                     <button
                       onClick={() => setPage((p) => p + 1)}
                       disabled={!hasMore}
-                      className="flex items-center gap-1 rounded-xl border-2 border-ink px-4 py-2 font-body text-sm font-medium disabled:opacity-40"
+                      className="flex items-center gap-1 rounded-lg border border-outline-variant bg-white px-4 py-2 font-label text-label-sm text-on-surface shadow-card transition-all disabled:opacity-40 hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
                     >
                       {t(locale, "browse.next")}
                       <ChevronRight className="h-4 w-4" />
@@ -560,11 +544,11 @@ export default function Browse() {
             ) : (
               <div className="mb-6">
                 {isLoading ? (
-                  <Skeleton className="h-[520px] rounded-2xl border-2 border-ink" />
+                  <Skeleton className="h-[520px] rounded-2xl" />
                 ) : (
                   <JobMap posts={posts} />
                 )}
-                <p className="mt-3 font-body text-sm text-ink-muted">
+                <p className="mt-3 font-body text-body-sm text-on-surface-variant">
                   {t(locale, "browse.mapShowing", { count: posts.filter(({ post }) => post.city && post.city !== "other").length })}
                 </p>
               </div>
@@ -576,7 +560,7 @@ export default function Browse() {
       {/* Mobile FAB */}
       <button
         onClick={() => navigate("/create")}
-        className="fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full border-2 border-ink bg-coral px-4 py-3 font-body text-sm font-medium text-ink shadow-card-coral transition hover:-translate-y-0.5 hover:bg-coral-hover md:hidden"
+        className="fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full bg-primary-DEFAULT px-5 py-3 font-label text-label-sm font-bold text-white shadow-float transition-all hover:-translate-y-0.5 active:scale-95 md:hidden"
       >
         <Plus className="h-4 w-4" />
         {t(locale, "nav.createPost")}
@@ -584,12 +568,14 @@ export default function Browse() {
 
       {/* Mobile filter Sheet */}
       <Sheet open={showMobileFilters} onOpenChange={setShowMobileFilters}>
-        <SheetContent side="bottom" className="h-[85vh] overflow-y-auto rounded-t-2xl border-t-2 border-ink bg-cream p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-display text-xl font-bold text-ink">{t(locale, "browse.filters")}</h2>
+        <SheetContent side="bottom" className="h-[85vh] overflow-y-auto rounded-t-2xl border-t border-outline-variant bg-surface-off-white p-6">
+          <div className="mb-5 flex items-center justify-between">
+            <h2 className="font-headline text-headline-sm font-semibold text-on-surface">
+              {t(locale, "browse.filters")}
+            </h2>
             <button
               onClick={() => setShowMobileFilters(false)}
-              className="rounded-lg border-2 border-ink p-1.5"
+              className="rounded-lg border border-outline-variant p-1.5 text-on-surface-variant hover:text-on-surface"
             >
               <X className="h-4 w-4" />
             </button>

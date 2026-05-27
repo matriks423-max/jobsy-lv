@@ -6,12 +6,11 @@ import { CATEGORIES } from "@/lib/categories";
 import HomeCityMap from "@/components/HomeCityMap";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import PostCard, { PostCardSkeleton } from "@/components/PostCard";
 import type { PostWithProfile } from "@/types/post";
 import {
-  Star,
+  Sparkles,
   ChevronDown,
   Plus,
   Search,
@@ -27,7 +26,6 @@ import {
   Monitor,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import SeasonalParticles from "@/components/SeasonalParticles";
 
 function AnimatedCounter({ target, duration = 1500 }: { target: number; duration?: number }) {
   const [count, setCount] = useState(0);
@@ -63,15 +61,15 @@ function MarqueeStrip() {
   const { locale } = useLocale();
   const items = CATEGORIES.map((cat, i) => (
     <span key={i} className="inline-flex items-center gap-3 whitespace-nowrap px-4">
-      <Star className="h-4 w-4" style={{ fill: 'var(--coral)', color: 'var(--coral)' }} />
-      <span className="font-display text-lg font-bold italic text-mustard">
+      <Sparkles className="h-3.5 w-3.5 text-primary-fixed-dim" />
+      <span className="font-label text-label-md font-semibold tracking-wide text-primary-fixed">
         {t(locale, `categories.${cat.key}` as never)}
       </span>
     </span>
   ));
 
   return (
-    <div className="overflow-hidden border-y-2 border-ink bg-ink py-3">
+    <div className="overflow-hidden border-y border-primary-container bg-primary-DEFAULT py-3">
       <div className="flex animate-marquee">
         {[...items, ...items, ...items, ...items].map((item, i) => (
           <div key={i}>{item}</div>
@@ -96,7 +94,6 @@ export default function Home() {
   const { isAuthenticated } = useAuth();
   const [activeFilter, setActiveFilter] = useState<"all" | "need" | "offer">("all");
   const [copied, setCopied] = useState(false);
-  const [cardView, setCardView] = useState<"grid" | "list">("grid");
   const [heroSearch, setHeroSearch] = useState("");
 
   const handleHeroSearch = (e: { preventDefault(): void }) => {
@@ -106,7 +103,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    document.title = `jobsy.lv — ${t(locale, "hero.title")}`;
+    document.title = `Jobsy.lv — ${t(locale, "hero.title")}`;
   }, [locale]);
 
   const { data: stats } = trpc.stats.get.useQuery();
@@ -125,33 +122,54 @@ export default function Home() {
   const featuredPosts = (featuredData ?? []).slice(0, 3);
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section
-        className="relative flex min-h-[70vh] flex-col items-center justify-center overflow-hidden px-4 pb-10 pt-14 text-center"
-        style={{
-          background: 'linear-gradient(to bottom, var(--season-hero-from, #FBF6EE), var(--season-hero-to, #F5F1E8))',
-        }}
-      >
-        {/* Seasonal particles */}
-        <SeasonalParticles />
+    <div className="min-h-screen bg-surface-off-white">
+      {/* ── Hero ──────────────────────────────────────────────── */}
+      <section className="relative flex min-h-[72vh] flex-col items-center justify-center overflow-hidden px-4 pb-12 pt-16 text-center">
+        {/* Emerald gradient background */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(160deg, #003527 0%, #064e3b 45%, #095c45 100%)",
+          }}
+        />
 
-        {/* Decorative shapes */}
+        {/* Subtle noise texture */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+            backgroundSize: "256px",
+          }}
+        />
+
+        {/* Decorative emerald orbs */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <Star className="absolute left-[10%] top-[15%] h-4 w-4 opacity-20" style={{ color: 'var(--mustard)' }} />
-          <div className="absolute right-[15%] top-[20%] h-6 w-6 rounded-full border-2 opacity-20" style={{ borderColor: 'var(--coral)' }} />
-          <div className="absolute bottom-[25%] left-[20%] h-3 w-3 rotate-45 border-2 opacity-20" style={{ borderColor: 'var(--sage)' }} />
+          <div className="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-secondary-DEFAULT/10 blur-3xl" />
+          <div className="absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-primary-fixed/5 blur-3xl" />
         </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-4xl">
+        <div className="relative z-10 mx-auto w-full max-w-3xl">
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.4 }}
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary-fixed/20 bg-white/10 px-4 py-1.5 backdrop-blur-sm"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-primary-fixed-dim" />
+            <span className="font-label text-label-sm text-primary-fixed">
+              jobsy.lv
+            </span>
+          </motion.div>
+
           {/* Headline — word-by-word reveal */}
-          <motion.h1 className="mb-4 font-display text-5xl font-bold leading-tight text-ink md:text-7xl">
+          <motion.h1 className="mb-5 font-headline text-5xl font-bold leading-tight text-white md:text-[64px] md:leading-[1.1]">
             {t(locale, "hero.title").split(" ").map((word, i) => (
               <motion.span
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08, duration: 0.4, ease: "easeOut" }}
+                transition={{ delay: 0.2 + i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 className="mr-[0.2em] inline-block"
               >
                 {word}
@@ -161,10 +179,10 @@ export default function Home() {
 
           {/* Subtitle */}
           <motion.p
-            className="mx-auto mb-6 max-w-xl font-body text-lg text-ink-muted"
+            className="mx-auto mb-8 max-w-xl font-body text-body-lg text-primary-fixed-dim"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.55, duration: 0.4 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
           >
             {t(locale, "hero.subtitle")}
           </motion.p>
@@ -172,43 +190,43 @@ export default function Home() {
           {/* Search bar */}
           <motion.form
             onSubmit={handleHeroSearch}
-            className="mb-4 flex gap-2"
+            className="mb-6 flex gap-2"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.4 }}
+            transition={{ delay: 0.75, duration: 0.4 }}
           >
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-muted" />
+              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-on-surface-variant" />
               <input
                 type="text"
                 value={heroSearch}
                 onChange={(e) => setHeroSearch(e.target.value)}
                 placeholder={t(locale, "hero.searchPlaceholder")}
-                className="h-14 w-full rounded-xl border-2 border-ink bg-white pl-12 pr-4 font-body text-base text-ink placeholder:text-ink-light focus:border-coral focus:outline-none transition-colors"
+                className="h-14 w-full rounded-xl bg-white pl-12 pr-4 font-body text-body-md text-on-surface shadow-sm placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary-fixed/50 transition-shadow"
               />
             </div>
-            <Button
+            <button
               type="submit"
-              className="h-14 shrink-0 rounded-xl border-2 border-ink bg-coral px-6 font-body font-medium text-ink hover:-translate-y-0.5 hover:bg-coral-hover"
+              className="h-14 shrink-0 rounded-xl bg-accent-coral px-6 font-label text-label-md font-bold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#e56a3a] active:scale-95"
             >
-              {t(locale, "hero.searchBtn")} →
-            </Button>
+              {t(locale, "hero.searchBtn")}
+            </button>
           </motion.form>
 
           {/* Category quick-links */}
           <motion.div
-            className="mb-6 flex flex-wrap justify-center gap-2"
+            className="mb-8 flex flex-wrap justify-center gap-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.85, duration: 0.4 }}
+            transition={{ delay: 0.9, duration: 0.4 }}
           >
             {QUICK_CATEGORIES.map(({ key, Icon }) => (
               <Link
                 key={key}
                 to={`/browse?category=${key}`}
-                className="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-white px-4 py-2 font-body text-sm font-medium text-ink transition-all hover:-translate-y-0.5 hover:bg-coral-light"
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 font-label text-label-sm text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/20"
               >
-                <Icon className="h-3.5 w-3.5" />
+                <Icon className="h-3 w-3" />
                 {t(locale, `categories.${key}` as never)}
               </Link>
             ))}
@@ -216,24 +234,23 @@ export default function Home() {
 
           {/* Stats */}
           <motion.div
-            className="flex flex-wrap justify-center gap-6 md:gap-10"
+            className="flex flex-wrap justify-center gap-8 md:gap-12"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.0, duration: 0.4 }}
+            transition={{ delay: 1.05, duration: 0.4 }}
           >
             {[
               { value: stats?.activePosts ?? 0, label: t(locale, "hero.statsActive") },
               { value: stats?.users ?? 0,        label: t(locale, "hero.statsUsers") },
               { value: stats?.categories ?? 0,   label: t(locale, "hero.statsCategories") },
             ].map((stat, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <div className="text-center">
-                  <div className="font-display text-3xl font-bold text-coral">
-                    <AnimatedCounter target={stat.value} />
-                  </div>
-                  <div className="font-body text-xs text-ink-muted">{stat.label}</div>
+              <div key={i} className="flex flex-col items-center">
+                <div className="font-headline text-4xl font-bold text-white">
+                  <AnimatedCounter target={stat.value} />
                 </div>
-                {i < 2 && <span className="hidden text-ink-light md:inline">•</span>}
+                <div className="mt-0.5 font-label text-label-sm text-primary-fixed-dim">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </motion.div>
@@ -241,18 +258,23 @@ export default function Home() {
 
         {/* Scroll indicator */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce-subtle">
-          <ChevronDown className="h-6 w-6 text-ink-light" />
+          <ChevronDown className="h-6 w-6 text-primary-fixed-dim" />
         </div>
       </section>
 
-      {/* Marquee */}
+      {/* ── Marquee ───────────────────────────────────────────── */}
       <MarqueeStrip />
 
-      {/* Featured Posts */}
+      {/* ── Featured Posts ────────────────────────────────────── */}
       {featuredPosts.length > 0 && (
-        <section className="px-4 py-8">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="mb-6 font-display text-2xl font-bold text-ink">{t(locale, "browse.featured")}</h2>
+        <section className="px-margin-mobile py-10 md:px-margin-desktop">
+          <div className="mx-auto max-w-container-max-width">
+            <div className="mb-6 flex items-center gap-3">
+              <Sparkles className="h-5 w-5 text-accent-coral" />
+              <h2 className="font-headline text-headline-sm font-semibold text-on-surface">
+                {t(locale, "browse.featured")}
+              </h2>
+            </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {featuredPosts.map(({ post, profile, isBusiness, images }) => (
                 <PostCard key={`hf-${post.id}`} post={post} profile={profile} isBusiness={isBusiness} images={images} />
@@ -262,107 +284,93 @@ export default function Home() {
         </section>
       )}
 
-      {/* How It Works */}
-      <section className="bg-cream-dark px-4 py-12 noise-bg">
-        <div className="mx-auto max-w-7xl">
-          <h2 className="mb-8 text-center font-display text-3xl font-bold text-ink md:text-4xl">
-            {t(locale, "howItWorks.title")}
-          </h2>
+      {/* ── How It Works ──────────────────────────────────────── */}
+      <section className="bg-surface-cream px-margin-mobile py-14 md:px-margin-desktop">
+        <div className="mx-auto max-w-container-max-width">
+          <div className="mb-10 text-center">
+            <h2 className="font-headline text-headline-md font-bold text-on-surface">
+              {t(locale, "howItWorks.title")}
+            </h2>
+          </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-3">
             {[
               {
-                num: "1",
+                num: "01",
                 title: t(locale, "howItWorks.step1"),
                 desc: t(locale, "howItWorks.step1Desc"),
               },
               {
-                num: "2",
+                num: "02",
                 title: t(locale, "howItWorks.step2"),
                 desc: t(locale, "howItWorks.step2Desc"),
               },
               {
-                num: "3",
+                num: "03",
                 title: t(locale, "howItWorks.step3"),
                 desc: t(locale, "howItWorks.step3Desc"),
               },
             ].map((step, i) => (
-              <div
+              <motion.div
                 key={i}
-                className="flex flex-col items-center text-center"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="flex flex-col items-center rounded-2xl bg-white p-8 text-center shadow-card"
               >
-                <div
-                  className="mb-4 flex h-14 w-14 items-center justify-center rounded-full border-2 border-ink font-display text-2xl font-bold transition-colors duration-500"
-                  style={{ background: 'var(--coral-light)', color: 'var(--coral)' }}
-                >
-                  {step.num}
+                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-DEFAULT">
+                  <span className="font-headline text-xl font-bold text-white">{step.num}</span>
                 </div>
-                <h3 className="mb-2 font-body text-lg font-bold text-ink">
+                <h3 className="mb-2 font-headline text-headline-sm font-semibold text-on-surface">
                   {step.title}
                 </h3>
-                <p className="font-body text-sm text-ink-muted">{step.desc}</p>
-              </div>
+                <p className="font-body text-body-sm text-on-surface-variant">{step.desc}</p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* City Map */}
-      <section className="px-4 py-12 noise-bg">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="mb-6 text-center font-display text-3xl font-bold text-ink md:text-4xl">
-            {t(locale, "cityMap.title")}
-          </h2>
+      {/* ── City Map ──────────────────────────────────────────── */}
+      <section className="px-margin-mobile py-14 md:px-margin-desktop">
+        <div className="mx-auto max-w-container-max-width">
+          <div className="mb-8 text-center">
+            <h2 className="font-headline text-headline-md font-bold text-on-surface">
+              {t(locale, "cityMap.title")}
+            </h2>
+          </div>
           <HomeCityMap />
         </div>
       </section>
 
-      {/* Latest Posts */}
-      <section className="px-4 py-12 noise-bg">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <h2 className="font-display text-3xl font-bold text-ink md:text-4xl">
+      {/* ── Latest Posts ──────────────────────────────────────── */}
+      <section className="bg-surface-cream px-margin-mobile py-14 md:px-margin-desktop">
+        <div className="mx-auto max-w-container-max-width">
+          <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+            <h2 className="font-headline text-headline-md font-bold text-on-surface">
               {t(locale, "latestPosts.title")}
             </h2>
 
-            <div className="flex items-center gap-3">
-              {/* Grid/List toggle */}
-              <div className="flex overflow-hidden rounded-xl border-2 border-ink">
+            {/* Type filter */}
+            <div className="flex gap-2">
+              {(["all", "need", "offer"] as const).map((f) => (
                 <button
-                  onClick={() => setCardView("grid")}
-                  className={`px-3 py-2 font-body text-sm font-medium transition ${cardView === "grid" ? "bg-ink text-cream" : "bg-white text-ink hover:bg-cream"}`}
-                  title="Grid view"
+                  key={f}
+                  onClick={() => setActiveFilter(f)}
+                  className={`rounded-lg px-4 py-2 font-label text-label-sm transition-colors duration-200 ${
+                    activeFilter === f
+                      ? "bg-primary-DEFAULT text-white"
+                      : "bg-white text-on-surface-variant shadow-card hover:text-primary-DEFAULT"
+                  }`}
                 >
-                  ⊞
+                  {f === "all"
+                    ? t(locale, "latestPosts.all")
+                    : f === "need"
+                    ? t(locale, "latestPosts.need")
+                    : t(locale, "latestPosts.offer")}
                 </button>
-                <button
-                  onClick={() => setCardView("list")}
-                  className={`px-3 py-2 font-body text-sm font-medium transition ${cardView === "list" ? "bg-ink text-cream" : "bg-white text-ink hover:bg-cream"}`}
-                  title="List view"
-                >
-                  ☰
-                </button>
-              </div>
-              {/* Type filter */}
-              <div className="flex gap-2">
-                {(["all", "need", "offer"] as const).map((f) => (
-                  <button
-                    key={f}
-                    onClick={() => setActiveFilter(f)}
-                    className={`rounded-full border-2 px-4 py-2 font-body text-sm font-medium transition ${
-                      activeFilter === f
-                        ? "border-ink bg-coral text-ink"
-                        : "border-ink-light bg-transparent text-ink-muted hover:border-ink hover:text-ink"
-                    }`}
-                  >
-                    {f === "all"
-                      ? t(locale, "latestPosts.all")
-                      : f === "need"
-                      ? t(locale, "latestPosts.need")
-                      : t(locale, "latestPosts.offer")}
-                  </button>
-                ))}
-              </div>
+              ))}
             </div>
           </div>
 
@@ -373,31 +381,31 @@ export default function Home() {
               ))}
             </div>
           ) : posts && posts.length > 0 ? (
-            <div className={cardView === "grid" ? "grid gap-6 sm:grid-cols-2 lg:grid-cols-3" : "flex flex-col gap-3"}>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {posts.map((item: PostWithProfile) => (
                 <PostCard key={item.post.id} post={item.post} profile={item.profile} isBusiness={item.isBusiness} images={item.images} />
               ))}
             </div>
           ) : (
             <div className="flex flex-col items-center py-16">
-              <Search className="mb-4 h-12 w-12 text-ink-light" />
-              <p className="mb-4 font-body text-ink-muted">
+              <Search className="mb-4 h-12 w-12 text-outline" />
+              <p className="mb-4 font-body text-body-md text-on-surface-variant">
                 {t(locale, "latestPosts.empty")}
               </p>
-              <Button
+              <button
                 onClick={() => navigate("/create")}
-                className="rounded-xl border-2 border-ink bg-coral px-6 font-body font-medium text-ink hover:bg-coral-hover"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary-DEFAULT px-6 py-2.5 font-label text-label-md font-bold text-white transition-all duration-200 hover:bg-on-primary-fixed-variant"
               >
-                <Plus className="mr-2 h-4 w-4" />
+                <Plus className="h-4 w-4" />
                 {t(locale, "latestPosts.emptyBtn")}
-              </Button>
+              </button>
             </div>
           )}
 
-          <div className="mt-8 text-center">
+          <div className="mt-10 text-center">
             <Link
               to="/browse"
-              className="inline-flex items-center gap-2 rounded-xl border-2 border-ink bg-transparent px-6 py-3 font-body font-medium text-ink transition hover:bg-cream-dark"
+              className="inline-flex items-center gap-2 rounded-lg border border-outline-variant bg-white px-6 py-3 font-label text-label-md text-on-surface shadow-card transition-all duration-200 hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
             >
               {t(locale, "latestPosts.viewAll")}
               <ArrowRight className="h-4 w-4" />
@@ -406,46 +414,53 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Banner + Referral */}
-      <section className="px-4 pb-12">
-        <div className="mx-auto max-w-6xl">
+      {/* ── CTA + Referral ────────────────────────────────────── */}
+      <section className="px-margin-mobile py-14 md:px-margin-desktop">
+        <div className="mx-auto max-w-container-max-width">
           <div className="grid gap-6 lg:grid-cols-2">
+
             {/* Main CTA */}
-            <div className="rounded-3xl border-2 border-ink bg-ink px-8 py-8 text-center noise-bg">
-              <h2 className="mx-auto max-w-lg font-display text-2xl font-bold text-cream md:text-3xl">
+            <div
+              className="relative overflow-hidden rounded-2xl px-8 py-10 text-center"
+              style={{
+                background: "linear-gradient(135deg, #003527 0%, #064e3b 100%)",
+              }}
+            >
+              <div className="pointer-events-none absolute right-0 top-0 h-48 w-48 -translate-y-1/2 translate-x-1/2 rounded-full bg-secondary-DEFAULT/10 blur-2xl" />
+              <h2 className="relative mx-auto max-w-lg font-headline text-headline-sm font-bold text-white">
                 {t(locale, "ctaBanner.title")}
               </h2>
-              <p className="mx-auto mt-4 max-w-md font-body text-cream-dark">
+              <p className="relative mx-auto mt-3 max-w-md font-body text-body-sm text-primary-fixed-dim">
                 {t(locale, "ctaBanner.subtitle")}
               </p>
-              <Button
+              <button
                 onClick={() => navigate(isAuthenticated ? "/create" : "/login")}
-                className="mt-6 h-14 rounded-xl border-2 border-cream bg-coral px-8 font-body text-base font-medium text-ink hover:-translate-y-1 hover:bg-coral-hover"
+                className="relative mt-6 inline-flex h-12 items-center gap-2 rounded-lg bg-accent-coral px-8 font-label text-label-md font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#e56a3a] active:scale-95"
               >
-                <Plus className="mr-2 h-5 w-5" />
+                <Plus className="h-4 w-4" />
                 {t(locale, "ctaBanner.btn")}
-              </Button>
+              </button>
             </div>
 
             {/* Referral */}
-            <div className="rounded-3xl border-2 border-ink bg-mustard-light px-8 py-8 text-center">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border-2 border-ink bg-mustard">
-                <Gift className="h-7 w-7 text-ink" />
+            <div className="rounded-2xl border border-outline-variant bg-white px-8 py-10 text-center shadow-card">
+              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-cream">
+                <Gift className="h-7 w-7 text-primary-DEFAULT" />
               </div>
-              <h2 className="font-display text-2xl font-bold text-ink md:text-3xl">
+              <h2 className="font-headline text-headline-sm font-bold text-on-surface">
                 {t(locale, "referral.title")}
               </h2>
-              <p className="mx-auto mt-3 max-w-sm font-body text-sm text-ink-muted">
+              <p className="mx-auto mt-3 max-w-sm font-body text-body-sm text-on-surface-variant">
                 {t(locale, "referral.subtitle")}
               </p>
 
               {isAuthenticated && referralInfo?.referralCode ? (
                 <div className="mt-6">
-                  <p className="mb-2 font-body text-sm font-medium text-ink-muted">
+                  <p className="mb-2 font-label text-label-sm text-on-surface-variant">
                     {t(locale, "referral.yourCode")}
                   </p>
                   <div className="mx-auto flex max-w-xs items-center gap-2">
-                    <div className="flex-1 rounded-xl border-2 border-ink bg-white px-4 py-3 font-mono text-lg font-bold tracking-wider text-ink">
+                    <div className="flex-1 rounded-lg border border-outline-variant bg-surface-cream px-4 py-3 font-mono text-lg font-bold tracking-wider text-on-surface">
                       {referralInfo.referralCode}
                     </div>
                     <button
@@ -455,29 +470,29 @@ export default function Home() {
                         setCopied(true);
                         setTimeout(() => setCopied(false), 2000);
                       }}
-                      className="rounded-xl border-2 border-ink bg-white p-3 text-ink hover:bg-cream-dark"
+                      className="rounded-lg border border-outline-variant bg-surface-cream p-3 text-on-surface-variant transition-colors hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
                       title={t(locale, "referral.copy")}
                     >
                       {copied ? (
-                        <Check className="h-5 w-5 text-sage" />
+                        <Check className="h-5 w-5 text-success-emerald" />
                       ) : (
                         <Copy className="h-5 w-5" />
                       )}
                     </button>
                   </div>
                   {referralInfo.freePostCredits > 0 && (
-                    <p className="mt-3 font-body text-sm text-sage">
+                    <p className="mt-3 font-label text-label-sm text-success-emerald">
                       {referralInfo.freePostCredits} {t(locale, "referral.creditLabel")}
                     </p>
                   )}
                 </div>
               ) : (
-                <Button
+                <button
                   onClick={() => navigate("/login")}
-                  className="mt-6 h-12 rounded-xl border-2 border-ink bg-white font-body font-medium text-ink hover:bg-cream-dark"
+                  className="mt-6 inline-flex h-12 items-center gap-2 rounded-lg border border-outline-variant bg-surface-cream px-6 font-label text-label-md text-on-surface transition-colors hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
                 >
                   {t(locale, "nav.login")}
-                </Button>
+                </button>
               )}
             </div>
           </div>
