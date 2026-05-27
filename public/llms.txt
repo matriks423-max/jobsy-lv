@@ -1,0 +1,27 @@
+# jobsy.lv
+
+> Latvijas darbiņu dēlis — atrodi palīdzību vai piedāvā savus pakalpojumus.
+
+jobsy.lv is a Latvian classifieds platform for local services and odd jobs. People post listings for help needed or services offered across categories like household work, repairs, moving, gardening, childcare, pet care, IT, and tutoring.
+
+## Key pages
+
+- Homepage: https://jobsy.lv — browse active listings, search by keyword/city/category
+- Browse: https://jobsy.lv/browse — full listing search with filters
+- Post a listing: https://jobsy.lv/create — create a new service listing
+- Pricing: https://jobsy.lv/pricing — Free / Pro (€4.99/mo) / Business (€9.99/mo) plans
+
+## Categories
+
+household, moving, repairs, garden, auto, childcare, pets, it, tutoring, other
+
+## Languages
+
+Latvian (lv), Russian (ru), English (en)
+
+## About
+
+- Target market: Latvia
+- Currency: EUR
+- Contact reveal system: viewers must be logged in; free users get 3/month, Pro 30/month, Business unlimited
+- Boost system: bump (€1), featured (€2), urgent (€0.50)

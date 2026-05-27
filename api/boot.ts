@@ -45,6 +45,21 @@ app.use("*", async (c, next) => {
   c.header("X-Frame-Options", "DENY");
   c.header("Referrer-Policy", "strict-origin-when-cross-origin");
   c.header("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+  c.header(
+    "Content-Security-Policy",
+    [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://js.stripe.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com",
+      "img-src 'self' data: blob: https: http:",
+      "connect-src 'self' https://api.stripe.com https://www.google-analytics.com https://sentry.io https://*.sentry.io https://o*.ingest.sentry.io wss:",
+      "frame-src https://js.stripe.com https://hooks.stripe.com",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+    ].join("; ")
+  );
   // Only apply HSTS on the custom domain (not localhost/Railway dev URLs)
   if (host === "jobsy.lv" || host === "www.jobsy.lv") {
     c.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
@@ -424,6 +439,18 @@ app.get("/kategorija/:slug", async (c, next) => {
 <body><h1>${title}</h1><p>${seo.desc}</p></body>
 </html>`;
   return c.html(html, 200);
+});
+
+// AI/LLM crawler discovery
+app.get("/llms.txt", async (c) => {
+  const { readFileSync } = await import("fs");
+  const { join } = await import("path");
+  try {
+    const content = readFileSync(join(process.cwd(), "public", "llms.txt"), "utf-8");
+    return c.text(content, 200, { "Content-Type": "text/plain; charset=utf-8" });
+  } catch {
+    return c.text("Not found", 404);
+  }
 });
 
 // SEO: robots.txt
