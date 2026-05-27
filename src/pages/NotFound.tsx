@@ -24,10 +24,7 @@ export default function NotFound() {
     <div className="flex min-h-[80vh] items-center justify-center px-4">
       <div className="w-full max-w-md text-center">
         {/* Large decorative 404 */}
-        <div
-          className="mb-2 font-headline text-[120px] font-bold leading-none"
-          style={{ color: "#FF7F50", opacity: 0.15 }}
-        >
+        <div className="mb-2 font-headline text-[120px] font-bold leading-none text-accent-coral/15">
           404
         </div>
         <div className="-mt-16 mb-6">

@@ -207,7 +207,7 @@ export default function Home() {
             </div>
             <button
               type="submit"
-              className="h-14 shrink-0 rounded-xl bg-accent-coral px-6 font-label text-label-md font-bold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#e56a3a] active:scale-95"
+              className="h-14 shrink-0 rounded-xl bg-accent-coral px-6 font-label text-label-md font-bold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-coral-hover active:scale-95"
             >
               {t(locale, "hero.searchBtn")}
             </button>
@@ -435,7 +435,7 @@ export default function Home() {
               </p>
               <button
                 onClick={() => navigate(isAuthenticated ? "/create" : "/login")}
-                className="relative mt-6 inline-flex h-12 items-center gap-2 rounded-lg bg-accent-coral px-8 font-label text-label-md font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#e56a3a] active:scale-95"
+                className="relative mt-6 inline-flex h-12 items-center gap-2 rounded-lg bg-accent-coral px-8 font-label text-label-md font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-coral-hover active:scale-95"
               >
                 <Plus className="h-4 w-4" />
                 {t(locale, "ctaBanner.btn")}

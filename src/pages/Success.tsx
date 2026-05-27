@@ -55,7 +55,7 @@ export default function Success() {
         <div className="flex flex-col gap-3">
           {postId && (
             <Link to={`/post/${postId}`}>
-              <Button className="h-14 w-full rounded-xl border border-outline-variant bg-accent-coral font-body text-base font-medium text-on-surface hover:bg-[#e56a3a]">
+              <Button className="h-14 w-full rounded-xl border border-outline-variant bg-accent-coral font-body text-base font-medium text-on-surface hover:bg-accent-coral-hover">
                 <FileText className="mr-2 h-5 w-5" />
                 {t(locale, "success.viewPost")}
               </Button>

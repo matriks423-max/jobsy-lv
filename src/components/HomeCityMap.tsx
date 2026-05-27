@@ -35,13 +35,12 @@ export default function HomeCityMap() {
           <Marker key={cityKey} position={[coords.lat, coords.lng]}>
             <Popup>
               <div className="min-w-[140px] text-center">
-                <p className="mb-2 font-bold text-gray-900">
+                <p className="mb-2 font-label text-label-sm font-bold text-on-surface">
                   {t(locale, `cities.${cityKey}` as never)}
                 </p>
                 <Link
                   to={`/browse?city=${cityKey}`}
-                  className="inline-block rounded-lg border-2 border-gray-800 px-3 py-1 text-xs font-medium text-gray-900 transition hover:-translate-y-0.5"
-                  style={{ background: '#FF7F50' }}
+                  className="inline-block rounded-lg bg-accent-coral px-3 py-1 font-label text-label-sm font-medium text-white transition hover:opacity-90"
                 >
                   {t(locale, "cityMap.viewPosts")} →
                 </Link>

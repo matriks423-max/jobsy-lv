@@ -140,7 +140,7 @@ export default function MyPosts() {
           <h1 className="font-headline text-3xl font-bold text-on-surface md:text-4xl">{t(locale, "myPosts.title")}</h1>
           <Button
             onClick={() => navigate("/create")}
-            className="h-12 rounded-xl border border-outline-variant bg-accent-coral px-6 font-body font-medium text-on-surface hover:bg-[#e56a3a]"
+            className="h-12 rounded-xl border border-outline-variant bg-accent-coral px-6 font-body font-medium text-on-surface hover:bg-accent-coral-hover"
           >
             <Plus className="mr-2 h-4 w-4" />
             {t(locale, "myPosts.newPost")}
@@ -188,7 +188,7 @@ export default function MyPosts() {
               <p className="mb-1 font-body font-bold text-on-surface">{t(locale, "myPosts.analyticsBusinessOnly")}</p>
               <a
                 href="/pricing"
-                className="mt-4 inline-flex items-center gap-2 rounded-xl border border-outline-variant bg-accent-coral px-5 py-2.5 font-body text-sm font-medium text-on-surface hover:bg-[#e56a3a]"
+                className="mt-4 inline-flex items-center gap-2 rounded-xl border border-outline-variant bg-accent-coral px-5 py-2.5 font-body text-sm font-medium text-on-surface hover:bg-accent-coral-hover"
               >
                 {t(locale, "myPosts.analyticsUpgrade")}
               </a>

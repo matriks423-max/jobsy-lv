@@ -323,6 +323,27 @@ export async function deletePost(id: number) {
   });
 }
 
+/** Batch-delete all posts belonging to a user in a single transaction (used on ban). */
+export async function deletePostsByUserId(userId: number) {
+  const posts = await getDb()
+    .select({ id: schema.posts.id })
+    .from(schema.posts)
+    .where(eq(schema.posts.userId, userId));
+  if (posts.length === 0) return;
+  const ids = posts.map((p) => p.id);
+  await getDb().transaction(async (tx) => {
+    await Promise.all([
+      tx.delete(schema.postImages).where(inArray(schema.postImages.postId, ids)),
+      tx.delete(schema.contacts).where(inArray(schema.contacts.postId, ids)),
+      tx.delete(schema.reports).where(inArray(schema.reports.postId, ids)),
+      tx.delete(schema.interests).where(inArray(schema.interests.postId, ids)),
+      tx.delete(schema.reviews).where(inArray(schema.reviews.postId, ids)),
+      tx.delete(schema.socialQueue).where(inArray(schema.socialQueue.postId, ids)),
+    ]);
+    await tx.delete(schema.posts).where(inArray(schema.posts.id, ids));
+  });
+}
+
 export async function countUserPostsToday(userId: number) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);

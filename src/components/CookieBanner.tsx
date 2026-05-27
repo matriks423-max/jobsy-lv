@@ -48,7 +48,7 @@ export default function CookieBanner() {
           </button>
           <button
             onClick={accept}
-            className="rounded-lg border border-outline-variant bg-accent-coral px-4 py-2 font-body text-sm font-medium text-on-surface hover:bg-[#e56a3a]"
+            className="rounded-lg border border-outline-variant bg-accent-coral px-4 py-2 font-body text-sm font-medium text-on-surface hover:bg-accent-coral-hover"
           >
             {t(locale, "cookie.accept")}
           </button>

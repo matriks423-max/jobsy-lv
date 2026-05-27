@@ -258,7 +258,7 @@ export default function Settings() {
               <Button
                 onClick={() => updateMutation.mutate({ phone, name: name || undefined })}
                 disabled={updateMutation.isPending || saved}
-                className="h-12 w-full rounded-xl border border-outline-variant bg-accent-coral font-body font-medium text-on-surface hover:bg-[#e56a3a]"
+                className="h-12 w-full rounded-xl border border-outline-variant bg-accent-coral font-body font-medium text-on-surface hover:bg-accent-coral-hover"
               >
                 {updateMutation.isPending ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

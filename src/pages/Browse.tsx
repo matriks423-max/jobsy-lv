@@ -326,7 +326,7 @@ export default function Browse() {
         {activeFiltersCount > 0 && (
           <button
             onClick={() => { clearFilters(); onClose?.(); }}
-            className="flex w-full items-center justify-center gap-1 font-label text-label-sm text-accent-coral hover:text-[#e56a3a]"
+            className="flex w-full items-center justify-center gap-1 font-label text-label-sm text-accent-coral hover:text-accent-coral-hover"
           >
             <X className="h-4 w-4" />
             {t(locale, "browse.clear")}

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq, and, desc, gte, or, like } from "drizzle-orm";
+import { eq, and, desc, count } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
@@ -23,12 +23,12 @@ export const savedSearchesRouter = createRouter({
       keyword: z.string().max(100).optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      const existing = await getDb()
-        .select({ id: schema.savedSearches.id })
+      const [{ cnt }] = await getDb()
+        .select({ cnt: count() })
         .from(schema.savedSearches)
         .where(eq(schema.savedSearches.userId, ctx.user.id));
 
-      if (existing.length >= 10) {
+      if (cnt >= 10) {
         throw new TRPCError({ code: "BAD_REQUEST", message: "Maximum 10 saved searches" });
       }
 

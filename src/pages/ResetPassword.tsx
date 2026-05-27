@@ -19,7 +19,7 @@ export default function ResetPassword() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "resetPassword.pageTitle") + " — Jobsy.lv";
+    document.title = t(locale, "resetPassword.pageTitle") + " â€” Jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 
@@ -54,13 +54,12 @@ export default function ResetPassword() {
     return (
       <div className="flex min-h-[60vh] items-center justify-center px-4">
         <div className="text-center">
-          <CheckCircle2 className="mx-auto mb-4 h-12 w-12" style={{ color: "#FF7F50" }} />
+          <CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-accent-coral" />
           <h1 className="font-headline text-2xl font-bold text-on-surface">{t(locale, "resetPassword.successTitle")}</h1>
           <p className="mt-2 font-body text-on-surface-variant">{t(locale, "resetPassword.successDesc")}</p>
           <button
             onClick={() => navigate("/login")}
-            className="mt-6 rounded-xl border border-outline-variant px-6 py-2.5 font-body font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_#141b2b]"
-            style={{ background: "#FF7F50" }}
+            className="mt-6 rounded-xl border border-outline-variant bg-accent-coral px-6 py-2.5 font-body font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-accent-coral-hover"
           >
             {t(locale, "resetPassword.loginBtn")}
           </button>
@@ -121,8 +120,7 @@ export default function ResetPassword() {
           <button
             type="submit"
             disabled={resetMutation.isPending}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant py-2.5 font-body font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_#141b2b] disabled:opacity-60"
-            style={{ background: "#FF7F50" }}
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant bg-accent-coral py-2.5 font-body font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-accent-coral-hover disabled:opacity-60"
           >
             {resetMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : t(locale, "resetPassword.submitBtn")}
           </button>

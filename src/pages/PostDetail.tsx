@@ -514,7 +514,7 @@ export default function PostDetail() {
                       </p>
                       <Link
                         to="/pricing"
-                        className="inline-block rounded-lg bg-accent-coral px-5 py-2.5 font-label text-label-md font-bold text-white transition hover:bg-[#e56a3a]"
+                        className="inline-block rounded-lg bg-accent-coral px-5 py-2.5 font-label text-label-md font-bold text-white transition hover:bg-accent-coral-hover"
                       >
                         {t(locale, "pricing.upgradeForContacts")}
                       </Link>

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq, desc, sql, gte, count, inArray, and } from "drizzle-orm";
+import { eq, desc, sql, gte, count, avg, inArray, and } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
@@ -13,6 +13,7 @@ import {
   incrementContactCount,
   expireOldPosts,
   deletePost,
+  deletePostsByUserId,
   countUserPostsToday,
   setPostFilled,
   countPosts,
@@ -612,14 +613,8 @@ export const postsRouter = createRouter({
             .update(schema.users)
             .set({ role: "banned" })
             .where(eq(schema.users.id, userId));
-          // Delete all posts by banned user
-          const userPosts = await getDb()
-            .select({ id: schema.posts.id })
-            .from(schema.posts)
-            .where(eq(schema.posts.userId, userId));
-          for (const p of userPosts) {
-            await deletePost(p.id);
-          }
+          // Delete all posts by banned user in a single transaction
+          await deletePostsByUserId(userId);
         }
       }
 
@@ -714,8 +709,7 @@ export const postsRouter = createRouter({
     .mutation(async ({ input }) => {
       await getDb().update(schema.users).set({ role: input.role }).where(eq(schema.users.id, input.userId));
       if (input.role === "banned") {
-        const userPosts = await getDb().select({ id: schema.posts.id }).from(schema.posts).where(eq(schema.posts.userId, input.userId));
-        for (const p of userPosts) await deletePost(p.id);
+        await deletePostsByUserId(input.userId);
       }
       return { success: true };
     }),
@@ -835,13 +829,13 @@ export const postsRouter = createRouter({
   userRating: publicQuery
     .input(z.object({ userId: z.number() }))
     .query(async ({ input }) => {
-      const rows = await getDb()
-        .select({ stars: schema.reviews.stars })
+      const [row] = await getDb()
+        .select({ avgStars: avg(schema.reviews.stars), cnt: count() })
         .from(schema.reviews)
         .where(eq(schema.reviews.revieweeId, input.userId));
-      if (rows.length === 0) return { avg: null, count: 0 };
-      const avg = rows.reduce((s, r) => s + r.stars, 0) / rows.length;
-      return { avg: Math.round(avg * 10) / 10, count: rows.length };
+      if (!row || row.cnt === 0) return { avg: null, count: 0 };
+      const rounded = Math.round(Number(row.avgStars) * 10) / 10;
+      return { avg: rounded, count: row.cnt };
     }),
 
   myReviewForPost: authedQuery
@@ -907,23 +901,31 @@ export const postsRouter = createRouter({
         .orderBy(desc(schema.posts.createdAt))
         .limit(20);
 
-      // Reviews received
-      const reviews = await db
-        .select({
-          id: schema.reviews.id,
-          stars: schema.reviews.stars,
-          comment: schema.reviews.comment,
-          createdAt: schema.reviews.createdAt,
-          reviewerName: schema.profiles.name,
-        })
-        .from(schema.reviews)
-        .leftJoin(schema.profiles, eq(schema.profiles.userId, schema.reviews.reviewerId))
-        .where(eq(schema.reviews.revieweeId, input.userId))
-        .orderBy(desc(schema.reviews.createdAt))
-        .limit(10);
+      // Reviews received (last 10 for display) + aggregate over all reviews for accurate avg
+      const [reviews, ratingRow] = await Promise.all([
+        db
+          .select({
+            id: schema.reviews.id,
+            stars: schema.reviews.stars,
+            comment: schema.reviews.comment,
+            createdAt: schema.reviews.createdAt,
+            reviewerName: schema.profiles.name,
+          })
+          .from(schema.reviews)
+          .leftJoin(schema.profiles, eq(schema.profiles.userId, schema.reviews.reviewerId))
+          .where(eq(schema.reviews.revieweeId, input.userId))
+          .orderBy(desc(schema.reviews.createdAt))
+          .limit(10),
+        db
+          .select({ avgStars: avg(schema.reviews.stars), cnt: count() })
+          .from(schema.reviews)
+          .where(eq(schema.reviews.revieweeId, input.userId))
+          .then((r) => r[0]),
+      ]);
 
-      const avgRating = reviews.length
-        ? Math.round((reviews.reduce((s, r) => s + r.stars, 0) / reviews.length) * 10) / 10
+      const reviewCount = ratingRow?.cnt ?? 0;
+      const avgRating = reviewCount > 0
+        ? Math.round(Number(ratingRow!.avgStars) * 10) / 10
         : null;
 
       return {
@@ -933,7 +935,7 @@ export const postsRouter = createRouter({
         posts,
         reviews,
         avgRating,
-        reviewCount: reviews.length,
+        reviewCount,
       };
     }),
 });

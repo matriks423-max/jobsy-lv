@@ -163,7 +163,7 @@ export default function Category() {
             </p>
             <Link
               to="/create"
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-outline-variant bg-accent-coral px-6 py-3 font-body text-sm font-medium text-on-surface hover:bg-[#e56a3a]"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-outline-variant bg-accent-coral px-6 py-3 font-body text-sm font-medium text-on-surface hover:bg-accent-coral-hover"
             >
               <Plus className="h-4 w-4" />
               {t(locale, "myPosts.newPost")}
@@ -212,7 +212,7 @@ export default function Category() {
           </p>
           <Link
             to="/create"
-            className="mt-4 inline-flex items-center gap-2 rounded-xl border border-outline-variant bg-accent-coral px-6 py-3 font-body text-sm font-medium text-on-surface hover:bg-[#e56a3a]"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl border border-outline-variant bg-accent-coral px-6 py-3 font-body text-sm font-medium text-on-surface hover:bg-accent-coral-hover"
           >
             <Plus className="h-4 w-4" />
             {t(locale, "nav.createPost")}

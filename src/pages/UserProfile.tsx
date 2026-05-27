@@ -44,7 +44,7 @@ export default function UserProfile() {
   useEffect(() => {
     const prev = document.title;
     if (data?.profile?.name) {
-      document.title = `${data.profile.name} � Jobsy.lv`;
+      document.title = `${data.profile.name} — Jobsy.lv`;
     }
     return () => { document.title = prev; };
   }, [data?.profile?.name]);

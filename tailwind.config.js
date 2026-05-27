@@ -96,7 +96,7 @@ module.exports = {
         "error-container": "#ffdad6",
         "on-error": "#ffffff",
         "on-error-container": "#93000a",
-        "accent-coral": "#FF7F50",
+        "accent-coral": { DEFAULT: "#FF7F50", hover: "#e56a3a" },
         "success-emerald": "#059669",
         // Post-type semantic colors (still used in UI for "need" post type indicator)
         need: { DEFAULT: "#006c49", light: "#dcfce7" },
