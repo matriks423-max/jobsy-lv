@@ -24,6 +24,7 @@ import {
   Monitor,
   GraduationCap,
   MoreHorizontal,
+  Building2,
 } from "lucide-react";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -43,7 +44,7 @@ export default function UserProfile() {
   useEffect(() => {
     const prev = document.title;
     if (data?.profile?.name) {
-      document.title = `${data.profile.name} — Jobsy.lv`;
+      document.title = `${data.profile.name} ï¿½ Jobsy.lv`;
     }
     return () => { document.title = prev; };
   }, [data?.profile?.name]);
@@ -103,7 +104,8 @@ export default function UserProfile() {
                 )}
                 {isBusiness && (
                   <span className="inline-flex items-center gap-1 rounded-full border border-primary-DEFAULT bg-primary-DEFAULT px-2 py-0.5 font-mono text-xs font-bold text-white">
-                    ?? Business
+                    <Building2 className="h-3 w-3" />
+                    Business
                   </span>
                 )}
               </div>
@@ -143,7 +145,10 @@ export default function UserProfile() {
           {/* Business description */}
           {isBusiness && profile.companyName && (
             <div className="mt-6 rounded-xl border-2 border-outline-variant bg-surface-cream p-4">
-              <p className="mb-1 font-body text-sm font-bold text-on-surface">?? {profile.companyName}</p>
+              <p className="mb-1 flex items-center gap-1.5 font-body text-sm font-bold text-on-surface">
+                <Building2 className="h-4 w-4 text-primary-DEFAULT" />
+                {profile.companyName}
+              </p>
               {profile.companyDescription && (
                 <p className="font-body text-sm text-on-surface-variant">{profile.companyDescription}</p>
               )}
@@ -225,7 +230,7 @@ export default function UserProfile() {
               {reviews.map((r) => (
                 <div key={r.id} className="rounded-2xl border border-outline-variant bg-white p-5">
                   <div className="mb-2 flex items-center justify-between">
-                    <p className="font-body text-sm font-bold text-on-surface">{r.reviewerName ?? "—"}</p>
+                    <p className="font-body text-sm font-bold text-on-surface">{r.reviewerName ?? "AnonÄ«ms"}</p>
                     <div className="flex gap-0.5">
                       {[1, 2, 3, 4, 5].map((s) => (
                         <Star

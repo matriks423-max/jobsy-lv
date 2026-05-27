@@ -50,16 +50,16 @@ export default class ErrorBoundary extends Component<Props, State> {
       if (this.props.fallback) return this.props.fallback;
       const s = ERROR_STRINGS[getLocale()];
       return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-[#F5F1E8] px-4 text-center">
-          <h1 className="font-serif text-4xl font-bold text-[#141b2b] mb-4">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-surface-cream px-4 text-center">
+          <h1 className="mb-4 font-headline text-4xl font-bold text-on-surface">
             {s.heading}
           </h1>
-          <p className="text-[var(--muted)] mb-8 max-w-sm">
+          <p className="mb-8 max-w-sm font-body text-on-surface-variant">
             {s.body}
           </p>
           <button
             onClick={this.handleReset}
-            className="px-6 py-3 bg-[#141b2b] text-[#F5F1E8] rounded-xl font-semibold hover:opacity-80 transition-opacity"
+            className="rounded-xl bg-primary-DEFAULT px-6 py-3 font-label text-label-md font-semibold text-white transition-opacity hover:opacity-90"
           >
             {s.btn}
           </button>

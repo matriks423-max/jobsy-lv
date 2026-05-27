@@ -73,7 +73,7 @@ export default function Success() {
           <Link to="/create">
             <Button
               variant="ghost"
-              className="h-12 w-full font-body text-sm text-accent-coral hover:text-accent-coral-hover"
+              className="h-12 w-full font-body text-sm text-accent-coral hover:opacity-80"
             >
               <Plus className="mr-2 h-4 w-4" />
               {t(locale, "success.createAnother")}
