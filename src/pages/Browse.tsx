@@ -506,8 +506,8 @@ export default function Browse() {
                     ))}
                   </div>
                 ) : posts.length === 0 ? (
-                  <div className="py-24 text-center">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-ink bg-white text-3xl">
+                  <div className="py-16 text-center">
+                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border-2 border-ink bg-white text-2xl">
                       🔍
                     </div>
                     <p className="font-display text-xl font-bold text-ink">

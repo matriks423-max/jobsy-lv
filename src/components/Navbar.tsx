@@ -43,7 +43,7 @@ export default function Navbar() {
 
   return (
     <nav className={`sticky top-0 z-50 border-b-2 border-ink bg-cream noise-bg transition-all duration-300${scrolled ? ' navbar-scrolled' : ''}`}>
-      <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 lg:px-6">
+      <div className="mx-auto flex h-[60px] max-w-7xl items-center justify-between px-4 lg:px-6">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-1">
           <span className="font-display text-2xl font-bold italic text-ink">

@@ -128,7 +128,7 @@ export default function Home() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section
-        className="relative flex min-h-[90vh] flex-col items-center justify-center overflow-hidden px-4 pb-16 pt-20 text-center"
+        className="relative flex min-h-[70vh] flex-col items-center justify-center overflow-hidden px-4 pb-10 pt-14 text-center"
         style={{
           background: 'linear-gradient(to bottom, var(--season-hero-from, #FBF6EE), var(--season-hero-to, #F5F1E8))',
         }}
@@ -145,7 +145,7 @@ export default function Home() {
 
         <div className="relative z-10 mx-auto w-full max-w-4xl">
           {/* Headline — word-by-word reveal */}
-          <motion.h1 className="mb-6 font-display text-5xl font-bold leading-tight text-ink md:text-7xl">
+          <motion.h1 className="mb-4 font-display text-5xl font-bold leading-tight text-ink md:text-7xl">
             {t(locale, "hero.title").split(" ").map((word, i) => (
               <motion.span
                 key={i}
@@ -161,7 +161,7 @@ export default function Home() {
 
           {/* Subtitle */}
           <motion.p
-            className="mx-auto mb-8 max-w-xl font-body text-lg text-ink-muted"
+            className="mx-auto mb-6 max-w-xl font-body text-lg text-ink-muted"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.55, duration: 0.4 }}
@@ -172,7 +172,7 @@ export default function Home() {
           {/* Search bar */}
           <motion.form
             onSubmit={handleHeroSearch}
-            className="mb-6 flex gap-2"
+            className="mb-4 flex gap-2"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.4 }}
@@ -197,7 +197,7 @@ export default function Home() {
 
           {/* Category quick-links */}
           <motion.div
-            className="mb-10 flex flex-wrap justify-center gap-2"
+            className="mb-6 flex flex-wrap justify-center gap-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.85, duration: 0.4 }}
@@ -263,13 +263,13 @@ export default function Home() {
       )}
 
       {/* How It Works */}
-      <section className="bg-cream-dark px-4 py-20 noise-bg">
+      <section className="bg-cream-dark px-4 py-12 noise-bg">
         <div className="mx-auto max-w-7xl">
-          <h2 className="mb-12 text-center font-display text-3xl font-bold text-ink md:text-4xl">
+          <h2 className="mb-8 text-center font-display text-3xl font-bold text-ink md:text-4xl">
             {t(locale, "howItWorks.title")}
           </h2>
 
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-3">
             {[
               {
                 num: "1",
@@ -308,9 +308,9 @@ export default function Home() {
       </section>
 
       {/* City Map */}
-      <section className="px-4 py-20 noise-bg">
+      <section className="px-4 py-12 noise-bg">
         <div className="mx-auto max-w-5xl">
-          <h2 className="mb-8 text-center font-display text-3xl font-bold text-ink md:text-4xl">
+          <h2 className="mb-6 text-center font-display text-3xl font-bold text-ink md:text-4xl">
             {t(locale, "cityMap.title")}
           </h2>
           <HomeCityMap />
@@ -318,9 +318,9 @@ export default function Home() {
       </section>
 
       {/* Latest Posts */}
-      <section className="px-4 py-20 noise-bg">
+      <section className="px-4 py-12 noise-bg">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+          <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <h2 className="font-display text-3xl font-bold text-ink md:text-4xl">
               {t(locale, "latestPosts.title")}
             </h2>
@@ -407,11 +407,11 @@ export default function Home() {
       </section>
 
       {/* CTA Banner + Referral */}
-      <section className="px-4 pb-20">
+      <section className="px-4 pb-12">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-6 lg:grid-cols-2">
             {/* Main CTA */}
-            <div className="rounded-3xl border-2 border-ink bg-ink px-8 py-12 text-center noise-bg">
+            <div className="rounded-3xl border-2 border-ink bg-ink px-8 py-8 text-center noise-bg">
               <h2 className="mx-auto max-w-lg font-display text-2xl font-bold text-cream md:text-3xl">
                 {t(locale, "ctaBanner.title")}
               </h2>
@@ -428,7 +428,7 @@ export default function Home() {
             </div>
 
             {/* Referral */}
-            <div className="rounded-3xl border-2 border-ink bg-mustard-light px-8 py-12 text-center">
+            <div className="rounded-3xl border-2 border-ink bg-mustard-light px-8 py-8 text-center">
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border-2 border-ink bg-mustard">
                 <Gift className="h-7 w-7 text-ink" />
               </div>

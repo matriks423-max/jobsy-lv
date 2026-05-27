@@ -68,11 +68,11 @@ export default function Pricing() {
   ];
 
   return (
-    <div className="min-h-screen px-4 py-16 noise-bg">
+    <div className="min-h-screen px-4 py-10 noise-bg">
       <div className="mx-auto max-w-5xl">
 
         {/* Header */}
-        <div className="mb-12 text-center">
+        <div className="mb-8 text-center">
           <h1 className="font-display text-4xl font-bold text-ink md:text-5xl">
             {t(locale, "pricing.title")}
           </h1>
@@ -82,7 +82,7 @@ export default function Pricing() {
         </div>
 
         {/* Tier cards */}
-        <div className="mb-16 grid gap-6 md:grid-cols-2">
+        <div className="mb-10 grid gap-6 md:grid-cols-2">
           {/* Free */}
           <div className="rounded-2xl border-2 border-ink bg-white p-8">
             <div className="mb-6">
@@ -167,7 +167,7 @@ export default function Pricing() {
         </div>
 
         {/* Boosts */}
-        <div className="mb-16">
+        <div className="mb-10">
           <h2 className="mb-2 font-display text-2xl font-bold text-ink">
             {t(locale, "pricing.boostForAll")}
           </h2>
@@ -189,8 +189,8 @@ export default function Pricing() {
         </div>
 
         {/* FAQ */}
-        <div className="rounded-2xl border-2 border-ink bg-white p-8">
-          <h2 className="mb-6 font-display text-2xl font-bold text-ink">
+        <div className="rounded-2xl border-2 border-ink bg-white p-6">
+          <h2 className="mb-4 font-display text-2xl font-bold text-ink">
             {t(locale, "pricing.faqTitle")}
           </h2>
           <div className="space-y-4">

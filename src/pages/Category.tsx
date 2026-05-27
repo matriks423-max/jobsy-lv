@@ -122,10 +122,10 @@ export default function Category() {
   if (!catInfo) return null;
 
   return (
-    <div className="min-h-screen px-4 py-8 noise-bg">
+    <div className="min-h-screen px-4 py-6 noise-bg">
       <div className="mx-auto max-w-6xl">
         {/* Breadcrumb */}
-        <nav className="mb-4 flex items-center gap-2 font-body text-sm text-ink-muted">
+        <nav className="mb-3 flex items-center gap-2 font-body text-sm text-ink-muted">
           <Link to="/" className="hover:text-ink">
             {t(locale, "postDetail.breadcrumbHome")}
           </Link>
@@ -138,7 +138,7 @@ export default function Category() {
         </nav>
 
         {/* SEO heading */}
-        <div className="mb-8">
+        <div className="mb-6">
           <h1 className="font-display text-3xl font-bold text-ink md:text-4xl">
             {seo?.heading ?? catName}
           </h1>
@@ -203,7 +203,7 @@ export default function Category() {
         )}
 
         {/* CTA */}
-        <div className="mt-12 rounded-2xl border-2 border-ink bg-cream-dark p-8 text-center">
+        <div className="mt-8 rounded-2xl border-2 border-ink bg-cream-dark p-6 text-center">
           <p className="font-display text-xl font-bold text-ink">
             {t(locale, "category.ctaHeading", { cat: catName.toLowerCase() })}
           </p>

@@ -11,8 +11,8 @@ export default function Footer() {
       className="bg-cream-dark noise-bg"
       style={{ borderTop: '2px solid var(--coral)' }}
     >
-      <div className="mx-auto max-w-7xl px-4 py-12 lg:px-6">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto max-w-7xl px-4 py-8 lg:px-6">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
 
           {/* Column 1: Brand */}
           <div>
@@ -128,7 +128,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-10 border-t border-ink-light pt-6 text-center">
+        <div className="mt-6 border-t border-ink-light pt-4 text-center">
           <p className="font-body text-xs text-ink-light">
             © {year} jobsy.lv — {t(locale, "footer.tagline")}
           </p>

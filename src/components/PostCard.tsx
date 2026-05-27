@@ -81,9 +81,9 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
           </div>
         ) : null}
 
-        <div className="flex flex-1 flex-col p-5 pl-6">
+        <div className="flex flex-1 flex-col p-4 pl-5">
           {/* Top row */}
-          <div className="mb-3 flex flex-wrap items-center gap-2">
+          <div className="mb-2 flex flex-wrap items-center gap-2">
             <span
               className={`rounded px-2 py-0.5 font-mono text-[11px] font-medium uppercase ${
                 isNeed
@@ -106,13 +106,13 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
           </div>
 
           {/* Title */}
-          <h3 className="mb-2 font-body text-lg font-bold text-ink line-clamp-2">
+          <h3 className="mb-1.5 font-body text-base font-bold text-ink line-clamp-2">
             {post.title}
           </h3>
 
           {/* Description */}
           {post.description && (
-            <p className="mb-4 font-body text-sm text-ink-muted line-clamp-2">
+            <p className="mb-3 font-body text-sm text-ink-muted line-clamp-2">
               {post.description}
             </p>
           )}
@@ -178,9 +178,9 @@ export function PostCardSkeleton() {
     <div className="relative flex flex-col overflow-hidden rounded-2xl border-2 border-ink bg-white">
       {/* Left accent stripe */}
       <Skeleton className="absolute left-0 top-0 h-full w-1 rounded-none" />
-      <div className="flex flex-1 flex-col p-5 pl-6">
+      <div className="flex flex-1 flex-col p-4 pl-5">
         {/* Badges row */}
-        <div className="mb-3 flex flex-wrap items-center gap-2">
+        <div className="mb-2 flex flex-wrap items-center gap-2">
           <Skeleton className="h-5 w-12 rounded" />
           <Skeleton className="h-5 w-20 rounded-full" />
           <Skeleton className="h-4 w-14 rounded-full" />
