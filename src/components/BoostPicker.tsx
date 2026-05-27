@@ -70,7 +70,7 @@ export default function BoostPicker({
 
         {/* Credit balance badge */}
         {creditBalance > 0 && (
-          <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-outline-variant bg-mustard-light px-3 py-1 font-body text-xs font-medium text-on-surface">
+          <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-outline-variant bg-surface-cream px-3 py-1 font-body text-xs font-medium text-on-surface">
             <Wallet className="h-3.5 w-3.5" />
             {t(locale, "credits.balance")}: €{(creditBalance / 100).toFixed(2)}
           </div>
@@ -114,7 +114,7 @@ export default function BoostPicker({
                     <button
                       onClick={() => creditsMutation.mutate({ postId, boostType: b.type })}
                       disabled={isPending}
-                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-outline-variant bg-mustard-light py-1.5 font-body text-xs font-bold text-on-surface hover:bg-mustard transition disabled:opacity-60"
+                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-outline-variant bg-surface-cream py-1.5 font-body text-xs font-bold text-on-surface hover:bg-mustard transition disabled:opacity-60"
                     >
                       <Wallet className="h-3 w-3" />
                       {t(locale, "credits.useCredits")}

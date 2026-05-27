@@ -139,7 +139,7 @@ export default function Pricing() {
 
           {/* Pro */}
           <div className="relative flex flex-col rounded-2xl border border-outline-variant bg-white p-6">
-            <div className="absolute -top-3 left-6 rounded-full border border-outline-variant bg-mustard-light px-3 py-0.5 font-mono text-xs font-bold text-on-surface uppercase">
+            <div className="absolute -top-3 left-6 rounded-full border border-outline-variant bg-surface-cream px-3 py-0.5 font-mono text-xs font-bold text-on-surface uppercase">
               {t(locale, "pricing.pro")}
             </div>
             <div className="mb-5">

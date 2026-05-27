@@ -24,7 +24,7 @@ export default function ForgotPassword() {
     return (
       <div className="flex min-h-[60vh] items-center justify-center px-4">
         <div className="text-center">
-          <CheckCircle2 className="mx-auto mb-4 h-12 w-12" style={{ color: "var(--coral)" }} />
+          <CheckCircle2 className="mx-auto mb-4 h-12 w-12" style={{ color: "#FF7F50" }} />
           <h1 className="font-headline text-2xl font-bold text-on-surface">{t(locale, "forgotPassword.successTitle")}</h1>
           <p className="mt-2 font-body text-on-surface-variant">
             {t(locale, "forgotPassword.successDesc")}
@@ -49,7 +49,7 @@ export default function ForgotPassword() {
 
         <form
           onSubmit={(e) => { e.preventDefault(); forgotMutation.mutate({ email }); }}
-          className="rounded-2xl border border-outline-variant bg-white p-6 shadow-[4px_4px_0_var(--ink)]"
+          className="rounded-2xl border border-outline-variant bg-white p-6 shadow-card"
         >
           {forgotMutation.isError && (
             <div className="mb-4 rounded-xl border-2 border-need bg-need/10 px-3 py-2 font-body text-sm text-need">
@@ -73,15 +73,15 @@ export default function ForgotPassword() {
           <button
             type="submit"
             disabled={forgotMutation.isPending}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant py-2.5 font-body font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_var(--ink)] disabled:opacity-60"
-            style={{ background: "var(--coral)" }}
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant py-2.5 font-body font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_#141b2b] disabled:opacity-60"
+            style={{ background: "#FF7F50" }}
           >
             {forgotMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : t(locale, "forgotPassword.submitBtn")}
           </button>
         </form>
 
         <p className="mt-4 text-center font-body text-sm text-on-surface-variant">
-          <Link to="/login" className="text-coral hover:underline">
+          <Link to="/login" className="text-accent-coral hover:underline">
             {t(locale, "forgotPassword.backToLogin")}
           </Link>
         </p>

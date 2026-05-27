@@ -26,7 +26,7 @@ export default function NotFound() {
         {/* Large seasonal 404 */}
         <div
           className="mb-2 font-headline text-[120px] font-bold leading-none"
-          style={{ color: "var(--coral)", opacity: 0.15 }}
+          style={{ color: "#FF7F50", opacity: 0.15 }}
         >
           404
         </div>
@@ -53,8 +53,8 @@ export default function NotFound() {
           </div>
           <button
             type="submit"
-            className="rounded-xl border border-outline-variant px-4 py-2.5 font-body text-sm font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_var(--ink)]"
-            style={{ background: "var(--coral)" }}
+            className="rounded-xl border border-outline-variant px-4 py-2.5 font-body text-sm font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_#141b2b]"
+            style={{ background: "#FF7F50" }}
           >
             {t(locale, "hero.searchBtn")}
           </button>

@@ -34,8 +34,8 @@ const STATUS_LABELS: Record<string, string> = {
 };
 const STATUS_COLORS: Record<string, string> = {
   active: "bg-success-emerald/10 text-success-emerald border-sage",
-  pending_review: "bg-mustard-light text-on-surface border-mustard",
-  pending_payment: "bg-mustard-light text-on-surface border-mustard",
+  pending_review: "bg-surface-cream text-on-surface border-mustard",
+  pending_payment: "bg-surface-cream text-on-surface border-mustard",
   expired: "bg-surface-cream text-on-surface-variant border-ink-light",
   rejected: "bg-need-light text-need border-need",
   closed: "bg-surface-cream text-on-surface-variant border-ink-light",
@@ -158,13 +158,13 @@ export default function Admin() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
               {[
-                { label: "Total Users", value: stats?.totalUsers, color: "text-coral" },
+                { label: "Total Users", value: stats?.totalUsers, color: "text-accent-coral" },
                 { label: "Active Posts", value: stats?.activePosts, color: "text-success-emerald" },
-                { label: "Posts Today", value: stats?.postsToday, color: "text-mustard" },
-                { label: "Signups Today", value: stats?.usersToday, color: "text-coral" },
+                { label: "Posts Today", value: stats?.postsToday, color: "text-accent-coral" },
+                { label: "Signups Today", value: stats?.usersToday, color: "text-accent-coral" },
                 { label: "Total Posts", value: stats?.totalPosts, color: "text-ink" },
                 { label: "Business Users", value: stats?.businessUsers, color: "text-success-emerald" },
-                { label: "Pending Review", value: stats?.pendingCount, color: "text-mustard" },
+                { label: "Pending Review", value: stats?.pendingCount, color: "text-accent-coral" },
                 { label: "Open Reports", value: stats?.reportsCount, color: "text-need" },
               ].map((s) => (
                 <div key={s.label} className="rounded-2xl border border-outline-variant bg-white p-5 text-center">
@@ -175,8 +175,8 @@ export default function Admin() {
             </div>
             <div className="grid grid-cols-3 gap-4">
               {[
-                { label: "Interests Sent", value: stats?.totalInterests, color: "text-coral" },
-                { label: "Reviews Left", value: stats?.totalReviews, color: "text-mustard" },
+                { label: "Interests Sent", value: stats?.totalInterests, color: "text-accent-coral" },
+                { label: "Reviews Left", value: stats?.totalReviews, color: "text-accent-coral" },
                 { label: "Verified Phones", value: stats?.verifiedPhones, color: "text-success-emerald" },
               ].map((s) => (
                 <div key={s.label} className="rounded-2xl border border-outline-variant bg-white p-5 text-center">
@@ -228,7 +228,7 @@ export default function Admin() {
                       <p className="font-body text-sm font-bold text-on-surface truncate">{u.email}</p>
                       {u.role === "admin" && <span className="rounded bg-accent-coral px-1.5 py-0.5 font-mono text-[10px] font-bold text-on-surface">ADMIN</span>}
                       {u.role === "banned" && <span className="rounded bg-need-light px-1.5 py-0.5 font-mono text-[10px] font-bold text-need">BANNED</span>}
-                      {u.plan === "business" && <span className="rounded bg-mustard-light px-1.5 py-0.5 font-mono text-[10px] font-bold text-on-surface">🏢 BUSINESS</span>}
+                      {u.plan === "business" && <span className="rounded bg-surface-cream px-1.5 py-0.5 font-mono text-[10px] font-bold text-on-surface">🏢 BUSINESS</span>}
                     </div>
                     <p className="font-mono text-xs text-on-surface-variant">
                       #{u.id} · {u.name ?? "—"} · {u.authMethod} · joined {new Date(u.createdAt).toLocaleDateString()} · {u.postCount ?? 0} posts
@@ -298,7 +298,7 @@ export default function Admin() {
                         {p.status.replace("_", " ")}
                       </span>
                       <span className="font-mono text-xs text-on-surface-variant">{p.category} · {p.city ?? "—"}</span>
-                      {!p.wasFree && <span className="rounded bg-mustard-light px-1.5 py-0.5 font-mono text-[10px] text-on-surface">PAID</span>}
+                      {!p.wasFree && <span className="rounded bg-surface-cream px-1.5 py-0.5 font-mono text-[10px] text-on-surface">PAID</span>}
                     </div>
                     <p className="font-body text-sm font-bold text-on-surface truncate">{p.title}</p>
                     <p className="font-mono text-xs text-on-surface-variant">#{p.id} · user #{p.userId} · <Eye className="inline h-3 w-3" /> {p.viewCount} · {new Date(p.createdAt).toLocaleDateString()}</p>
@@ -333,7 +333,7 @@ export default function Admin() {
                 <div className="mb-3 flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="mb-1 flex items-center gap-2">
-                      <span className="rounded bg-mustard-light px-2 py-0.5 font-mono text-[10px] font-medium uppercase text-on-surface">{post.category}</span>
+                      <span className="rounded bg-surface-cream px-2 py-0.5 font-mono text-[10px] font-medium uppercase text-on-surface">{post.category}</span>
                       <span className="font-mono text-xs text-on-surface-variant">#{post.id} · {post.type}</span>
                     </div>
                     <h3 className="font-body text-lg font-bold text-on-surface">{post.title}</h3>
@@ -443,7 +443,7 @@ export default function Admin() {
                       </p>
                     </div>
                     <span className={`rounded-full border-2 px-2.5 py-0.5 font-mono text-xs font-bold ${
-                      item.status === "pending" ? "border-mustard bg-mustard-light text-on-surface" :
+                      item.status === "pending" ? "border-mustard bg-surface-cream text-on-surface" :
                       item.status === "posted" ? "border-sage bg-success-emerald/10 text-success-emerald" :
                       "border-need bg-need-light text-need"
                     }`}>

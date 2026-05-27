@@ -478,7 +478,7 @@ export default function CreatePost() {
           <Button
             onClick={handleSubmit}
             disabled={createMutation.isPending || updateMutation.isPending}
-            className="h-14 w-full rounded-xl border border-outline-variant bg-accent-coral font-body text-base font-medium text-on-surface hover:-translate-y-0.5 hover:bg-[#e56a3a] hover:shadow-card-coral"
+            className="h-14 w-full rounded-xl border border-outline-variant bg-accent-coral font-body text-base font-medium text-on-surface hover:-translate-y-0.5 hover:bg-[#e56a3a] hover:shadow-float"
           >
             {createMutation.isPending || updateMutation.isPending ? (
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />

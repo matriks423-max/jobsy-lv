@@ -34,7 +34,7 @@ export default function CookieBanner() {
           <Cookie className="mt-0.5 h-5 w-5 shrink-0 text-accent-coral" />
           <p className="font-body text-sm text-on-surface-variant">
             {t(locale, "cookie.message")}{" "}
-            <a href="/privacy" className="text-coral underline hover:text-accent-coral-hover">
+            <a href="/privacy" className="text-accent-coral underline hover:text-accent-coral-hover">
               {t(locale, "cookie.learnMore")}
             </a>
           </p>

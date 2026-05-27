@@ -46,11 +46,11 @@ export default function PWAInstallPrompt() {
   };
 
   return (
-    <div className="fixed bottom-20 left-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-2xl border border-outline-variant bg-surface-cream shadow-[4px_4px_0_var(--ink)] sm:bottom-6 sm:left-auto sm:right-6 sm:translate-x-0">
+    <div className="fixed bottom-20 left-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-2xl border border-outline-variant bg-surface-cream shadow-card sm:bottom-6 sm:left-auto sm:right-6 sm:translate-x-0">
       <div className="flex items-start gap-3 p-4">
         <div
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-outline-variant"
-          style={{ background: "var(--coral)" }}
+          style={{ background: "#FF7F50" }}
         >
           <img src="/icon-192.png" alt="jobsy" className="h-7 w-7 rounded-lg" />
         </div>
@@ -65,8 +65,8 @@ export default function PWAInstallPrompt() {
       <div className="border-t-2 border-ink px-4 py-3">
         <button
           onClick={install}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant py-2 font-body text-sm font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_var(--ink)]"
-          style={{ background: "var(--coral)", color: "var(--cream)" }}
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant py-2 font-body text-sm font-semibold transition-all hover:-translate-y-0.5 hover:[box-shadow:3px_3px_0_#141b2b]"
+          style={{ background: "#FF7F50", color: "#F5F1E8" }}
         >
           <Download className="h-4 w-4" />
           {t(locale, "pwa.install")}

@@ -1,7 +1,6 @@
 ﻿import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
-import { useTheme, type Theme } from "@/lib/theme-context";
 import { t } from "@/lib/i18n";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,7 +14,6 @@ import {
   Mail,
   Loader2,
   CheckCircle,
-  Palette,
   Edit3,
   ShieldCheck,
   Bell,
@@ -27,15 +25,9 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 
-const THEMES: { value: Theme; labelKey: string; preview: string }[] = [
-  { value: "warm",        labelKey: "settings.themeWarm",        preview: "#F5F1E8" },
-  { value: "dark",        labelKey: "settings.themeDark",        preview: "#1C1814" },
-  { value: "terracotta",  labelKey: "settings.themeTerracotta",  preview: "#F7F0E6" },
-];
 
 export default function Settings() {
   const { locale } = useLocale();
-  const { theme, setTheme } = useTheme();
   const { isAuthenticated } = useAuth({ redirectOnUnauthenticated: true });
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -233,7 +225,7 @@ export default function Settings() {
                   <button
                     onClick={() => sendOtpMutation.mutate({ phone })}
                     disabled={sendOtpMutation.isPending}
-                    className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-outline-variant bg-mustard-light px-4 py-2 font-body text-sm font-medium text-on-surface hover:bg-mustard-light/70"
+                    className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-outline-variant bg-surface-cream px-4 py-2 font-body text-sm font-medium text-on-surface hover:bg-surface-cream/70"
                   >
                     {sendOtpMutation.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ShieldCheck className="h-3.5 w-3.5" />}
                     {t(locale, "settings.verifyPhone")}
@@ -420,7 +412,7 @@ export default function Settings() {
                 {t(locale, "credits.historyTitle")}
               </h2>
               {(subStatus?.creditBalance ?? 0) > 0 && (
-                <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-outline-variant bg-mustard-light px-3 py-1 font-body text-xs font-bold text-on-surface">
+                <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-outline-variant bg-surface-cream px-3 py-1 font-body text-xs font-bold text-on-surface">
                   {t(locale, "credits.balance")}: €{((subStatus?.creditBalance ?? 0) / 100).toFixed(2)}
                 </span>
               )}
@@ -443,7 +435,7 @@ export default function Settings() {
                         {new Date(tx.createdAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}
                       </p>
                     </div>
-                    <span className={`font-mono text-sm font-bold shrink-0 ${tx.amount > 0 ? "text-success-emerald" : "text-coral"}`}>
+                    <span className={`font-mono text-sm font-bold shrink-0 ${tx.amount > 0 ? "text-success-emerald" : "text-accent-coral"}`}>
                       {tx.amount > 0 ? "+" : ""}€{(tx.amount / 100).toFixed(2)}
                     </span>
                   </li>
@@ -453,39 +445,6 @@ export default function Settings() {
           </div>
         )}
 
-        {/* Theme section */}
-        <div className="rounded-3xl border border-outline-variant bg-white p-6 md:p-8">
-          <div className="mb-6 flex items-center gap-3">
-            <Palette className="h-5 w-5 text-accent-coral" />
-            <h2 className="font-body text-lg font-bold text-on-surface">
-              {t(locale, "settings.themeSection")}
-            </h2>
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            {THEMES.map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => setTheme(opt.value)}
-                className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition hover:-translate-y-0.5 ${
-                  theme === opt.value
-                    ? "border-coral shadow-card-coral"
-                    : "border-ink-light hover:border-ink"
-                }`}
-              >
-                <div
-                  className="h-10 w-10 rounded-full border border-outline-variant"
-                  style={{ backgroundColor: opt.preview }}
-                />
-                <span className="font-body text-xs font-medium text-on-surface">
-                  {t(locale, opt.labelKey)}
-                </span>
-                {theme === opt.value && (
-                  <CheckCircle className="h-4 w-4 text-accent-coral" />
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );

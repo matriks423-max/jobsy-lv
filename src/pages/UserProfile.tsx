@@ -129,7 +129,7 @@ export default function UserProfile() {
                     {[1, 2, 3, 4, 5].map((s) => (
                       <Star
                         key={s}
-                        className={`h-4 w-4 ${s <= Math.round(avgRating) ? "fill-mustard text-mustard" : "text-outline"}`}
+                        className={`h-4 w-4 ${s <= Math.round(avgRating) ? "fill-accent-coral text-accent-coral" : "text-outline"}`}
                       />
                     ))}
                   </div>
@@ -181,7 +181,7 @@ export default function UserProfile() {
                     <div className={`h-12 w-1 shrink-0 rounded-full ${post.type === "need" ? "bg-need" : "bg-sage"}`} />
                     <div className="flex-1 min-w-0">
                       <div className="mb-1 flex flex-wrap items-center gap-1.5">
-                        <span className="inline-flex items-center gap-1 rounded-full border border-ink bg-mustard-light px-2 py-0.5 font-body text-[10px] font-medium uppercase text-on-surface">
+                        <span className="inline-flex items-center gap-1 rounded-full border border-ink bg-surface-cream px-2 py-0.5 font-body text-[10px] font-medium uppercase text-on-surface">
                           <CategoryIcon className="h-3 w-3" />
                           {t(locale, `categories.${post.category}` as never)}
                         </span>
@@ -230,7 +230,7 @@ export default function UserProfile() {
                       {[1, 2, 3, 4, 5].map((s) => (
                         <Star
                           key={s}
-                          className={`h-4 w-4 ${s <= r.stars ? "fill-mustard text-mustard" : "text-outline"}`}
+                          className={`h-4 w-4 ${s <= r.stars ? "fill-accent-coral text-accent-coral" : "text-outline"}`}
                         />
                       ))}
                     </div>

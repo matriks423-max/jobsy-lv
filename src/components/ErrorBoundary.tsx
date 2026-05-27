@@ -1,4 +1,4 @@
-import { Component, type ReactNode, type ErrorInfo } from "react";
+﻿import { Component, type ReactNode, type ErrorInfo } from "react";
 import { Sentry } from "@/lib/sentry";
 
 function getLocale(): "lv" | "ru" | "en" {
@@ -50,8 +50,8 @@ export default class ErrorBoundary extends Component<Props, State> {
       if (this.props.fallback) return this.props.fallback;
       const s = ERROR_STRINGS[getLocale()];
       return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--cream)] px-4 text-center">
-          <h1 className="font-serif text-4xl font-bold text-[var(--ink)] mb-4">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-[#F5F1E8] px-4 text-center">
+          <h1 className="font-serif text-4xl font-bold text-[#141b2b] mb-4">
             {s.heading}
           </h1>
           <p className="text-[var(--muted)] mb-8 max-w-sm">
@@ -59,7 +59,7 @@ export default class ErrorBoundary extends Component<Props, State> {
           </p>
           <button
             onClick={this.handleReset}
-            className="px-6 py-3 bg-[var(--ink)] text-[var(--cream)] rounded-xl font-semibold hover:opacity-80 transition-opacity"
+            className="px-6 py-3 bg-[#141b2b] text-[#F5F1E8] rounded-xl font-semibold hover:opacity-80 transition-opacity"
           >
             {s.btn}
           </button>

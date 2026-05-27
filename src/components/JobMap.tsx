@@ -85,7 +85,7 @@ export default function JobMap({ posts }: JobMapProps) {
           <Marker key={post.id} position={[coords.lat, coords.lng]}>
             <Popup>
               <div className="min-w-[160px]">
-                <p className="mb-1 font-mono text-[10px] font-medium uppercase tracking-wide" style={{ color: 'var(--coral)' }}>
+                <p className="mb-1 font-mono text-[10px] font-medium uppercase tracking-wide" style={{ color: '#FF7F50' }}>
                   {category ? t(locale, `categories.${category.key}` as never) : post.category}
                 </p>
                 <p className="mb-2 font-bold leading-snug text-gray-900">{post.title}</p>
@@ -95,7 +95,7 @@ export default function JobMap({ posts }: JobMapProps) {
                 <Link
                   to={`/post/${post.id}`}
                   className="inline-block rounded-lg border-2 border-gray-800 px-3 py-1 font-mono text-xs font-medium text-gray-900 transition hover:-translate-y-0.5"
-                  style={{ background: 'var(--coral)' }}
+                  style={{ background: '#FF7F50' }}
                 >
                   {t(locale, "browse.viewPost")} →
                 </Link>

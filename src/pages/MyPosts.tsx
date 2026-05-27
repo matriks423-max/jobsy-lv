@@ -113,9 +113,9 @@ export default function MyPosts() {
       case "active":
         return { label: t(locale, "myPosts.statusActive"), bg: "bg-success-emerald/10", text: "text-success-emerald", border: "border-sage", icon: CheckCircle };
       case "pending_payment":
-        return { label: t(locale, "myPosts.statusPending"), bg: "bg-mustard-light", text: "text-ink", border: "border-mustard", icon: Clock };
+        return { label: t(locale, "myPosts.statusPending"), bg: "bg-surface-cream", text: "text-ink", border: "border-mustard", icon: Clock };
       case "pending_review":
-        return { label: t(locale, "myPosts.statusReview"), bg: "bg-mustard-light", text: "text-ink", border: "border-mustard", icon: Clock };
+        return { label: t(locale, "myPosts.statusReview"), bg: "bg-surface-cream", text: "text-ink", border: "border-mustard", icon: Clock };
       case "rejected":
         return { label: t(locale, "myPosts.statusRejected"), bg: "bg-need-light", text: "text-need", border: "border-need", icon: AlertCircle };
       default:
@@ -266,7 +266,7 @@ export default function MyPosts() {
                       </span>
                       <span className="font-body text-xs text-on-surface-variant">{t(locale, `categories.${post.category}` as never)}</span>
                       {post.boostType !== "none" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date() && (
-                        <span className="flex items-center gap-0.5 rounded-full border border-coral bg-coral/10 px-1.5 py-0.5 font-mono text-[10px] text-accent-coral">
+                        <span className="flex items-center gap-0.5 rounded-full border border-accent-coral bg-accent-coral/10 px-1.5 py-0.5 font-mono text-[10px] text-accent-coral">
                           <Zap className="h-2.5 w-2.5" />
                           {post.boostType === "bump" ? "Bump" : post.boostType === "featured" ? "Featured" : "Urgent"}
                           {getBoostTimeRemaining(post.boostExpiresAt) && (
@@ -287,7 +287,7 @@ export default function MyPosts() {
 
                   <div className="flex items-center gap-3">
                     <div className="hidden flex-col items-end sm:flex">
-                      <span className={`flex items-center gap-1 font-mono text-xs ${post.boostType !== "none" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date() ? "text-coral font-semibold" : "text-outline"}`}>
+                      <span className={`flex items-center gap-1 font-mono text-xs ${post.boostType !== "none" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date() ? "text-accent-coral font-semibold" : "text-outline"}`}>
                         {post.boostType !== "none" && post.boostExpiresAt && new Date(post.boostExpiresAt) > new Date()
                           ? <TrendingUp className="h-3 w-3" />
                           : <Eye className="h-3 w-3" />

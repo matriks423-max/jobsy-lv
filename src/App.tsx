@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+﻿import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { Toaster } from "sonner";
@@ -46,10 +46,12 @@ export default function App() {
           position="bottom-right"
           toastOptions={{
             style: {
-              background: "var(--ink)",
-              color: "var(--cream)",
-              border: "2px solid var(--ink)",
+              background: "#003527",
+              color: "#ffffff",
+              border: "1px solid #064e3b",
               borderRadius: "12px",
+              fontFamily: "Geist, system-ui, sans-serif",
+              fontSize: "14px",
             },
           }}
         />
