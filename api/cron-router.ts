@@ -43,18 +43,17 @@ cronRouter.get("/reminders", async (c) => {
     : [];
   const reminderEmailById = new Map(reminderEmailRows.map((u) => [u.id, u.email]));
 
-  let sent = 0;
-  for (const post of expiringPosts) {
+  // Send reminders + mark reminderSent in parallel per post
+  const results = await Promise.all(expiringPosts.map(async (post) => {
     const email = reminderEmailById.get(post.userId);
-    if (!email) continue;
-
-    await sendExpiryReminder(email, post.title, post.id);
-    await getDb()
-      .update(schema.posts)
-      .set({ reminderSent: true })
-      .where(eq(schema.posts.id, post.id));
-    sent++;
-  }
+    if (!email) return false;
+    await Promise.all([
+      sendExpiryReminder(email, post.title, post.id),
+      getDb().update(schema.posts).set({ reminderSent: true }).where(eq(schema.posts.id, post.id)),
+    ]);
+    return true;
+  }));
+  const sent = results.filter(Boolean).length;
 
   return c.json({ ok: true, sent, checked: expiringPosts.length });
 });
@@ -79,10 +78,10 @@ cronRouter.get("/search-alerts", async (c) => {
       )
     );
 
-  let alertsSent = 0;
+  // Phase 1: find new posts for each search + update lastNotifiedAt in parallel
+  const toAlert: Array<{ userId: number; label: string; posts: { id: number; title: string; city: string | null }[] }> = [];
 
-  for (const search of searches) {
-    // Find posts created since last notification
+  await Promise.all(searches.map(async (search) => {
     const since = search.lastNotifiedAt ?? new Date(Date.now() - 60 * 60 * 1000);
 
     const conditions = [
@@ -98,31 +97,40 @@ cronRouter.get("/search-alerts", async (c) => {
       );
     }
 
-    const newPosts = await getDb()
-      .select({ id: schema.posts.id, title: schema.posts.title, city: schema.posts.city })
-      .from(schema.posts)
-      .where(and(...conditions))
-      .limit(10);
+    const [newPosts] = await Promise.all([
+      getDb()
+        .select({ id: schema.posts.id, title: schema.posts.title, city: schema.posts.city })
+        .from(schema.posts)
+        .where(and(...conditions))
+        .limit(10),
+      // Update lastNotifiedAt even if no posts — prevents hammering
+      getDb()
+        .update(schema.savedSearches)
+        .set({ lastNotifiedAt: new Date() })
+        .where(eq(schema.savedSearches.id, search.id)),
+    ]);
 
-    // Update lastNotifiedAt even if no posts — prevents hammering
-    await getDb()
-      .update(schema.savedSearches)
-      .set({ lastNotifiedAt: new Date() })
-      .where(eq(schema.savedSearches.id, search.id));
+    if (newPosts.length > 0) {
+      toAlert.push({ userId: search.userId, label: search.label, posts: newPosts });
+    }
+  }));
 
-    if (newPosts.length === 0) continue;
-
-    const userRows = await getDb()
-      .select({ email: schema.users.email })
+  // Phase 2: batch-fetch emails for all users who need alerts
+  let alertsSent = 0;
+  if (toAlert.length > 0) {
+    const alertUserIds = [...new Set(toAlert.map((a) => a.userId))];
+    const alertEmailRows = await getDb()
+      .select({ id: schema.users.id, email: schema.users.email })
       .from(schema.users)
-      .where(eq(schema.users.id, search.userId))
-      .limit(1);
+      .where(inArray(schema.users.id, alertUserIds));
+    const alertEmailById = new Map(alertEmailRows.map((u) => [u.id, u.email]));
 
-    const email = userRows[0]?.email;
-    if (!email) continue;
-
-    await sendSearchAlert(email, search.label, newPosts);
-    alertsSent++;
+    for (const alert of toAlert) {
+      const email = alertEmailById.get(alert.userId);
+      if (!email) continue;
+      await sendSearchAlert(email, alert.label, alert.posts);
+      alertsSent++;
+    }
   }
 
   return c.json({ ok: true, alertsSent, searchesChecked: searches.length });
