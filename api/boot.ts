@@ -602,10 +602,29 @@ if (env.isProduction) {
   const { serveStaticFiles } = await import("./lib/vite");
   serveStaticFiles(app);
 
-  // Fire-and-forget: add referredPostCount column if not present. Never block startup.
-  getDb()
-    .execute(drizzleSql`ALTER TABLE referrals ADD COLUMN IF NOT EXISTS referredPostCount INT UNSIGNED NOT NULL DEFAULT 0`)
-    .catch(() => { /* column already exists — harmless */ });
+  // Fire-and-forget additive migrations — safe to run on every boot (IF NOT EXISTS).
+  const migrations = [
+    // profiles — new columns added since initial deploy
+    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS plan ENUM('free','pro','business') NOT NULL DEFAULT 'free'`,
+    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS creditBalance INT NOT NULL DEFAULT 0`,
+    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS contactViewsThisMonth INT UNSIGNED NOT NULL DEFAULT 0`,
+    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS contactViewsResetAt TIMESTAMP NULL`,
+    // referrals — referral v2
+    `ALTER TABLE referrals ADD COLUMN IF NOT EXISTS referredPostCount INT UNSIGNED NOT NULL DEFAULT 0`,
+    // creditTransactions — new table for credit wallet
+    `CREATE TABLE IF NOT EXISTS creditTransactions (
+      id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+      userId BIGINT UNSIGNED NOT NULL,
+      amount INT NOT NULL,
+      type ENUM('grant','spend','refund') NOT NULL,
+      description VARCHAR(255) NOT NULL,
+      createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_credit_tx_user (userId)
+    )`,
+  ];
+  for (const sql of migrations) {
+    getDb().execute(drizzleSql.raw(sql)).catch(() => { /* already exists — harmless */ });
+  }
 
   const port = parseInt(process.env.PORT || "3000");
   serve({ fetch: app.fetch, port }, () => {
