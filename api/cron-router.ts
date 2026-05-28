@@ -47,11 +47,16 @@ cronRouter.get("/reminders", async (c) => {
   const results = await Promise.all(expiringPosts.map(async (post) => {
     const email = reminderEmailById.get(post.userId);
     if (!email) return false;
-    await Promise.all([
-      sendExpiryReminder(email, post.title, post.id),
-      getDb().update(schema.posts).set({ reminderSent: true }).where(eq(schema.posts.id, post.id)),
-    ]);
-    return true;
+    try {
+      await Promise.all([
+        sendExpiryReminder(email, post.title, post.id),
+        getDb().update(schema.posts).set({ reminderSent: true }).where(eq(schema.posts.id, post.id)),
+      ]);
+      return true;
+    } catch (err) {
+      console.error("[cron/reminders] failed to send for post", post.id, err);
+      return false;
+    }
   }));
   const sent = results.filter(Boolean).length;
 
@@ -128,8 +133,12 @@ cronRouter.get("/search-alerts", async (c) => {
     for (const alert of toAlert) {
       const email = alertEmailById.get(alert.userId);
       if (!email) continue;
-      await sendSearchAlert(email, alert.label, alert.posts);
-      alertsSent++;
+      try {
+        await sendSearchAlert(email, alert.label, alert.posts);
+        alertsSent++;
+      } catch (err) {
+        console.error("[cron/search-alerts] failed to send for user", alert.userId, err);
+      }
     }
   }
 
@@ -192,8 +201,12 @@ cronRouter.get("/expire", async (c) => {
   for (const post of expiredPosts) {
     const email = emailById.get(post.userId);
     if (!email) continue;
-    await sendPostExpired(email, post.title, post.id);
-    notified++;
+    try {
+      await sendPostExpired(email, post.title, post.id);
+      notified++;
+    } catch (err) {
+      console.error("[cron/expire] failed to notify for post", post.id, err);
+    }
   }
 
   return c.json({ ok: true, expired: actuallyExpired, notified });
