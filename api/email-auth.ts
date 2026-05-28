@@ -186,7 +186,7 @@ export const emailAuthRouter = createRouter({
     .input(
       z.object({
         email: z.string().email(),
-        password: z.string(),
+        password: z.string().max(128),
       })
     )
     .mutation(async ({ ctx, input }) => {

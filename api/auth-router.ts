@@ -100,7 +100,7 @@ export const authRouter = createRouter({
 
   // Reset password — validates token, updates password, clears token
   resetPassword: publicQuery
-    .input(z.object({ token: z.string().min(1), password: z.string().min(8) }))
+    .input(z.object({ token: z.string().min(1).max(128), password: z.string().min(8).max(128) }))
     .mutation(async ({ input }) => {
       const db = getDb();
       const [user] = await db

@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   Sheet,
   SheetContent,
+  SheetTitle,
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
@@ -194,9 +195,9 @@ export default function Navbar() {
           >
             <div className="flex h-full flex-col">
               <div className="flex items-center justify-between border-b border-outline-variant p-4">
-                <span className="font-headline text-xl font-bold text-primary-DEFAULT">
+                <SheetTitle className="font-headline text-xl font-bold text-primary-DEFAULT">
                   Jobsy
-                </span>
+                </SheetTitle>
                 <SheetClose asChild>
                   <button className="rounded-lg border border-outline p-2 text-on-surface transition-colors hover:border-primary-DEFAULT">
                     <X className="h-5 w-5" />

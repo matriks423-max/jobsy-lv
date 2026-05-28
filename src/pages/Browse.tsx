@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import PostCard, { PostCardSkeleton } from "@/components/PostCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -57,6 +57,171 @@ function useDebounce<T>(value: T, delay: number): T {
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Home, Truck, Wrench, Flower2, Car, Baby, Cat, Monitor, GraduationCap, MoreHorizontal,
 };
+
+interface FilterPanelProps {
+  locale: string;
+  search: string;
+  setSearch: (v: string) => void;
+  type: "all" | "need" | "offer";
+  setType: (v: "all" | "need" | "offer") => void;
+  category: string;
+  setCategory: (v: string) => void;
+  city: string;
+  setCity: (v: string) => void;
+  sort: "newest" | "oldest" | "budget_asc" | "budget_desc";
+  setSort: (v: "newest" | "oldest" | "budget_asc" | "budget_desc") => void;
+  setPage: (v: number) => void;
+  activeFiltersCount: number;
+  isAuthenticated: boolean;
+  clearFilters: () => void;
+  handleOpenSaveAlert: () => void;
+  onClose?: () => void;
+}
+
+function FilterPanel({
+  locale, search, setSearch, type, setType, category, setCategory,
+  city, setCity, sort, setSort, setPage, activeFiltersCount, isAuthenticated,
+  clearFilters, handleOpenSaveAlert, onClose,
+}: FilterPanelProps) {
+  return (
+    <div className="space-y-6">
+      {/* Search */}
+      <div>
+        <label className="mb-2 block font-label text-label-sm text-on-surface-variant">
+          {t(locale, "browse.searchPlaceholder")}
+        </label>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-outline" />
+          <input
+            id="browse-search"
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+            placeholder={t(locale, "browse.searchPlaceholder")}
+            className="h-10 w-full rounded-lg border border-outline-variant bg-white pl-9 pr-3 font-body text-body-sm text-on-surface placeholder:text-on-surface-variant focus:border-primary-DEFAULT focus:outline-none focus:ring-1 focus:ring-primary-DEFAULT/30 transition"
+          />
+        </div>
+      </div>
+
+      {/* Type */}
+      <div>
+        <label className="mb-2 block font-label text-label-sm text-on-surface-variant">
+          {t(locale, "browse.typeAll")}
+        </label>
+        <div className="flex gap-2">
+          {(["all", "need", "offer"] as const).map((tVal) => (
+            <button
+              key={tVal}
+              onClick={() => { setType(tVal); setPage(0); onClose?.(); }}
+              className={`flex-1 rounded-lg py-2 font-label text-label-sm transition-colors duration-150 ${
+                type === tVal
+                  ? "bg-primary-DEFAULT text-white"
+                  : "border border-outline-variant bg-surface-off-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+              }`}
+            >
+              {tVal === "all" ? t(locale, "browse.typeAll") : tVal === "need" ? t(locale, "browse.typeNeed") : t(locale, "browse.typeOffer")}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Category grid */}
+      <div>
+        <label className="mb-2 block font-label text-label-sm text-on-surface-variant">
+          {t(locale, "browse.category")}
+        </label>
+        <div className="grid grid-cols-2 gap-1.5">
+          <button
+            onClick={() => { setCategory("all"); setPage(0); }}
+            className={`flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-label text-label-sm transition-colors duration-150 ${
+              category === "all"
+                ? "bg-primary-DEFAULT text-white"
+                : "border border-outline-variant bg-surface-off-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+            }`}
+          >
+            <MoreHorizontal className="h-3.5 w-3.5 shrink-0" />
+            {t(locale, "browse.category")}
+          </button>
+          {CATEGORIES.map((cat) => {
+            const Icon = CATEGORY_ICONS[cat.icon] ?? MoreHorizontal;
+            return (
+              <button
+                key={cat.key}
+                onClick={() => { setCategory(cat.key); setPage(0); onClose?.(); }}
+                className={`flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-label text-label-sm transition-colors duration-150 ${
+                  category === cat.key
+                    ? "bg-primary-DEFAULT text-white"
+                    : "border border-outline-variant bg-surface-off-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5 shrink-0" />
+                {t(locale, `categories.${cat.key}` as never)}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* City */}
+      <div>
+        <label className="mb-2 block font-label text-label-sm text-on-surface-variant">
+          {t(locale, "browse.city")}
+        </label>
+        <Select value={city} onValueChange={(v) => { setCity(v); setPage(0); }}>
+          <SelectTrigger className="w-full rounded-lg border border-outline-variant bg-surface-off-white font-body text-body-sm">
+            <MapPin className="mr-2 h-4 w-4 text-outline" />
+            <SelectValue placeholder={t(locale, "browse.city")} />
+          </SelectTrigger>
+          <SelectContent className="border border-outline-variant">
+            <SelectItem value="all">{t(locale, "browse.city")}</SelectItem>
+            {CITIES.map((c) => (
+              <SelectItem key={c} value={c}>{t(locale, `cities.${c}` as never)}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Sort */}
+      <div>
+        <label className="mb-2 block font-label text-label-sm text-on-surface-variant">
+          {t(locale, "browse.sort")}
+        </label>
+        <Select value={sort} onValueChange={(v) => { setSort(v as typeof sort); setPage(0); }}>
+          <SelectTrigger className="w-full rounded-lg border border-outline-variant bg-surface-off-white font-body text-body-sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="border border-outline-variant">
+            <SelectItem value="newest">{t(locale, "browse.sortNewest")}</SelectItem>
+            <SelectItem value="oldest">{t(locale, "browse.sortOldest")}</SelectItem>
+            <SelectItem value="budget_asc">{t(locale, "browse.sortBudgetAsc")}</SelectItem>
+            <SelectItem value="budget_desc">{t(locale, "browse.sortBudgetDesc")}</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Save search */}
+      {activeFiltersCount > 0 && isAuthenticated && (
+        <button
+          onClick={handleOpenSaveAlert}
+          className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-outline-variant bg-surface-cream px-3 py-2 font-label text-label-sm text-on-surface transition-colors hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+        >
+          <Bell className="h-3.5 w-3.5" />
+          {t(locale, "browse.saveAlert")}
+        </button>
+      )}
+
+      {/* Clear */}
+      {activeFiltersCount > 0 && (
+        <button
+          onClick={() => { clearFilters(); onClose?.(); }}
+          className="flex w-full items-center justify-center gap-1 font-label text-label-sm text-accent-coral hover:text-accent-coral-hover"
+        >
+          <X className="h-4 w-4" />
+          {t(locale, "browse.clear")}
+        </button>
+      )}
+    </div>
+  );
+}
 
 export default function Browse() {
   const navigate = useNavigate();
@@ -194,147 +359,11 @@ export default function Browse() {
     ? (page + 1) * PAGE_SIZE < totalCount
     : posts.length === PAGE_SIZE;
 
-  // ── Filter panel ──────────────────────────────────────────────
-  function FilterPanel({ onClose }: { onClose?: () => void }) {
-    return (
-      <div className="space-y-6">
-        {/* Search */}
-        <div>
-          <label className="mb-2 block font-label text-label-sm text-on-surface-variant">
-            {t(locale, "browse.searchPlaceholder")}
-          </label>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-outline" />
-            <input
-              id="browse-search"
-              value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(0); }}
-              placeholder={t(locale, "browse.searchPlaceholder")}
-              className="h-10 w-full rounded-lg border border-outline-variant bg-white pl-9 pr-3 font-body text-body-sm text-on-surface placeholder:text-on-surface-variant focus:border-primary-DEFAULT focus:outline-none focus:ring-1 focus:ring-primary-DEFAULT/30 transition"
-            />
-          </div>
-        </div>
-
-        {/* Type */}
-        <div>
-          <label className="mb-2 block font-label text-label-sm text-on-surface-variant">
-            {t(locale, "browse.typeAll")}
-          </label>
-          <div className="flex gap-2">
-            {(["all", "need", "offer"] as const).map((tVal) => (
-              <button
-                key={tVal}
-                onClick={() => { setType(tVal); setPage(0); onClose?.(); }}
-                className={`flex-1 rounded-lg py-2 font-label text-label-sm transition-colors duration-150 ${
-                  type === tVal
-                    ? "bg-primary-DEFAULT text-white"
-                    : "border border-outline-variant bg-surface-off-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
-                }`}
-              >
-                {tVal === "all" ? t(locale, "browse.typeAll") : tVal === "need" ? t(locale, "browse.typeNeed") : t(locale, "browse.typeOffer")}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Category grid */}
-        <div>
-          <label className="mb-2 block font-label text-label-sm text-on-surface-variant">
-            {t(locale, "browse.category")}
-          </label>
-          <div className="grid grid-cols-2 gap-1.5">
-            <button
-              onClick={() => { setCategory("all"); setPage(0); }}
-              className={`flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-label text-label-sm transition-colors duration-150 ${
-                category === "all"
-                  ? "bg-primary-DEFAULT text-white"
-                  : "border border-outline-variant bg-surface-off-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
-              }`}
-            >
-              <MoreHorizontal className="h-3.5 w-3.5 shrink-0" />
-              {t(locale, "browse.category")}
-            </button>
-            {CATEGORIES.map((cat) => {
-              const Icon = CATEGORY_ICONS[cat.icon] ?? MoreHorizontal;
-              return (
-                <button
-                  key={cat.key}
-                  onClick={() => { setCategory(cat.key); setPage(0); onClose?.(); }}
-                  className={`flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-label text-label-sm transition-colors duration-150 ${
-                    category === cat.key
-                      ? "bg-primary-DEFAULT text-white"
-                      : "border border-outline-variant bg-surface-off-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
-                  }`}
-                >
-                  <Icon className="h-3.5 w-3.5 shrink-0" />
-                  {t(locale, `categories.${cat.key}` as never)}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* City */}
-        <div>
-          <label className="mb-2 block font-label text-label-sm text-on-surface-variant">
-            {t(locale, "browse.city")}
-          </label>
-          <Select value={city} onValueChange={(v) => { setCity(v); setPage(0); }}>
-            <SelectTrigger className="w-full rounded-lg border border-outline-variant bg-surface-off-white font-body text-body-sm">
-              <MapPin className="mr-2 h-4 w-4 text-outline" />
-              <SelectValue placeholder={t(locale, "browse.city")} />
-            </SelectTrigger>
-            <SelectContent className="border border-outline-variant">
-              <SelectItem value="all">{t(locale, "browse.city")}</SelectItem>
-              {CITIES.map((c) => (
-                <SelectItem key={c} value={c}>{t(locale, `cities.${c}` as never)}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Sort */}
-        <div>
-          <label className="mb-2 block font-label text-label-sm text-on-surface-variant">
-            {t(locale, "browse.sort")}
-          </label>
-          <Select value={sort} onValueChange={(v) => { setSort(v as typeof sort); setPage(0); }}>
-            <SelectTrigger className="w-full rounded-lg border border-outline-variant bg-surface-off-white font-body text-body-sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="border border-outline-variant">
-              <SelectItem value="newest">{t(locale, "browse.sortNewest")}</SelectItem>
-              <SelectItem value="oldest">{t(locale, "browse.sortOldest")}</SelectItem>
-              <SelectItem value="budget_asc">{t(locale, "browse.sortBudgetAsc")}</SelectItem>
-              <SelectItem value="budget_desc">{t(locale, "browse.sortBudgetDesc")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Save search */}
-        {activeFiltersCount > 0 && isAuthenticated && (
-          <button
-            onClick={handleOpenSaveAlert}
-            className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-outline-variant bg-surface-cream px-3 py-2 font-label text-label-sm text-on-surface transition-colors hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
-          >
-            <Bell className="h-3.5 w-3.5" />
-            {t(locale, "browse.saveAlert")}
-          </button>
-        )}
-
-        {/* Clear */}
-        {activeFiltersCount > 0 && (
-          <button
-            onClick={() => { clearFilters(); onClose?.(); }}
-            className="flex w-full items-center justify-center gap-1 font-label text-label-sm text-accent-coral hover:text-accent-coral-hover"
-          >
-            <X className="h-4 w-4" />
-            {t(locale, "browse.clear")}
-          </button>
-        )}
-      </div>
-    );
-  }
+  const filterPanelProps = {
+    locale, search, setSearch, type, setType, category, setCategory,
+    city, setCity, sort, setSort, setPage, activeFiltersCount, isAuthenticated,
+    clearFilters, handleOpenSaveAlert,
+  };
 
   return (
     <div className="min-h-screen bg-surface-off-white">
@@ -461,7 +490,7 @@ export default function Browse() {
           {/* Desktop sidebar */}
           <aside className="hidden w-[260px] shrink-0 md:block">
             <div className="sticky top-24 rounded-2xl bg-white p-5 shadow-card">
-              <FilterPanel />
+              <FilterPanel {...filterPanelProps} />
             </div>
           </aside>
 
@@ -570,9 +599,9 @@ export default function Browse() {
       <Sheet open={showMobileFilters} onOpenChange={setShowMobileFilters}>
         <SheetContent side="bottom" className="h-[85vh] overflow-y-auto rounded-t-2xl border-t border-outline-variant bg-surface-off-white p-6">
           <div className="mb-5 flex items-center justify-between">
-            <h2 className="font-headline text-headline-sm font-semibold text-on-surface">
+            <SheetTitle className="font-headline text-headline-sm font-semibold text-on-surface">
               {t(locale, "browse.filters")}
-            </h2>
+            </SheetTitle>
             <button
               onClick={() => setShowMobileFilters(false)}
               className="rounded-lg border border-outline-variant p-1.5 text-on-surface-variant hover:text-on-surface"
@@ -580,7 +609,7 @@ export default function Browse() {
               <X className="h-4 w-4" />
             </button>
           </div>
-          <FilterPanel onClose={() => setShowMobileFilters(false)} />
+          <FilterPanel {...filterPanelProps} onClose={() => setShowMobileFilters(false)} />
         </SheetContent>
       </Sheet>
     </div>

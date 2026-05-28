@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { eq, desc, sql, gte, count, avg, inArray, and } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
+import { env } from "./lib/env";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
 import { createRouter, publicQuery, authedQuery, adminQuery } from "./middleware";
@@ -37,15 +38,22 @@ import { notifyMatchingSavedSearches } from "./lib/notify-searches";
 
 const MAX_POSTS_PER_DAY = 5;
 
+const reportRateLimit = new Map<string, number[]>();
+const MAX_REPORTS_PER_HOUR = 5;
+
 const postTypeEnum = z.enum(["need", "offer"]);
 const languageEnum = z.enum(["lv", "ru", "en"]);
+const categoryEnum = z.enum(["household", "moving", "repairs", "garden", "auto", "childcare", "pets", "it", "tutoring", "other"]);
 
-// Uploaded image URLs must come from our own upload system
-// Valid patterns: /uploads/<file> (local dev) or https://<anything> (R2 / CDN)
+// Uploaded image URLs must come from our own upload system only
 const imageUrlSchema = z.string()
   .max(512)
   .refine(
-    (url) => url.startsWith("/uploads/") || (url.startsWith("https://") && !url.includes("<") && !url.includes(">")),
+    (url) => {
+      if (url.startsWith("/uploads/")) return true;
+      const r2Base = env.r2PublicUrl?.replace(/\/$/, "");
+      return !!r2Base && url.startsWith(r2Base + "/");
+    },
     { message: "Invalid image URL" }
   );
 
@@ -172,7 +180,7 @@ export const postsRouter = createRouter({
         type: postTypeEnum,
         title: z.string().min(5).max(80),
         description: z.string().max(500).optional(),
-        category: z.string(),
+        category: categoryEnum,
         city: z.string().optional(),
         region: z.string().optional(),
         budgetText: z.string().max(100).optional(),
@@ -283,7 +291,7 @@ export const postsRouter = createRouter({
         id: z.number(),
         title: z.string().min(5).max(80).optional(),
         description: z.string().max(500).optional(),
-        category: z.string().optional(),
+        category: categoryEnum.optional(),
         city: z.string().optional(),
         region: z.string().optional(),
         budgetText: z.string().max(100).optional(),
@@ -545,11 +553,21 @@ export const postsRouter = createRouter({
     .input(
       z.object({
         postId: z.number(),
-        reason: z.string(),
-        details: z.string().optional(),
+        reason: z.string().max(200),
+        details: z.string().max(1000).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const now = Date.now();
+      const window = 60 * 60 * 1000;
+      const key = String(ctx.user.id);
+      const timestamps = (reportRateLimit.get(key) ?? []).filter((t) => now - t < window);
+      if (timestamps.length >= MAX_REPORTS_PER_HOUR) {
+        throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Too many reports. Try again later." });
+      }
+      timestamps.push(now);
+      reportRateLimit.set(key, timestamps);
+
       await createReport({
         postId: input.postId,
         reporterId: ctx.user.id,
