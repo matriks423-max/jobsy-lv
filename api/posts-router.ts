@@ -29,7 +29,7 @@ import { createContact, hasContacted, createReport } from "./queries/reports";
 import { hasInterested, createInterest } from "./queries/interests";
 import { sendInterestNotification, sendContactNotification } from "./lib/email";
 import { atomicRewardReferral } from "./queries/referrals";
-import { addFreePostCredit } from "./queries/profiles";
+import { grantCredits } from "./queries/profiles";
 import { createCheckoutSession } from "./stripe";
 import { moderateContent, softFlagCheck } from "./lib/moderation";
 import { sendPostPublished } from "./lib/email";
@@ -954,6 +954,6 @@ async function checkAndRewardReferralOnPost(userId: number) {
   // preventing double-reward if two posts are created simultaneously.
   const referrerId = await atomicRewardReferral(userId);
   if (referrerId !== null) {
-    await addFreePostCredit(referrerId);
+    await grantCredits(referrerId, 500, "Referral reward: referred user published 2 posts within 30 days");
   }
 }

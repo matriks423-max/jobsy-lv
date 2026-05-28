@@ -144,6 +144,7 @@ export const referrals = mysqlTable("referrals", {
   referredId: bigint("referredId", { mode: "number", unsigned: true }).notNull().unique(),
   postMade: boolean("postMade").default(false).notNull(),
   rewarded: boolean("rewarded").default(false).notNull(),
+  referredPostCount: int("referredPostCount", { unsigned: true }).default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
