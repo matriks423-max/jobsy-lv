@@ -387,3 +387,47 @@
   from { opacity: 0; transform: translateX(-50%) translateY(6px) scale(0.9); }
   to   { opacity: 1; transform: translateX(-50%) translateY(0px) scale(1);   }
 }
+
+/* ── PLAYFUL (hover → tips back, bats legs) ─────────────────────────────── */
+.desktop-cat--playful .cat-body-group {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: rollBack 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0s forwards,
+             playIdle 2s ease-in-out 0.5s infinite;
+}
+@keyframes rollBack {
+  0%   { transform: rotate(0deg);   }
+  60%  { transform: rotate(-32deg); }
+  100% { transform: rotate(-28deg); }
+}
+@keyframes playIdle {
+  0%, 100% { transform: rotate(-28deg) translateY(0px);  }
+  50%       { transform: rotate(-28deg) translateY(-1px); }
+}
+.desktop-cat--playful .cat-leg-fl,
+.desktop-cat--playful .cat-leg-bl {
+  animation: batA 0.55s ease-in-out 0.4s infinite;
+}
+.desktop-cat--playful .cat-leg-fr,
+.desktop-cat--playful .cat-leg-br {
+  animation: batB 0.55s ease-in-out 0.55s infinite;
+}
+@keyframes batA {
+  0%, 100% { transform: rotate(-80deg); }
+  50%       { transform: rotate(-40deg); }
+}
+@keyframes batB {
+  0%, 100% { transform: rotate(-40deg); }
+  50%       { transform: rotate(-80deg); }
+}
+.desktop-cat--playful .cat-tail-group {
+  animation: tailPlayful 0.45s ease-in-out infinite;
+}
+@keyframes tailPlayful {
+  0%, 100% { transform: rotate(-25deg); }
+  50%       { transform: rotate(25deg);  }
+}
+.desktop-cat--playful .cat-eye {
+  animation: none;
+  transform: scaleY(0.2);
+}

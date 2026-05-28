@@ -4,7 +4,8 @@ import "./DesktopCat.css";
 
 type CatState =
   | "idle" | "sitting" | "watching" | "walking" | "running" | "zooming"
-  | "sleeping" | "spooked" | "grooming" | "stretching" | "happy" | "hunting";
+  | "sleeping" | "spooked" | "grooming" | "stretching" | "happy" | "hunting"
+  | "playful";
 
 const W = 80;
 const H = 68;
@@ -60,6 +61,7 @@ export default function DesktopCat() {
   const lastScrollY = useRef(0);
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const huntTargetRef = useRef<number | null>(null);
+  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const clamp = useCallback((v: number) =>
     Math.max(W, Math.min((typeof window !== "undefined" ? window.innerWidth : 1200) - W, v)), []);
@@ -232,7 +234,7 @@ export default function DesktopCat() {
     return () => cancelAnimationFrame(raf);
   }, [goIdle]);
 
-  // Mouse proximity — scatter OR hunt
+  // Mouse proximity — scatter OR hunt OR play
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
       const s = stateRef.current;
@@ -241,6 +243,42 @@ export default function DesktopCat() {
       const catX = xRef.current;
       const catY = window.innerHeight - 34;
       const dist = Math.hypot(e.clientX - catX, e.clientY - catY);
+
+      // If already playing, watch for mouse to move away
+      if (s === "playful") {
+        if (dist > 200) {
+          if (hoverTimerRef.current) { clearTimeout(hoverTimerRef.current); hoverTimerRef.current = null; }
+          clearTimer();
+          goIdle();
+        }
+        return;
+      }
+
+      // Detect mouse hovering directly over the cat sprite
+      const catLeft = xRef.current - W / 2;
+      const onCat = e.clientX >= catLeft && e.clientX <= catLeft + W
+                 && e.clientY >= window.innerHeight - H && e.clientY <= window.innerHeight;
+
+      if (onCat) {
+        // After 900 ms of hover, roll over and play
+        if (!hoverTimerRef.current && (s === "idle" || s === "sitting" || s === "watching" || s === "grooming")) {
+          hoverTimerRef.current = setTimeout(() => {
+            hoverTimerRef.current = null;
+            const cur = stateRef.current;
+            if (cur === "idle" || cur === "sitting" || cur === "watching" || cur === "grooming") {
+              clearTimer();
+              setState("playful");
+              stateRef.current = "playful";
+              showBubble(["bat bat~ ♥", "play! ♥", "hehe~", "*pawing*"][Math.floor(Math.random() * 4)], 2400);
+              timerRef.current = setTimeout(goIdle, 4000 + Math.random() * 2000);
+            }
+          }, 900);
+        }
+        return; // don't scatter while hovering to trigger play
+      }
+
+      // Mouse left cat — cancel hover timer
+      if (hoverTimerRef.current) { clearTimeout(hoverTimerRef.current); hoverTimerRef.current = null; }
 
       // Very close → scatter
       if (dist < 120) {
@@ -279,7 +317,10 @@ export default function DesktopCat() {
       }
     };
     window.addEventListener("mousemove", onMove, { passive: true });
-    return () => window.removeEventListener("mousemove", onMove);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      if (hoverTimerRef.current) { clearTimeout(hoverTimerRef.current); hoverTimerRef.current = null; }
+    };
   }, [clearTimer, clamp, goIdle, showBubble]);
 
   // Touch proximity → scatter
