@@ -98,15 +98,15 @@ export default function Navbar() {
         {/* Right side */}
         <div className="hidden items-center gap-stack-gap-md md:flex">
           {/* Language switcher */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5 rounded-lg border border-outline-variant bg-surface-cream p-0.5">
             {(["lv", "ru", "en"] as const).map((l) => (
               <button
                 key={l}
                 onClick={() => setLocale(l)}
-                className={`px-1.5 py-1 font-label text-label-md transition-colors duration-200 ${
+                className={`rounded-md px-2.5 py-1 font-label text-label-sm font-semibold transition-all duration-150 ${
                   locale === l
-                    ? "font-bold text-primary-DEFAULT underline decoration-2 underline-offset-4"
-                    : "text-on-surface-variant hover:text-primary-DEFAULT"
+                    ? "bg-primary-DEFAULT text-white shadow-sm"
+                    : "text-on-surface-variant hover:bg-white hover:text-primary-DEFAULT"
                 }`}
               >
                 {l.toUpperCase()}
@@ -175,7 +175,7 @@ export default function Navbar() {
           {/* CTA */}
           <button
             onClick={() => navigate("/create")}
-            className="animate-pulse-emerald rounded-lg bg-primary-DEFAULT px-6 py-2.5 font-label text-label-md font-bold text-white shadow-sm transition-all duration-300 hover:bg-on-primary-fixed-variant hover:shadow-md active:scale-95"
+            className="rounded-lg bg-primary-DEFAULT px-6 py-2.5 font-label text-label-md font-bold text-white shadow-sm transition-all duration-300 hover:bg-on-primary-fixed-variant hover:scale-[1.03] hover:shadow-md active:scale-95"
           >
             {t(locale, "nav.createPost")}
           </button>

@@ -57,6 +57,83 @@
   50%       { transform: translateY(-1px); }
 }
 
+/* ── SITTING (new) ───────────────────────────────────────────────────── */
+.desktop-cat--sitting .cat-body-group {
+  animation: sitBreath 4.2s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+@keyframes sitBreath {
+  0%, 100% { transform: scaleY(1.08) translateY(-2px); }
+  50%       { transform: scaleY(1.10) translateY(-3px); }
+}
+.desktop-cat--sitting .cat-leg-fl,
+.desktop-cat--sitting .cat-leg-fr {
+  animation: sitFrontLegs 4.2s ease-in-out infinite;
+}
+@keyframes sitFrontLegs {
+  0%, 100% { transform: rotate(-18deg); }
+  50%       { transform: rotate(-22deg); }
+}
+.desktop-cat--sitting .cat-tail-group {
+  animation: tailSit 3s ease-in-out infinite;
+}
+@keyframes tailSit {
+  0%, 100% { transform: rotate(20deg);  }
+  50%       { transform: rotate(-5deg); }
+}
+.desktop-cat--sitting .cat-eye {
+  animation: blink 4s ease-in-out infinite;
+}
+
+/* ── WATCHING (curious, head slightly tilted) ────────────────────────── */
+.desktop-cat--watching .cat-body-group {
+  animation: watchTilt 0.5s ease-out forwards, breathe 3.5s ease-in-out 0.5s infinite;
+}
+@keyframes watchTilt {
+  0%   { transform: rotate(0deg)    translateY(0px); }
+  40%  { transform: rotate(-4deg)   translateY(-2px); }
+  100% { transform: rotate(-3deg)   translateY(-2px); }
+}
+.desktop-cat--watching .cat-tail-group {
+  animation: tailWatch 2s ease-in-out infinite;
+}
+@keyframes tailWatch {
+  0%, 100% { transform: rotate(5deg);   }
+  50%       { transform: rotate(-18deg); }
+}
+.desktop-cat--watching .cat-eye {
+  animation: blink 3s ease-in-out infinite;
+}
+
+/* ── HUNTING (crouched stalk) ────────────────────────────────────────── */
+.desktop-cat--hunting .cat-body-group {
+  animation: huntCrouch 0.6s ease-out forwards;
+}
+@keyframes huntCrouch {
+  0%   { transform: scaleY(1.0) scaleX(1.00) translateY(0px);  }
+  100% { transform: scaleY(0.72) scaleX(1.22) translateY(5px); }
+}
+.desktop-cat--hunting .cat-tail-group {
+  animation: tailHunt 1.2s ease-in-out infinite;
+}
+@keyframes tailHunt {
+  0%, 100% { transform: rotate(-15deg); }
+  50%       { transform: rotate(10deg);  }
+}
+.desktop-cat--hunting .cat-eye {
+  animation: none;
+  transform: scaleY(0.55);
+}
+/* Slow creep legs */
+.desktop-cat--hunting .cat-leg-fl,
+.desktop-cat--hunting .cat-leg-br {
+  animation: legA 0.7s ease-in-out infinite;
+}
+.desktop-cat--hunting .cat-leg-fr,
+.desktop-cat--hunting .cat-leg-bl {
+  animation: legB 0.7s ease-in-out infinite;
+}
+
 /* ── WALKING ─────────────────────────────────────────────────────────── */
 .desktop-cat--walking .cat-body-group {
   animation: walkBob 0.38s ease-in-out infinite;
@@ -203,7 +280,6 @@
 .desktop-cat--grooming .cat-tail-group {
   animation: tailIdle 2.8s ease-in-out infinite;
 }
-/* Slow blink while grooming — content */
 .desktop-cat--grooming .cat-eye {
   animation: blink 3s ease-in-out infinite;
 }
@@ -262,21 +338,26 @@
 /* ── SPEECH BUBBLE ───────────────────────────────────────────────────── */
 .cat-bubble {
   position: absolute;
-  bottom: 72px;
+  bottom: 76px;
   left: 50%;
   transform: translateX(-50%);
   background: #fffdf7;
   border: 2px solid #2e2e2e;
-  border-radius: 10px;
-  padding: 3px 9px;
+  border-radius: 12px;
+  padding: 7px 13px;
   font-family: Georgia, serif;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
   color: #2e2e2e;
-  white-space: nowrap;
+  white-space: normal;
+  max-width: 200px;
+  min-width: 60px;
+  width: max-content;
+  line-height: 1.45;
+  text-align: center;
   pointer-events: none;
-  animation: bubbleIn 0.25s ease-out;
-  /* tail arrow */
+  animation: bubbleIn 0.2s ease-out;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
 }
 /* Un-flip bubble when cat is flipped */
 .desktop-cat--flipped .cat-bubble {
@@ -286,23 +367,23 @@
 .cat-bubble::after {
   content: "";
   position: absolute;
-  bottom: -9px;
+  bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
-  border: 5px solid transparent;
+  border: 6px solid transparent;
   border-top-color: #2e2e2e;
 }
 .cat-bubble::before {
   content: "";
   position: absolute;
-  bottom: -6px;
+  bottom: -7px;
   left: 50%;
   transform: translateX(-50%);
-  border: 4px solid transparent;
+  border: 5px solid transparent;
   border-top-color: #fffdf7;
   z-index: 1;
 }
 @keyframes bubbleIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(5px); }
-  to   { opacity: 1; transform: translateX(-50%) translateY(0px); }
+  from { opacity: 0; transform: translateX(-50%) translateY(6px) scale(0.9); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0px) scale(1);   }
 }
