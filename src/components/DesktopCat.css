@@ -9,9 +9,6 @@
   line-height: 0;
 }
 
-@media (max-width: 767px) {
-  .desktop-cat { display: none; }
-}
 .desktop-cat svg {
   display: block;
   overflow: visible;
