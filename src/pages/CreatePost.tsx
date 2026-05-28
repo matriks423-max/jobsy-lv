@@ -371,7 +371,16 @@ export default function CreatePost() {
             <label className="mb-2 block font-body text-sm font-bold text-on-surface">
               {t(locale, "createPost.imagesLabel")}
             </label>
-            {(() => {
+            {!category ? (
+              <p className="font-body text-sm text-on-surface-variant">
+                {locale === "ru"
+                  ? "Сначала выберите категорию, чтобы увидеть варианты изображений"
+                  : locale === "en"
+                  ? "Select a category first to see image options"
+                  : "Vispirms izvēlieties kategoriju, lai redzētu attēlu opcijas"}
+              </p>
+            ) : (
+              (() => {
               const presets = PRESET_IMAGES[category] ?? PRESET_IMAGES["other"];
               return (
                 <div className="flex flex-wrap items-center gap-3">
@@ -386,7 +395,9 @@ export default function CreatePost() {
                     }`}
                   >
                     <X className="h-5 w-5 text-on-surface-variant" />
-                    <span className="mt-1 text-[10px] text-on-surface-variant">Nav attela</span>
+                    <span className="mt-1 text-[10px] text-on-surface-variant">
+                      {t(locale, "createPost.imagesLabel") === "Atteli" ? "Nav attēla" : locale === "ru" ? "Без фото" : "No image"}
+                    </span>
                   </button>
 
                   {/* Preset options */}
@@ -432,7 +443,8 @@ export default function CreatePost() {
                   />
                 </div>
               );
-            })()}
+            })()
+            )}
           </div>
 
           {/* City + Region */}
