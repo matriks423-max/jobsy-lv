@@ -99,8 +99,21 @@ export default function Home() {
   };
 
   useEffect(() => {
-    document.title = `jobsy.lv — ${t(locale, "hero.title")}`;
-  }, [locale]);
+    document.title = "jobsy.lv — Atrodi palīgu vai darbu";
+    const desc = "Latvijas ērtākais veids, kā atrast palīgus ikdienas uzdevumiem vai atrast darbiņus. Publicē bezmaksas sludinājumu.";
+    let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+    const created = !metaDesc;
+    if (!metaDesc) {
+      metaDesc = document.createElement("meta");
+      metaDesc.name = "description";
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.content = desc;
+    return () => {
+      if (created && metaDesc) document.head.removeChild(metaDesc);
+      else if (metaDesc) metaDesc.content = "";
+    };
+  }, []);
 
   const { data: stats } = trpc.stats.get.useQuery();
   const { data: categoryCounts } = trpc.posts.categoryCounts.useQuery(undefined, { staleTime: 60 * 1000 });
@@ -229,28 +242,30 @@ export default function Home() {
             ))}
           </motion.div>
 
-          {/* Stats */}
-          <motion.div
-            className="flex flex-wrap justify-center gap-8 md:gap-12"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.05, duration: 0.4 }}
-          >
-            {[
-              { value: stats?.activePosts ?? 0, label: t(locale, "hero.statsActive") },
-              { value: stats?.users ?? 0,        label: t(locale, "hero.statsUsers") },
-              { value: stats?.categories ?? 0,   label: t(locale, "hero.statsCategories") },
-            ].map((stat, i) => (
-              <div key={i} className="flex flex-col items-center">
-                <div className="font-headline text-4xl font-bold text-white">
-                  <AnimatedCounter target={stat.value} />
+          {/* Stats — only render when real data is available */}
+          {stats && (
+            <motion.div
+              className="flex flex-wrap justify-center gap-8 md:gap-12"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.05, duration: 0.4 }}
+            >
+              {[
+                { value: stats.activePosts, label: t(locale, "hero.statsActive") },
+                { value: stats.users,       label: t(locale, "hero.statsUsers") },
+                { value: stats.categories,  label: t(locale, "hero.statsCategories") },
+              ].filter((s) => s.value > 0).map((stat, i) => (
+                <div key={i} className="flex flex-col items-center">
+                  <div className="font-headline text-4xl font-bold text-white">
+                    <AnimatedCounter target={stat.value} />
+                  </div>
+                  <div className="mt-0.5 font-label text-label-sm text-primary-fixed-dim">
+                    {stat.label}
+                  </div>
                 </div>
-                <div className="mt-0.5 font-label text-label-sm text-primary-fixed-dim">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </motion.div>
+              ))}
+            </motion.div>
+          )}
         </div>
 
         {/* Scroll indicator */}
