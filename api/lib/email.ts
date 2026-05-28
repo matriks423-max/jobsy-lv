@@ -1,11 +1,16 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy init — avoids crashing at startup if RESEND_API_KEY isn't set yet
+let _resend: Resend | null = null;
+function getResend(): Resend {
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
+  return _resend;
+}
 const FROM = "jobsy.lv <noreply@jobsy.lv>";
 
 // Generic send — used by auth-router for password reset etc.
 export async function sendEmail(opts: { to: string; subject: string; html: string }): Promise<void> {
-  await resend.emails.send({ from: FROM, to: opts.to, subject: opts.subject, html: opts.html });
+  await getResend().emails.send({ from: FROM, to: opts.to, subject: opts.subject, html: opts.html });
 }
 
 function escHtml(str: string): string {
@@ -26,7 +31,7 @@ export async function sendPostPublished(
     const postUrl = `https://jobsy.lv/post/${postId}`;
     const safeTitle = escHtml(postTitle);
     const safeUrl = escHtml(postUrl);
-    await resend.emails.send({
+    await getResend().emails.send({
       from: FROM,
       to,
       subject: "Tavs sludinājums ir publicēts! 🎉",
@@ -61,7 +66,7 @@ export async function sendInterestNotification(
     const safeName = escHtml(helperName);
     const safeTitle = escHtml(postTitle);
     const safeUrl = escHtml(postUrl);
-    await resend.emails.send({
+    await getResend().emails.send({
       from: FROM,
       to,
       subject: `${safeName} ir ieinteresēts tavā sludinājumā! 👋`,
@@ -99,7 +104,7 @@ export async function sendSearchAlert(
         return `<li style="margin-bottom:12px;"><a href="${url}" style="color:#E8512A;font-weight:bold;text-decoration:none;">${safeTitle}</a>${safeCity ? ` <span style="color:#8A7060;">— ${safeCity}</span>` : ""}</li>`;
       })
       .join("");
-    await resend.emails.send({
+    await getResend().emails.send({
       from: FROM,
       to,
       subject: `Jauni sludinājumi: "${escHtml(label)}" 🔔`,
@@ -121,7 +126,7 @@ export async function sendSearchAlert(
 
 export async function sendBusinessWelcome(to: string): Promise<void> {
   try {
-    await resend.emails.send({
+    await getResend().emails.send({
       from: FROM,
       to,
       subject: "Laipni lūdzam jobsy.lv Business! 🏢",
@@ -154,7 +159,7 @@ export async function sendBusinessWelcome(to: string): Promise<void> {
 
 export async function sendPaymentFailed(to: string): Promise<void> {
   try {
-    await resend.emails.send({
+    await getResend().emails.send({
       from: FROM,
       to,
       subject: "Jobsy.lv Business — maksājums neizdevās ⚠️",
@@ -189,7 +194,7 @@ export async function sendContactNotification(
 ): Promise<void> {
   try {
     const postUrl = `https://jobsy.lv/post/${postId}`;
-    await resend.emails.send({
+    await getResend().emails.send({
       from: FROM,
       to: ownerEmail,
       subject: `Kāds apskata tavu kontaktinformāciju — "${escHtml(postTitle)}"`,
@@ -215,7 +220,7 @@ export async function sendContactNotification(
 
 export async function sendPasswordReset(to: string, resetUrl: string): Promise<void> {
   const safeUrl = escHtml(resetUrl);
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to,
     subject: "Atjaunot paroli — jobsy.lv",
@@ -249,7 +254,7 @@ export async function sendPostExpired(
 ): Promise<void> {
   try {
     const safeTitle = escHtml(postTitle);
-    await resend.emails.send({
+    await getResend().emails.send({
       from: FROM,
       to,
       subject: `Tavs sludinājums ir beidzies — "${safeTitle}"`,
@@ -282,7 +287,7 @@ export async function sendExpiryReminder(
     const postUrl = `https://jobsy.lv/post/${postId}`;
     const safeTitle = escHtml(postTitle);
     const safeUrl = escHtml(postUrl);
-    await resend.emails.send({
+    await getResend().emails.send({
       from: FROM,
       to,
       subject: "Tavs sludinājums beidzas pēc 3 dienām ⏰",
