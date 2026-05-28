@@ -9,7 +9,7 @@ export default function Terms() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = "Lietošanas noteikumi — Jobsy.lv";
+    document.title = "Lietošanas noteikumi — jobsy.lv";
     return () => { document.title = prev; };
   }, []);
 
@@ -17,7 +17,7 @@ export default function Terms() {
     {
       title: "Vispārīgie noteikumi",
       content:
-        "Lietojot Jobsy.lv, tu piekrīti šiem noteikumiem. Platforma ir paredzēta personiskai, nekomerciālai lietošanai. Aizliegts izmantot platformu nelikumīgiem nolūkiem, krāpšanai vai aizskaroša satura publicēšanai.",
+        "Lietojot jobsy.lv, tu piekrīti šiem noteikumiem. Platforma ir paredzēta personiskai, nekomerciālai lietošanai. Aizliegts izmantot platformu nelikumīgiem nolūkiem, krāpšanai vai aizskaroša satura publicēšanai.",
     },
     {
       title: "Sludinājumi",

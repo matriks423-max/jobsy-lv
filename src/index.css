@@ -77,6 +77,35 @@ nav.navbar-scrolled {
     overflow-x: hidden;
   }
 
+  /* ─── Scrollbar theming (Emerald Executive) ─────────────────── */
+  html {
+    scrollbar-color: #064e3b #F9FAF7;
+    scrollbar-width: thin;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #F9FAF7;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #064e3b;
+    border-radius: 5px;
+    border: 2px solid #F9FAF7;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #003527;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: #F9FAF7;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Hanken Grotesk', system-ui, sans-serif;
     font-weight: 700;

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -103,7 +103,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    document.title = `Jobsy.lv — ${t(locale, "hero.title")}`;
+    document.title = `jobsy.lv — ${t(locale, "hero.title")}`;
   }, [locale]);
 
   const { data: stats } = trpc.stats.get.useQuery();
@@ -414,88 +414,88 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── CTA + Referral ────────────────────────────────────── */}
+      {/* ── CTA ─────────────────────────────────────────────────── */}
       <section className="px-margin-mobile py-14 md:px-margin-desktop">
-        <div className="mx-auto max-w-container-max-width">
-          <div className="grid gap-6 lg:grid-cols-2">
+        <div className="mx-auto max-w-container-max-width space-y-4">
 
-            {/* Main CTA */}
-            <div
-              className="relative overflow-hidden rounded-2xl px-8 py-10 text-center"
-              style={{
-                background: "linear-gradient(135deg, #003527 0%, #064e3b 100%)",
-              }}
+          {/* Main CTA — full width */}
+          <div
+            className="relative overflow-hidden rounded-2xl px-8 py-10 text-center"
+            style={{
+              background: "linear-gradient(135deg, #003527 0%, #064e3b 100%)",
+            }}
+          >
+            <div className="pointer-events-none absolute right-0 top-0 h-48 w-48 -translate-y-1/2 translate-x-1/2 rounded-full bg-secondary-DEFAULT/10 blur-2xl" />
+            <h2 className="relative mx-auto max-w-lg font-headline text-headline-sm font-bold text-white">
+              {t(locale, "ctaBanner.title")}
+            </h2>
+            <p className="relative mx-auto mt-3 max-w-md font-body text-body-sm text-primary-fixed-dim">
+              {t(locale, "ctaBanner.subtitle")}
+            </p>
+            <button
+              onClick={() => navigate(isAuthenticated ? "/create" : "/login")}
+              className="relative mt-6 inline-flex h-12 items-center gap-2 rounded-lg bg-accent-coral px-8 font-label text-label-md font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-coral-hover active:scale-95"
             >
-              <div className="pointer-events-none absolute right-0 top-0 h-48 w-48 -translate-y-1/2 translate-x-1/2 rounded-full bg-secondary-DEFAULT/10 blur-2xl" />
-              <h2 className="relative mx-auto max-w-lg font-headline text-headline-sm font-bold text-white">
-                {t(locale, "ctaBanner.title")}
-              </h2>
-              <p className="relative mx-auto mt-3 max-w-md font-body text-body-sm text-primary-fixed-dim">
-                {t(locale, "ctaBanner.subtitle")}
-              </p>
-              <button
-                onClick={() => navigate(isAuthenticated ? "/create" : "/login")}
-                className="relative mt-6 inline-flex h-12 items-center gap-2 rounded-lg bg-accent-coral px-8 font-label text-label-md font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-coral-hover active:scale-95"
-              >
-                <Plus className="h-4 w-4" />
-                {t(locale, "ctaBanner.btn")}
-              </button>
-            </div>
+              <Plus className="h-4 w-4" />
+              {t(locale, "ctaBanner.btn")}
+            </button>
+          </div>
 
-            {/* Referral */}
-            <div className="rounded-2xl border border-outline-variant bg-white px-8 py-10 text-center shadow-card">
-              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-cream">
-                <Gift className="h-7 w-7 text-primary-DEFAULT" />
+          {/* Referral — compact strip below CTA */}
+          <div className="rounded-xl border border-outline-variant bg-white px-6 py-4 shadow-card">
+            <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface-cream">
+                  <Gift className="h-4 w-4 text-primary-DEFAULT" />
+                </div>
+                <div>
+                  <p className="font-label text-label-md font-semibold text-on-surface">
+                    {t(locale, "referral.title")}
+                  </p>
+                  <p className="font-body text-body-sm text-on-surface-variant">
+                    {t(locale, "referral.subtitle")}
+                  </p>
+                </div>
               </div>
-              <h2 className="font-headline text-headline-sm font-bold text-on-surface">
-                {t(locale, "referral.title")}
-              </h2>
-              <p className="mx-auto mt-3 max-w-sm font-body text-body-sm text-on-surface-variant">
-                {t(locale, "referral.subtitle")}
-              </p>
 
               {isAuthenticated && referralInfo?.referralCode ? (
-                <div className="mt-6">
-                  <p className="mb-2 font-label text-label-sm text-on-surface-variant">
-                    {t(locale, "referral.yourCode")}
-                  </p>
-                  <div className="mx-auto flex max-w-xs items-center gap-2">
-                    <div className="flex-1 rounded-lg border border-outline-variant bg-surface-cream px-4 py-3 font-mono text-lg font-bold tracking-wider text-on-surface">
-                      {referralInfo.referralCode}
-                    </div>
-                    <button
-                      onClick={() => {
-                        const refUrl = `https://jobsy.lv/login?ref=${referralInfo.referralCode ?? ""}`;
-                        navigator.clipboard.writeText(refUrl);
-                        setCopied(true);
-                        setTimeout(() => setCopied(false), 2000);
-                      }}
-                      className="rounded-lg border border-outline-variant bg-surface-cream p-3 text-on-surface-variant transition-colors hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
-                      title={t(locale, "referral.copy")}
-                    >
-                      {copied ? (
-                        <Check className="h-5 w-5 text-success-emerald" />
-                      ) : (
-                        <Copy className="h-5 w-5" />
-                      )}
-                    </button>
+                <div className="flex shrink-0 items-center gap-2">
+                  <div className="rounded-lg border border-outline-variant bg-surface-cream px-3 py-2 font-mono text-sm font-bold tracking-wider text-on-surface">
+                    {referralInfo.referralCode}
                   </div>
+                  <button
+                    onClick={() => {
+                      const refUrl = `https://jobsy.lv/login?ref=${referralInfo.referralCode ?? ""}`;
+                      navigator.clipboard.writeText(refUrl);
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    }}
+                    className="rounded-lg border border-outline-variant bg-surface-cream p-2 text-on-surface-variant transition-colors hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+                    title={t(locale, "referral.copy")}
+                  >
+                    {copied ? (
+                      <Check className="h-4 w-4 text-success-emerald" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                  </button>
                   {referralInfo.freePostCredits > 0 && (
-                    <p className="mt-3 font-label text-label-sm text-success-emerald">
-                      {referralInfo.freePostCredits} {t(locale, "referral.creditLabel")}
-                    </p>
+                    <span className="font-label text-label-sm text-success-emerald">
+                      +{referralInfo.freePostCredits} {t(locale, "referral.creditLabel")}
+                    </span>
                   )}
                 </div>
               ) : (
                 <button
                   onClick={() => navigate("/login")}
-                  className="mt-6 inline-flex h-12 items-center gap-2 rounded-lg border border-outline-variant bg-surface-cream px-6 font-label text-label-md text-on-surface transition-colors hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+                  className="shrink-0 rounded-lg border border-outline-variant bg-surface-cream px-4 py-2 font-label text-label-sm text-on-surface transition-colors hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
                 >
                   {t(locale, "nav.login")}
                 </button>
               )}
             </div>
           </div>
+
         </div>
       </section>
     </div>

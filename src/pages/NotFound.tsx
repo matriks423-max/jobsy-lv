@@ -11,7 +11,7 @@ export default function NotFound() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = "404 — Jobsy.lv";
+    document.title = "404 — jobsy.lv";
     return () => { document.title = prev; };
   }, []);
 

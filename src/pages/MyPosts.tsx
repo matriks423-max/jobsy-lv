@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+ï»¿import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -40,7 +40,7 @@ export default function MyPosts() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "nav.myPosts") + " — Jobsy.lv";
+    document.title = t(locale, "nav.myPosts") + " ï¿½ jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 
@@ -165,7 +165,7 @@ export default function MyPosts() {
               </span>
             </button>
           ))}
-          {/* Analytics tab — visible to all, locked for free users */}
+          {/* Analytics tab ï¿½ visible to all, locked for free users */}
           <button
             onClick={() => setTab("analytics")}
             className={`flex items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-sm font-medium transition ${
@@ -270,18 +270,18 @@ export default function MyPosts() {
                           <Zap className="h-2.5 w-2.5" />
                           {post.boostType === "bump" ? "Bump" : post.boostType === "featured" ? "Featured" : "Urgent"}
                           {getBoostTimeRemaining(post.boostExpiresAt) && (
-                            <span className="ml-0.5 opacity-70">· {getBoostTimeRemaining(post.boostExpiresAt)}</span>
+                            <span className="ml-0.5 opacity-70">ï¿½ {getBoostTimeRemaining(post.boostExpiresAt)}</span>
                           )}
                         </span>
                       )}
                     </div>
                     <h3 className="truncate font-body text-base font-bold text-on-surface">{post.title}</h3>
                     <p className="font-body text-xs text-on-surface-variant">
-                      {post.city && `${t(locale, `cities.${post.city}` as never)} • `}
+                      {post.city && `${t(locale, `cities.${post.city}` as never)} ï¿½ `}
                       {t(locale, "postDetail.published", {
                         date: new Date(post.createdAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB"),
                       })}
-                      {post.expiresAt && ` • ${t(locale, "myPosts.expires")} ${new Date(post.expiresAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}`}
+                      {post.expiresAt && ` ï¿½ ${t(locale, "myPosts.expires")} ${new Date(post.expiresAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}`}
                     </p>
                   </div>
 

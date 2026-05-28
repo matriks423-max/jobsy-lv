@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router";
 import { Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
 import { trpc } from "@/providers/trpc";
@@ -19,7 +19,7 @@ export default function ResetPassword() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "resetPassword.pageTitle") + " — Jobsy.lv";
+    document.title = t(locale, "resetPassword.pageTitle") + " — jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 

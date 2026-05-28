@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+﻿import { useEffect } from "react";
 import { useParams, Link } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -44,7 +44,7 @@ export default function UserProfile() {
   useEffect(() => {
     const prev = document.title;
     if (data?.profile?.name) {
-      document.title = `${data.profile.name} — Jobsy.lv`;
+      document.title = `${data.profile.name} — jobsy.lv`;
     }
     return () => { document.title = prev; };
   }, [data?.profile?.name]);

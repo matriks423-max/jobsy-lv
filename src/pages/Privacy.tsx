@@ -9,7 +9,7 @@ export default function Privacy() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = "Privātuma politika — Jobsy.lv";
+    document.title = "Privātuma politika — jobsy.lv";
     return () => { document.title = prev; };
   }, []);
 

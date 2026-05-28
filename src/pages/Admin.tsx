@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
@@ -49,7 +49,7 @@ export default function Admin() {
   const [userSearch, setUserSearch] = useState("");
   const [postStatus, setPostStatus] = useState("");
 
-  useEffect(() => { document.title = "Admin · Jobsy.lv"; }, []);
+  useEffect(() => { document.title = "Admin · jobsy.lv"; }, []);
 
   useEffect(() => {
     if (!authLoading && (!isAuthenticated || user?.role !== "admin")) {

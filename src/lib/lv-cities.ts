@@ -1,4 +1,4 @@
-// Coordinates for cities used in jobsy.lv posts
+﻿// Coordinates for cities used in jobsy.lv posts
 const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
   riga:        { lat: 56.946, lng: 24.106 },
   daugavpils:  { lat: 55.875, lng: 26.536 },

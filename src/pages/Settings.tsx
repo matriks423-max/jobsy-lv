@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+ï»¿import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -95,7 +95,7 @@ export default function Settings() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "nav.settings") + " — Jobsy.lv";
+    document.title = t(locale, "nav.settings") + " ï¿½ jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 
@@ -183,14 +183,14 @@ export default function Settings() {
                 />
               </div>
 
-              {/* Email — read only */}
+              {/* Email ï¿½ read only */}
               <div>
                 <label className="mb-2 flex items-center gap-1.5 font-body text-sm font-bold text-on-surface">
                   <Mail className="h-3.5 w-3.5 text-accent-coral" />
                   {t(locale, "settings.email")}
                 </label>
                 <div className="flex h-12 items-center rounded-xl border-2 border-outline-variant bg-surface-cream px-4 font-body text-sm text-on-surface-variant">
-                  {profile?.email ?? "—"}
+                  {profile?.email ?? "ï¿½"}
                   <span className="ml-auto rounded bg-surface-cream px-2 py-0.5 font-mono text-[10px] text-outline">
                     {t(locale, "settings.emailReadOnly")}
                   </span>
@@ -220,7 +220,7 @@ export default function Settings() {
                   {t(locale, "settings.phoneHint")}
                 </p>
 
-                {/* Verify button — shown after saving phone, if not yet verified */}
+                {/* Verify button ï¿½ shown after saving phone, if not yet verified */}
                 {canVerify && !otpSent && (
                   <button
                     onClick={() => sendOtpMutation.mutate({ phone })}
@@ -288,7 +288,7 @@ export default function Settings() {
                   <div>
                     <p className="font-body text-sm font-bold text-on-surface">{s.label}</p>
                     <p className="font-mono text-xs text-outline">
-                      {s.type} {s.category ? `· ${s.category}` : ""} {s.city ? `· ${s.city}` : ""} {s.keyword ? `· "${s.keyword}"` : ""}
+                      {s.type} {s.category ? `ï¿½ ${s.category}` : ""} {s.city ? `ï¿½ ${s.city}` : ""} {s.keyword ? `ï¿½ "${s.keyword}"` : ""}
                     </p>
                   </div>
                   <button
@@ -413,7 +413,7 @@ export default function Settings() {
               </h2>
               {(subStatus?.creditBalance ?? 0) > 0 && (
                 <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-outline-variant bg-surface-cream px-3 py-1 font-body text-xs font-bold text-on-surface">
-                  {t(locale, "credits.balance")}: €{((subStatus?.creditBalance ?? 0) / 100).toFixed(2)}
+                  {t(locale, "credits.balance")}: ï¿½{((subStatus?.creditBalance ?? 0) / 100).toFixed(2)}
                 </span>
               )}
             </div>
@@ -436,7 +436,7 @@ export default function Settings() {
                       </p>
                     </div>
                     <span className={`font-mono text-sm font-bold shrink-0 ${tx.amount > 0 ? "text-success-emerald" : "text-accent-coral"}`}>
-                      {tx.amount > 0 ? "+" : ""}€{(tx.amount / 100).toFixed(2)}
+                      {tx.amount > 0 ? "+" : ""}ï¿½{(tx.amount / 100).toFixed(2)}
                     </span>
                   </li>
                 ))}

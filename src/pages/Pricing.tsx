@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+ï»¿import { useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -39,7 +39,7 @@ export default function Pricing() {
   const isPaid = isPro || isBusiness;
 
   useEffect(() => {
-    document.title = t(locale, "pricing.title") + " — Jobsy.lv";
+    document.title = t(locale, "pricing.title") + " ï¿½ jobsy.lv";
     return () => { document.title = "jobsy.lv"; };
   }, [locale]);
 
@@ -76,9 +76,9 @@ export default function Pricing() {
   ];
 
   const BOOST_FEATURES = [
-    { icon: "??", name: t(locale, "boost.bump"), price: "€1.00", desc: t(locale, "boost.bumpDesc") },
-    { icon: "?", name: t(locale, "boost.featured"), price: "€2.00", desc: t(locale, "boost.featuredDesc") },
-    { icon: "??", name: t(locale, "boost.urgent"), price: "€0.50", desc: t(locale, "boost.urgentDesc") },
+    { icon: "??", name: t(locale, "boost.bump"), price: "ï¿½1.00", desc: t(locale, "boost.bumpDesc") },
+    { icon: "?", name: t(locale, "boost.featured"), price: "ï¿½2.00", desc: t(locale, "boost.featuredDesc") },
+    { icon: "??", name: t(locale, "boost.urgent"), price: "ï¿½0.50", desc: t(locale, "boost.urgentDesc") },
   ];
 
   const handleGo = (target: "pro" | "business") => {
@@ -101,7 +101,7 @@ export default function Pricing() {
           </p>
         </div>
 
-        {/* Tier cards — 3 columns */}
+        {/* Tier cards ï¿½ 3 columns */}
         <div className="mb-10 grid gap-6 md:grid-cols-3 items-stretch">
 
           {/* Free */}
@@ -110,7 +110,7 @@ export default function Pricing() {
               <p className="font-body text-xs font-medium uppercase tracking-widest text-on-surface-variant">
                 {t(locale, "pricing.free")}
               </p>
-              <p className="mt-1 font-headline text-4xl font-bold text-on-surface">€0</p>
+              <p className="mt-1 font-headline text-4xl font-bold text-on-surface">ï¿½0</p>
               <p className="mt-1 font-body text-xs text-on-surface-variant">
                 {t(locale, "pricing.freeForever")}
               </p>
@@ -147,7 +147,7 @@ export default function Pricing() {
                 {t(locale, "pricing.pro")}
               </p>
               <div className="mt-1 flex items-end gap-1">
-                <p className="font-headline text-4xl font-bold text-on-surface">€4.99</p>
+                <p className="font-headline text-4xl font-bold text-on-surface">ï¿½4.99</p>
                 <p className="mb-1 font-body text-xs text-on-surface-variant">{t(locale, "pricing.perMonth")}</p>
               </div>
               <p className="mt-1 font-body text-xs text-on-surface-variant">
@@ -195,7 +195,7 @@ export default function Pricing() {
                 {t(locale, "pricing.business")}
               </p>
               <div className="mt-1 flex items-end gap-1">
-                <p className="font-headline text-4xl font-bold text-white">€9.99</p>
+                <p className="font-headline text-4xl font-bold text-white">ï¿½9.99</p>
                 <p className="mb-1 font-body text-xs text-white/60">{t(locale, "pricing.perMonth")}</p>
               </div>
               <p className="mt-1 font-body text-xs text-white/60">

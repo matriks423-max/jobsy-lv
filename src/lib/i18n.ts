@@ -1,4 +1,4 @@
-export type Locale = "lv" | "ru" | "en";
+﻿export type Locale = "lv" | "ru" | "en";
 
 export const translations = {
   lv: {

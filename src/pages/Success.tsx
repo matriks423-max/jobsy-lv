@@ -14,7 +14,7 @@ export default function Success() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "success.title") + " — Jobsy.lv";
+    document.title = t(locale, "success.title") + " — jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
   const postId = searchParams.get("post");

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+ï»¿import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -14,12 +14,12 @@ const CATEGORY_SEO: Record<string, { heading: string; description: string }> = {
   household: {
     heading: "Majsaimniecibas darbi Latvija",
     description:
-      "Atrodi paligus majsaimniecibai — tirišanai, mazgašanai, velai un citiem ikdienas darbiem visa Latvija.",
+      "Atrodi paligus majsaimniecibai ï¿½ tiriï¿½anai, mazgaï¿½anai, velai un citiem ikdienas darbiem visa Latvija.",
   },
   moving: {
-    heading: "Parvakšanas palidziba Latvija",
+    heading: "Parvakï¿½anas palidziba Latvija",
     description:
-      "Pieejami parvakšanas pakalpojumi Riga un visa Latvija. Kraušanas, transporta un iesainošanas paligi.",
+      "Pieejami parvakï¿½anas pakalpojumi Riga un visa Latvija. Krauï¿½anas, transporta un iesainoï¿½anas paligi.",
   },
   repairs: {
     heading: "Remontdarbi Latvija",
@@ -34,17 +34,17 @@ const CATEGORY_SEO: Record<string, { heading: string; description: string }> = {
   auto: {
     heading: "Auto pakalpojumi Latvija",
     description:
-      "Auto remonta, mazgašanas un citi automobilu pakalpojumi Riga un visa Latvija.",
+      "Auto remonta, mazgaï¿½anas un citi automobilu pakalpojumi Riga un visa Latvija.",
   },
   childcare: {
-    heading: "Bernu pieskatišana Latvija",
+    heading: "Bernu pieskatiï¿½ana Latvija",
     description:
-      "Aukles un bernu pieskatišanas pakalpojumi visa Latvija. Uzticami paligi gimenem.",
+      "Aukles un bernu pieskatiï¿½anas pakalpojumi visa Latvija. Uzticami paligi gimenem.",
   },
   pets: {
-    heading: "Majdzivnieku kopšana Latvija",
+    heading: "Majdzivnieku kopï¿½ana Latvija",
     description:
-      "Majdzivnieku pieskatišana, pastaiga un kopšana Riga un visa Latvija.",
+      "Majdzivnieku pieskatiï¿½ana, pastaiga un kopï¿½ana Riga un visa Latvija.",
   },
   it: {
     heading: "IT pakalpojumi Latvija",
@@ -54,12 +54,12 @@ const CATEGORY_SEO: Record<string, { heading: string; description: string }> = {
   tutoring: {
     heading: "Repeticijas un apmaciba Latvija",
     description:
-      "Repetitori macibu priekšmetos, valodas un citas jomas berniem un pieaugušajiem Latvija.",
+      "Repetitori macibu priekï¿½metos, valodas un citas jomas berniem un pieauguï¿½ajiem Latvija.",
   },
   other: {
     heading: "Citi pakalpojumi Latvija",
     description:
-      "Dažadi palidzibas un pakalpojumu sludinajumi, kas neietilpst citas kategorijas.",
+      "Daï¿½adi palidzibas un pakalpojumu sludinajumi, kas neietilpst citas kategorijas.",
   },
 };
 
@@ -80,7 +80,7 @@ export default function Category() {
   // Set document title + meta description for SEO
   useEffect(() => {
     if (seo) {
-      document.title = `${seo.heading} — Jobsy.lv`;
+      document.title = `${seo.heading} ï¿½ jobsy.lv`;
       // Inject meta description
       let meta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
       const created = !meta;
@@ -91,7 +91,7 @@ export default function Category() {
       }
       meta.content = seo.description;
       return () => {
-        document.title = "jobsy.lv — Atrodi palidzibu vai piedava darbu";
+        document.title = "jobsy.lv ï¿½ Atrodi palidzibu vai piedava darbu";
         if (created && meta) document.head.removeChild(meta);
         else if (meta) meta.content = "";
       };

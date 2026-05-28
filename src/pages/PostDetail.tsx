@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -172,12 +172,12 @@ export default function PostDetail() {
   useEffect(() => {
     if (!data?.post) return;
     const prev = document.title;
-    document.title = `${data.post.title} — Jobsy.lv`;
+    document.title = `${data.post.title} — jobsy.lv`;
     const desc = [
       data.post.description?.slice(0, 120),
       data.post.city ? t(locale, `cities.${data.post.city}` as never) : null,
       data.post.budgetText,
-    ].filter(Boolean).join(" · ") || `${data.post.title} — Jobsy.lv`;
+    ].filter(Boolean).join(" · ") || `${data.post.title} — jobsy.lv`;
     const url = `https://jobsy.lv/post/${data.post.id}`;
     const image = data.images?.[0] ?? "https://jobsy.lv/og-image.png";
     const setMeta = (selector: string, attr: string, value: string) => {
@@ -190,13 +190,13 @@ export default function PostDetail() {
     const metas: HTMLMetaElement[] = [];
     const add = (s: string, a: string, v: string) => { const el = setMeta(s, a, v); if (el) metas.push(el); };
     add('meta[name="description"]', "name=description", desc);
-    add('meta[property="og:title"]', "property=og:title", `${data.post.title} — Jobsy.lv`);
+    add('meta[property="og:title"]', "property=og:title", `${data.post.title} — jobsy.lv`);
     add('meta[property="og:description"]', "property=og:description", desc);
     add('meta[property="og:url"]', "property=og:url", url);
     add('meta[property="og:image"]', "property=og:image", image);
     add('meta[property="og:type"]', "property=og:type", "website");
     add('meta[name="twitter:card"]', "name=twitter:card", "summary_large_image");
-    add('meta[name="twitter:title"]', "name=twitter:title", `${data.post.title} — Jobsy.lv`);
+    add('meta[name="twitter:title"]', "name=twitter:title", `${data.post.title} — jobsy.lv`);
     add('meta[name="twitter:description"]', "name=twitter:description", desc);
     add('meta[name="twitter:image"]', "name=twitter:image", image);
     let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
@@ -259,7 +259,7 @@ export default function PostDetail() {
 
   const handleShare = async (platform?: string) => {
     const url = window.location.href;
-    const text = `${post.title} — Jobsy.lv`;
+    const text = `${post.title} — jobsy.lv`;
     if (!platform && navigator.share) {
       try { await navigator.share({ title: post.title, text, url }); return; } catch { /* fall through */ }
     }

@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
@@ -110,8 +110,8 @@ export default function Browse() {
   useEffect(() => {
     const prev = document.title;
     document.title = debouncedSearch
-      ? `"${debouncedSearch}" — Jobsy.lv`
-      : t(locale, "browse.title") + " — Jobsy.lv";
+      ? `"${debouncedSearch}" — jobsy.lv`
+      : t(locale, "browse.title") + " — jobsy.lv";
 
     const desc = locale === "lv"
       ? "Atrodi pakalpojumu sniedzējus vai piedāvā savas prasmes Latvijā."
