@@ -23,13 +23,36 @@ interface JobMapProps {
   posts: Array<{ post: Post; profile?: Profile | null }>;
 }
 
-// Forces map to recalculate size (needed when map becomes visible after being hidden)
+// Forces map to recalculate size when container becomes visible.
+// Uses a ResizeObserver so it fires when the container actually gets dimensions,
+// plus staggered fallback timeouts for environments without ResizeObserver.
 function InvalidateSizeOnMount() {
   const map = useMap();
   useEffect(() => {
-    // Small delay ensures the container has its final CSS dimensions
-    const t = setTimeout(() => map.invalidateSize(), 50);
-    return () => clearTimeout(t);
+    const container = map.getContainer();
+    const invalidate = () => map.invalidateSize();
+
+    // Fire immediately in case dimensions are already correct
+    invalidate();
+
+    // Staggered timeouts cover CSS transitions and deferred renders on mobile
+    const t1 = setTimeout(invalidate, 100);
+    const t2 = setTimeout(invalidate, 300);
+    const t3 = setTimeout(invalidate, 600);
+
+    // ResizeObserver fires whenever the container gets a real size
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(() => invalidate());
+      ro.observe(container);
+    }
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      ro?.disconnect();
+    };
   }, [map]);
   return null;
 }

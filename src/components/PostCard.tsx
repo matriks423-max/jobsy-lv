@@ -80,7 +80,7 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
             <span
               className={`rounded px-2 py-0.5 font-label text-label-sm uppercase ${
                 isNeed
-                  ? "bg-surface-container text-primary-DEFAULT"
+                  ? "bg-surface-cream text-primary-DEFAULT"
                   : "bg-secondary-container/30 text-secondary-DEFAULT"
               }`}
             >

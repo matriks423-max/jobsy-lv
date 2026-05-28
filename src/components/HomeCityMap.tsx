@@ -1,10 +1,29 @@
-﻿import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+﻿import { useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { Link } from "react-router";
 import { useLocale } from "@/lib/locale-context";
+
+function InvalidateSizeOnMount() {
+  const map = useMap();
+  useEffect(() => {
+    const container = map.getContainer();
+    const invalidate = () => map.invalidateSize();
+    invalidate();
+    const t1 = setTimeout(invalidate, 100);
+    const t2 = setTimeout(invalidate, 400);
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(invalidate);
+      ro.observe(container);
+    }
+    return () => { clearTimeout(t1); clearTimeout(t2); ro?.disconnect(); };
+  }, [map]);
+  return null;
+}
 
 // Fix Leaflet default icon paths in Vite (idempotent — safe to call in multiple files)
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
@@ -28,6 +47,7 @@ export default function HomeCityMap() {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      <InvalidateSizeOnMount />
       {CITIES.filter((c) => c !== "other").map((cityKey) => {
         const coords = getCityCoords(cityKey);
         if (!coords) return null;

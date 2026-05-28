@@ -400,25 +400,25 @@ export default function Browse() {
         {activeFiltersCount > 0 && (
           <div className="mb-4 flex flex-wrap gap-2 md:hidden">
             {type !== "all" && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-surface-container px-3 py-1 font-label text-label-sm text-on-surface">
+              <span className="inline-flex items-center gap-1 rounded-full bg-surface-cream px-3 py-1 font-label text-label-sm text-on-surface">
                 {type === "need" ? t(locale, "browse.typeNeed") : t(locale, "browse.typeOffer")}
                 <button onClick={() => setType("all")}><X className="h-3 w-3" /></button>
               </span>
             )}
             {category !== "all" && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-surface-container px-3 py-1 font-label text-label-sm text-on-surface">
+              <span className="inline-flex items-center gap-1 rounded-full bg-surface-cream px-3 py-1 font-label text-label-sm text-on-surface">
                 {t(locale, `categories.${category}` as never)}
                 <button onClick={() => setCategory("all")}><X className="h-3 w-3" /></button>
               </span>
             )}
             {city !== "all" && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-surface-container px-3 py-1 font-label text-label-sm text-on-surface">
+              <span className="inline-flex items-center gap-1 rounded-full bg-surface-cream px-3 py-1 font-label text-label-sm text-on-surface">
                 {t(locale, `cities.${city}` as never)}
                 <button onClick={() => setCity("all")}><X className="h-3 w-3" /></button>
               </span>
             )}
             {debouncedSearch && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-surface-container px-3 py-1 font-label text-label-sm text-on-surface">
+              <span className="inline-flex items-center gap-1 rounded-full bg-surface-cream px-3 py-1 font-label text-label-sm text-on-surface">
                 "{debouncedSearch}"
                 <button onClick={() => setSearch("")}><X className="h-3 w-3" /></button>
               </span>
