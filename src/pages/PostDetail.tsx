@@ -603,7 +603,7 @@ export default function PostDetail() {
                   onChange={(e) => setReviewComment(e.target.value)}
                   placeholder={t(locale, "postDetail.review.placeholder")}
                   rows={3}
-                  className="w-full rounded-lg border border-outline-variant bg-surface-cream p-3 font-body text-body-sm text-on-surface placeholder:text-outline focus:border-primary-DEFAULT focus:outline-none focus:ring-1 focus:ring-primary-DEFAULT/30 resize-y"
+                  className="w-full rounded-lg border border-outline-variant bg-surface-cream p-3 font-body text-body-sm text-on-surface placeholder:text-on-surface-variant focus:border-primary-DEFAULT focus:outline-none focus:ring-1 focus:ring-primary-DEFAULT/30 resize-y"
                 />
                 <button
                   onClick={() => reviewMutation.mutate({ postId, revieweeId: revieweeId!, stars: reviewStars, comment: reviewComment || undefined })}

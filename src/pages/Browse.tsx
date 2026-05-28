@@ -210,7 +210,7 @@ export default function Browse() {
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(0); }}
               placeholder={t(locale, "browse.searchPlaceholder")}
-              className="h-10 w-full rounded-lg border border-outline-variant bg-surface-off-white pl-9 pr-3 font-body text-body-sm text-on-surface focus:border-primary-DEFAULT focus:outline-none focus:ring-1 focus:ring-primary-DEFAULT/30 transition"
+              className="h-10 w-full rounded-lg border border-outline-variant bg-white pl-9 pr-3 font-body text-body-sm text-on-surface placeholder:text-on-surface-variant focus:border-primary-DEFAULT focus:outline-none focus:ring-1 focus:ring-primary-DEFAULT/30 transition"
             />
           </div>
         </div>

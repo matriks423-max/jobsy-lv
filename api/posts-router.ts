@@ -82,6 +82,15 @@ export const postsRouter = createRouter({
     return getFeaturedPosts(6);
   }),
 
+  categoryCounts: publicQuery.query(async () => {
+    const rows = await getDb()
+      .select({ category: schema.posts.category, cnt: count() })
+      .from(schema.posts)
+      .where(eq(schema.posts.status, "active"))
+      .groupBy(schema.posts.category);
+    return Object.fromEntries(rows.map((r) => [r.category, r.cnt])) as Record<string, number>;
+  }),
+
   count: publicQuery
     .input(
       z.object({

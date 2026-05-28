@@ -24,6 +24,11 @@ import {
   Flower2,
   Baby,
   Monitor,
+  Car,
+  Cat,
+  GraduationCap,
+  MoreHorizontal,
+  type LucideIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -57,27 +62,18 @@ function AnimatedCounter({ target, duration = 1500 }: { target: number; duration
   return <span ref={ref}>{count}</span>;
 }
 
-function MarqueeStrip() {
-  const { locale } = useLocale();
-  const items = CATEGORIES.map((cat, i) => (
-    <span key={i} className="inline-flex items-center gap-3 whitespace-nowrap px-4">
-      <Sparkles className="h-3.5 w-3.5 text-primary-fixed-dim" />
-      <span className="font-label text-label-md font-semibold tracking-wide text-primary-fixed">
-        {t(locale, `categories.${cat.key}` as never)}
-      </span>
-    </span>
-  ));
-
-  return (
-    <div className="overflow-hidden border-y border-primary-container bg-primary-DEFAULT py-3">
-      <div className="flex animate-marquee">
-        {[...items, ...items, ...items, ...items].map((item, i) => (
-          <div key={i}>{item}</div>
-        ))}
-      </div>
-    </div>
-  );
-}
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  household: HomeIcon,
+  moving: Truck,
+  repairs: Wrench,
+  garden: Flower2,
+  auto: Car,
+  childcare: Baby,
+  pets: Cat,
+  it: Monitor,
+  tutoring: GraduationCap,
+  other: MoreHorizontal,
+};
 
 const QUICK_CATEGORIES = [
   { key: "repairs",   Icon: Wrench    },
@@ -107,6 +103,7 @@ export default function Home() {
   }, [locale]);
 
   const { data: stats } = trpc.stats.get.useQuery();
+  const { data: categoryCounts } = trpc.posts.categoryCounts.useQuery(undefined, { staleTime: 60 * 1000 });
   const { data: posts, isLoading } = trpc.posts.list.useQuery(
     {
       type: activeFilter === "all" ? undefined : activeFilter,
@@ -202,7 +199,7 @@ export default function Home() {
                 value={heroSearch}
                 onChange={(e) => setHeroSearch(e.target.value)}
                 placeholder={t(locale, "hero.searchPlaceholder")}
-                className="h-14 w-full rounded-xl bg-white pl-12 pr-4 font-body text-body-md text-on-surface shadow-sm placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary-fixed/50 transition-shadow"
+                className="h-14 w-full rounded-xl bg-white pl-12 pr-4 font-body text-body-md text-on-surface shadow-sm placeholder:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary-fixed/50 transition-shadow"
               />
             </div>
             <button
@@ -262,8 +259,41 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Marquee ───────────────────────────────────────────── */}
-      <MarqueeStrip />
+      {/* ── Categories ───────────────────────────────────────── */}
+      <section className="px-margin-mobile py-10 md:px-margin-desktop">
+        <div className="mx-auto max-w-container-max-width">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {CATEGORIES.map((cat) => {
+              const Icon = CATEGORY_ICONS[cat.key];
+              const count = categoryCounts?.[cat.key] ?? 0;
+              return (
+                <Link
+                  key={cat.key}
+                  to={`/browse?category=${cat.key}`}
+                  className="group flex flex-col items-center gap-3 rounded-xl border border-outline-variant bg-white px-4 py-5 text-center shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-DEFAULT hover:shadow-md"
+                >
+                  <div
+                    className="flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110"
+                    style={{ backgroundColor: cat.bg }}
+                  >
+                    {Icon && <Icon className="h-6 w-6" style={{ color: cat.color }} />}
+                  </div>
+                  <div>
+                    <p className="font-label text-label-sm font-semibold text-on-surface transition-colors group-hover:text-primary-DEFAULT">
+                      {t(locale, `categories.${cat.key}` as never)}
+                    </p>
+                    {count > 0 && (
+                      <p className="mt-0.5 font-mono text-[11px] text-on-surface-variant">
+                        {count}
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
       {/* ── Featured Posts ────────────────────────────────────── */}
       {featuredPosts.length > 0 && (
