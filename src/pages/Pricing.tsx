@@ -76,9 +76,9 @@ export default function Pricing() {
   ];
 
   const BOOST_FEATURES = [
-    { icon: "??", name: t(locale, "boost.bump"), price: "?1.00", desc: t(locale, "boost.bumpDesc") },
-    { icon: "?", name: t(locale, "boost.featured"), price: "?2.00", desc: t(locale, "boost.featuredDesc") },
-    { icon: "??", name: t(locale, "boost.urgent"), price: "?0.50", desc: t(locale, "boost.urgentDesc") },
+    { icon: "🔼", name: t(locale, "boost.bump"), price: "€1.00", desc: t(locale, "boost.bumpDesc") },
+    { icon: "⭐", name: t(locale, "boost.featured"), price: "€2.00", desc: t(locale, "boost.featuredDesc") },
+    { icon: "🔴", name: t(locale, "boost.urgent"), price: "€0.50", desc: t(locale, "boost.urgentDesc") },
   ];
 
   const handleGo = (target: "pro" | "business") => {
@@ -110,7 +110,7 @@ export default function Pricing() {
               <p className="font-body text-xs font-medium uppercase tracking-widest text-on-surface-variant">
                 {t(locale, "pricing.free")}
               </p>
-              <p className="mt-1 font-headline text-4xl font-bold text-on-surface">?0</p>
+              <p className="mt-1 font-headline text-4xl font-bold text-on-surface">€0</p>
               <p className="mt-1 font-body text-xs text-on-surface-variant">
                 {t(locale, "pricing.freeForever")}
               </p>
@@ -147,7 +147,7 @@ export default function Pricing() {
                 {t(locale, "pricing.pro")}
               </p>
               <div className="mt-1 flex items-end gap-1">
-                <p className="font-headline text-4xl font-bold text-on-surface">?4.99</p>
+                <p className="font-headline text-4xl font-bold text-on-surface">€4.99</p>
                 <p className="mb-1 font-body text-xs text-on-surface-variant">{t(locale, "pricing.perMonth")}</p>
               </div>
               <p className="mt-1 font-body text-xs text-on-surface-variant">
@@ -195,7 +195,7 @@ export default function Pricing() {
                 {t(locale, "pricing.business")}
               </p>
               <div className="mt-1 flex items-end gap-1">
-                <p className="font-headline text-4xl font-bold text-white">?9.99</p>
+                <p className="font-headline text-4xl font-bold text-white">€9.99</p>
                 <p className="mb-1 font-body text-xs text-white/60">{t(locale, "pricing.perMonth")}</p>
               </div>
               <p className="mt-1 font-body text-xs text-white/60">
