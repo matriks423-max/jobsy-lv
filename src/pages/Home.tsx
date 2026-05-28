@@ -164,11 +164,18 @@ export default function Home() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.4 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary-fixed/20 bg-white/10 px-4 py-1.5 backdrop-blur-sm"
+            className="mb-6 inline-flex overflow-hidden rounded-full border border-white/20 bg-white/10 backdrop-blur-sm"
           >
-            <Sparkles className="h-3.5 w-3.5 text-primary-fixed-dim" />
-            <span className="font-label text-label-sm text-primary-fixed">
-              jobsy.lv
+            <span className="flex items-center gap-1.5 bg-accent-coral/90 px-3.5 py-1.5 font-label text-label-sm font-bold text-white">
+              🇱🇻
+              <span>{locale === "ru" ? "Бесплатно" : "Bezmaksas"}</span>
+            </span>
+            <span className="flex items-center px-3.5 py-1.5 font-label text-label-sm text-white/85">
+              {locale === "ru"
+                ? "Без карты · Латвия"
+                : locale === "en"
+                ? "No credit card · Latvia"
+                : "Bez kredītkartes · Latvijā"}
             </span>
           </motion.div>
 
