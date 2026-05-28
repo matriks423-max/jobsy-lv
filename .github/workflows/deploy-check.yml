@@ -1,0 +1,26 @@
+name: Deployment Health Check
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Railway to deploy
+        run: sleep 120
+
+      - name: Check health endpoint
+        run: |
+          for i in 1 2 3 4 5; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://jobsy.lv/health)
+            echo "Attempt $i: HTTP $STATUS"
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ Deployment healthy"
+              exit 0
+            fi
+            sleep 30
+          done
+          echo "❌ Health check failed after 5 attempts"
+          exit 1
