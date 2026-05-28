@@ -48,17 +48,18 @@ jobs:
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `🚨 Build failed on main (${sha})`,
+              title: `Build failed on main (${sha})`,
               body,
               labels: ['bug'],
             });
-            core.setFailed('Build failed — issue created for @claude');
+            core.setFailed('Build failed - issue created for @claude');
 
   railway-check:
     runs-on: ubuntu-latest
     needs: build-check
     steps:
       - name: Wait for Railway deployment to finish
+        id: railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
@@ -67,28 +68,28 @@ jobs:
           MAX_WAIT=300
           POLL=10
           ELAPSED=0
+          DEPLOY_STATUS="timeout"
+          DEPLOY_ID=""
 
-          echo "Waiting for Railway deployment triggered by commit ${{ github.sha }}..."
+          GQL_URL="https://backboard.railway.app/graphql/v2"
 
           while [ $ELAPSED -lt $MAX_WAIT ]; do
-            RESPONSE=$(curl -s -X POST https://backboard.railway.app/graphql/v2 \
+            RESPONSE=$(curl -s -X POST "$GQL_URL" \
               -H "Authorization: Bearer $RAILWAY_TOKEN" \
               -H "Content-Type: application/json" \
-              -d "{\"query\":\"{ deployments(input: { serviceId: \\\"$SERVICE_ID\\\", environmentId: \\\"$ENV_ID\\\" }) { edges { node { id status createdAt } } } }\"}")
+              -d '{"query":"{ deployments(input: { serviceId: \"'"$SERVICE_ID"'\", environmentId: \"'"$ENV_ID"'\" }) { edges { node { id status createdAt } } } }"}')
 
-            STATUS=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin)['data']['deployments']['edges']; print(d[0]['node']['status']) if d else print('NONE')" 2>/dev/null)
-            DEPLOY_ID=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin)['data']['deployments']['edges']; print(d[0]['node']['id']) if d else print('')" 2>/dev/null)
+            STATUS=$(echo "$RESPONSE" | jq -r '.data.deployments.edges[0].node.status // "NONE"')
+            ID=$(echo "$RESPONSE" | jq -r '.data.deployments.edges[0].node.id // ""')
 
-            echo "[$ELAPSED s] Status: $STATUS  (id: $DEPLOY_ID)"
+            echo "[$ELAPSED s] Status: $STATUS  id: $ID"
 
             if [ "$STATUS" = "SUCCESS" ]; then
-              echo "DEPLOY_STATUS=success" >> $GITHUB_ENV
-              echo "Railway deployment succeeded."
-              exit 0
+              DEPLOY_STATUS="success"
+              break
             elif [ "$STATUS" = "FAILED" ] || [ "$STATUS" = "CRASHED" ]; then
-              echo "DEPLOY_STATUS=failed" >> $GITHUB_ENV
-              echo "DEPLOY_ID=$DEPLOY_ID" >> $GITHUB_ENV
-              echo "Railway deployment FAILED."
+              DEPLOY_STATUS="failed"
+              DEPLOY_ID="$ID"
               break
             fi
 
@@ -96,46 +97,36 @@ jobs:
             ELAPSED=$((ELAPSED + POLL))
           done
 
-          if [ "${DEPLOY_STATUS:-}" != "success" ]; then
-            echo "DEPLOY_STATUS=failed" >> $GITHUB_ENV
-          fi
+          echo "deploy_status=$DEPLOY_STATUS" >> "$GITHUB_OUTPUT"
+          echo "deploy_id=$DEPLOY_ID" >> "$GITHUB_OUTPUT"
 
       - name: Fetch Railway build logs on failure
-        if: env.DEPLOY_STATUS == 'failed'
+        id: logs
+        if: steps.railway.outputs.deploy_status == 'failed'
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          DEPLOY_ID="${{ env.DEPLOY_ID }}"
-          if [ -z "$DEPLOY_ID" ]; then
-            echo "No deploy ID, skipping log fetch"
-            echo "BUILD_LOG=No deploy ID available." >> $GITHUB_ENV
-            exit 0
-          fi
+          DEPLOY_ID="${{ steps.railway.outputs.deploy_id }}"
+          GQL_URL="https://backboard.railway.app/graphql/v2"
 
-          LOGS=$(curl -s -X POST https://backboard.railway.app/graphql/v2 \
+          BUILD_LOG=$(curl -s -X POST "$GQL_URL" \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"query\":\"{ buildLogs(deploymentId: \\\"$DEPLOY_ID\\\") { message severity } }\"}" \
-            | python3 -c "
-import sys, json
-data = json.load(sys.stdin)
-logs = data.get('data', {}).get('buildLogs', [])
-for l in logs:
-  print(l.get('message',''))
-" 2>/dev/null | tail -60)
+            -d '{"query":"{ buildLogs(deploymentId: \"'"$DEPLOY_ID"'\") { message severity } }"}' \
+            | jq -r '.data.buildLogs[].message' | tail -60)
 
-          echo "BUILD_LOG<<EOF" >> $GITHUB_ENV
-          echo "$LOGS" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          echo "build_log<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$BUILD_LOG" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
 
       - name: Open issue for Claude to fix Railway failure
-        if: env.DEPLOY_STATUS == 'failed'
+        if: steps.railway.outputs.deploy_status == 'failed'
         uses: actions/github-script@v7
         with:
           script: |
             const sha = context.sha.substring(0, 7);
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const buildLog = process.env.BUILD_LOG || 'Could not fetch build logs.';
+            const buildLog = `${{ steps.logs.outputs.build_log }}` || 'Could not fetch build logs.';
             const body = [
               `@claude Railway deployment FAILED for commit \`${sha}\` ("${context.payload.head_commit.message}").`,
               ``,
@@ -151,11 +142,11 @@ for l in logs:
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `🚨 Railway deployment failed on main (${sha})`,
+              title: `Railway deployment failed on main (${sha})`,
               body,
               labels: ['bug'],
             });
-            core.setFailed('Railway deployment failed — issue created for @claude');
+            core.setFailed('Railway deployment failed - issue created for @claude');
 
   close-stale-issues:
     runs-on: ubuntu-latest
@@ -173,12 +164,12 @@ for l in logs:
               labels: 'bug',
             });
             for (const issue of issues.data) {
-              if (issue.title.startsWith('🚨')) {
+              if (issue.title.startsWith('Build failed') || issue.title.startsWith('Railway deployment failed')) {
                 await github.rest.issues.createComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issue.number,
-                  body: '✅ Build and Railway deployment both passed on the latest push. Auto-closing.',
+                  body: 'Build and Railway deployment both passed on the latest push. Auto-closing.',
                 });
                 await github.rest.issues.update({
                   owner: context.repo.owner,
