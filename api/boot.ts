@@ -14,7 +14,7 @@ import { handleGoogleCallback } from "./email-auth";
 import { cronRouter } from "./cron-router";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql as drizzleSql } from "drizzle-orm";
 import { mkdir, writeFile, readFile } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
@@ -602,13 +602,11 @@ if (env.isProduction) {
   const { serveStaticFiles } = await import("./lib/vite");
   serveStaticFiles(app);
 
-  // Run safe additive migrations on startup
-  try {
-    const { sql: drizzleSql } = await import("drizzle-orm");
-    await getDb().execute(drizzleSql`ALTER TABLE referrals ADD COLUMN IF NOT EXISTS referredPostCount INT UNSIGNED NOT NULL DEFAULT 0`);
-  } catch {
-    // Column may already exist or DB doesn't support IF NOT EXISTS — harmless
-  }
+  // Fire-and-forget: add referredPostCount column if it doesn't exist yet.
+  // Don't await — never block server startup on a migration.
+  getDb()
+    .execute(drizzleSql`ALTER TABLE referrals ADD COLUMN IF NOT EXISTS referredPostCount INT UNSIGNED NOT NULL DEFAULT 0`)
+    .catch(() => { /* column already exists or MySQL < 8 — harmless */ });
 
   const port = parseInt(process.env.PORT || "3000");
   serve({ fetch: app.fetch, port }, () => {
