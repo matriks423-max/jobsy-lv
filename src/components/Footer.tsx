@@ -159,7 +159,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-outline-variant pt-6 sm:flex-row">
           <p className="font-label text-label-sm text-outline">
-            © {year} jobsy.lv
+            Â© {year} jobsy.lv
           </p>
           <p className="font-label text-label-sm text-outline">
             {t(locale, "footer.tagline")}

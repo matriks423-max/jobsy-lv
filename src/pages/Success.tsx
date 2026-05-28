@@ -14,7 +14,7 @@ export default function Success() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "success.title") + " — jobsy.lv";
+    document.title = t(locale, "success.title") + " â€” jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
   const postId = searchParams.get("post");
@@ -22,7 +22,7 @@ export default function Success() {
   const isReview = searchParams.get("review") === "true";
 
   // Safety net: activate post if Stripe webhook hasn't fired yet.
-  // The mutation is idempotent — if already active it returns early without sending another email.
+  // The mutation is idempotent â€” if already active it returns early without sending another email.
   const completePayment = trpc.posts.completePayment.useMutation();
   useEffect(() => {
     if (!isFree && postId && isAuthenticated) {

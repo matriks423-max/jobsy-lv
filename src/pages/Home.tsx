@@ -99,7 +99,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    document.title = "jobsy.lv — Atrodi paligu vai darbu";
+    document.title = "jobsy.lv â€” Atrodi paligu vai darbu";
     const desc = "Latvijas ertakais veids, ka atrast paligus ikdienas uzdevumiem vai atrast darbinus. Publice bezmaksas sludinajumu.";
     let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
     const created = !metaDesc;
@@ -172,7 +172,7 @@ export default function Home() {
             </span>
           </motion.div>
 
-          {/* Headline — word-by-word reveal */}
+          {/* Headline â€” word-by-word reveal */}
           <motion.h1 className="mb-5 font-headline text-5xl font-bold leading-tight text-white md:text-[64px] md:leading-[1.1]">
             {t(locale, "hero.title").split(" ").map((word, i) => (
               <motion.span
@@ -242,7 +242,7 @@ export default function Home() {
             ))}
           </motion.div>
 
-          {/* Stats — only render when real data is available */}
+          {/* Stats â€” only render when real data is available */}
           {stats && (
             <motion.div
               className="flex flex-wrap justify-center gap-8 md:gap-12"
@@ -463,7 +463,7 @@ export default function Home() {
       <section className="px-margin-mobile py-14 md:px-margin-desktop">
         <div className="mx-auto max-w-container-max-width space-y-4">
 
-          {/* Main CTA — full width */}
+          {/* Main CTA â€” full width */}
           <div
             className="relative overflow-hidden rounded-2xl px-8 py-10 text-center"
             style={{
@@ -486,7 +486,7 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Referral — compact strip below CTA */}
+          {/* Referral â€” compact strip below CTA */}
           <div className="rounded-xl border border-outline-variant bg-white px-6 py-4 shadow-card">
             <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">

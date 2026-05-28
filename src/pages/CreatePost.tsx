@@ -74,7 +74,7 @@ export default function CreatePost() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = (isEditing ? t(locale, "createPost.editPageTitle") : t(locale, "nav.createPost")) + " — jobsy.lv";
+    document.title = (isEditing ? t(locale, "createPost.editPageTitle") : t(locale, "nav.createPost")) + " â€” jobsy.lv";
     return () => { document.title = prev; };
   }, [locale, isEditing]);
 

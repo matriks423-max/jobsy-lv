@@ -82,7 +82,7 @@ export default function Category() {
     const catName = catInfo ? t(locale, `categories.${catInfo.key}` as never) : "";
     if (catName) {
       const prev = document.title;
-      document.title = `${catName} darbi — jobsy.lv`;
+      document.title = `${catName} darbi â€” jobsy.lv`;
       let meta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
       const created = !meta;
       if (!meta) {
@@ -90,7 +90,7 @@ export default function Category() {
         meta.name = "description";
         document.head.appendChild(meta);
       }
-      meta.content = seo?.description ?? `${catName} sludinajumi Latvija — jobsy.lv`;
+      meta.content = seo?.description ?? `${catName} sludinajumi Latvija â€” jobsy.lv`;
       return () => {
         document.title = prev;
         if (created && meta) document.head.removeChild(meta);

@@ -172,12 +172,12 @@ export default function PostDetail() {
   useEffect(() => {
     if (!data?.post) return;
     const prev = document.title;
-    document.title = `${data.post.title} — jobsy.lv`;
+    document.title = `${data.post.title} â€” jobsy.lv`;
     const desc = [
       data.post.description?.slice(0, 120),
       data.post.city ? t(locale, `cities.${data.post.city}` as never) : null,
       data.post.budgetText,
-    ].filter(Boolean).join(" · ") || `${data.post.title} — jobsy.lv`;
+    ].filter(Boolean).join(" Â· ") || `${data.post.title} â€” jobsy.lv`;
     const url = `https://jobsy.lv/post/${data.post.id}`;
     const image = data.images?.[0] ?? "https://jobsy.lv/og-image.png";
     const setMeta = (selector: string, attr: string, value: string) => {
@@ -190,13 +190,13 @@ export default function PostDetail() {
     const metas: HTMLMetaElement[] = [];
     const add = (s: string, a: string, v: string) => { const el = setMeta(s, a, v); if (el) metas.push(el); };
     add('meta[name="description"]', "name=description", desc);
-    add('meta[property="og:title"]', "property=og:title", `${data.post.title} — jobsy.lv`);
+    add('meta[property="og:title"]', "property=og:title", `${data.post.title} â€” jobsy.lv`);
     add('meta[property="og:description"]', "property=og:description", desc);
     add('meta[property="og:url"]', "property=og:url", url);
     add('meta[property="og:image"]', "property=og:image", image);
     add('meta[property="og:type"]', "property=og:type", "website");
     add('meta[name="twitter:card"]', "name=twitter:card", "summary_large_image");
-    add('meta[name="twitter:title"]', "name=twitter:title", `${data.post.title} — jobsy.lv`);
+    add('meta[name="twitter:title"]', "name=twitter:title", `${data.post.title} â€” jobsy.lv`);
     add('meta[name="twitter:description"]', "name=twitter:description", desc);
     add('meta[name="twitter:image"]', "name=twitter:image", image);
     let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
@@ -259,7 +259,7 @@ export default function PostDetail() {
 
   const handleShare = async (platform?: string) => {
     const url = window.location.href;
-    const text = `${post.title} — jobsy.lv`;
+    const text = `${post.title} â€” jobsy.lv`;
     if (!platform && navigator.share) {
       try { await navigator.share({ title: post.title, text, url }); return; } catch { /* fall through */ }
     }
@@ -389,7 +389,7 @@ export default function PostDetail() {
                   onClick={() => { setGalleryIndex(i); setShowGallery(true); }}
                   className="aspect-square overflow-hidden rounded-xl border border-outline-variant transition-shadow hover:shadow-card-hover"
                 >
-                  <img src={img} alt={`${post.title} — ${i + 1}`} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy" />
+                  <img src={img} alt={`${post.title} â€” ${i + 1}`} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy" />
                 </button>
               ))}
             </div>
@@ -434,7 +434,7 @@ export default function PostDetail() {
                 <div>
                   <div className="flex items-center gap-2">
                     <Link to={`/user/${post.userId}`} className="font-body text-body-md font-bold text-on-surface transition-colors hover:text-primary">
-                      {profile?.name ?? "—"}
+                      {profile?.name ?? "â€”"}
                     </Link>
                     {profile?.phoneVerified && (
                       <span className="inline-flex items-center gap-0.5 rounded-full bg-primary-container/20 px-2 py-0.5 font-label text-label-sm text-primary">
@@ -627,7 +627,7 @@ export default function PostDetail() {
               {postReviews.map((r) => (
                 <div key={r.id} className="rounded-xl bg-white p-5 shadow-card">
                   <div className="mb-2 flex items-center justify-between">
-                    <p className="font-body text-body-sm font-semibold text-on-surface">{r.reviewerName ?? "—"}</p>
+                    <p className="font-body text-body-sm font-semibold text-on-surface">{r.reviewerName ?? "â€”"}</p>
                     <div className="flex gap-0.5">
                       {[1,2,3,4,5].map((s) => (
                         <Star key={s} className={`h-4 w-4 ${s <= r.stars ? "fill-accent-coral text-accent-coral" : "text-outline"}`} />
@@ -758,7 +758,7 @@ export default function PostDetail() {
           <div className="relative max-h-[80vh] max-w-[90vw]">
             <img
               src={images[galleryIndex]}
-              alt={`${post.title} — ${galleryIndex + 1}`}
+              alt={`${post.title} â€” ${galleryIndex + 1}`}
               className="max-h-[80vh] max-w-[90vw] rounded-2xl"
             />
             {images.length > 1 && (

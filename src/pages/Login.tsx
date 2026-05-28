@@ -34,7 +34,7 @@ export default function Login() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "login.pageTitle") + " — jobsy.lv";
+    document.title = t(locale, "login.pageTitle") + " â€” jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 

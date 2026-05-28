@@ -19,7 +19,7 @@ export default function ResetPassword() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "resetPassword.pageTitle") + " — jobsy.lv";
+    document.title = t(locale, "resetPassword.pageTitle") + " â€” jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 

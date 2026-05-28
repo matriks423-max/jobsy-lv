@@ -49,7 +49,7 @@ export default function Admin() {
   const [userSearch, setUserSearch] = useState("");
   const [postStatus, setPostStatus] = useState("");
 
-  useEffect(() => { document.title = "Admin · jobsy.lv"; }, []);
+  useEffect(() => { document.title = "Admin Â· jobsy.lv"; }, []);
 
   useEffect(() => {
     if (!authLoading && (!isAuthenticated || user?.role !== "admin")) {
@@ -97,7 +97,7 @@ export default function Admin() {
   });
   const grantCreditsMutation = trpc.subscription.adminGrantCredits.useMutation({
     onSuccess: (data) => {
-      toast(`Granted €${(data.cents / 100).toFixed(2)} to user #${data.userId}`, "success");
+      toast(`Granted â‚¬${(data.cents / 100).toFixed(2)} to user #${data.userId}`, "success");
       setGrantEmail(""); setGrantEuros(""); setGrantNote("");
     },
     onError: (e) => toast(e.message, "error"),
@@ -168,7 +168,7 @@ export default function Admin() {
                 { label: "Open Reports", value: stats?.reportsCount, color: "text-secondary-DEFAULT" },
               ].map((s) => (
                 <div key={s.label} className="rounded-2xl border border-outline-variant bg-white p-5 text-center">
-                  <p className={`font-mono text-3xl font-bold ${s.color}`}>{s.value ?? "·"}</p>
+                  <p className={`font-mono text-3xl font-bold ${s.color}`}>{s.value ?? "Â·"}</p>
                   <p className="mt-1 font-body text-xs text-on-surface-variant">{s.label}</p>
                 </div>
               ))}
@@ -180,7 +180,7 @@ export default function Admin() {
                 { label: "Verified Phones", value: stats?.verifiedPhones, color: "text-success-emerald" },
               ].map((s) => (
                 <div key={s.label} className="rounded-2xl border border-outline-variant bg-white p-5 text-center">
-                  <p className={`font-mono text-3xl font-bold ${s.color}`}>{s.value ?? "·"}</p>
+                  <p className={`font-mono text-3xl font-bold ${s.color}`}>{s.value ?? "Â·"}</p>
                   <p className="mt-1 font-body text-xs text-on-surface-variant">{s.label}</p>
                 </div>
               ))}
@@ -231,7 +231,7 @@ export default function Admin() {
                       {u.plan === "business" && <span className="rounded bg-surface-cream px-1.5 py-0.5 font-mono text-[10px] font-bold text-on-surface">BIZ</span>}
                     </div>
                     <p className="font-mono text-xs text-on-surface-variant">
-                      #{u.id} · {u.name ?? "—"} · {u.authMethod} · joined {new Date(u.createdAt).toLocaleDateString()} · {u.postCount ?? 0} posts
+                      #{u.id} Â· {u.name ?? "â€”"} Â· {u.authMethod} Â· joined {new Date(u.createdAt).toLocaleDateString()} Â· {u.postCount ?? 0} posts
                     </p>
                     {u.phoneVerified && (
                       <span className="mt-1 flex items-center gap-1 font-mono text-[10px] text-success-emerald">
@@ -297,11 +297,11 @@ export default function Admin() {
                       <span className={`rounded border px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase ${STATUS_COLORS[p.status] ?? "bg-surface-cream text-on-surface-variant"}`}>
                         {p.status.replace("_", " ")}
                       </span>
-                      <span className="font-mono text-xs text-on-surface-variant">{p.category} · {p.city ?? "·"}</span>
+                      <span className="font-mono text-xs text-on-surface-variant">{p.category} Â· {p.city ?? "Â·"}</span>
                       {!p.wasFree && <span className="rounded bg-surface-cream px-1.5 py-0.5 font-mono text-[10px] text-on-surface">PAID</span>}
                     </div>
                     <p className="font-body text-sm font-bold text-on-surface truncate">{p.title}</p>
-                    <p className="font-mono text-xs text-on-surface-variant">#{p.id} · user #{p.userId} · <Eye className="inline h-3 w-3" /> {p.viewCount} · {new Date(p.createdAt).toLocaleDateString()}</p>
+                    <p className="font-mono text-xs text-on-surface-variant">#{p.id} Â· user #{p.userId} Â· <Eye className="inline h-3 w-3" /> {p.viewCount} Â· {new Date(p.createdAt).toLocaleDateString()}</p>
                   </div>
                   <div className="flex shrink-0 gap-1">
                     <Link to={`/post/${p.id}`} target="_blank">
@@ -334,11 +334,11 @@ export default function Admin() {
                   <div className="flex-1">
                     <div className="mb-1 flex items-center gap-2">
                       <span className="rounded bg-surface-cream px-2 py-0.5 font-mono text-[10px] font-medium uppercase text-on-surface">{post.category}</span>
-                      <span className="font-mono text-xs text-on-surface-variant">#{post.id} · {post.type}</span>
+                      <span className="font-mono text-xs text-on-surface-variant">#{post.id} Â· {post.type}</span>
                     </div>
                     <h3 className="font-body text-lg font-bold text-on-surface">{post.title}</h3>
                     {post.description && <p className="mt-1 font-body text-sm text-on-surface-variant line-clamp-3">{post.description}</p>}
-                    <p className="mt-2 font-mono text-xs text-outline">{new Date(post.createdAt).toLocaleString("lv-LV")}{post.city && ` · ${post.city}`}</p>
+                    <p className="mt-2 font-mono text-xs text-outline">{new Date(post.createdAt).toLocaleString("lv-LV")}{post.city && ` Â· ${post.city}`}</p>
                   </div>
                   <div className="flex shrink-0 gap-2">
                     <a href={`/post/${post.id}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-outline-variant bg-white p-2 hover:bg-surface-cream">
@@ -436,10 +436,10 @@ export default function Admin() {
                     <span className="text-lg">{item.boostType === "bump" ? "?" : "?"}</span>
                     <div className="flex-1 min-w-0">
                       <p className="truncate font-body text-sm font-medium text-on-surface">
-                        #{item.postId} · {item.postTitle ?? "unknown"}
+                        #{item.postId} Â· {item.postTitle ?? "unknown"}
                       </p>
                       <p className="font-mono text-xs text-on-surface-variant">
-                        {item.boostType} · queued {new Date(item.createdAt).toLocaleString()}
+                        {item.boostType} Â· queued {new Date(item.createdAt).toLocaleString()}
                       </p>
                     </div>
                     <span className={`rounded-full border-2 px-2.5 py-0.5 font-mono text-xs font-bold ${
@@ -476,7 +476,7 @@ export default function Admin() {
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block font-body text-xs font-medium text-on-surface">Amount (·)</label>
+                  <label className="mb-1 block font-body text-xs font-medium text-on-surface">Amount (Â·)</label>
                   <input
                     type="number"
                     min="0.01"
@@ -503,7 +503,7 @@ export default function Admin() {
                   onClick={() => {
                     const euros = parseFloat(grantEuros);
                     if (!grantEmail || isNaN(euros) || euros <= 0) { toast("Fill in email and valid amount", "error"); return; }
-                    if (confirm(`Grant €${euros.toFixed(2)} to ${grantEmail}?`)) {
+                    if (confirm(`Grant â‚¬${euros.toFixed(2)} to ${grantEmail}?`)) {
                       grantCreditsMutation.mutate({ email: grantEmail, euros, note: grantNote || undefined });
                     }
                   }}

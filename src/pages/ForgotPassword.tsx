@@ -12,7 +12,7 @@ export default function ForgotPassword() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "forgotPassword.pageTitle") + " — jobsy.lv";
+    document.title = t(locale, "forgotPassword.pageTitle") + " â€” jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 

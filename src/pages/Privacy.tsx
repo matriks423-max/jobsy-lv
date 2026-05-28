@@ -9,7 +9,7 @@ export default function Privacy() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = "Privatuma politika ó jobsy.lv";
+    document.title = "Privatuma politika ‚Äî jobsy.lv";
     return () => { document.title = prev; };
   }, []);
 
@@ -17,32 +17,32 @@ export default function Privacy() {
     {
       title: "Kas mes esam",
       content:
-        "jobsy.lv ir Latvijas tieösaistes platforma, kas savieno cilvekus, kuri mekle palidzibu ikdienas uzdevumiem, ar cilvekiem, kuri velas piedavat savus pakalpojumus. Mes neesam darba devejs ó mes tikai nodroöinam platformu, kura lietotaji var publicet sludinajumus un sazinaties.",
+        "jobsy.lv ir Latvijas tie≈°saistes platforma, kas savieno cilvekus, kuri mekle palidzibu ikdienas uzdevumiem, ar cilvekiem, kuri velas piedavat savus pakalpojumus. Mes neesam darba devejs ‚Äî mes tikai nodro≈°inam platformu, kura lietotaji var publicet sludinajumus un sazinaties.",
     },
     {
       title: "Kadus datus vacam",
       content:
-        "Mes vacam tikai tos datus, kas nepiecieöami pakalpojuma sniegöanai: (1) Google OAuth dati ó e-pasts, vards, profila attels; (2) Sludinajuma saturs ó virsraksts, apraksts, budûets, atraöanas vieta; (3) Tehniskie dati ó IP adrese, parlukprogrammas tips, ierices informacija (automatiski).",
+        "Mes vacam tikai tos datus, kas nepiecie≈°ami pakalpojuma snieg≈°anai: (1) Google OAuth dati ‚Äî e-pasts, vards, profila attels; (2) Sludinajuma saturs ‚Äî virsraksts, apraksts, bud≈æets, atra≈°anas vieta; (3) Tehniskie dati ‚Äî IP adrese, parlukprogrammas tips, ierices informacija (automatiski).",
     },
     {
       title: "Kapec vacam datus",
       content:
-        "Datus izmantojam, lai: (1) nodroöinatu platformas pamatfunkcionalitati; (2) noverstu krapöanu un launpratigu izmantoöanu; (3) sazinatos ar lietotajiem par vinu sludinajumiem; (4) uzlabotu platformas kvalitati.",
+        "Datus izmantojam, lai: (1) nodro≈°inatu platformas pamatfunkcionalitati; (2) noverstu krap≈°anu un launpratigu izmanto≈°anu; (3) sazinatos ar lietotajiem par vinu sludinajumiem; (4) uzlabotu platformas kvalitati.",
     },
     {
       title: "Cik ilgi glabajam",
       content:
-        "Sludinajumi tiek glabati 30 dienas no publiceöanas briûa (vai lidz dzeöanai). Lietotaju kontu dati tiek glabati, kamer konts ir aktivs. Ja dzesi savu kontu, visi saistitie dati tiks dzesti 30 dienu laika.",
+        "Sludinajumi tiek glabati 30 dienas no publice≈°anas bri≈æa (vai lidz dze≈°anai). Lietotaju kontu dati tiek glabati, kamer konts ir aktivs. Ja dzesi savu kontu, visi saistitie dati tiks dzesti 30 dienu laika.",
     },
     {
       title: "Tavas tiesibas (GDPR)",
       content:
-        "Saskana ar GDPR tev ir tiesibas: (1) pieklut saviem datiem; (2) labot neprecizus datus; (3) dzest savus datus ('tiesibas tikt aizmirstam'); (4) ierobeûot datu apstradi; (5) iebilst pret datu apstradi; (6) parnest datus. Lai izmantotu öis tiesibas, raksti uz info@jobsy.lv.",
+        "Saskana ar GDPR tev ir tiesibas: (1) pieklut saviem datiem; (2) labot neprecizus datus; (3) dzest savus datus ('tiesibas tikt aizmirstam'); (4) ierobe≈æot datu apstradi; (5) iebilst pret datu apstradi; (6) parnest datus. Lai izmantotu ≈°is tiesibas, raksti uz info@jobsy.lv.",
     },
     {
       title: "Sikdatnes un localStorage",
       content:
-        "Mes izmantojam minimalu sikdatnu skaitu: (1) Sesijas sikdatne ó autentifikacijai; (2) localStorage ó valodas preferences saglabaöanai. Mes nesekojam lietotajiem treöo puöu sikdatnes.",
+        "Mes izmantojam minimalu sikdatnu skaitu: (1) Sesijas sikdatne ‚Äî autentifikacijai; (2) localStorage ‚Äî valodas preferences saglaba≈°anai. Mes nesekojam lietotajiem tre≈°o pu≈°u sikdatnes.",
     },
     {
       title: "Kontakti",

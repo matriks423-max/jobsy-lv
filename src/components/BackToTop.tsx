@@ -13,7 +13,7 @@ export default function BackToTop() {
 
   return (
     <>
-      {/* Mobile "Post a Job" FAB — bottom-left, always visible on mobile */}
+      {/* Mobile "Post a Job" FAB â€” bottom-left, always visible on mobile */}
       <Link
         to="/create"
         aria-label="Post a job"
@@ -22,7 +22,7 @@ export default function BackToTop() {
         <Plus className="h-5 w-5" />
       </Link>
 
-      {/* Back to top — bottom-right, visible after scroll */}
+      {/* Back to top â€” bottom-right, visible after scroll */}
       {visible && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

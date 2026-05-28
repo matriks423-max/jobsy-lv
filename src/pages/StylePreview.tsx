@@ -2,16 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 
 // --- Style A: "Craft Market" -------------------------------------------------
-// Warm terracotta editorial — think Italian market posters meets Brutalist zine.
+// Warm terracotta editorial â€” think Italian market posters meets Brutalist zine.
 // Bodoni Moda display + DM Mono details. Terracotta / parchment / ink.
 // Grid-breaking layout, torn-edge dividers, type-as-texture.
 
 function StyleA({ active }: { active: boolean }) {
   const cards = [
-    { type: "OFFER", emoji: "??", title: "Santehnikis — atra atsaukšanas", city: "Riga", price: "€30/st", tag: "corn" },
-    { type: "NEED", emoji: "??", title: "Nepieciešams šoferis brivdienas", city: "Jurmala", price: "€80", tag: "rose" },
-    { type: "OFFER", emoji: "??", title: "Timekla dizains un Figma", city: "Remote", price: "€45/st", tag: "corn" },
-    { type: "NEED", emoji: "??", title: "Mekleju darznieku", city: "Liepaja", price: "€120", tag: "rose" },
+    { type: "OFFER", emoji: "??", title: "Santehnikis â€” atra atsaukÅ¡anas", city: "Riga", price: "â‚¬30/st", tag: "corn" },
+    { type: "NEED", emoji: "??", title: "NepiecieÅ¡ams Å¡oferis brivdienas", city: "Jurmala", price: "â‚¬80", tag: "rose" },
+    { type: "OFFER", emoji: "??", title: "Timekla dizains un Figma", city: "Remote", price: "â‚¬45/st", tag: "corn" },
+    { type: "NEED", emoji: "??", title: "Mekleju darznieku", city: "Liepaja", price: "â‚¬120", tag: "rose" },
   ];
 
   return (
@@ -82,7 +82,7 @@ function StyleA({ active }: { active: boolean }) {
           lineHeight: 1.6, maxWidth: 260, marginBottom: 20,
           letterSpacing: "0.02em",
         }}>
-          Tukstoši darbu, pakalpojumu un piedavajumu visa Latvija — katru dienu.
+          TukstoÅ¡i darbu, pakalpojumu un piedavajumu visa Latvija â€” katru dienu.
         </p>
 
         <div style={{ display: "flex", gap: 0 }}>
@@ -163,16 +163,16 @@ function StyleA({ active }: { active: boolean }) {
 }
 
 // --- Style B: "Neon District" -------------------------------------------------
-// Dark urban night market — cyberpunk meets Latvian hustle.
+// Dark urban night market â€” cyberpunk meets Latvian hustle.
 // Syne display + Fira Code data. Near-black background, electric lime & pink.
 // Dense, data-rich, glowing cards.
 
 function StyleB({ active }: { active: boolean }) {
   const jobs = [
-    { id: "J-0041", type: "OFFER", title: "Elektrikis — sertificets", city: "Riga", price: "€35/st", cat: "Remontdarbi", hot: true },
-    { id: "J-0042", type: "NEED", title: "Mekleju aukli 3× nedela", city: "Jurmala", price: "€200/men", cat: "Aprupe", hot: false },
-    { id: "J-0043", type: "OFFER", title: "Fotografija — portreti, pasakumi", city: "Latvia", price: "€80+", cat: "Radošais", hot: true },
-    { id: "J-0044", type: "NEED", title: "React izstradatajs, nepilna slodze", city: "Remote", price: "€45/st", cat: "IT", hot: false },
+    { id: "J-0041", type: "OFFER", title: "Elektrikis â€” sertificets", city: "Riga", price: "â‚¬35/st", cat: "Remontdarbi", hot: true },
+    { id: "J-0042", type: "NEED", title: "Mekleju aukli 3Ã— nedela", city: "Jurmala", price: "â‚¬200/men", cat: "Aprupe", hot: false },
+    { id: "J-0043", type: "OFFER", title: "Fotografija â€” portreti, pasakumi", city: "Latvia", price: "â‚¬80+", cat: "RadoÅ¡ais", hot: true },
+    { id: "J-0044", type: "NEED", title: "React izstradatajs, nepilna slodze", city: "Remote", price: "â‚¬45/st", cat: "IT", hot: false },
   ];
 
   return (
@@ -233,7 +233,7 @@ function StyleB({ active }: { active: boolean }) {
           padding: "4px 12px", marginBottom: 14, borderRadius: 2,
         }}>
           <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#A2FF57", display: "inline-block" }} />
-          <span style={{ fontFamily: "'Fira Code', monospace", fontSize: 10, color: "#A2FF57", letterSpacing: "0.08em" }}>LIVE — 47 JAUNI SLUDINAJUMI</span>
+          <span style={{ fontFamily: "'Fira Code', monospace", fontSize: 10, color: "#A2FF57", letterSpacing: "0.08em" }}>LIVE â€” 47 JAUNI SLUDINAJUMI</span>
         </div>
 
         <h1 style={{
@@ -249,7 +249,7 @@ function StyleB({ active }: { active: boolean }) {
           fontFamily: "'Fira Code', monospace", fontSize: 11, color: "rgba(255,255,255,0.4)",
           marginBottom: 18, lineHeight: 1.6, letterSpacing: "0.01em",
         }}>
-          Darbi, pakalpojumi, sludinajumi — <span style={{ color: "#A2FF57" }}>reali cilveki</span>, reals darbs.
+          Darbi, pakalpojumi, sludinajumi â€” <span style={{ color: "#A2FF57" }}>reali cilveki</span>, reals darbs.
         </p>
 
         <div style={{
@@ -287,7 +287,7 @@ function StyleB({ active }: { active: boolean }) {
             <div style={{ fontFamily: "'Fira Code', monospace", fontSize: 8, color: "rgba(255,255,255,0.2)", width: 44, flexShrink: 0 }}>{job.id}</div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: job.hot ? "#fff" : "rgba(255,255,255,0.75)", lineHeight: 1.3 }}>{job.title}</div>
-              <div style={{ fontFamily: "'Fira Code', monospace", fontSize: 9, color: "rgba(255,255,255,0.3)", marginTop: 2 }}>{job.city} · {job.cat}</div>
+              <div style={{ fontFamily: "'Fira Code', monospace", fontSize: 9, color: "rgba(255,255,255,0.3)", marginTop: 2 }}>{job.city} Â· {job.cat}</div>
             </div>
             {job.hot && (
               <span style={{
@@ -321,15 +321,15 @@ function StyleB({ active }: { active: boolean }) {
 }
 
 // --- Style C: "Linen & Gold" --------------------------------------------------
-// Luxury editorial classified — like a high-end magazine's job section.
+// Luxury editorial classified â€” like a high-end magazine's job section.
 // Cormorant Garamond display + Outfit body. Cream / warm white / deep navy / gold.
 // Generous whitespace, refined typographic hierarchy.
 
 function StyleC({ active }: { active: boolean }) {
   const listings = [
-    { num: "01", type: "Piedavajums", title: "Santehnikis ar sertifikatu", loc: "Riga", budget: "30€ / h", period: "2h atpakal" },
-    { num: "02", type: "Mekle", title: "Nepieciešams tirišanas specialists", loc: "Jurmala", budget: "150€", period: "Šodien" },
-    { num: "03", type: "Piedavajums", title: "Majas lapas dizains un izstrade", loc: "Remote", budget: "no 400€", period: "Vakar" },
+    { num: "01", type: "Piedavajums", title: "Santehnikis ar sertifikatu", loc: "Riga", budget: "30â‚¬ / h", period: "2h atpakal" },
+    { num: "02", type: "Mekle", title: "NepiecieÅ¡ams tiriÅ¡anas specialists", loc: "Jurmala", budget: "150â‚¬", period: "Å odien" },
+    { num: "03", type: "Piedavajums", title: "Majas lapas dizains un izstrade", loc: "Remote", budget: "no 400â‚¬", period: "Vakar" },
   ];
 
   return (
@@ -372,7 +372,7 @@ function StyleC({ active }: { active: boolean }) {
       <div style={{ padding: "36px 28px 28px" }}>
         {/* Category pills */}
         <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-          {["Visi", "Remontdarbi", "IT", "Aprupe", "Radošais"].map((c, i) => (
+          {["Visi", "Remontdarbi", "IT", "Aprupe", "RadoÅ¡ais"].map((c, i) => (
             <span key={c} style={{
               fontSize: 11, padding: "4px 12px",
               border: i === 0 ? "1px solid #1B2B4B" : "1px solid #D8D2C8",
@@ -400,7 +400,7 @@ function StyleC({ active }: { active: boolean }) {
             <p style={{
               fontSize: 13, color: "#7A7268", lineHeight: 1.65, maxWidth: 260, marginBottom: 20,
             }}>
-              Pievienojies tukstošiem latvieša, kas katru dienu atrod labus darbus un uzticamus pakalpojumus.
+              Pievienojies tukstoÅ¡iem latvieÅ¡a, kas katru dienu atrod labus darbus un uzticamus pakalpojumus.
             </p>
 
             <div style={{ display: "flex", gap: 0, maxWidth: 340 }}>
@@ -476,25 +476,25 @@ function StyleC({ active }: { active: boolean }) {
 const STYLES = [
   {
     id: "a",
-    label: "A — Craft Market",
+    label: "A â€” Craft Market",
     tag: "Editorial",
     tagColor: "#C4603A",
     tagBg: "#FFF0E8",
-    desc: "Terracotta editorial — Italian market posters meets brutalist zine. Bodoni + DM Mono, torn-paper rules, type as texture. Warm, artisanal, unmistakably local.",
+    desc: "Terracotta editorial â€” Italian market posters meets brutalist zine. Bodoni + DM Mono, torn-paper rules, type as texture. Warm, artisanal, unmistakably local.",
     component: StyleA,
   },
   {
     id: "b",
-    label: "B — Neon District",
+    label: "B â€” Neon District",
     tag: "Dark Urban",
     tagColor: "#A2FF57",
     tagBg: "rgba(162,255,87,0.1)",
-    desc: "Dark urban night market — cyberpunk meets Latvian hustle. Syne + Fira Code, electric lime on near-black, dense data grid. Bold, fast, memorable.",
+    desc: "Dark urban night market â€” cyberpunk meets Latvian hustle. Syne + Fira Code, electric lime on near-black, dense data grid. Bold, fast, memorable.",
     component: StyleB,
   },
   {
     id: "c",
-    label: "C — Linen & Gold",
+    label: "C â€” Linen & Gold",
     tag: "Luxury",
     tagColor: "#C9A84C",
     tagBg: "#FDF8EE",
@@ -517,7 +517,7 @@ export default function StylePreview() {
 
       <div style={{ textAlign: "center", marginBottom: 48 }}>
         <p style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "#555", marginBottom: 8 }}>
-          jobsy.lv · Visual Redesign · 2026
+          jobsy.lv Â· Visual Redesign Â· 2026
         </p>
         <h1 style={{ fontSize: 32, fontWeight: 800, color: "#fff", letterSpacing: "-1px", marginBottom: 10 }}>
           Pick your style direction
@@ -589,7 +589,7 @@ export default function StylePreview() {
                   letterSpacing: "0.04em", transition: "background 0.2s, color 0.2s",
                 }}
               >
-                {picked === id ? "? Izvelets" : `Izveleties ${label.split("—")[1].trim()} ?`}
+                {picked === id ? "? Izvelets" : `Izveleties ${label.split("â€”")[1].trim()} ?`}
               </button>
             </div>
           </motion.div>

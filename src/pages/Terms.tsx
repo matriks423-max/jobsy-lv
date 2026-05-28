@@ -9,7 +9,7 @@ export default function Terms() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = "Lietoöanas noteikumi ó jobsy.lv";
+    document.title = "Lieto≈°anas noteikumi ‚Äî jobsy.lv";
     return () => { document.title = prev; };
   }, []);
 
@@ -17,32 +17,32 @@ export default function Terms() {
     {
       title: "Visparigie noteikumi",
       content:
-        "Lietojot jobsy.lv, tu piekriti öiem noteikumiem. Platforma ir paredzeta personiskai, nekomercialai lietoöanai. Aizliegts izmantot platformu nelikumigiem nolukiem, krapöanai vai aizskaroöa satura publiceöanai.",
+        "Lietojot jobsy.lv, tu piekriti ≈°iem noteikumiem. Platforma ir paredzeta personiskai, nekomercialai lieto≈°anai. Aizliegts izmantot platformu nelikumigiem nolukiem, krap≈°anai vai aizskaro≈°a satura publice≈°anai.",
     },
     {
       title: "Sludinajumi",
       content:
-        "Katrs sludinajums ir aktivs 30 dienas no publiceöanas briûa. Pec tam tas automatiski beidzas. Aizliegts publicet: (1) meligu vai maldinoöu informaciju; (2) aizskaroöu, diskriminejoöu vai nelikumigu saturu; (3) sludinajumus, kas nav saistiti ar pakalpojumu sniegöanu vai mekleöanu.",
+        "Katrs sludinajums ir aktivs 30 dienas no publice≈°anas bri≈æa. Pec tam tas automatiski beidzas. Aizliegts publicet: (1) meligu vai maldino≈°u informaciju; (2) aizskaro≈°u, diskriminejo≈°u vai nelikumigu saturu; (3) sludinajumus, kas nav saistiti ar pakalpojumu snieg≈°anu vai mekle≈°anu.",
     },
     {
       title: "Maksajumi",
       content:
-        "Pirmais sludinajums katram jaunam lietotajam ir bez maksas. Katrs nakamais sludinajums maksa Ä2.00 (divi eiro). Maksajumi tiek apstradati caur Stripe. Maksajumi nav atmaksajami, ja sludinajums jau ir publicets.",
+        "Pirmais sludinajums katram jaunam lietotajam ir bez maksas. Katrs nakamais sludinajums maksa ‚Ç¨2.00 (divi eiro). Maksajumi tiek apstradati caur Stripe. Maksajumi nav atmaksajami, ja sludinajums jau ir publicets.",
     },
     {
       title: "Atbildiba",
       content:
-        "jobsy.lv ir tiks starpniecibas platforma. Mes neesam atbildigi par darijumiem, kas notiek starp lietotajiem. Katrs lietotajs ir atbildigs par savu ricibu, darijumu droöibu un nodoklu saistibam.",
+        "jobsy.lv ir tiks starpniecibas platforma. Mes neesam atbildigi par darijumiem, kas notiek starp lietotajiem. Katrs lietotajs ir atbildigs par savu ricibu, darijumu dro≈°ibu un nodoklu saistibam.",
     },
     {
-      title: "Kontu izbeigöana",
+      title: "Kontu izbeig≈°ana",
       content:
-        "Mes paturam tiesibas dzest kontu vai bloket piekluvi, ja lietotajs parkapj öos noteikumus, publice aizskaroöu saturu vai iesaistas krapöana. Konta ipaönieks var jebkura laika dzest savu kontu.",
+        "Mes paturam tiesibas dzest kontu vai bloket piekluvi, ja lietotajs parkapj ≈°os noteikumus, publice aizskaro≈°u saturu vai iesaistas krap≈°ana. Konta ipa≈°nieks var jebkura laika dzest savu kontu.",
     },
     {
       title: "Grozijumi",
       content:
-        "Mes paturam tiesibas jebkura laika mainit öos noteikumus. Par butiskiem grozijumiem pazinosim e-pasta vai platforma vismaz 14 dienas pirms staöanas speka.",
+        "Mes paturam tiesibas jebkura laika mainit ≈°os noteikumus. Par butiskiem grozijumiem pazinosim e-pasta vai platforma vismaz 14 dienas pirms sta≈°anas speka.",
     },
     {
       title: "Kontakti",

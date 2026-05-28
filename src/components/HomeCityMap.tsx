@@ -25,7 +25,7 @@ function InvalidateSizeOnMount() {
   return null;
 }
 
-// Fix Leaflet default icon paths in Vite (idempotent — safe to call in multiple files)
+// Fix Leaflet default icon paths in Vite (idempotent â€” safe to call in multiple files)
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
 L.Icon.Default.mergeOptions({ iconRetinaUrl: markerIcon2x, iconUrl: markerIcon, shadowUrl: markerShadow });
 import { t } from "@/lib/i18n";
