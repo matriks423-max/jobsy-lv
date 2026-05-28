@@ -3,6 +3,7 @@ import { useNavigate, Link, useParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { CATEGORIES, CITIES } from "@/lib/categories";
+import { PRESET_IMAGES } from "@/lib/preset-images";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
@@ -29,10 +30,10 @@ import {
   Plus,
   Loader2,
   Info,
-  ImagePlus,
   X,
   Trash2,
   Pencil,
+  ImagePlus,
 } from "lucide-react";
 
 export default function CreatePost() {
@@ -54,6 +55,7 @@ export default function CreatePost() {
   const [whenText, setWhenText] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
@@ -295,7 +297,7 @@ export default function CreatePost() {
             <label className="mb-2 block font-body text-sm font-bold text-on-surface">
               {t(locale, "createPost.categoryLabel")}
             </label>
-            <Select value={category} onValueChange={setCategory}>
+            <Select value={category} onValueChange={(v) => { setCategory(v); setSelectedPreset(null); setImages([]); }}>
               <SelectTrigger
                 className={`h-12 rounded-xl border-2 ${
                   errors.category ? "border-error" : "border-outline-variant"
@@ -364,56 +366,73 @@ export default function CreatePost() {
             </div>
           </div>
 
-          {/* Image Upload */}
+          {/* Preset image picker */}
           <div className="mb-6">
             <label className="mb-2 block font-body text-sm font-bold text-on-surface">
-              {t(locale, "createPost.imagesLabel")} ({images.length}/5)
+              {t(locale, "createPost.imagesLabel")}
             </label>
-            <div className="flex flex-wrap gap-3">
-              {images.map((img, idx) => (
-                <div
-                  key={idx}
-                  className="relative h-24 w-24 overflow-hidden rounded-xl border border-outline-variant"
-                >
-                  <img
-                    src={img}
-                    alt=""
-                    className="h-full w-full object-cover"
-                  />
+            {(() => {
+              const presets = PRESET_IMAGES[category] ?? PRESET_IMAGES["other"];
+              return (
+                <div className="flex flex-wrap items-center gap-3">
+                  {/* No image option */}
                   <button
-                    onClick={() => removeImage(idx)}
-                    className="absolute right-1 top-1 rounded-full bg-primary p-1 text-white"
+                    type="button"
+                    onClick={() => { setSelectedPreset(null); setImages([]); }}
+                    className={`flex h-20 w-32 flex-col items-center justify-center rounded-xl border-2 transition-all ${
+                      selectedPreset === null
+                        ? "border-primary bg-surface-cream"
+                        : "border-outline-variant bg-white hover:border-outline"
+                    }`}
                   >
-                    <X className="h-3 w-3" />
+                    <X className="h-5 w-5 text-on-surface-variant" />
+                    <span className="mt-1 text-[10px] text-on-surface-variant">Nav attela</span>
                   </button>
-                </div>
-              ))}
-              {images.length < 5 && (
-                <button
-                  onClick={() => fileRef.current?.click()}
-                  disabled={uploading}
-                  className="flex h-24 w-24 flex-col items-center justify-center rounded-xl border-2 border-dashed border-outline-variant bg-surface-cream hover:border-primary"
-                >
-                  {uploading ? (
-                    <Loader2 className="h-5 w-5 animate-spin text-on-surface-variant" />
-                  ) : (
-                    <>
-                      <ImagePlus className="h-6 w-6 text-on-surface-variant" />
-                      <span className="mt-1 text-[10px] text-on-surface-variant">
-                        {t(locale, "createPost.imagesAdd")}
-                      </span>
-                    </>
+
+                  {/* Preset options */}
+                  {presets.map((url, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => { setSelectedPreset(url); setImages([url]); }}
+                      className={`relative h-20 w-32 overflow-hidden rounded-xl border-2 transition-all ${
+                        selectedPreset === url
+                          ? "border-primary ring-2 ring-primary ring-offset-1"
+                          : "border-outline-variant hover:border-outline"
+                      }`}
+                    >
+                      <img src={url} alt="" className="h-full w-full object-cover" />
+                    </button>
+                  ))}
+
+                  {/* Admin upload option */}
+                  {user?.role === "admin" && (
+                    <button
+                      type="button"
+                      onClick={() => fileRef.current?.click()}
+                      disabled={uploading}
+                      className="flex h-20 w-32 flex-col items-center justify-center rounded-xl border-2 border-dashed border-outline-variant bg-surface-cream hover:border-primary"
+                    >
+                      {uploading ? (
+                        <Loader2 className="h-5 w-5 animate-spin text-on-surface-variant" />
+                      ) : (
+                        <>
+                          <ImagePlus className="h-5 w-5 text-on-surface-variant" />
+                          <span className="mt-1 text-[10px] text-on-surface-variant">Upload</span>
+                        </>
+                      )}
+                    </button>
                   )}
-                </button>
-              )}
-              <input
-                ref={fileRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageUpload}
-              />
-            </div>
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
+                </div>
+              );
+            })()}
           </div>
 
           {/* City + Region */}

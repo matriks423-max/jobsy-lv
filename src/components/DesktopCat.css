@@ -3,10 +3,14 @@
 .desktop-cat {
   position: fixed;
   bottom: 0;
-  z-index: 9998;
+  z-index: 39;
   pointer-events: none;
   user-select: none;
   line-height: 0;
+}
+
+@media (max-width: 767px) {
+  .desktop-cat { display: none; }
 }
 .desktop-cat svg {
   display: block;
