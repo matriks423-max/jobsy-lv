@@ -1,4 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <rect width="32" height="32" rx="7" fill="#003527"/>
-  <text x="16" y="23" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="700" fill="#ffffff" letter-spacing="-1">j</text>
+  <!-- Ears -->
+  <polygon points="8,15 11,5 14,15" fill="white"/>
+  <polygon points="18,15 21,5 24,15" fill="white"/>
+  <!-- Inner ears -->
+  <polygon points="9.2,14 11,7.5 12.8,14" fill="#4caf82" opacity="0.5"/>
+  <polygon points="19.2,14 21,7.5 22.8,14" fill="#4caf82" opacity="0.5"/>
+  <!-- Face -->
+  <circle cx="16" cy="20" r="9.5" fill="white"/>
+  <!-- Eyes (happy arc) -->
+  <path d="M11.5 19.5 Q13 17.5 14.5 19.5" stroke="#003527" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+  <path d="M17.5 19.5 Q19 17.5 20.5 19.5" stroke="#003527" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+  <!-- Nose -->
+  <ellipse cx="16" cy="22" rx="1.2" ry="0.9" fill="#ff8a80"/>
+  <!-- Chin whiskers hint -->
+  <line x1="8" y1="22" x2="13" y2="22.5" stroke="#c8e6c9" stroke-width="0.8"/>
+  <line x1="19" y1="22.5" x2="24" y2="22" stroke="#c8e6c9" stroke-width="0.8"/>
 </svg>
