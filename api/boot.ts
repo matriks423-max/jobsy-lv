@@ -602,6 +602,14 @@ if (env.isProduction) {
   const { serveStaticFiles } = await import("./lib/vite");
   serveStaticFiles(app);
 
+  // Run safe additive migrations on startup
+  try {
+    const { sql: drizzleSql } = await import("drizzle-orm");
+    await getDb().execute(drizzleSql`ALTER TABLE referrals ADD COLUMN IF NOT EXISTS referredPostCount INT UNSIGNED NOT NULL DEFAULT 0`);
+  } catch {
+    // Column may already exist or DB doesn't support IF NOT EXISTS — harmless
+  }
+
   const port = parseInt(process.env.PORT || "3000");
   serve({ fetch: app.fetch, port }, () => {
     console.log(`Server running on http://localhost:${port}/`);
