@@ -477,9 +477,9 @@ function CatSVG() {
         <path d="M33,36 Q35,47 33,58" stroke="#D4834A" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.5" />
         <g className="cat-leg cat-leg-bl"><rect x="18" y="57" width="7" height="11" rx="3.5" fill="#D4834A" /></g>
         <g className="cat-leg cat-leg-br"><rect x="26" y="57" width="7" height="11" rx="3.5" fill="#E8953A" /></g>
+        <circle cx="57" cy="30" r="17" fill="#F4A261" />
         <polygon points="42,20 50,7 58,20" fill="#E8953A" />
         <polygon points="44,20 50,11 56,20" fill="#FFBBA0" />
-        <circle cx="57" cy="30" r="17" fill="#F4A261" />
         <path d="M49,15 Q51,23 49,30" stroke="#D4834A" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.45" />
         <path d="M54,13 Q56,21 54,28" stroke="#D4834A" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.45" />
         <polygon points="55,16 63,3 71,16" fill="#F4A261" />

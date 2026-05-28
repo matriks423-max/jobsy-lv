@@ -154,7 +154,7 @@ function FilterPanel({
                 }`}
               >
                 <Icon className="h-3.5 w-3.5 shrink-0" />
-                {t(locale, `categories.${cat.key}` as never)}
+                <span className="truncate">{t(locale, `categories.${cat.key}` as never)}</span>
               </button>
             );
           })}
@@ -275,8 +275,8 @@ export default function Browse() {
   useEffect(() => {
     const prev = document.title;
     document.title = debouncedSearch
-      ? `"${debouncedSearch}" — jobsy.lv`
-      : t(locale, "browse.title") + " — jobsy.lv";
+      ? `"${debouncedSearch}" ï¿½ jobsy.lv`
+      : t(locale, "browse.title") + " ï¿½ jobsy.lv";
 
     const desc = locale === "lv"
       ? "Atrodi pakalpojumu sniedzejus vai piedava savas prasmes Latvija."
@@ -345,7 +345,7 @@ export default function Browse() {
     if (category !== "all") parts.push(t(locale, `categories.${category}` as never));
     if (city !== "all") parts.push(t(locale, `cities.${city}` as never));
     if (debouncedSearch) parts.push(`"${debouncedSearch}"`);
-    return parts.join(" · ") || t(locale, "browse.title");
+    return parts.join(" ï¿½ ") || t(locale, "browse.title");
   };
 
   const handleOpenSaveAlert = () => {

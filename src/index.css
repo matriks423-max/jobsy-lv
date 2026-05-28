@@ -7,6 +7,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
 
 
+/* ─── Leaflet: cap z-indexes below Sheet/Navbar overlays (z-50) ── */
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 1 !important;
+}
+
 /* ─── Navbar scroll blur ───────────────────────────────────── */
 nav.navbar-scrolled {
   background-color: rgba(249, 250, 247, 0.88);

@@ -182,6 +182,23 @@ export default function Navbar() {
           </button>
         </div>
 
+        {/* Mobile language switcher — visible in bar */}
+        <div className="flex items-center gap-0.5 md:hidden">
+          {(["lv", "ru", "en"] as const).map((l) => (
+            <button
+              key={l}
+              onClick={() => setLocale(l)}
+              className={`rounded-md px-2 py-1 font-label text-label-sm font-semibold transition-colors ${
+                locale === l
+                  ? "bg-primary text-white"
+                  : "text-on-surface-variant hover:text-primary"
+              }`}
+            >
+              {l.toUpperCase()}
+            </button>
+          ))}
+        </div>
+
         {/* Mobile hamburger */}
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetTrigger asChild className="md:hidden">
