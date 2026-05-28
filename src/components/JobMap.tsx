@@ -89,6 +89,7 @@ export default function JobMap({ posts }: JobMapProps) {
   const mappable = posts.filter(({ post }) => getCityCoords(post.city) !== null);
 
   return (
+    <div className="isolate">
     <MapContainer
       center={[56.88, 24.6]}
       zoom={8}
@@ -127,5 +128,6 @@ export default function JobMap({ posts }: JobMapProps) {
         );
       })}
     </MapContainer>
+    </div>
   );
 }
