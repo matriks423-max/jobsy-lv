@@ -293,7 +293,7 @@ export default function PostDetail() {
             {/* Type badge */}
             <span className={`rounded px-2.5 py-1 font-label text-label-sm uppercase ${
               post.type === "need"
-                ? "bg-surface-container text-primary-DEFAULT"
+                ? "bg-surface-cream text-primary-DEFAULT"
                 : "bg-secondary-container/30 text-secondary-DEFAULT"
             }`}>
               {post.type === "need" ? t(locale, "browse.typeNeed") : t(locale, "browse.typeOffer")}
@@ -364,7 +364,7 @@ export default function PostDetail() {
           <span className={`inline-flex items-center gap-1 rounded-full px-3 py-0.5 font-label text-label-sm font-medium ${
             data.post.filled
               ? "bg-success-emerald/10 text-success-emerald"
-              : "bg-surface-container text-on-surface-variant"
+              : "bg-surface-cream text-on-surface-variant"
           }`}>
             {data.post.filled
               ? `✓ ${t(locale, "postDetail.statusFilled")}`
@@ -427,7 +427,7 @@ export default function PostDetail() {
                 {profile?.avatarUrl ? (
                   <img src={profile.avatarUrl} alt="" className="h-12 w-12 rounded-full object-cover ring-2 ring-outline-variant" />
                 ) : (
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-container text-primary-DEFAULT">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-cream text-primary-DEFAULT">
                     <span className="font-headline text-lg font-bold">{profile?.name?.[0] ?? "?"}</span>
                   </div>
                 )}
@@ -684,7 +684,7 @@ export default function PostDetail() {
               <button
                 key={id}
                 onClick={() => handleShare(id)}
-                className="flex flex-col items-center gap-2 rounded-xl bg-surface-cream p-4 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-primary-DEFAULT"
+                className="flex flex-col items-center gap-2 rounded-xl bg-surface-cream p-4 text-on-surface-variant transition-colors hover:bg-surface-cream hover:text-primary-DEFAULT"
               >
                 {icon}
                 <span className="font-label text-label-sm">{label}</span>

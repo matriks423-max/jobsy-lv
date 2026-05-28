@@ -29,10 +29,11 @@ import { createContact, hasContacted, createReport } from "./queries/reports";
 import { hasInterested, createInterest } from "./queries/interests";
 import { sendInterestNotification, sendContactNotification } from "./lib/email";
 import { atomicRewardReferral } from "./queries/referrals";
-import { addFreePostCredit } from "./queries/profiles";
+import { grantCredits } from "./queries/profiles";
 import { createCheckoutSession } from "./stripe";
 import { moderateContent, softFlagCheck } from "./lib/moderation";
 import { sendPostPublished } from "./lib/email";
+import { notifyMatchingSavedSearches } from "./lib/notify-searches";
 
 const MAX_POSTS_PER_DAY = 5;
 
@@ -262,6 +263,15 @@ export const postsRouter = createRouter({
       await checkAndRewardReferralOnPost(ctx.user.id);
       if (!needsReview && profile.email) {
         void sendPostPublished(profile.email, input.title, insertId);
+        void notifyMatchingSavedSearches({
+          id: insertId,
+          authorUserId: ctx.user.id,
+          type: input.type,
+          category: input.category,
+          city: input.city ?? null,
+          title: input.title,
+          description: input.description ?? null,
+        });
       }
 
       return { postId: insertId, requiresPayment: false, needsReview };
@@ -581,6 +591,15 @@ export const postsRouter = createRouter({
       if (profile?.email) {
         void sendPostPublished(profile.email, postResult.post.title, input.postId);
       }
+      void notifyMatchingSavedSearches({
+        id: input.postId,
+        authorUserId: ctx.user.id,
+        type: postResult.post.type,
+        category: postResult.post.category,
+        city: postResult.post.city ?? null,
+        title: postResult.post.title,
+        description: postResult.post.description ?? null,
+      });
 
       return { success: true, alreadyActive: false };
     }),
@@ -650,9 +669,19 @@ export const postsRouter = createRouter({
     .mutation(async ({ input }) => {
       const postResult = await getPostWithProfile(input.postId);
       await updatePost(input.postId, { status: "active" });
-      // Notify the post author that their post passed review
       if (postResult?.profile?.email) {
         void sendPostPublished(postResult.profile.email, postResult.post.title, input.postId);
+      }
+      if (postResult?.post) {
+        void notifyMatchingSavedSearches({
+          id: input.postId,
+          authorUserId: postResult.post.userId,
+          type: postResult.post.type,
+          category: postResult.post.category,
+          city: postResult.post.city ?? null,
+          title: postResult.post.title,
+          description: postResult.post.description ?? null,
+        });
       }
       return { success: true };
     }),
@@ -954,6 +983,6 @@ async function checkAndRewardReferralOnPost(userId: number) {
   // preventing double-reward if two posts are created simultaneously.
   const referrerId = await atomicRewardReferral(userId);
   if (referrerId !== null) {
-    await addFreePostCredit(referrerId);
+    await grantCredits(referrerId, 500, "Referral reward: referred user published 2 posts within 30 days");
   }
 }

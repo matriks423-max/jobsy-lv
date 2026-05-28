@@ -79,9 +79,10 @@ export default function Category() {
 
   // Set document title + meta description for SEO
   useEffect(() => {
-    if (seo) {
-      document.title = `${seo.heading} � jobsy.lv`;
-      // Inject meta description
+    const catName = catInfo ? t(locale, `categories.${catInfo.key}` as never) : "";
+    if (catName) {
+      const prev = document.title;
+      document.title = `${catName} darbi — jobsy.lv`;
       let meta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
       const created = !meta;
       if (!meta) {
@@ -89,14 +90,14 @@ export default function Category() {
         meta.name = "description";
         document.head.appendChild(meta);
       }
-      meta.content = seo.description;
+      meta.content = seo?.description ?? `${catName} sludinājumi Latvijā — jobsy.lv`;
       return () => {
-        document.title = "jobsy.lv � Atrodi palidzibu vai piedava darbu";
+        document.title = prev;
         if (created && meta) document.head.removeChild(meta);
         else if (meta) meta.content = "";
       };
     }
-  }, [seo]);
+  }, [catInfo, locale, seo]);
 
   const { data, isLoading } = trpc.posts.list.useQuery(
     {

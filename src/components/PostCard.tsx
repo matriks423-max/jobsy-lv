@@ -4,6 +4,7 @@ import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { relativeTime } from "@/lib/relativeTime";
 import { CATEGORIES } from "@/lib/categories";
+import { getCategoryImage } from "@/lib/category-images";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Post, Profile } from "@db/schema";
 import {
@@ -41,7 +42,7 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
   const category = CATEGORIES.find((c) => c.key === post.category);
   const CategoryIcon = category ? (iconMap[category.icon] ?? MoreHorizontal) : MoreHorizontal;
   const isNeed = post.type === "need";
-  const heroImage = images?.[0];
+  const heroImage = images?.[0] ?? getCategoryImage(post.category, post.id);
   const isNew = Date.now() - new Date(post.createdAt).getTime() < 24 * 60 * 60 * 1000;
 
   return (
@@ -61,17 +62,17 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
           <div className="absolute left-0 top-0 right-0 h-0.5 bg-accent-coral" />
         )}
 
-        {/* Hero image */}
-        {heroImage && (
-          <div className="aspect-video w-full overflow-hidden">
-            <img
-              src={heroImage}
-              alt={post.title}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              loading="lazy"
-            />
-          </div>
-        )}
+        {/* Hero image — user-uploaded or auto-assigned category photo */}
+        <div className="relative aspect-video w-full overflow-hidden">
+          <img
+            src={heroImage}
+            alt={post.title}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+          {/* Subtle gradient overlay so badges are readable */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+        </div>
 
         <div className="flex flex-1 flex-col p-6">
           {/* Top badges row */}
@@ -80,7 +81,7 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
             <span
               className={`rounded px-2 py-0.5 font-label text-label-sm uppercase ${
                 isNeed
-                  ? "bg-surface-container text-primary-DEFAULT"
+                  ? "bg-surface-cream text-primary-DEFAULT"
                   : "bg-secondary-container/30 text-secondary-DEFAULT"
               }`}
             >

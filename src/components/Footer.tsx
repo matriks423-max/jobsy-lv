@@ -30,7 +30,7 @@ export default function Footer() {
                   className={`rounded-lg px-3 py-1.5 font-label text-label-sm transition-colors duration-200 ${
                     locale === l
                       ? "bg-primary-DEFAULT text-white"
-                      : "bg-surface-container text-on-surface-variant hover:bg-primary-container hover:text-white"
+                      : "bg-surface-cream text-on-surface-variant hover:bg-primary-DEFAULT hover:text-white"
                   }`}
                 >
                   {l.toUpperCase()}
