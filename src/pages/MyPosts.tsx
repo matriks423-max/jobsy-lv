@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -40,7 +40,7 @@ export default function MyPosts() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "nav.myPosts") + " � jobsy.lv";
+    document.title = t(locale, "nav.myPosts") + " ? jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 
@@ -155,23 +155,23 @@ export default function MyPosts() {
               onClick={() => setTab(tVal)}
               className={`flex items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-sm font-medium transition ${
                 tab === tVal
-                  ? "border-primary-DEFAULT bg-accent-coral text-on-surface"
-                  : "border-outline-variant bg-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-on-surface"
+                  ? "border-primary bg-accent-coral text-on-surface"
+                  : "border-outline-variant bg-white text-on-surface-variant hover:border-primary hover:text-on-surface"
               }`}
             >
               {tVal === "active" ? t(locale, "myPosts.tabActive") : tVal === "expired" ? t(locale, "myPosts.tabExpired") : t(locale, "myPosts.tabAll")}
-              <span className={`rounded-full px-2 py-0.5 text-xs ${tab === tVal ? "bg-primary-DEFAULT text-white" : "bg-surface-cream text-on-surface-variant"}`}>
+              <span className={`rounded-full px-2 py-0.5 text-xs ${tab === tVal ? "bg-primary text-white" : "bg-surface-cream text-on-surface-variant"}`}>
                 {counts[tVal]}
               </span>
             </button>
           ))}
-          {/* Analytics tab � visible to all, locked for free users */}
+          {/* Analytics tab ? visible to all, locked for free users */}
           <button
             onClick={() => setTab("analytics")}
             className={`flex items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-sm font-medium transition ${
               tab === "analytics"
-                ? "border-primary-DEFAULT bg-primary-DEFAULT text-white"
-                : "border-outline-variant bg-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-on-surface"
+                ? "border-primary bg-primary text-white"
+                : "border-outline-variant bg-white text-on-surface-variant hover:border-primary hover:text-on-surface"
             }`}
           >
             <BarChart2 className="h-3.5 w-3.5" />
@@ -270,18 +270,18 @@ export default function MyPosts() {
                           <Zap className="h-2.5 w-2.5" />
                           {post.boostType === "bump" ? "Bump" : post.boostType === "featured" ? "Featured" : "Urgent"}
                           {getBoostTimeRemaining(post.boostExpiresAt) && (
-                            <span className="ml-0.5 opacity-70">� {getBoostTimeRemaining(post.boostExpiresAt)}</span>
+                            <span className="ml-0.5 opacity-70">? {getBoostTimeRemaining(post.boostExpiresAt)}</span>
                           )}
                         </span>
                       )}
                     </div>
                     <h3 className="truncate font-body text-base font-bold text-on-surface">{post.title}</h3>
                     <p className="font-body text-xs text-on-surface-variant">
-                      {post.city && `${t(locale, `cities.${post.city}` as never)} � `}
+                      {post.city && `${t(locale, `cities.${post.city}` as never)} ? `}
                       {t(locale, "postDetail.published", {
                         date: new Date(post.createdAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB"),
                       })}
-                      {post.expiresAt && ` � ${t(locale, "myPosts.expires")} ${new Date(post.expiresAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}`}
+                      {post.expiresAt && ` ? ${t(locale, "myPosts.expires")} ${new Date(post.expiresAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}`}
                     </p>
                   </div>
 
@@ -312,7 +312,7 @@ export default function MyPosts() {
                           className={`rounded-lg border-2 px-2 py-2 font-body text-xs font-medium transition ${
                             post.filled
                               ? "border-success-emerald bg-success-emerald/10 text-success-emerald hover:bg-success-emerald"
-                              : "border-outline-variant bg-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-on-surface"
+                              : "border-outline-variant bg-white text-on-surface-variant hover:border-primary hover:text-on-surface"
                           }`}
                         >
                           {post.filled ? "?" : "?"}

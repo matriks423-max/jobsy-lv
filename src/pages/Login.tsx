@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,7 @@ export default function Login() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "login.pageTitle") + " — jobsy.lv";
+    document.title = t(locale, "login.pageTitle") + " � jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 
@@ -92,7 +92,7 @@ export default function Login() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface-off-white px-4">
       <div className="w-full max-w-md">
-        <Link to="/" className="mb-6 inline-flex items-center gap-2 font-label text-label-sm text-on-surface-variant transition-colors hover:text-primary-DEFAULT">
+        <Link to="/" className="mb-6 inline-flex items-center gap-2 font-label text-label-sm text-on-surface-variant transition-colors hover:text-primary">
           <ArrowLeft className="h-4 w-4" />
           {t(locale, "login.back")}
         </Link>
@@ -104,7 +104,7 @@ export default function Login() {
               <button
                 onClick={() => setMode("login")}
                 className={`flex-1 rounded-md py-2 font-label text-label-sm transition-colors duration-150 ${
-                  mode === "login" ? "bg-primary-DEFAULT text-white shadow-xs" : "text-on-surface-variant hover:text-primary-DEFAULT"
+                  mode === "login" ? "bg-primary text-white shadow-xs" : "text-on-surface-variant hover:text-primary"
                 }`}
               >
                 {t(locale, "login.loginTab")}
@@ -112,7 +112,7 @@ export default function Login() {
               <button
                 onClick={() => setMode("register")}
                 className={`flex-1 rounded-md py-2 font-label text-label-sm transition-colors duration-150 ${
-                  mode === "register" ? "bg-primary-DEFAULT text-white shadow-xs" : "text-on-surface-variant hover:text-primary-DEFAULT"
+                  mode === "register" ? "bg-primary text-white shadow-xs" : "text-on-surface-variant hover:text-primary"
                 }`}
               >
                 {t(locale, "login.registerTab")}
@@ -124,7 +124,7 @@ export default function Login() {
               <>
                 <button
                   onClick={() => { window.location.href = getGoogleOAuthUrl(referralCode || undefined); }}
-                  className="mb-4 flex h-12 w-full items-center justify-center gap-3 rounded-lg border border-outline-variant bg-white font-label text-label-sm text-on-surface shadow-card transition-all hover:-translate-y-0.5 hover:border-primary-DEFAULT hover:shadow-card-hover"
+                  className="mb-4 flex h-12 w-full items-center justify-center gap-3 rounded-lg border border-outline-variant bg-white font-label text-label-sm text-on-surface shadow-card transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-card-hover"
                 >
                   <svg className="h-5 w-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -151,7 +151,7 @@ export default function Login() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={t(locale, "login.namePlaceholder")}
-                    className="h-12 rounded-lg border-outline-variant bg-surface-cream font-body focus:border-primary-DEFAULT"
+                    className="h-12 rounded-lg border-outline-variant bg-surface-cream font-body focus:border-primary"
                   />
                   {errors.name && <p className="mt-1 font-label text-label-sm text-error">{errors.name}</p>}
                 </div>
@@ -164,7 +164,7 @@ export default function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t(locale, "login.emailPlaceholder")}
-                  className="h-12 rounded-lg border-outline-variant bg-surface-cream font-body focus:border-primary-DEFAULT"
+                  className="h-12 rounded-lg border-outline-variant bg-surface-cream font-body focus:border-primary"
                 />
                 {errors.email && <p className="mt-1 font-label text-label-sm text-error">{errors.email}</p>}
               </div>
@@ -177,7 +177,7 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={mode === "register" ? t(locale, "login.passwordPlaceholderMin") : t(locale, "login.passwordPlaceholderLogin")}
-                    className="h-12 rounded-lg border-outline-variant bg-surface-cream font-body pr-10 focus:border-primary-DEFAULT"
+                    className="h-12 rounded-lg border-outline-variant bg-surface-cream font-body pr-10 focus:border-primary"
                   />
                   <button
                     type="button"
@@ -190,7 +190,7 @@ export default function Login() {
                 {errors.password && <p className="mt-1 font-label text-label-sm text-error">{errors.password}</p>}
                 {mode === "login" && (
                   <div className="mt-1 text-right">
-                    <Link to="/forgot-password" className="font-label text-label-sm text-primary-DEFAULT hover:underline">
+                    <Link to="/forgot-password" className="font-label text-label-sm text-primary hover:underline">
                       {t(locale, "login.forgotPassword")}
                     </Link>
                   </div>
@@ -209,7 +209,7 @@ export default function Login() {
                     value={referralCode}
                     onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
                     placeholder={t(locale, "login.referralPlaceholder")}
-                    className="h-12 rounded-lg border-outline-variant bg-surface-cream font-body uppercase focus:border-primary-DEFAULT"
+                    className="h-12 rounded-lg border-outline-variant bg-surface-cream font-body uppercase focus:border-primary"
                   />
                 </div>
               )}
@@ -217,7 +217,7 @@ export default function Login() {
               <button
                 onClick={handleSubmit}
                 disabled={loginMutation.isPending || registerMutation.isPending}
-                className="flex h-12 w-full items-center justify-center rounded-lg bg-primary-DEFAULT font-label text-label-md font-bold text-white transition-all hover:bg-on-primary-fixed-variant active:scale-[0.99] disabled:opacity-60"
+                className="flex h-12 w-full items-center justify-center rounded-lg bg-primary font-label text-label-md font-bold text-white transition-all hover:bg-on-primary-fixed-variant active:scale-[0.99] disabled:opacity-60"
               >
                 {loginMutation.isPending || registerMutation.isPending ? (
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />

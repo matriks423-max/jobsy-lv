@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -74,7 +74,7 @@ export default function CreatePost() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = (isEditing ? t(locale, "createPost.editPageTitle") : t(locale, "nav.createPost")) + " — jobsy.lv";
+    document.title = (isEditing ? t(locale, "createPost.editPageTitle") : t(locale, "nav.createPost")) + " � jobsy.lv";
     return () => { document.title = prev; };
   }, [locale, isEditing]);
 
@@ -299,7 +299,7 @@ export default function CreatePost() {
               <SelectTrigger
                 className={`h-12 rounded-xl border-2 ${
                   errors.category ? "border-error" : "border-outline-variant"
-                } bg-white font-body focus:border-primary-DEFAULT`}
+                } bg-white font-body focus:border-primary`}
               >
                 <SelectValue placeholder={t(locale, "createPost.selectPlaceholder")} />
               </SelectTrigger>
@@ -327,7 +327,7 @@ export default function CreatePost() {
               placeholder={t(locale, "createPost.titlePlaceholder")}
               className={`h-12 rounded-xl border-2 ${
                 errors.title ? "border-error" : "border-outline-variant"
-              } bg-white font-body focus:border-primary-DEFAULT`}
+              } bg-white font-body focus:border-primary`}
               maxLength={80}
             />
             <div className="mt-1 flex justify-between">
@@ -351,7 +351,7 @@ export default function CreatePost() {
               placeholder={t(locale, "createPost.descPlaceholder")}
               className={`min-h-[120px] resize-y rounded-xl border-2 ${
                 errors.description ? "border-error" : "border-outline-variant"
-              } bg-white font-body focus:border-primary-DEFAULT`}
+              } bg-white font-body focus:border-primary`}
               maxLength={500}
             />
             <div className="mt-1 flex justify-between">
@@ -382,7 +382,7 @@ export default function CreatePost() {
                   />
                   <button
                     onClick={() => removeImage(idx)}
-                    className="absolute right-1 top-1 rounded-full bg-primary-DEFAULT p-1 text-white"
+                    className="absolute right-1 top-1 rounded-full bg-primary p-1 text-white"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -392,7 +392,7 @@ export default function CreatePost() {
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
-                  className="flex h-24 w-24 flex-col items-center justify-center rounded-xl border-2 border-dashed border-outline-variant bg-surface-cream hover:border-primary-DEFAULT"
+                  className="flex h-24 w-24 flex-col items-center justify-center rounded-xl border-2 border-dashed border-outline-variant bg-surface-cream hover:border-primary"
                 >
                   {uploading ? (
                     <Loader2 className="h-5 w-5 animate-spin text-on-surface-variant" />
@@ -423,7 +423,7 @@ export default function CreatePost() {
                 {t(locale, "createPost.cityLabel")}
               </label>
               <Select value={city} onValueChange={setCity}>
-                <SelectTrigger className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary-DEFAULT">
+                <SelectTrigger className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary">
                   <SelectValue placeholder={t(locale, "createPost.selectPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent className="border border-outline-variant">
@@ -443,7 +443,7 @@ export default function CreatePost() {
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
                 placeholder={t(locale, "createPost.regionPlaceholder")}
-                className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary-DEFAULT"
+                className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary"
               />
             </div>
           </div>
@@ -458,7 +458,7 @@ export default function CreatePost() {
                 value={budgetText}
                 onChange={(e) => setBudgetText(e.target.value)}
                 placeholder={t(locale, "createPost.budgetPlaceholder")}
-                className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary-DEFAULT"
+                className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary"
               />
             </div>
             <div>
@@ -469,7 +469,7 @@ export default function CreatePost() {
                 value={whenText}
                 onChange={(e) => setWhenText(e.target.value)}
                 placeholder={t(locale, "createPost.whenPlaceholder")}
-                className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary-DEFAULT"
+                className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary"
               />
             </div>
           </div>

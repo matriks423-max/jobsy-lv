@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router";
 import { Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
 import { trpc } from "@/providers/trpc";
@@ -19,7 +19,7 @@ export default function ResetPassword() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "resetPassword.pageTitle") + " — jobsy.lv";
+    document.title = t(locale, "resetPassword.pageTitle") + " � jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 
@@ -91,7 +91,7 @@ export default function ResetPassword() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t(locale, "resetPassword.newPasswordPlaceholder")}
-                className="w-full rounded-xl border border-outline-variant bg-surface-cream px-4 py-2.5 pr-10 font-body text-sm outline-none focus:border-primary-DEFAULT"
+                className="w-full rounded-xl border border-outline-variant bg-surface-cream px-4 py-2.5 pr-10 font-body text-sm outline-none focus:border-primary"
                 required
                 minLength={8}
               />
@@ -112,7 +112,7 @@ export default function ResetPassword() {
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               placeholder={t(locale, "resetPassword.confirmPlaceholder")}
-              className="w-full rounded-xl border border-outline-variant bg-surface-cream px-4 py-2.5 font-body text-sm outline-none focus:border-primary-DEFAULT"
+              className="w-full rounded-xl border border-outline-variant bg-surface-cream px-4 py-2.5 font-body text-sm outline-none focus:border-primary"
               required
             />
           </div>

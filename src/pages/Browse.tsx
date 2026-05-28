@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
@@ -97,7 +97,7 @@ function FilterPanel({
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(0); }}
             placeholder={t(locale, "browse.searchPlaceholder")}
-            className="h-10 w-full rounded-lg border border-outline-variant bg-white pl-9 pr-3 font-body text-body-sm text-on-surface placeholder:text-on-surface-variant focus:border-primary-DEFAULT focus:outline-none focus:ring-1 focus:ring-primary-DEFAULT/30 transition"
+            className="h-10 w-full rounded-lg border border-outline-variant bg-white pl-9 pr-3 font-body text-body-sm text-on-surface placeholder:text-on-surface-variant focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/30 transition"
           />
         </div>
       </div>
@@ -114,8 +114,8 @@ function FilterPanel({
               onClick={() => { setType(tVal); setPage(0); onClose?.(); }}
               className={`flex-1 rounded-lg py-2 font-label text-label-sm transition-colors duration-150 ${
                 type === tVal
-                  ? "bg-primary-DEFAULT text-white"
-                  : "border border-outline-variant bg-surface-off-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+                  ? "bg-primary text-white"
+                  : "border border-outline-variant bg-surface-off-white text-on-surface-variant hover:border-primary hover:text-primary"
               }`}
             >
               {tVal === "all" ? t(locale, "browse.typeAll") : tVal === "need" ? t(locale, "browse.typeNeed") : t(locale, "browse.typeOffer")}
@@ -134,8 +134,8 @@ function FilterPanel({
             onClick={() => { setCategory("all"); setPage(0); }}
             className={`flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-label text-label-sm transition-colors duration-150 ${
               category === "all"
-                ? "bg-primary-DEFAULT text-white"
-                : "border border-outline-variant bg-surface-off-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+                ? "bg-primary text-white"
+                : "border border-outline-variant bg-surface-off-white text-on-surface-variant hover:border-primary hover:text-primary"
             }`}
           >
             <MoreHorizontal className="h-3.5 w-3.5 shrink-0" />
@@ -149,8 +149,8 @@ function FilterPanel({
                 onClick={() => { setCategory(cat.key); setPage(0); onClose?.(); }}
                 className={`flex items-center gap-1.5 rounded-lg px-2 py-1.5 font-label text-label-sm transition-colors duration-150 ${
                   category === cat.key
-                    ? "bg-primary-DEFAULT text-white"
-                    : "border border-outline-variant bg-surface-off-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+                    ? "bg-primary text-white"
+                    : "border border-outline-variant bg-surface-off-white text-on-surface-variant hover:border-primary hover:text-primary"
                 }`}
               >
                 <Icon className="h-3.5 w-3.5 shrink-0" />
@@ -202,7 +202,7 @@ function FilterPanel({
       {activeFiltersCount > 0 && isAuthenticated && (
         <button
           onClick={handleOpenSaveAlert}
-          className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-outline-variant bg-surface-cream px-3 py-2 font-label text-label-sm text-on-surface transition-colors hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+          className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-outline-variant bg-surface-cream px-3 py-2 font-label text-label-sm text-on-surface transition-colors hover:border-primary hover:text-primary"
         >
           <Bell className="h-3.5 w-3.5" />
           {t(locale, "browse.saveAlert")}
@@ -275,13 +275,13 @@ export default function Browse() {
   useEffect(() => {
     const prev = document.title;
     document.title = debouncedSearch
-      ? `"${debouncedSearch}" — jobsy.lv`
-      : t(locale, "browse.title") + " — jobsy.lv";
+      ? `"${debouncedSearch}" � jobsy.lv`
+      : t(locale, "browse.title") + " � jobsy.lv";
 
     const desc = locale === "lv"
-      ? "Atrodi pakalpojumu sniedzējus vai piedāvā savas prasmes Latvijā."
+      ? "Atrodi pakalpojumu sniedzejus vai piedava savas prasmes Latvija."
       : locale === "ru"
-      ? "Найди исполнителей или предложи свои услуги в Латвии."
+      ? "????? ???????????? ??? ???????? ???? ?????? ? ??????."
       : "Find service providers or offer your skills in Latvia.";
     let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
     const created = !metaDesc;
@@ -345,7 +345,7 @@ export default function Browse() {
     if (category !== "all") parts.push(t(locale, `categories.${category}` as never));
     if (city !== "all") parts.push(t(locale, `cities.${city}` as never));
     if (debouncedSearch) parts.push(`"${debouncedSearch}"`);
-    return parts.join(" · ") || t(locale, "browse.title");
+    return parts.join(" � ") || t(locale, "browse.title");
   };
 
   const handleOpenSaveAlert = () => {
@@ -391,7 +391,7 @@ export default function Browse() {
               <SlidersHorizontal className="h-4 w-4 text-on-surface-variant" />
               {t(locale, "browse.filters")}
               {activeFiltersCount > 0 && (
-                <span className="rounded-full bg-primary-DEFAULT px-1.5 py-0.5 font-label text-label-sm text-white">
+                <span className="rounded-full bg-primary px-1.5 py-0.5 font-label text-label-sm text-white">
                   {activeFiltersCount}
                 </span>
               )}
@@ -403,8 +403,8 @@ export default function Browse() {
                 onClick={() => setViewMode("map")}
                 className={`flex items-center gap-1.5 px-3 py-2 font-label text-label-sm transition-colors duration-150 ${
                   viewMode === "map"
-                    ? "bg-primary-DEFAULT text-white"
-                    : "text-on-surface-variant hover:text-primary-DEFAULT"
+                    ? "bg-primary text-white"
+                    : "text-on-surface-variant hover:text-primary"
                 }`}
               >
                 <Map className="h-4 w-4" />
@@ -414,8 +414,8 @@ export default function Browse() {
                 onClick={() => setViewMode("list")}
                 className={`flex items-center gap-1.5 px-3 py-2 font-label text-label-sm transition-colors duration-150 ${
                   viewMode === "list"
-                    ? "bg-primary-DEFAULT text-white"
-                    : "text-on-surface-variant hover:text-primary-DEFAULT"
+                    ? "bg-primary text-white"
+                    : "text-on-surface-variant hover:text-primary"
                 }`}
               >
                 <LayoutList className="h-4 w-4" />
@@ -458,12 +458,12 @@ export default function Browse() {
         {/* Save alert inline form */}
         {showSaveAlert && (
           <div className="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-outline-variant bg-surface-cream p-4">
-            <Bell className="h-4 w-4 shrink-0 text-primary-DEFAULT" />
+            <Bell className="h-4 w-4 shrink-0 text-primary" />
             <Input
               value={alertLabel}
               onChange={(e) => setAlertLabel(e.target.value)}
               placeholder={t(locale, "browse.alertLabelPlaceholder")}
-              className="h-9 flex-1 min-w-[180px] rounded-lg border border-outline-variant bg-white px-3 font-body text-body-sm focus:border-primary-DEFAULT focus:outline-none"
+              className="h-9 flex-1 min-w-[180px] rounded-lg border border-outline-variant bg-white px-3 font-body text-body-sm focus:border-primary focus:outline-none"
             />
             <button
               onClick={() => saveSearchMutation.mutate({
@@ -474,7 +474,7 @@ export default function Browse() {
                 keyword: debouncedSearch || undefined,
               })}
               disabled={saveSearchMutation.isPending}
-              className="flex items-center gap-1.5 rounded-lg bg-primary-DEFAULT px-4 py-1.5 font-label text-label-sm text-white transition-colors hover:bg-on-primary-fixed-variant"
+              className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-1.5 font-label text-label-sm text-white transition-colors hover:bg-on-primary-fixed-variant"
             >
               <Check className="h-3.5 w-3.5" />
               {t(locale, "browse.alertConfirm")}
@@ -521,7 +521,7 @@ export default function Browse() {
                 ) : posts.length === 0 ? (
                   <div className="py-16 text-center">
                     <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-surface-cream text-2xl">
-                      🔍
+                      ??
                     </div>
                     <p className="font-headline text-headline-sm font-semibold text-on-surface">
                       {t(locale, "browse.noResults")}
@@ -534,7 +534,7 @@ export default function Browse() {
                     </p>
                     <button
                       onClick={clearFilters}
-                      className="mt-4 rounded-lg border border-outline-variant bg-white px-4 py-2 font-label text-label-sm text-on-surface shadow-card transition-all hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+                      className="mt-4 rounded-lg border border-outline-variant bg-white px-4 py-2 font-label text-label-sm text-on-surface shadow-card transition-all hover:border-primary hover:text-primary"
                     >
                       {t(locale, "browse.clear")}
                     </button>
@@ -553,7 +553,7 @@ export default function Browse() {
                     <button
                       onClick={() => setPage((p) => Math.max(0, p - 1))}
                       disabled={page === 0}
-                      className="flex items-center gap-1 rounded-lg border border-outline-variant bg-white px-4 py-2 font-label text-label-sm text-on-surface shadow-card transition-all disabled:opacity-40 hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+                      className="flex items-center gap-1 rounded-lg border border-outline-variant bg-white px-4 py-2 font-label text-label-sm text-on-surface shadow-card transition-all disabled:opacity-40 hover:border-primary hover:text-primary"
                     >
                       <ChevronLeft className="h-4 w-4" />
                       {t(locale, "browse.prev")}
@@ -562,7 +562,7 @@ export default function Browse() {
                     <button
                       onClick={() => setPage((p) => p + 1)}
                       disabled={!hasMore}
-                      className="flex items-center gap-1 rounded-lg border border-outline-variant bg-white px-4 py-2 font-label text-label-sm text-on-surface shadow-card transition-all disabled:opacity-40 hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+                      className="flex items-center gap-1 rounded-lg border border-outline-variant bg-white px-4 py-2 font-label text-label-sm text-on-surface shadow-card transition-all disabled:opacity-40 hover:border-primary hover:text-primary"
                     >
                       {t(locale, "browse.next")}
                       <ChevronRight className="h-4 w-4" />
@@ -589,7 +589,7 @@ export default function Browse() {
       {/* Mobile FAB */}
       <button
         onClick={() => navigate("/create")}
-        className="fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full bg-primary-DEFAULT px-5 py-3 font-label text-label-sm font-bold text-white shadow-float transition-all hover:-translate-y-0.5 active:scale-95 md:hidden"
+        className="fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full bg-primary px-5 py-3 font-label text-label-sm font-bold text-white shadow-float transition-all hover:-translate-y-0.5 active:scale-95 md:hidden"
       >
         <Plus className="h-4 w-4" />
         {t(locale, "nav.createPost")}

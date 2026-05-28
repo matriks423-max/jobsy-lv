@@ -1,4 +1,4 @@
-ï»¿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
@@ -49,7 +49,7 @@ export default function Admin() {
   const [userSearch, setUserSearch] = useState("");
   const [postStatus, setPostStatus] = useState("");
 
-  useEffect(() => { document.title = "Admin Â· jobsy.lv"; }, []);
+  useEffect(() => { document.title = "Admin · jobsy.lv"; }, []);
 
   useEffect(() => {
     if (!authLoading && (!isAuthenticated || user?.role !== "admin")) {
@@ -97,7 +97,7 @@ export default function Admin() {
   });
   const grantCreditsMutation = trpc.subscription.adminGrantCredits.useMutation({
     onSuccess: (data) => {
-      toast(`Granted â‚¬${(data.cents / 100).toFixed(2)} to user #${data.userId}`, "success");
+      toast(`Granted €${(data.cents / 100).toFixed(2)} to user #${data.userId}`, "success");
       setGrantEmail(""); setGrantEuros(""); setGrantNote("");
     },
     onError: (e) => toast(e.message, "error"),
@@ -141,11 +141,11 @@ export default function Admin() {
           {TABS.map((t) => (
             <button key={t.key} onClick={() => setTab(t.key)}
               className={`flex items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-sm font-medium transition ${
-                tab === t.key ? "border-primary-DEFAULT bg-accent-coral text-on-surface" : "border-outline-variant bg-white text-on-surface-variant hover:border-primary-DEFAULT hover:text-on-surface"
+                tab === t.key ? "border-primary bg-accent-coral text-on-surface" : "border-outline-variant bg-white text-on-surface-variant hover:border-primary hover:text-on-surface"
               }`}>
               {t.icon}{t.label}
               {!!t.badge && (
-                <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${tab === t.key ? "bg-primary-DEFAULT text-white" : "bg-surface-cream text-secondary-DEFAULT"}`}>
+                <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${tab === t.key ? "bg-primary text-white" : "bg-surface-cream text-secondary-DEFAULT"}`}>
                   {t.badge}
                 </span>
               )}
@@ -168,7 +168,7 @@ export default function Admin() {
                 { label: "Open Reports", value: stats?.reportsCount, color: "text-secondary-DEFAULT" },
               ].map((s) => (
                 <div key={s.label} className="rounded-2xl border border-outline-variant bg-white p-5 text-center">
-                  <p className={`font-mono text-3xl font-bold ${s.color}`}>{s.value ?? "Â·"}</p>
+                  <p className={`font-mono text-3xl font-bold ${s.color}`}>{s.value ?? "·"}</p>
                   <p className="mt-1 font-body text-xs text-on-surface-variant">{s.label}</p>
                 </div>
               ))}
@@ -180,7 +180,7 @@ export default function Admin() {
                 { label: "Verified Phones", value: stats?.verifiedPhones, color: "text-success-emerald" },
               ].map((s) => (
                 <div key={s.label} className="rounded-2xl border border-outline-variant bg-white p-5 text-center">
-                  <p className={`font-mono text-3xl font-bold ${s.color}`}>{s.value ?? "Â·"}</p>
+                  <p className={`font-mono text-3xl font-bold ${s.color}`}>{s.value ?? "·"}</p>
                   <p className="mt-1 font-body text-xs text-on-surface-variant">{s.label}</p>
                 </div>
               ))}
@@ -231,7 +231,7 @@ export default function Admin() {
                       {u.plan === "business" && <span className="rounded bg-surface-cream px-1.5 py-0.5 font-mono text-[10px] font-bold text-on-surface">BIZ</span>}
                     </div>
                     <p className="font-mono text-xs text-on-surface-variant">
-                      #{u.id} Â· {u.name ?? "â€”"} Â· {u.authMethod} Â· joined {new Date(u.createdAt).toLocaleDateString()} Â· {u.postCount ?? 0} posts
+                      #{u.id} · {u.name ?? "—"} · {u.authMethod} · joined {new Date(u.createdAt).toLocaleDateString()} · {u.postCount ?? 0} posts
                     </p>
                     {u.phoneVerified && (
                       <span className="mt-1 flex items-center gap-1 font-mono text-[10px] text-success-emerald">
@@ -265,7 +265,7 @@ export default function Admin() {
               {STATUS_OPTIONS.map((s) => (
                 <button key={s} onClick={() => setPostStatus(s)}
                   className={`rounded-full border-2 px-3 py-1 font-body text-xs font-medium transition ${
-                    postStatus === s ? "border-primary-DEFAULT bg-primary-DEFAULT text-white" : "border-outline-variant bg-white text-on-surface-variant hover:border-primary-DEFAULT"
+                    postStatus === s ? "border-primary bg-primary text-white" : "border-outline-variant bg-white text-on-surface-variant hover:border-primary"
                   }`}>
                   {STATUS_LABELS[s]}
                 </button>
@@ -297,11 +297,11 @@ export default function Admin() {
                       <span className={`rounded border px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase ${STATUS_COLORS[p.status] ?? "bg-surface-cream text-on-surface-variant"}`}>
                         {p.status.replace("_", " ")}
                       </span>
-                      <span className="font-mono text-xs text-on-surface-variant">{p.category} Â· {p.city ?? "Â·"}</span>
+                      <span className="font-mono text-xs text-on-surface-variant">{p.category} · {p.city ?? "·"}</span>
                       {!p.wasFree && <span className="rounded bg-surface-cream px-1.5 py-0.5 font-mono text-[10px] text-on-surface">PAID</span>}
                     </div>
                     <p className="font-body text-sm font-bold text-on-surface truncate">{p.title}</p>
-                    <p className="font-mono text-xs text-on-surface-variant">#{p.id} Â· user #{p.userId} Â· <Eye className="inline h-3 w-3" /> {p.viewCount} Â· {new Date(p.createdAt).toLocaleDateString()}</p>
+                    <p className="font-mono text-xs text-on-surface-variant">#{p.id} · user #{p.userId} · <Eye className="inline h-3 w-3" /> {p.viewCount} · {new Date(p.createdAt).toLocaleDateString()}</p>
                   </div>
                   <div className="flex shrink-0 gap-1">
                     <Link to={`/post/${p.id}`} target="_blank">
@@ -334,11 +334,11 @@ export default function Admin() {
                   <div className="flex-1">
                     <div className="mb-1 flex items-center gap-2">
                       <span className="rounded bg-surface-cream px-2 py-0.5 font-mono text-[10px] font-medium uppercase text-on-surface">{post.category}</span>
-                      <span className="font-mono text-xs text-on-surface-variant">#{post.id} Â· {post.type}</span>
+                      <span className="font-mono text-xs text-on-surface-variant">#{post.id} · {post.type}</span>
                     </div>
                     <h3 className="font-body text-lg font-bold text-on-surface">{post.title}</h3>
                     {post.description && <p className="mt-1 font-body text-sm text-on-surface-variant line-clamp-3">{post.description}</p>}
-                    <p className="mt-2 font-mono text-xs text-outline">{new Date(post.createdAt).toLocaleString("lv-LV")}{post.city && ` Â· ${post.city}`}</p>
+                    <p className="mt-2 font-mono text-xs text-outline">{new Date(post.createdAt).toLocaleString("lv-LV")}{post.city && ` · ${post.city}`}</p>
                   </div>
                   <div className="flex shrink-0 gap-2">
                     <a href={`/post/${post.id}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-outline-variant bg-white p-2 hover:bg-surface-cream">
@@ -386,7 +386,7 @@ export default function Admin() {
                       <Eye className="h-3.5 w-3.5" /> View
                     </a>
                     <button onClick={() => resolveMutation.mutate({ reportId: report.id, action: "dismiss" })} disabled={resolveMutation.isPending}
-                      className="rounded-xl border-2 border-outline-variant bg-surface-cream px-3 py-2 font-body text-xs text-on-surface-variant hover:border-primary-DEFAULT hover:text-on-surface transition">
+                      className="rounded-xl border-2 border-outline-variant bg-surface-cream px-3 py-2 font-body text-xs text-on-surface-variant hover:border-primary hover:text-on-surface transition">
                       Dismiss
                     </button>
                     <button onClick={() => { if (confirm(`Delete post #${report.postId}?`)) resolveMutation.mutate({ reportId: report.id, action: "delete" }); }}
@@ -415,7 +415,7 @@ export default function Admin() {
                 {(["", "pending", "posted", "failed"] as const).map((s) => (
                   <button key={s} onClick={() => setQueueStatus(s)}
                     className={`rounded-full border-2 px-3 py-1 font-body text-xs font-medium transition ${
-                      queueStatus === s ? "border-primary-DEFAULT bg-accent-coral text-on-surface" : "border-outline-variant bg-white text-on-surface-variant hover:border-primary-DEFAULT"
+                      queueStatus === s ? "border-primary bg-accent-coral text-on-surface" : "border-outline-variant bg-white text-on-surface-variant hover:border-primary"
                     }`}>
                     {s === "" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
                   </button>
@@ -433,13 +433,13 @@ export default function Admin() {
               <div className="space-y-2">
                 {socialQueueData.map((item) => (
                   <div key={item.id} className="flex items-center gap-3 rounded-xl border-2 border-outline-variant bg-white px-4 py-3">
-                    <span className="text-lg">{item.boostType === "bump" ? "â†‘" : "â˜…"}</span>
+                    <span className="text-lg">{item.boostType === "bump" ? "?" : "?"}</span>
                     <div className="flex-1 min-w-0">
                       <p className="truncate font-body text-sm font-medium text-on-surface">
-                        #{item.postId} Â· {item.postTitle ?? "unknown"}
+                        #{item.postId} · {item.postTitle ?? "unknown"}
                       </p>
                       <p className="font-mono text-xs text-on-surface-variant">
-                        {item.boostType} Â· queued {new Date(item.createdAt).toLocaleString()}
+                        {item.boostType} · queued {new Date(item.createdAt).toLocaleString()}
                       </p>
                     </div>
                     <span className={`rounded-full border-2 px-2.5 py-0.5 font-mono text-xs font-bold ${
@@ -472,11 +472,11 @@ export default function Admin() {
                     value={grantEmail}
                     onChange={(e) => setGrantEmail(e.target.value)}
                     placeholder="user@example.com"
-                    className="w-full rounded-xl border-2 border-outline-variant bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-primary-DEFAULT"
+                    className="w-full rounded-xl border-2 border-outline-variant bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-primary"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block font-body text-xs font-medium text-on-surface">Amount (Â·)</label>
+                  <label className="mb-1 block font-body text-xs font-medium text-on-surface">Amount (·)</label>
                   <input
                     type="number"
                     min="0.01"
@@ -485,7 +485,7 @@ export default function Admin() {
                     value={grantEuros}
                     onChange={(e) => setGrantEuros(e.target.value)}
                     placeholder="5.00"
-                    className="w-full rounded-xl border-2 border-outline-variant bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-primary-DEFAULT"
+                    className="w-full rounded-xl border-2 border-outline-variant bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-primary"
                   />
                 </div>
                 <div>
@@ -496,14 +496,14 @@ export default function Admin() {
                     onChange={(e) => setGrantNote(e.target.value)}
                     placeholder="Promotion May 2026"
                     maxLength={200}
-                    className="w-full rounded-xl border-2 border-outline-variant bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-primary-DEFAULT"
+                    className="w-full rounded-xl border-2 border-outline-variant bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-primary"
                   />
                 </div>
                 <button
                   onClick={() => {
                     const euros = parseFloat(grantEuros);
                     if (!grantEmail || isNaN(euros) || euros <= 0) { toast("Fill in email and valid amount", "error"); return; }
-                    if (confirm(`Grant â‚¬${euros.toFixed(2)} to ${grantEmail}?`)) {
+                    if (confirm(`Grant €${euros.toFixed(2)} to ${grantEmail}?`)) {
                       grantCreditsMutation.mutate({ email: grantEmail, euros, note: grantNote || undefined });
                     }
                   }}

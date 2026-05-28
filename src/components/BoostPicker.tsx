@@ -58,7 +58,7 @@ export default function BoostPicker({
       <div className="relative w-full max-w-sm rounded-2xl border border-outline-variant bg-surface-cream p-6 shadow-float">
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-lg border-2 border-outline-variant p-1 text-on-surface-variant hover:border-primary-DEFAULT"
+          className="absolute right-4 top-4 rounded-lg border-2 border-outline-variant p-1 text-on-surface-variant hover:border-primary"
         >
           <X className="h-4 w-4" />
         </button>
@@ -122,7 +122,7 @@ export default function BoostPicker({
                     <button
                       onClick={() => applyMutation.mutate({ postId, boostType: b.type })}
                       disabled={isPending}
-                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border-2 border-outline-variant bg-white py-1.5 font-body text-xs font-medium text-on-surface-variant hover:border-primary-DEFAULT hover:text-on-surface transition disabled:opacity-60"
+                      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border-2 border-outline-variant bg-white py-1.5 font-body text-xs font-medium text-on-surface-variant hover:border-primary hover:text-on-surface transition disabled:opacity-60"
                     >
                       <CreditCard className="h-3 w-3" />
                       {t(locale, "credits.payCard")}

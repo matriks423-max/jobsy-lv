@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -95,7 +95,7 @@ export default function Settings() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "nav.settings") + " � jobsy.lv";
+    document.title = t(locale, "nav.settings") + " ? jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 
@@ -179,18 +179,18 @@ export default function Settings() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={t(locale, "settings.namePlaceholder")}
-                  className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary-DEFAULT"
+                  className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary"
                 />
               </div>
 
-              {/* Email � read only */}
+              {/* Email ? read only */}
               <div>
                 <label className="mb-2 flex items-center gap-1.5 font-body text-sm font-bold text-on-surface">
                   <Mail className="h-3.5 w-3.5 text-accent-coral" />
                   {t(locale, "settings.email")}
                 </label>
                 <div className="flex h-12 items-center rounded-xl border-2 border-outline-variant bg-surface-cream px-4 font-body text-sm text-on-surface-variant">
-                  {profile?.email ?? "�"}
+                  {profile?.email ?? "?"}
                   <span className="ml-auto rounded bg-surface-cream px-2 py-0.5 font-mono text-[10px] text-outline">
                     {t(locale, "settings.emailReadOnly")}
                   </span>
@@ -214,13 +214,13 @@ export default function Settings() {
                   value={phone}
                   onChange={(e) => { setPhone(e.target.value); setOtpSent(false); setOtpCode(""); }}
                   placeholder="+371 2X XXX XXX"
-                  className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary-DEFAULT"
+                  className="h-12 rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary"
                 />
                 <p className="mt-1 font-body text-xs text-outline">
                   {t(locale, "settings.phoneHint")}
                 </p>
 
-                {/* Verify button � shown after saving phone, if not yet verified */}
+                {/* Verify button ? shown after saving phone, if not yet verified */}
                 {canVerify && !otpSent && (
                   <button
                     onClick={() => sendOtpMutation.mutate({ phone })}
@@ -242,7 +242,7 @@ export default function Settings() {
                       value={otpCode}
                       onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
                       placeholder="_ _ _ _ _ _"
-                      className="h-12 w-36 rounded-xl border border-outline-variant bg-white text-center font-mono text-lg tracking-widest focus:border-primary-DEFAULT"
+                      className="h-12 w-36 rounded-xl border border-outline-variant bg-white text-center font-mono text-lg tracking-widest focus:border-primary"
                     />
                     <Button
                       onClick={() => verifyOtpMutation.mutate({ phone, code: otpCode })}
@@ -288,7 +288,7 @@ export default function Settings() {
                   <div>
                     <p className="font-body text-sm font-bold text-on-surface">{s.label}</p>
                     <p className="font-mono text-xs text-outline">
-                      {s.type} {s.category ? `� ${s.category}` : ""} {s.city ? `� ${s.city}` : ""} {s.keyword ? `� "${s.keyword}"` : ""}
+                      {s.type} {s.category ? `? ${s.category}` : ""} {s.city ? `? ${s.city}` : ""} {s.keyword ? `? "${s.keyword}"` : ""}
                     </p>
                   </div>
                   <button
@@ -313,7 +313,7 @@ export default function Settings() {
           </div>
 
           {/* Plan status */}
-          <div className={`mb-4 rounded-xl border-2 px-4 py-3 ${subStatus?.plan === "business" ? "border-success-emerald bg-success-emerald/10" : subStatus?.plan === "pro" ? "border-primary-DEFAULT bg-on-surface/5" : "border-outline-variant bg-surface-cream"}`}>
+          <div className={`mb-4 rounded-xl border-2 px-4 py-3 ${subStatus?.plan === "business" ? "border-success-emerald bg-success-emerald/10" : subStatus?.plan === "pro" ? "border-primary bg-on-surface/5" : "border-outline-variant bg-surface-cream"}`}>
             <p className="font-body text-sm font-bold text-on-surface">
               {subStatus?.plan === "business"
                 ? t(locale, "settings.currentPlanBusiness")
@@ -343,7 +343,7 @@ export default function Settings() {
                 <input
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  className="w-full rounded-xl border-2 border-outline-variant bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-primary-DEFAULT"
+                  className="w-full rounded-xl border-2 border-outline-variant bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-primary"
                   placeholder={t(locale, "settings.companyNamePlaceholder")}
                 />
               </div>
@@ -355,7 +355,7 @@ export default function Settings() {
                   value={companyWebsite}
                   onChange={(e) => setCompanyWebsite(e.target.value)}
                   type="url"
-                  className="w-full rounded-xl border-2 border-outline-variant bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-primary-DEFAULT"
+                  className="w-full rounded-xl border-2 border-outline-variant bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-primary"
                   placeholder="https://..."
                 />
               </div>
@@ -368,13 +368,13 @@ export default function Settings() {
                   onChange={(e) => setCompanyDescription(e.target.value)}
                   rows={3}
                   maxLength={300}
-                  className="w-full rounded-xl border-2 border-outline-variant bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-primary-DEFAULT resize-none"
+                  className="w-full rounded-xl border-2 border-outline-variant bg-white px-3 py-2 font-body text-sm text-on-surface outline-none focus:border-primary resize-none"
                 />
               </div>
               <button
                 onClick={() => updateMutation.mutate({ companyName, companyWebsite, companyDescription })}
                 disabled={updateMutation.isPending}
-                className="rounded-xl border border-outline-variant bg-primary-DEFAULT px-4 py-2 font-body text-sm text-white hover:opacity-80 transition"
+                className="rounded-xl border border-outline-variant bg-primary px-4 py-2 font-body text-sm text-white hover:opacity-80 transition"
               >
                 {t(locale, "settings.save")}
               </button>
@@ -386,7 +386,7 @@ export default function Settings() {
             <button
               onClick={() => portalMutation.mutate()}
               disabled={portalMutation.isPending}
-              className="flex items-center gap-2 rounded-xl border-2 border-outline-variant bg-white px-4 py-2 font-body text-sm text-on-surface-variant hover:border-primary-DEFAULT hover:text-on-surface transition"
+              className="flex items-center gap-2 rounded-xl border-2 border-outline-variant bg-white px-4 py-2 font-body text-sm text-on-surface-variant hover:border-primary hover:text-on-surface transition"
             >
               <CreditCard className="h-4 w-4" />
               {t(locale, "settings.manageBilling")}
@@ -413,7 +413,7 @@ export default function Settings() {
               </h2>
               {(subStatus?.creditBalance ?? 0) > 0 && (
                 <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-outline-variant bg-surface-cream px-3 py-1 font-body text-xs font-bold text-on-surface">
-                  {t(locale, "credits.balance")}: �{((subStatus?.creditBalance ?? 0) / 100).toFixed(2)}
+                  {t(locale, "credits.balance")}: ?{((subStatus?.creditBalance ?? 0) / 100).toFixed(2)}
                 </span>
               )}
             </div>
@@ -436,7 +436,7 @@ export default function Settings() {
                       </p>
                     </div>
                     <span className={`font-mono text-sm font-bold shrink-0 ${tx.amount > 0 ? "text-success-emerald" : "text-accent-coral"}`}>
-                      {tx.amount > 0 ? "+" : ""}�{(tx.amount / 100).toFixed(2)}
+                      {tx.amount > 0 ? "+" : ""}?{(tx.amount / 100).toFixed(2)}
                     </span>
                   </li>
                 ))}

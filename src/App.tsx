@@ -1,4 +1,4 @@
-ï»¿import { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { Toaster } from "sonner";
@@ -9,11 +9,11 @@ import CookieBanner from "@/components/CookieBanner";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import ScrollToTop from "@/components/ScrollToTop";
 import DesktopCat from "@/components/DesktopCat";
-// Critical pages â€” eager loaded
+// Critical pages — eager loaded
 import Home from "./pages/Home";
 import Browse from "./pages/Browse";
 import PostDetail from "./pages/PostDetail";
-// Non-critical pages â€” lazy loaded for smaller initial bundle
+// Non-critical pages — lazy loaded for smaller initial bundle
 const CreatePost = lazy(() => import("./pages/CreatePost"));
 const MyPosts = lazy(() => import("./pages/MyPosts"));
 const Success = lazy(() => import("./pages/Success"));

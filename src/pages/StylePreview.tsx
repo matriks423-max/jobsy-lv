@@ -1,17 +1,17 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 
-// ─── Style A: "Craft Market" ─────────────────────────────────────────────────
-// Warm terracotta editorial — think Italian market posters meets Brutalist zine.
+// --- Style A: "Craft Market" -------------------------------------------------
+// Warm terracotta editorial � think Italian market posters meets Brutalist zine.
 // Bodoni Moda display + DM Mono details. Terracotta / parchment / ink.
 // Grid-breaking layout, torn-edge dividers, type-as-texture.
 
 function StyleA({ active }: { active: boolean }) {
   const cards = [
-    { type: "OFFER", emoji: "🔨", title: "Santehniķis — ātra atsaukšanās", city: "Rīga", price: "€30/st", tag: "corn" },
-    { type: "NEED", emoji: "🚗", title: "Nepieciešams šoferis brīvdienās", city: "Jūrmala", price: "€80", tag: "rose" },
-    { type: "OFFER", emoji: "💻", title: "Tīmekļa dizains un Figma", city: "Remote", price: "€45/st", tag: "corn" },
-    { type: "NEED", emoji: "🌿", title: "Meklēju dārznieku", city: "Liepāja", price: "€120", tag: "rose" },
+    { type: "OFFER", emoji: "??", title: "Santehnikis � atra atsauk�anas", city: "Riga", price: "�30/st", tag: "corn" },
+    { type: "NEED", emoji: "??", title: "Nepiecie�ams �oferis brivdienas", city: "Jurmala", price: "�80", tag: "rose" },
+    { type: "OFFER", emoji: "??", title: "Timekla dizains un Figma", city: "Remote", price: "�45/st", tag: "corn" },
+    { type: "NEED", emoji: "??", title: "Mekleju darznieku", city: "Liepaja", price: "�120", tag: "rose" },
   ];
 
   return (
@@ -40,14 +40,14 @@ function StyleA({ active }: { active: boolean }) {
           <span style={{ fontSize: 11, fontWeight: 400, fontFamily: "'DM Mono', monospace", color: "#C4603A", letterSpacing: "0.1em" }}>.LV</span>
         </div>
         <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
-          {["Sludinājumi", "Kategorijas", "Cenas"].map(l => (
+          {["Sludinajumi", "Kategorijas", "Cenas"].map(l => (
             <span key={l} style={{ fontSize: 11, fontFamily: "'DM Mono', monospace", color: "#6B4E3A", letterSpacing: "0.06em", textTransform: "uppercase" }}>{l}</span>
           ))}
           <button style={{
             background: "#C4603A", color: "#F2EDE4", border: "none",
             padding: "7px 18px", fontSize: 11, fontFamily: "'DM Mono', monospace",
             letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer",
-          }}>Publicēt →</button>
+          }}>Publicet ?</button>
         </div>
       </div>
 
@@ -60,7 +60,7 @@ function StyleA({ active }: { active: boolean }) {
           fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: "0.14em",
           textTransform: "uppercase", color: "#6B4E3A",
         }}>
-          <span>Latvija</span><span style={{ color: "#C4603A" }}>●</span><span>2026 gads</span>
+          <span>Latvija</span><span style={{ color: "#C4603A" }}>?</span><span>2026 gads</span>
         </div>
 
         {/* Big editorial headline */}
@@ -69,7 +69,7 @@ function StyleA({ active }: { active: boolean }) {
           color: "#2A1F1A", margin: "0 0 6px",
         }}>
           Atrodi<br/>
-          <span style={{ color: "#C4603A", fontStyle: "italic" }}>īstu</span><br/>
+          <span style={{ color: "#C4603A", fontStyle: "italic" }}>istu</span><br/>
           darbu.
         </h1>
 
@@ -82,11 +82,11 @@ function StyleA({ active }: { active: boolean }) {
           lineHeight: 1.6, maxWidth: 260, marginBottom: 20,
           letterSpacing: "0.02em",
         }}>
-          Tūkstoši darbu, pakalpojumu un piedāvājumu visā Latvijā — katru dienu.
+          Tuksto�i darbu, pakalpojumu un piedavajumu visa Latvija � katru dienu.
         </p>
 
         <div style={{ display: "flex", gap: 0 }}>
-          <input placeholder="Meklēt darbu..." style={{
+          <input placeholder="Meklet darbu..." style={{
             flex: 1, background: "transparent", border: "1.5px solid #2A1F1A",
             borderRight: "none", padding: "9px 14px", fontFamily: "'DM Mono', monospace",
             fontSize: 11, color: "#2A1F1A", outline: "none",
@@ -108,7 +108,7 @@ function StyleA({ active }: { active: boolean }) {
           letterSpacing: "0.14em", textTransform: "uppercase",
           display: "flex", gap: 16,
         }}>
-          {["Rīga", "Jūrmala", "Liepāja", "Daugavpils", "Valmiera"].map(c => (
+          {["Riga", "Jurmala", "Liepaja", "Daugavpils", "Valmiera"].map(c => (
             <span key={c}>{c}</span>
           ))}
         </div>
@@ -139,7 +139,7 @@ function StyleA({ active }: { active: boolean }) {
             </div>
             <p style={{ fontSize: 12, fontWeight: 700, color: "#2A1F1A", lineHeight: 1.3, marginBottom: 6 }}>{card.title}</p>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: "#9B7A65" }}>📍 {card.city}</span>
+              <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: "#9B7A65" }}>?? {card.city}</span>
               <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, fontWeight: 700, color: "#C4603A" }}>{card.price}</span>
             </div>
           </motion.div>
@@ -151,7 +151,7 @@ function StyleA({ active }: { active: boolean }) {
         borderTop: "1.5px solid #2A1F1A", padding: "10px 24px",
         display: "flex", justifyContent: "space-around", position: "relative", zIndex: 1,
       }}>
-        {[["2,847", "Aktīvi"], ["18", "Kategorijas"], ["12k+", "Lietotāji"]].map(([n, l]) => (
+        {[["2,847", "Aktivi"], ["18", "Kategorijas"], ["12k+", "Lietotaji"]].map(([n, l]) => (
           <div key={l} style={{ textAlign: "center" }}>
             <div style={{ fontWeight: 900, fontSize: 20, letterSpacing: "-1px", color: "#C4603A" }}>{n}</div>
             <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 8, letterSpacing: "0.1em", textTransform: "uppercase", color: "#9B7A65" }}>{l}</div>
@@ -162,17 +162,17 @@ function StyleA({ active }: { active: boolean }) {
   );
 }
 
-// ─── Style B: "Neon District" ─────────────────────────────────────────────────
-// Dark urban night market — cyberpunk meets Latvian hustle.
+// --- Style B: "Neon District" -------------------------------------------------
+// Dark urban night market � cyberpunk meets Latvian hustle.
 // Syne display + Fira Code data. Near-black background, electric lime & pink.
 // Dense, data-rich, glowing cards.
 
 function StyleB({ active }: { active: boolean }) {
   const jobs = [
-    { id: "J-0041", type: "OFFER", title: "Elektriķis — sertificēts", city: "Rīga", price: "€35/st", cat: "Remontdarbi", hot: true },
-    { id: "J-0042", type: "NEED", title: "Meklēju aukli 3× nedēļā", city: "Jūrmala", price: "€200/mēn", cat: "Aprūpe", hot: false },
-    { id: "J-0043", type: "OFFER", title: "Fotogrāfija — portreti, pasākumi", city: "Latvia", price: "€80+", cat: "Radošais", hot: true },
-    { id: "J-0044", type: "NEED", title: "React izstrādātājs, nepilna slodze", city: "Remote", price: "€45/st", cat: "IT", hot: false },
+    { id: "J-0041", type: "OFFER", title: "Elektrikis � sertificets", city: "Riga", price: "�35/st", cat: "Remontdarbi", hot: true },
+    { id: "J-0042", type: "NEED", title: "Mekleju aukli 3� nedela", city: "Jurmala", price: "�200/men", cat: "Aprupe", hot: false },
+    { id: "J-0043", type: "OFFER", title: "Fotografija � portreti, pasakumi", city: "Latvia", price: "�80+", cat: "Rado�ais", hot: true },
+    { id: "J-0044", type: "NEED", title: "React izstradatajs, nepilna slodze", city: "Remote", price: "�45/st", cat: "IT", hot: false },
   ];
 
   return (
@@ -233,7 +233,7 @@ function StyleB({ active }: { active: boolean }) {
           padding: "4px 12px", marginBottom: 14, borderRadius: 2,
         }}>
           <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#A2FF57", display: "inline-block" }} />
-          <span style={{ fontFamily: "'Fira Code', monospace", fontSize: 10, color: "#A2FF57", letterSpacing: "0.08em" }}>LIVE — 47 JAUNI SLUDINĀJUMI</span>
+          <span style={{ fontFamily: "'Fira Code', monospace", fontSize: 10, color: "#A2FF57", letterSpacing: "0.08em" }}>LIVE � 47 JAUNI SLUDINAJUMI</span>
         </div>
 
         <h1 style={{
@@ -242,21 +242,21 @@ function StyleB({ active }: { active: boolean }) {
         }}>
           Atrodi<br />
           <span style={{ color: "#A2FF57" }}>darbu.</span><br />
-          <span style={{ color: "rgba(255,255,255,0.3)" }}>Latvijā.</span>
+          <span style={{ color: "rgba(255,255,255,0.3)" }}>Latvija.</span>
         </h1>
 
         <p style={{
           fontFamily: "'Fira Code', monospace", fontSize: 11, color: "rgba(255,255,255,0.4)",
           marginBottom: 18, lineHeight: 1.6, letterSpacing: "0.01em",
         }}>
-          Darbi, pakalpojumi, sludinājumi — <span style={{ color: "#A2FF57" }}>reāli cilvēki</span>, reāls darbs.
+          Darbi, pakalpojumi, sludinajumi � <span style={{ color: "#A2FF57" }}>reali cilveki</span>, reals darbs.
         </p>
 
         <div style={{
           display: "flex", background: "rgba(255,255,255,0.04)",
           border: "1px solid rgba(162,255,87,0.2)", borderRadius: 4, overflow: "hidden",
         }}>
-          <input placeholder="Meklēt..." style={{
+          <input placeholder="Meklet..." style={{
             flex: 1, background: "transparent", border: "none",
             padding: "9px 14px", fontSize: 12, color: "#fff",
             fontFamily: "'Fira Code', monospace", outline: "none",
@@ -287,7 +287,7 @@ function StyleB({ active }: { active: boolean }) {
             <div style={{ fontFamily: "'Fira Code', monospace", fontSize: 8, color: "rgba(255,255,255,0.2)", width: 44, flexShrink: 0 }}>{job.id}</div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: job.hot ? "#fff" : "rgba(255,255,255,0.75)", lineHeight: 1.3 }}>{job.title}</div>
-              <div style={{ fontFamily: "'Fira Code', monospace", fontSize: 9, color: "rgba(255,255,255,0.3)", marginTop: 2 }}>{job.city} · {job.cat}</div>
+              <div style={{ fontFamily: "'Fira Code', monospace", fontSize: 9, color: "rgba(255,255,255,0.3)", marginTop: 2 }}>{job.city} � {job.cat}</div>
             </div>
             {job.hot && (
               <span style={{
@@ -320,16 +320,16 @@ function StyleB({ active }: { active: boolean }) {
   );
 }
 
-// ─── Style C: "Linen & Gold" ──────────────────────────────────────────────────
-// Luxury editorial classified — like a high-end magazine's job section.
+// --- Style C: "Linen & Gold" --------------------------------------------------
+// Luxury editorial classified � like a high-end magazine's job section.
 // Cormorant Garamond display + Outfit body. Cream / warm white / deep navy / gold.
 // Generous whitespace, refined typographic hierarchy.
 
 function StyleC({ active }: { active: boolean }) {
   const listings = [
-    { num: "01", type: "Piedāvājums", title: "Santehniķis ar sertifikātu", loc: "Rīga", budget: "30€ / h", period: "2h atpakaļ" },
-    { num: "02", type: "Meklē", title: "Nepieciešams tīrīšanas speciālists", loc: "Jūrmala", budget: "150€", period: "Šodien" },
-    { num: "03", type: "Piedāvājums", title: "Mājas lapas dizains un izstrāde", loc: "Remote", budget: "no 400€", period: "Vakar" },
+    { num: "01", type: "Piedavajums", title: "Santehnikis ar sertifikatu", loc: "Riga", budget: "30� / h", period: "2h atpakal" },
+    { num: "02", type: "Mekle", title: "Nepiecie�ams tiri�anas specialists", loc: "Jurmala", budget: "150�", period: "�odien" },
+    { num: "03", type: "Piedavajums", title: "Majas lapas dizains un izstrade", loc: "Remote", budget: "no 400�", period: "Vakar" },
   ];
 
   return (
@@ -357,14 +357,14 @@ function StyleC({ active }: { active: boolean }) {
           </span>
         </div>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-          {["Sludinājumi", "Kategorijas", "Cenas"].map(l => (
+          {["Sludinajumi", "Kategorijas", "Cenas"].map(l => (
             <span key={l} style={{ fontSize: 12, color: "#6B6358", fontWeight: 500 }}>{l}</span>
           ))}
           <button style={{
             background: "#1B2B4B", color: "#FDFBF7", border: "none",
             padding: "8px 20px", fontSize: 12, fontWeight: 600,
             letterSpacing: "0.04em", cursor: "pointer",
-          }}>Publicēt sludinājumu</button>
+          }}>Publicet sludinajumu</button>
         </div>
       </div>
 
@@ -372,7 +372,7 @@ function StyleC({ active }: { active: boolean }) {
       <div style={{ padding: "36px 28px 28px" }}>
         {/* Category pills */}
         <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-          {["Visi", "Remontdarbi", "IT", "Aprūpe", "Radošais"].map((c, i) => (
+          {["Visi", "Remontdarbi", "IT", "Aprupe", "Rado�ais"].map((c, i) => (
             <span key={c} style={{
               fontSize: 11, padding: "4px 12px",
               border: i === 0 ? "1px solid #1B2B4B" : "1px solid #D8D2C8",
@@ -400,11 +400,11 @@ function StyleC({ active }: { active: boolean }) {
             <p style={{
               fontSize: 13, color: "#7A7268", lineHeight: 1.65, maxWidth: 260, marginBottom: 20,
             }}>
-              Pievienojies tūkstošiem latvieša, kas katru dienu atrod labus darbus un uzticamus pakalpojumus.
+              Pievienojies tuksto�iem latvie�a, kas katru dienu atrod labus darbus un uzticamus pakalpojumus.
             </p>
 
             <div style={{ display: "flex", gap: 0, maxWidth: 340 }}>
-              <input placeholder="Meklēt sludinājumu..." style={{
+              <input placeholder="Meklet sludinajumu..." style={{
                 flex: 1, border: "1px solid #D8D2C8", borderRight: "none",
                 padding: "10px 16px", fontSize: 12, color: "#1B2B4B",
                 background: "#fff", outline: "none",
@@ -413,7 +413,7 @@ function StyleC({ active }: { active: boolean }) {
                 background: "#C9A84C", color: "#1B2B4B", border: "1px solid #C9A84C",
                 padding: "10px 20px", fontSize: 12, fontWeight: 700,
                 cursor: "pointer", letterSpacing: "0.04em",
-              }}>Meklēt</button>
+              }}>Meklet</button>
             </div>
           </div>
 
@@ -422,7 +422,7 @@ function StyleC({ active }: { active: boolean }) {
             border: "1px solid #E8E2D8", padding: "16px 18px",
             background: "#fff", flexShrink: 0, minWidth: 120,
           }}>
-            {[["2,847", "Aktīvi sludinājumi"], ["18", "Kategorijas"], ["12k+", "Lietotāji"]].map(([n, l]) => (
+            {[["2,847", "Aktivi sludinajumi"], ["18", "Kategorijas"], ["12k+", "Lietotaji"]].map(([n, l]) => (
               <div key={l} style={{ marginBottom: 12, paddingBottom: 12, borderBottom: "1px solid #F0EBE2" }}>
                 <div style={{
                   fontFamily: "'Cormorant Garamond', serif",
@@ -454,12 +454,12 @@ function StyleC({ active }: { active: boolean }) {
             }}>{item.num}</span>
             <span style={{
               fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase",
-              color: item.type === "Piedāvājums" ? "#1B7A5A" : "#C4603A",
-              border: `1px solid ${item.type === "Piedāvājums" ? "#1B7A5A" : "#C4603A"}`,
+              color: item.type === "Piedavajums" ? "#1B7A5A" : "#C4603A",
+              border: `1px solid ${item.type === "Piedavajums" ? "#1B7A5A" : "#C4603A"}`,
               padding: "1px 6px", flexShrink: 0,
             }}>{item.type}</span>
             <span style={{ flex: 1, fontSize: 13, fontWeight: 600, color: "#1B2B4B" }}>{item.title}</span>
-            <span style={{ fontSize: 11, color: "#9B9590" }}>📍 {item.loc}</span>
+            <span style={{ fontSize: 11, color: "#9B9590" }}>?? {item.loc}</span>
             <span style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: 15, fontWeight: 700, color: "#1B2B4B", minWidth: 60, textAlign: "right",
@@ -471,30 +471,30 @@ function StyleC({ active }: { active: boolean }) {
   );
 }
 
-// ─── Main Preview Page ────────────────────────────────────────────────────────
+// --- Main Preview Page --------------------------------------------------------
 
 const STYLES = [
   {
     id: "a",
-    label: "A — Craft Market",
+    label: "A � Craft Market",
     tag: "Editorial",
     tagColor: "#C4603A",
     tagBg: "#FFF0E8",
-    desc: "Terracotta editorial — Italian market posters meets brutalist zine. Bodoni + DM Mono, torn-paper rules, type as texture. Warm, artisanal, unmistakably local.",
+    desc: "Terracotta editorial � Italian market posters meets brutalist zine. Bodoni + DM Mono, torn-paper rules, type as texture. Warm, artisanal, unmistakably local.",
     component: StyleA,
   },
   {
     id: "b",
-    label: "B — Neon District",
+    label: "B � Neon District",
     tag: "Dark Urban",
     tagColor: "#A2FF57",
     tagBg: "rgba(162,255,87,0.1)",
-    desc: "Dark urban night market — cyberpunk meets Latvian hustle. Syne + Fira Code, electric lime on near-black, dense data grid. Bold, fast, memorable.",
+    desc: "Dark urban night market � cyberpunk meets Latvian hustle. Syne + Fira Code, electric lime on near-black, dense data grid. Bold, fast, memorable.",
     component: StyleB,
   },
   {
     id: "c",
-    label: "C — Linen & Gold",
+    label: "C � Linen & Gold",
     tag: "Luxury",
     tagColor: "#C9A84C",
     tagBg: "#FDF8EE",
@@ -517,7 +517,7 @@ export default function StylePreview() {
 
       <div style={{ textAlign: "center", marginBottom: 48 }}>
         <p style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "#555", marginBottom: 8 }}>
-          jobsy.lv · Visual Redesign · 2026
+          jobsy.lv � Visual Redesign � 2026
         </p>
         <h1 style={{ fontSize: 32, fontWeight: 800, color: "#fff", letterSpacing: "-1px", marginBottom: 10 }}>
           Pick your style direction
@@ -557,7 +557,7 @@ export default function StylePreview() {
                 {picked === id && (
                   <motion.span
                     initial={{ scale: 0 }} animate={{ scale: 1 }}
-                    style={{ fontSize: 12, color: tagColor }}>✓ Selected</motion.span>
+                    style={{ fontSize: 12, color: tagColor }}>? Selected</motion.span>
                 )}
                 <span style={{
                   fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 20,
@@ -589,7 +589,7 @@ export default function StylePreview() {
                   letterSpacing: "0.04em", transition: "background 0.2s, color 0.2s",
                 }}
               >
-                {picked === id ? "✓ Izvēlēts" : `Izvēlēties ${label.split("—")[1].trim()} →`}
+                {picked === id ? "? Izvelets" : `Izveleties ${label.split("�")[1].trim()} ?`}
               </button>
             </div>
           </motion.div>
@@ -602,8 +602,8 @@ export default function StylePreview() {
           animate={{ opacity: 1, y: 0 }}
           style={{ textAlign: "center", marginTop: 40, color: "#888", fontSize: 13 }}
         >
-          Jūs izvēlējāties <strong style={{ color: "#fff" }}>{STYLES.find(s => s.id === picked)?.label}</strong>.
-          Pastāstiet man, un es uzsāku pilnu dizaina pārveidi. 🚀
+          Jus izvelejaties <strong style={{ color: "#fff" }}>{STYLES.find(s => s.id === picked)?.label}</strong>.
+          Pastastiet man, un es uzsaku pilnu dizaina parveidi. ??
         </motion.div>
       )}
     </div>

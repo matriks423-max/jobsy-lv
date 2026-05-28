@@ -54,7 +54,7 @@ export default function Navbar() {
         {/* Logo */}
         <div className="flex items-center gap-stack-gap-lg">
           <Link to="/" className="flex items-center gap-2">
-            <span className="font-headline text-headline-sm font-bold text-primary-DEFAULT">
+            <span className="font-headline text-headline-sm font-bold text-primary">
               Jobsy
             </span>
           </Link>
@@ -65,8 +65,8 @@ export default function Navbar() {
               to="/browse"
               className={`font-label text-label-md transition-colors duration-200 ${
                 isActive("/browse")
-                  ? "border-b-2 border-primary-DEFAULT pb-0.5 font-bold text-primary-DEFAULT"
-                  : "text-on-surface-variant hover:text-primary-DEFAULT"
+                  ? "border-b-2 border-primary pb-0.5 font-bold text-primary"
+                  : "text-on-surface-variant hover:text-primary"
               }`}
             >
               {t(locale, "nav.browse")}
@@ -75,8 +75,8 @@ export default function Navbar() {
               to="/pricing"
               className={`font-label text-label-md transition-colors duration-200 ${
                 isActive("/pricing")
-                  ? "border-b-2 border-primary-DEFAULT pb-0.5 font-bold text-primary-DEFAULT"
-                  : "text-on-surface-variant hover:text-primary-DEFAULT"
+                  ? "border-b-2 border-primary pb-0.5 font-bold text-primary"
+                  : "text-on-surface-variant hover:text-primary"
               }`}
             >
               {t(locale, "nav.pricing")}
@@ -86,8 +86,8 @@ export default function Navbar() {
                 to="/my-posts"
                 className={`font-label text-label-md transition-colors duration-200 ${
                   isActive("/my-posts")
-                    ? "border-b-2 border-primary-DEFAULT pb-0.5 font-bold text-primary-DEFAULT"
-                    : "text-on-surface-variant hover:text-primary-DEFAULT"
+                    ? "border-b-2 border-primary pb-0.5 font-bold text-primary"
+                    : "text-on-surface-variant hover:text-primary"
                 }`}
               >
                 {t(locale, "nav.myPosts")}
@@ -106,8 +106,8 @@ export default function Navbar() {
                 onClick={() => setLocale(l)}
                 className={`rounded-md px-2.5 py-1 font-label text-label-sm font-semibold transition-all duration-150 ${
                   locale === l
-                    ? "bg-primary-DEFAULT text-white shadow-sm"
-                    : "text-on-surface-variant hover:bg-white hover:text-primary-DEFAULT"
+                    ? "bg-primary text-white shadow-sm"
+                    : "text-on-surface-variant hover:bg-white hover:text-primary"
                 }`}
               >
                 {l.toUpperCase()}
@@ -119,7 +119,7 @@ export default function Navbar() {
           {isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 rounded-lg border border-outline px-3 py-1.5 transition-all duration-200 hover:border-primary-DEFAULT hover:bg-surface-cream">
+                <button className="flex items-center gap-2 rounded-lg border border-outline px-3 py-1.5 transition-all duration-200 hover:border-primary hover:bg-surface-cream">
                   {user.avatar ? (
                     <img
                       src={user.avatar}
@@ -127,7 +127,7 @@ export default function Navbar() {
                       className="h-7 w-7 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-surface-cream text-primary-DEFAULT">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-surface-cream text-primary">
                       <User className="h-4 w-4" />
                     </div>
                   )}
@@ -167,7 +167,7 @@ export default function Navbar() {
           ) : (
             <button
               onClick={() => navigate("/login")}
-              className="px-4 py-2 font-label text-label-md text-on-surface-variant transition-colors duration-200 hover:rounded-lg hover:bg-surface-cream hover:text-primary-DEFAULT"
+              className="px-4 py-2 font-label text-label-md text-on-surface-variant transition-colors duration-200 hover:rounded-lg hover:bg-surface-cream hover:text-primary"
             >
               {t(locale, "nav.login")}
             </button>
@@ -176,7 +176,7 @@ export default function Navbar() {
           {/* CTA */}
           <button
             onClick={() => navigate("/create")}
-            className="rounded-lg bg-primary-DEFAULT px-6 py-2.5 font-label text-label-md font-bold text-white shadow-sm transition-all duration-300 hover:bg-on-primary-fixed-variant hover:scale-[1.03] hover:shadow-md active:scale-95"
+            className="rounded-lg bg-primary px-6 py-2.5 font-label text-label-md font-bold text-white shadow-sm transition-all duration-300 hover:bg-on-primary-fixed-variant hover:scale-[1.03] hover:shadow-md active:scale-95"
           >
             {t(locale, "nav.createPost")}
           </button>
@@ -185,7 +185,7 @@ export default function Navbar() {
         {/* Mobile hamburger */}
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetTrigger asChild className="md:hidden">
-            <button className="rounded-lg border border-outline p-2 text-on-surface transition-colors hover:border-primary-DEFAULT hover:bg-surface-cream">
+            <button className="rounded-lg border border-outline p-2 text-on-surface transition-colors hover:border-primary hover:bg-surface-cream">
               <Menu className="h-5 w-5" />
             </button>
           </SheetTrigger>
@@ -195,11 +195,11 @@ export default function Navbar() {
           >
             <div className="flex h-full flex-col">
               <div className="flex items-center justify-between border-b border-outline-variant p-4">
-                <SheetTitle className="font-headline text-xl font-bold text-primary-DEFAULT">
+                <SheetTitle className="font-headline text-xl font-bold text-primary">
                   Jobsy
                 </SheetTitle>
                 <SheetClose asChild>
-                  <button className="rounded-lg border border-outline p-2 text-on-surface transition-colors hover:border-primary-DEFAULT">
+                  <button className="rounded-lg border border-outline p-2 text-on-surface transition-colors hover:border-primary">
                     <X className="h-5 w-5" />
                   </button>
                 </SheetClose>
@@ -218,8 +218,8 @@ export default function Navbar() {
                         onClick={() => setLocale(l)}
                         className={`rounded-md px-3 py-1 font-label text-label-sm font-semibold transition-colors ${
                           locale === l
-                            ? "bg-primary-DEFAULT text-white"
-                            : "text-on-surface-variant hover:bg-white hover:text-primary-DEFAULT"
+                            ? "bg-primary text-white"
+                            : "text-on-surface-variant hover:bg-white hover:text-primary"
                         }`}
                       >
                         {l.toUpperCase()}
@@ -253,7 +253,7 @@ export default function Navbar() {
                 <Link
                   to="/create"
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-2 rounded-lg bg-primary-DEFAULT px-4 py-3 font-label text-label-md font-bold text-white transition-all hover:bg-on-primary-fixed-variant"
+                  className="flex items-center gap-2 rounded-lg bg-primary px-4 py-3 font-label text-label-md font-bold text-white transition-all hover:bg-on-primary-fixed-variant"
                 >
                   <Plus className="h-4 w-4" />
                   {t(locale, "nav.createPost")}
@@ -269,7 +269,7 @@ export default function Navbar() {
                         className="h-10 w-10 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-cream text-primary-DEFAULT">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-cream text-primary">
                         <User className="h-5 w-5" />
                       </div>
                     )}
@@ -280,7 +280,7 @@ export default function Navbar() {
                       <div className="flex gap-3">
                         <button
                           onClick={() => { navigate("/settings"); setMobileOpen(false); }}
-                          className="font-label text-label-sm text-on-surface-variant hover:text-primary-DEFAULT"
+                          className="font-label text-label-sm text-on-surface-variant hover:text-primary"
                         >
                           {t(locale, "nav.settings")}
                         </button>
@@ -294,7 +294,7 @@ export default function Navbar() {
                         )}
                         <button
                           onClick={() => { logout(); setMobileOpen(false); }}
-                          className="font-label text-label-sm text-on-surface-variant hover:text-primary-DEFAULT"
+                          className="font-label text-label-sm text-on-surface-variant hover:text-primary"
                         >
                           {t(locale, "nav.logout")}
                         </button>

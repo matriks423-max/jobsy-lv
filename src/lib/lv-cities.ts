@@ -1,4 +1,4 @@
-﻿// Coordinates for cities used in jobsy.lv posts
+// Coordinates for cities used in jobsy.lv posts
 const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
   riga:        { lat: 56.946, lng: 24.106 },
   daugavpils:  { lat: 55.875, lng: 26.536 },
@@ -18,7 +18,7 @@ const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
   kuldiga:     { lat: 56.968, lng: 21.962 },
   dobele:      { lat: 56.625, lng: 23.278 },
   talsi:       { lat: 57.245, lng: 22.584 },
-  // "other" → geographic centre of Latvia
+  // "other" ? geographic centre of Latvia
   other: { lat: 56.880, lng: 24.603 },
 };
 

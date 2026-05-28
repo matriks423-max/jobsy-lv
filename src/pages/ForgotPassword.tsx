@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import { trpc } from "@/providers/trpc";
@@ -12,7 +12,7 @@ export default function ForgotPassword() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "forgotPassword.pageTitle") + " — jobsy.lv";
+    document.title = t(locale, "forgotPassword.pageTitle") + " � jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 
@@ -64,7 +64,7 @@ export default function ForgotPassword() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t(locale, "forgotPassword.emailPlaceholder")}
-              className="w-full rounded-xl border border-outline-variant bg-surface-cream px-4 py-2.5 font-body text-sm outline-none focus:border-primary-DEFAULT"
+              className="w-full rounded-xl border border-outline-variant bg-surface-cream px-4 py-2.5 font-body text-sm outline-none focus:border-primary"
               required
               autoFocus
             />

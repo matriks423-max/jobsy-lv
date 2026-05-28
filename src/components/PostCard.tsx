@@ -81,7 +81,7 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
             <span
               className={`rounded px-2 py-0.5 font-label text-label-sm uppercase ${
                 isNeed
-                  ? "bg-surface-cream text-primary-DEFAULT"
+                  ? "bg-surface-cream text-primary"
                   : "bg-secondary-container/30 text-secondary-DEFAULT"
               }`}
             >
@@ -142,7 +142,7 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
             )}
             {post.budgetText && (
               <span className="inline-flex items-center gap-1 font-label text-label-sm font-medium text-on-surface">
-                <Wallet className="h-3.5 w-3.5 text-primary-DEFAULT" />
+                <Wallet className="h-3.5 w-3.5 text-primary" />
                 {post.budgetText}
               </span>
             )}
@@ -159,7 +159,7 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
               </span>
             )}
             {profile?.phoneVerified && (
-              <span className="inline-flex items-center gap-0.5 rounded-full bg-primary-container/20 px-1.5 py-0.5 font-label text-label-sm text-primary-DEFAULT">
+              <span className="inline-flex items-center gap-0.5 rounded-full bg-primary-container/20 px-1.5 py-0.5 font-label text-label-sm text-primary">
                 <ShieldCheck className="h-3 w-3" />
               </span>
             )}

@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router";
+import { Link } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 
@@ -14,7 +14,7 @@ export default function Footer() {
           {/* Column 1: Brand */}
           <div>
             <Link to="/" className="inline-flex items-center gap-1.5">
-              <span className="font-headline text-xl font-bold text-primary-DEFAULT">
+              <span className="font-headline text-xl font-bold text-primary">
                 Jobsy
               </span>
               <span className="inline-block h-2 w-2 rounded-full bg-accent-coral" />
@@ -29,8 +29,8 @@ export default function Footer() {
                   onClick={() => setLocale(l)}
                   className={`rounded-lg px-3 py-1.5 font-label text-label-sm transition-colors duration-200 ${
                     locale === l
-                      ? "bg-primary-DEFAULT text-white"
-                      : "bg-surface-cream text-on-surface-variant hover:bg-primary-DEFAULT hover:text-white"
+                      ? "bg-primary text-white"
+                      : "bg-surface-cream text-on-surface-variant hover:bg-primary hover:text-white"
                   }`}
                 >
                   {l.toUpperCase()}
@@ -48,7 +48,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/browse"
-                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary-DEFAULT"
+                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary"
                 >
                   {t(locale, "browse.title")}
                 </Link>
@@ -56,7 +56,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/browse?type=need"
-                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary-DEFAULT"
+                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary"
                 >
                   {t(locale, "browse.typeNeed")}
                 </Link>
@@ -64,7 +64,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/browse?type=offer"
-                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary-DEFAULT"
+                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary"
                 >
                   {t(locale, "browse.typeOffer")}
                 </Link>
@@ -72,7 +72,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/pricing"
-                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary-DEFAULT"
+                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary"
                 >
                   {t(locale, "nav.pricing")}
                 </Link>
@@ -89,7 +89,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/login"
-                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary-DEFAULT"
+                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary"
                 >
                   {t(locale, "nav.login")}
                 </Link>
@@ -97,7 +97,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/my-posts"
-                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary-DEFAULT"
+                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary"
                 >
                   {t(locale, "nav.myPosts")}
                 </Link>
@@ -105,7 +105,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/settings"
-                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary-DEFAULT"
+                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary"
                 >
                   {t(locale, "nav.settings")}
                 </Link>
@@ -113,7 +113,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/create"
-                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary-DEFAULT"
+                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary"
                 >
                   {t(locale, "nav.createPost")}
                 </Link>
@@ -130,7 +130,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/privacy"
-                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary-DEFAULT"
+                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary"
                 >
                   {t(locale, "footer.privacy")}
                 </Link>
@@ -138,7 +138,7 @@ export default function Footer() {
               <li>
                 <Link
                   to="/terms"
-                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary-DEFAULT"
+                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary"
                 >
                   {t(locale, "footer.terms")}
                 </Link>
@@ -146,7 +146,7 @@ export default function Footer() {
               <li>
                 <a
                   href="mailto:info@jobsy.lv"
-                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary-DEFAULT"
+                  className="font-body text-body-sm text-on-surface-variant transition-colors duration-150 hover:text-primary"
                 >
                   info@jobsy.lv
                 </a>
@@ -159,7 +159,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-outline-variant pt-6 sm:flex-row">
           <p className="font-label text-label-sm text-outline">
-            © {year} jobsy.lv
+            � {year} jobsy.lv
           </p>
           <p className="font-label text-label-sm text-outline">
             {t(locale, "footer.tagline")}

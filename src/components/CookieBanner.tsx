@@ -42,7 +42,7 @@ export default function CookieBanner() {
         <div className="flex gap-2">
           <button
             onClick={decline}
-            className="rounded-lg border-2 border-outline-variant px-4 py-2 font-body text-sm text-on-surface-variant hover:border-primary-DEFAULT hover:text-on-surface"
+            className="rounded-lg border-2 border-outline-variant px-4 py-2 font-body text-sm text-on-surface-variant hover:border-primary hover:text-on-surface"
           >
             {t(locale, "cookie.decline")}
           </button>

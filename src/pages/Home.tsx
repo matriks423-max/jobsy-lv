@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -99,8 +99,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    document.title = "jobsy.lv — Atrodi palīgu vai darbu";
-    const desc = "Latvijas ērtākais veids, kā atrast palīgus ikdienas uzdevumiem vai atrast darbiņus. Publicē bezmaksas sludinājumu.";
+    document.title = "jobsy.lv � Atrodi paligu vai darbu";
+    const desc = "Latvijas ertakais veids, ka atrast paligus ikdienas uzdevumiem vai atrast darbinus. Publice bezmaksas sludinajumu.";
     let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
     const created = !metaDesc;
     if (!metaDesc) {
@@ -133,7 +133,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-surface-off-white">
-      {/* ── Hero ──────────────────────────────────────────────── */}
+      {/* -- Hero ------------------------------------------------ */}
       <section className="relative flex min-h-[72vh] flex-col items-center justify-center overflow-hidden px-4 pb-12 pt-16 text-center">
         {/* Emerald gradient background */}
         <div
@@ -172,7 +172,7 @@ export default function Home() {
             </span>
           </motion.div>
 
-          {/* Headline — word-by-word reveal */}
+          {/* Headline � word-by-word reveal */}
           <motion.h1 className="mb-5 font-headline text-5xl font-bold leading-tight text-white md:text-[64px] md:leading-[1.1]">
             {t(locale, "hero.title").split(" ").map((word, i) => (
               <motion.span
@@ -242,7 +242,7 @@ export default function Home() {
             ))}
           </motion.div>
 
-          {/* Stats — only render when real data is available */}
+          {/* Stats � only render when real data is available */}
           {stats && (
             <motion.div
               className="flex flex-wrap justify-center gap-8 md:gap-12"
@@ -274,7 +274,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Categories ───────────────────────────────────────── */}
+      {/* -- Categories ----------------------------------------- */}
       <section className="px-margin-mobile py-10 md:px-margin-desktop">
         <div className="mx-auto max-w-container-max-width">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
@@ -285,7 +285,7 @@ export default function Home() {
                 <Link
                   key={cat.key}
                   to={`/browse?category=${cat.key}`}
-                  className="group flex flex-col items-center gap-3 rounded-xl border border-outline-variant bg-white px-4 py-5 text-center shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-DEFAULT hover:shadow-md"
+                  className="group flex flex-col items-center gap-3 rounded-xl border border-outline-variant bg-white px-4 py-5 text-center shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary hover:shadow-md"
                 >
                   <div
                     className="flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110"
@@ -294,7 +294,7 @@ export default function Home() {
                     {Icon && <Icon className="h-6 w-6" style={{ color: cat.color }} />}
                   </div>
                   <div>
-                    <p className="font-label text-label-sm font-semibold text-on-surface transition-colors group-hover:text-primary-DEFAULT">
+                    <p className="font-label text-label-sm font-semibold text-on-surface transition-colors group-hover:text-primary">
                       {t(locale, `categories.${cat.key}` as never)}
                     </p>
                     {count > 0 && (
@@ -310,7 +310,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Featured Posts ────────────────────────────────────── */}
+      {/* -- Featured Posts -------------------------------------- */}
       {featuredPosts.length > 0 && (
         <section className="px-margin-mobile py-10 md:px-margin-desktop">
           <div className="mx-auto max-w-container-max-width">
@@ -329,7 +329,7 @@ export default function Home() {
         </section>
       )}
 
-      {/* ── How It Works ──────────────────────────────────────── */}
+      {/* -- How It Works ---------------------------------------- */}
       <section className="bg-surface-cream px-margin-mobile py-14 md:px-margin-desktop">
         <div className="mx-auto max-w-container-max-width">
           <div className="mb-10 text-center">
@@ -364,7 +364,7 @@ export default function Home() {
                 transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 className="flex flex-col items-center rounded-2xl bg-white p-8 text-center shadow-card"
               >
-                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-DEFAULT">
+                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary">
                   <span className="font-headline text-xl font-bold text-white">{step.num}</span>
                 </div>
                 <h3 className="mb-2 font-headline text-headline-sm font-semibold text-on-surface">
@@ -377,7 +377,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── City Map ──────────────────────────────────────────── */}
+      {/* -- City Map -------------------------------------------- */}
       <section className="px-margin-mobile py-14 md:px-margin-desktop">
         <div className="mx-auto max-w-container-max-width">
           <div className="mb-8 text-center">
@@ -389,7 +389,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Latest Posts ──────────────────────────────────────── */}
+      {/* -- Latest Posts ---------------------------------------- */}
       <section className="bg-surface-cream px-margin-mobile py-14 md:px-margin-desktop">
         <div className="mx-auto max-w-container-max-width">
           <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
@@ -405,8 +405,8 @@ export default function Home() {
                   onClick={() => setActiveFilter(f)}
                   className={`rounded-lg px-4 py-2 font-label text-label-sm transition-colors duration-200 ${
                     activeFilter === f
-                      ? "bg-primary-DEFAULT text-white"
-                      : "bg-white text-on-surface-variant shadow-card hover:text-primary-DEFAULT"
+                      ? "bg-primary text-white"
+                      : "bg-white text-on-surface-variant shadow-card hover:text-primary"
                   }`}
                 >
                   {f === "all"
@@ -439,7 +439,7 @@ export default function Home() {
               </p>
               <button
                 onClick={() => navigate("/create")}
-                className="inline-flex items-center gap-2 rounded-lg bg-primary-DEFAULT px-6 py-2.5 font-label text-label-md font-bold text-white transition-all duration-200 hover:bg-on-primary-fixed-variant"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 font-label text-label-md font-bold text-white transition-all duration-200 hover:bg-on-primary-fixed-variant"
               >
                 <Plus className="h-4 w-4" />
                 {t(locale, "latestPosts.emptyBtn")}
@@ -450,7 +450,7 @@ export default function Home() {
           <div className="mt-10 text-center">
             <Link
               to="/browse"
-              className="inline-flex items-center gap-2 rounded-lg border border-outline-variant bg-white px-6 py-3 font-label text-label-md text-on-surface shadow-card transition-all duration-200 hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+              className="inline-flex items-center gap-2 rounded-lg border border-outline-variant bg-white px-6 py-3 font-label text-label-md text-on-surface shadow-card transition-all duration-200 hover:border-primary hover:text-primary"
             >
               {t(locale, "latestPosts.viewAll")}
               <ArrowRight className="h-4 w-4" />
@@ -459,11 +459,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── CTA ─────────────────────────────────────────────────── */}
+      {/* -- CTA --------------------------------------------------- */}
       <section className="px-margin-mobile py-14 md:px-margin-desktop">
         <div className="mx-auto max-w-container-max-width space-y-4">
 
-          {/* Main CTA — full width */}
+          {/* Main CTA � full width */}
           <div
             className="relative overflow-hidden rounded-2xl px-8 py-10 text-center"
             style={{
@@ -486,12 +486,12 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Referral — compact strip below CTA */}
+          {/* Referral � compact strip below CTA */}
           <div className="rounded-xl border border-outline-variant bg-white px-6 py-4 shadow-card">
             <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface-cream">
-                  <Gift className="h-4 w-4 text-primary-DEFAULT" />
+                  <Gift className="h-4 w-4 text-primary" />
                 </div>
                 <div>
                   <p className="font-label text-label-md font-semibold text-on-surface">
@@ -515,7 +515,7 @@ export default function Home() {
                       setCopied(true);
                       setTimeout(() => setCopied(false), 2000);
                     }}
-                    className="rounded-lg border border-outline-variant bg-surface-cream p-2 text-on-surface-variant transition-colors hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+                    className="rounded-lg border border-outline-variant bg-surface-cream p-2 text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
                     title={t(locale, "referral.copy")}
                   >
                     {copied ? (
@@ -533,7 +533,7 @@ export default function Home() {
               ) : (
                 <button
                   onClick={() => navigate("/login")}
-                  className="shrink-0 rounded-lg border border-outline-variant bg-surface-cream px-4 py-2 font-label text-label-sm text-on-surface transition-colors hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+                  className="shrink-0 rounded-lg border border-outline-variant bg-surface-cream px-4 py-2 font-label text-label-sm text-on-surface transition-colors hover:border-primary hover:text-primary"
                 >
                   {t(locale, "nav.login")}
                 </button>

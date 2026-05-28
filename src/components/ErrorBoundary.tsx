@@ -1,4 +1,4 @@
-﻿import { Component, type ReactNode, type ErrorInfo } from "react";
+import { Component, type ReactNode, type ErrorInfo } from "react";
 import { Sentry } from "@/lib/sentry";
 
 function getLocale(): "lv" | "ru" | "en" {
@@ -10,8 +10,8 @@ function getLocale(): "lv" | "ru" | "en" {
 }
 
 const ERROR_STRINGS = {
-  lv: { heading: "Kaut kas nogāja greizi", body: "Radās neparedzēta kļūda. Lūdzu, atgriezieties sākumlapā un mēģiniet vēlreiz.", btn: "Atgriezties sākumlapā" },
-  ru: { heading: "Что-то пошло не так", body: "Произошла непредвиденная ошибка. Вернитесь на главную и попробуйте ещё раз.", btn: "На главную" },
+  lv: { heading: "Kaut kas nogaja greizi", body: "Radas neparedzeta kluda. Ludzu, atgriezieties sakumlapa un meginiet velreiz.", btn: "Atgriezties sakumlapa" },
+  ru: { heading: "???-?? ????? ?? ???", body: "????????? ?????????????? ??????. ????????? ?? ??????? ? ?????????? ??? ???.", btn: "?? ???????" },
   en: { heading: "Something went wrong", body: "An unexpected error occurred. Please return to the home page and try again.", btn: "Back to Home" },
 };
 
@@ -59,7 +59,7 @@ export default class ErrorBoundary extends Component<Props, State> {
           </p>
           <button
             onClick={this.handleReset}
-            className="rounded-xl bg-primary-DEFAULT px-6 py-3 font-label text-label-md font-semibold text-white transition-opacity hover:opacity-90"
+            className="rounded-xl bg-primary px-6 py-3 font-label text-label-md font-semibold text-white transition-opacity hover:opacity-90"
           >
             {s.btn}
           </button>

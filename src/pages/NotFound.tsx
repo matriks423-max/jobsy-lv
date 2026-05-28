@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -11,7 +11,7 @@ export default function NotFound() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = "404 — jobsy.lv";
+    document.title = "404 � jobsy.lv";
     return () => { document.title = prev; };
   }, []);
 
@@ -45,7 +45,7 @@ export default function NotFound() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t(locale, "hero.searchPlaceholder")}
-              className="w-full rounded-xl border border-outline-variant bg-white py-2.5 pl-10 pr-4 font-body text-sm outline-none focus:border-primary-DEFAULT"
+              className="w-full rounded-xl border border-outline-variant bg-white py-2.5 pl-10 pr-4 font-body text-sm outline-none focus:border-primary"
             />
           </div>
           <button

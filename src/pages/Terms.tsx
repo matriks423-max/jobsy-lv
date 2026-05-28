@@ -1,4 +1,4 @@
-﻿import { useEffect } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -9,45 +9,45 @@ export default function Terms() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = "Lietošanas noteikumi — jobsy.lv";
+    document.title = "Lieto�anas noteikumi � jobsy.lv";
     return () => { document.title = prev; };
   }, []);
 
   const sections = [
     {
-      title: "Vispārīgie noteikumi",
+      title: "Visparigie noteikumi",
       content:
-        "Lietojot jobsy.lv, tu piekrīti šiem noteikumiem. Platforma ir paredzēta personiskai, nekomerciālai lietošanai. Aizliegts izmantot platformu nelikumīgiem nolūkiem, krāpšanai vai aizskaroša satura publicēšanai.",
+        "Lietojot jobsy.lv, tu piekriti �iem noteikumiem. Platforma ir paredzeta personiskai, nekomercialai lieto�anai. Aizliegts izmantot platformu nelikumigiem nolukiem, krap�anai vai aizskaro�a satura publice�anai.",
     },
     {
-      title: "Sludinājumi",
+      title: "Sludinajumi",
       content:
-        "Katrs sludinājums ir aktīvs 30 dienas no publicēšanas brīža. Pēc tam tas automātiski beidzas. Aizliegts publicēt: (1) melīgu vai maldinošu informāciju; (2) aizskarošu, diskriminējošu vai nelikumīgu saturu; (3) sludinājumus, kas nav saistīti ar pakalpojumu sniegšanu vai meklēšanu.",
+        "Katrs sludinajums ir aktivs 30 dienas no publice�anas bri�a. Pec tam tas automatiski beidzas. Aizliegts publicet: (1) meligu vai maldino�u informaciju; (2) aizskaro�u, diskriminejo�u vai nelikumigu saturu; (3) sludinajumus, kas nav saistiti ar pakalpojumu snieg�anu vai mekle�anu.",
     },
     {
-      title: "Maksājumi",
+      title: "Maksajumi",
       content:
-        "Pirmais sludinājums katram jaunam lietotājam ir bez maksas. Katrs nākamais sludinājums maksā €2.00 (divi eiro). Maksājumi tiek apstrādāti caur Stripe. Maksājumi nav atmaksājami, ja sludinājums jau ir publicēts.",
+        "Pirmais sludinajums katram jaunam lietotajam ir bez maksas. Katrs nakamais sludinajums maksa �2.00 (divi eiro). Maksajumi tiek apstradati caur Stripe. Maksajumi nav atmaksajami, ja sludinajums jau ir publicets.",
     },
     {
-      title: "Atbildība",
+      title: "Atbildiba",
       content:
-        "jobsy.lv ir tiks starpniecības platforma. Mēs neesam atbildīgi par darījumiem, kas notiek starp lietotājiem. Katrs lietotājs ir atbildīgs par savu rīcību, darījumu drošību un nodokļu saistībām.",
+        "jobsy.lv ir tiks starpniecibas platforma. Mes neesam atbildigi par darijumiem, kas notiek starp lietotajiem. Katrs lietotajs ir atbildigs par savu ricibu, darijumu dro�ibu un nodoklu saistibam.",
     },
     {
-      title: "Kontu izbeigšana",
+      title: "Kontu izbeig�ana",
       content:
-        "Mēs paturam tiesības dzēst kontu vai bloķēt piekļuvi, ja lietotājs pārkāpj šos noteikumus, publicē aizskarošu saturu vai iesaistās krāpšanā. Konta īpašnieks var jebkurā laikā dzēst savu kontu.",
+        "Mes paturam tiesibas dzest kontu vai bloket piekluvi, ja lietotajs parkapj �os noteikumus, publice aizskaro�u saturu vai iesaistas krap�ana. Konta ipa�nieks var jebkura laika dzest savu kontu.",
     },
     {
-      title: "Grozījumi",
+      title: "Grozijumi",
       content:
-        "Mēs paturam tiesības jebkurā laikā mainīt šos noteikumus. Par būtiskiem grozījumiem paziņosim e-pastā vai platformā vismaz 14 dienas pirms stāšanās spēkā.",
+        "Mes paturam tiesibas jebkura laika mainit �os noteikumus. Par butiskiem grozijumiem pazinosim e-pasta vai platforma vismaz 14 dienas pirms sta�anas speka.",
     },
     {
       title: "Kontakti",
       content:
-        "Jautājumu vai sūdzību gadījumā sazinies ar mums: info@jobsy.lv.",
+        "Jautajumu vai sudzibu gadijuma sazinies ar mums: info@jobsy.lv.",
     },
   ];
 
@@ -59,7 +59,7 @@ export default function Terms() {
           className="mb-6 inline-flex items-center gap-2 font-body text-sm text-on-surface-variant hover:text-on-surface"
         >
           <ArrowLeft className="h-4 w-4" />
-          Atpakaļ
+          Atpakal
         </Link>
 
         <div className="mb-8 flex items-center gap-3">
@@ -69,7 +69,7 @@ export default function Terms() {
               {t(locale, "footer.terms")}
             </h1>
             <p className="font-body text-sm text-on-surface-variant">
-              Pēdējo reizi atjaunots: 2025. gada 1. janvārī
+              Pedejo reizi atjaunots: 2025. gada 1. janvari
             </p>
           </div>
         </div>

@@ -1,4 +1,4 @@
-﻿import { useEffect } from "react";
+import { useEffect } from "react";
 import { useParams, Link } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -44,7 +44,7 @@ export default function UserProfile() {
   useEffect(() => {
     const prev = document.title;
     if (data?.profile?.name) {
-      document.title = `${data.profile.name} — jobsy.lv`;
+      document.title = `${data.profile.name} � jobsy.lv`;
     }
     return () => { document.title = prev; };
   }, [data?.profile?.name]);
@@ -103,7 +103,7 @@ export default function UserProfile() {
                   </span>
                 )}
                 {isBusiness && (
-                  <span className="inline-flex items-center gap-1 rounded-full border border-primary-DEFAULT bg-primary-DEFAULT px-2 py-0.5 font-mono text-xs font-bold text-white">
+                  <span className="inline-flex items-center gap-1 rounded-full border border-primary bg-primary px-2 py-0.5 font-mono text-xs font-bold text-white">
                     <Building2 className="h-3 w-3" />
                     Business
                   </span>
@@ -146,7 +146,7 @@ export default function UserProfile() {
           {isBusiness && profile.companyName && (
             <div className="mt-6 rounded-xl border-2 border-outline-variant bg-surface-cream p-4">
               <p className="mb-1 flex items-center gap-1.5 font-body text-sm font-bold text-on-surface">
-                <Building2 className="h-4 w-4 text-primary-DEFAULT" />
+                <Building2 className="h-4 w-4 text-primary" />
                 {profile.companyName}
               </p>
               {profile.companyDescription && (
@@ -186,7 +186,7 @@ export default function UserProfile() {
                     <div className={`h-12 w-1 shrink-0 rounded-full ${post.type === "need" ? "bg-need" : "bg-success-emerald"}`} />
                     <div className="flex-1 min-w-0">
                       <div className="mb-1 flex flex-wrap items-center gap-1.5">
-                        <span className="inline-flex items-center gap-1 rounded-full border border-primary-DEFAULT bg-surface-cream px-2 py-0.5 font-body text-[10px] font-medium uppercase text-on-surface">
+                        <span className="inline-flex items-center gap-1 rounded-full border border-primary bg-surface-cream px-2 py-0.5 font-body text-[10px] font-medium uppercase text-on-surface">
                           <CategoryIcon className="h-3 w-3" />
                           {t(locale, `categories.${post.category}` as never)}
                         </span>
@@ -230,7 +230,7 @@ export default function UserProfile() {
               {reviews.map((r) => (
                 <div key={r.id} className="rounded-2xl border border-outline-variant bg-white p-5">
                   <div className="mb-2 flex items-center justify-between">
-                    <p className="font-body text-sm font-bold text-on-surface">{r.reviewerName ?? "Anonīms"}</p>
+                    <p className="font-body text-sm font-bold text-on-surface">{r.reviewerName ?? "Anonims"}</p>
                     <div className="flex gap-0.5">
                       {[1, 2, 3, 4, 5].map((s) => (
                         <Star

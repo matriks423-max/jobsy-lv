@@ -1,4 +1,4 @@
-Ôªøimport { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -172,12 +172,12 @@ export default function PostDetail() {
   useEffect(() => {
     if (!data?.post) return;
     const prev = document.title;
-    document.title = `${data.post.title} ‚Äî jobsy.lv`;
+    document.title = `${data.post.title} ó jobsy.lv`;
     const desc = [
       data.post.description?.slice(0, 120),
       data.post.city ? t(locale, `cities.${data.post.city}` as never) : null,
       data.post.budgetText,
-    ].filter(Boolean).join(" ¬∑ ") || `${data.post.title} ‚Äî jobsy.lv`;
+    ].filter(Boolean).join(" ∑ ") || `${data.post.title} ó jobsy.lv`;
     const url = `https://jobsy.lv/post/${data.post.id}`;
     const image = data.images?.[0] ?? "https://jobsy.lv/og-image.png";
     const setMeta = (selector: string, attr: string, value: string) => {
@@ -190,13 +190,13 @@ export default function PostDetail() {
     const metas: HTMLMetaElement[] = [];
     const add = (s: string, a: string, v: string) => { const el = setMeta(s, a, v); if (el) metas.push(el); };
     add('meta[name="description"]', "name=description", desc);
-    add('meta[property="og:title"]', "property=og:title", `${data.post.title} ‚Äî jobsy.lv`);
+    add('meta[property="og:title"]', "property=og:title", `${data.post.title} ó jobsy.lv`);
     add('meta[property="og:description"]', "property=og:description", desc);
     add('meta[property="og:url"]', "property=og:url", url);
     add('meta[property="og:image"]', "property=og:image", image);
     add('meta[property="og:type"]', "property=og:type", "website");
     add('meta[name="twitter:card"]', "name=twitter:card", "summary_large_image");
-    add('meta[name="twitter:title"]', "name=twitter:title", `${data.post.title} ‚Äî jobsy.lv`);
+    add('meta[name="twitter:title"]', "name=twitter:title", `${data.post.title} ó jobsy.lv`);
     add('meta[name="twitter:description"]', "name=twitter:description", desc);
     add('meta[name="twitter:image"]', "name=twitter:image", image);
     let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
@@ -237,7 +237,7 @@ export default function PostDetail() {
           <p className="font-body text-body-lg text-on-surface-variant">{t(locale, "postDetail.notFound")}</p>
           <button
             onClick={() => navigate("/browse")}
-            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary-DEFAULT px-6 py-2.5 font-label text-label-md text-white transition hover:bg-on-primary-fixed-variant"
+            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 font-label text-label-md text-white transition hover:bg-on-primary-fixed-variant"
           >
             <ArrowLeft className="h-4 w-4" />
             {t(locale, "browse.title")}
@@ -259,7 +259,7 @@ export default function PostDetail() {
 
   const handleShare = async (platform?: string) => {
     const url = window.location.href;
-    const text = `${post.title} ‚Äî jobsy.lv`;
+    const text = `${post.title} ó jobsy.lv`;
     if (!platform && navigator.share) {
       try { await navigator.share({ title: post.title, text, url }); return; } catch { /* fall through */ }
     }
@@ -280,9 +280,9 @@ export default function PostDetail() {
 
         {/* Breadcrumb */}
         <div className="mb-6 flex items-center gap-2 font-body text-body-sm text-on-surface-variant">
-          <Link to="/" className="hover:text-primary-DEFAULT transition-colors">{t(locale, "postDetail.breadcrumbHome")}</Link>
+          <Link to="/" className="hover:text-primary transition-colors">{t(locale, "postDetail.breadcrumbHome")}</Link>
           <span className="text-outline">/</span>
-          <Link to="/browse" className="hover:text-primary-DEFAULT transition-colors">{t(locale, "postDetail.breadcrumbPosts")}</Link>
+          <Link to="/browse" className="hover:text-primary transition-colors">{t(locale, "postDetail.breadcrumbPosts")}</Link>
           <span className="text-outline">/</span>
           <span className="text-on-surface">{t(locale, `categories.${post.category}` as never)}</span>
         </div>
@@ -293,7 +293,7 @@ export default function PostDetail() {
             {/* Type badge */}
             <span className={`rounded px-2.5 py-1 font-label text-label-sm uppercase ${
               post.type === "need"
-                ? "bg-surface-cream text-primary-DEFAULT"
+                ? "bg-surface-cream text-primary"
                 : "bg-secondary-container/30 text-secondary-DEFAULT"
             }`}>
               {post.type === "need" ? t(locale, "browse.typeNeed") : t(locale, "browse.typeOffer")}
@@ -319,7 +319,7 @@ export default function PostDetail() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => handleShare()}
-              className="rounded-lg border border-outline-variant bg-white p-2 text-on-surface-variant shadow-card transition-colors hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+              className="rounded-lg border border-outline-variant bg-white p-2 text-on-surface-variant shadow-card transition-colors hover:border-primary hover:text-primary"
               title={t(locale, "postDetail.share.title")}
             >
               <Share2 className="h-4 w-4" />
@@ -327,7 +327,7 @@ export default function PostDetail() {
             {isOwner && (
               <>
                 <Link to={`/edit/${post.id}`}>
-                  <button className="rounded-lg border border-outline-variant bg-white p-2 text-on-surface-variant shadow-card transition-colors hover:border-primary-DEFAULT hover:text-primary-DEFAULT">
+                  <button className="rounded-lg border border-outline-variant bg-white p-2 text-on-surface-variant shadow-card transition-colors hover:border-primary hover:text-primary">
                     <Pencil className="h-4 w-4" />
                   </button>
                 </Link>
@@ -367,8 +367,8 @@ export default function PostDetail() {
               : "bg-surface-cream text-on-surface-variant"
           }`}>
             {data.post.filled
-              ? `‚úì ${t(locale, "postDetail.statusFilled")}`
-              : `‚óè ${t(locale, "postDetail.statusOpen")}`}
+              ? `? ${t(locale, "postDetail.statusFilled")}`
+              : `? ${t(locale, "postDetail.statusOpen")}`}
           </span>
         </div>
 
@@ -389,7 +389,7 @@ export default function PostDetail() {
                   onClick={() => { setGalleryIndex(i); setShowGallery(true); }}
                   className="aspect-square overflow-hidden rounded-xl border border-outline-variant transition-shadow hover:shadow-card-hover"
                 >
-                  <img src={img} alt={`${post.title} ‚Äî ${i + 1}`} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy" />
+                  <img src={img} alt={`${post.title} ó ${i + 1}`} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy" />
                 </button>
               ))}
             </div>
@@ -401,7 +401,7 @@ export default function PostDetail() {
           {post.budgetText && (
             <div className="rounded-xl bg-white p-5 shadow-card">
               <div className="mb-1 flex items-center gap-2 font-label text-label-sm text-on-surface-variant">
-                <Wallet className="h-4 w-4 text-primary-DEFAULT" />
+                <Wallet className="h-4 w-4 text-primary" />
                 {t(locale, "postDetail.budget")}
               </div>
               <p className="font-headline text-headline-sm font-semibold text-on-surface">{post.budgetText}</p>
@@ -410,7 +410,7 @@ export default function PostDetail() {
           {post.whenText && (
             <div className="rounded-xl bg-white p-5 shadow-card">
               <div className="mb-1 flex items-center gap-2 font-label text-label-sm text-on-surface-variant">
-                <Calendar className="h-4 w-4 text-primary-DEFAULT" />
+                <Calendar className="h-4 w-4 text-primary" />
                 {t(locale, "postDetail.when")}
               </div>
               <p className="font-headline text-headline-sm font-semibold text-on-surface">{post.whenText}</p>
@@ -427,24 +427,24 @@ export default function PostDetail() {
                 {profile?.avatarUrl ? (
                   <img src={profile.avatarUrl} alt="" className="h-12 w-12 rounded-full object-cover ring-2 ring-outline-variant" />
                 ) : (
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-cream text-primary-DEFAULT">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-cream text-primary">
                     <span className="font-headline text-lg font-bold">{profile?.name?.[0] ?? "?"}</span>
                   </div>
                 )}
                 <div>
                   <div className="flex items-center gap-2">
-                    <Link to={`/user/${post.userId}`} className="font-body text-body-md font-bold text-on-surface transition-colors hover:text-primary-DEFAULT">
-                      {profile?.name ?? "‚Äî"}
+                    <Link to={`/user/${post.userId}`} className="font-body text-body-md font-bold text-on-surface transition-colors hover:text-primary">
+                      {profile?.name ?? "ó"}
                     </Link>
                     {profile?.phoneVerified && (
-                      <span className="inline-flex items-center gap-0.5 rounded-full bg-primary-container/20 px-2 py-0.5 font-label text-label-sm text-primary-DEFAULT">
+                      <span className="inline-flex items-center gap-0.5 rounded-full bg-primary-container/20 px-2 py-0.5 font-label text-label-sm text-primary">
                         <ShieldCheck className="h-3 w-3" />
                         {t(locale, "settings.verified")}
                       </span>
                     )}
                     {isBusiness && (
                       <span className="inline-flex items-center rounded-full bg-on-surface px-1.5 py-0.5 font-label text-label-sm font-bold text-surface-off-white">
-                        üè¢
+                        ??
                       </span>
                     )}
                   </div>
@@ -460,7 +460,7 @@ export default function PostDetail() {
                   className={`mb-4 flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 font-label text-label-md transition-colors duration-150 ${
                     interestData?.interested
                       ? "bg-success-emerald/10 text-success-emerald"
-                      : "border border-outline-variant bg-surface-cream text-on-surface hover:border-primary-DEFAULT hover:text-primary-DEFAULT"
+                      : "border border-outline-variant bg-surface-cream text-on-surface hover:border-primary hover:text-primary"
                   }`}
                 >
                   {interestData?.interested ? t(locale, "postDetail.interest.done") : t(locale, "postDetail.interest.btn")}
@@ -473,9 +473,9 @@ export default function PostDetail() {
                   {contactMutation.data.email && (
                     <a
                       href={`mailto:${contactMutation.data.email}`}
-                      className="flex items-center gap-3 rounded-lg border border-outline-variant bg-surface-cream p-4 text-on-surface transition-all hover:border-primary-DEFAULT hover:shadow-card"
+                      className="flex items-center gap-3 rounded-lg border border-outline-variant bg-surface-cream p-4 text-on-surface transition-all hover:border-primary hover:shadow-card"
                     >
-                      <Mail className="h-5 w-5 text-primary-DEFAULT" />
+                      <Mail className="h-5 w-5 text-primary" />
                       <div>
                         <p className="font-label text-label-sm text-on-surface-variant">{t(locale, "postDetail.contact.email")}</p>
                         <p className="font-body text-body-md font-medium">{contactMutation.data.email}</p>
@@ -485,9 +485,9 @@ export default function PostDetail() {
                   {contactMutation.data.phone && (
                     <a
                       href={`tel:${contactMutation.data.phone}`}
-                      className="flex items-center gap-3 rounded-lg border border-outline-variant bg-surface-cream p-4 text-on-surface transition-all hover:border-primary-DEFAULT hover:shadow-card"
+                      className="flex items-center gap-3 rounded-lg border border-outline-variant bg-surface-cream p-4 text-on-surface transition-all hover:border-primary hover:shadow-card"
                     >
-                      <Phone className="h-5 w-5 text-primary-DEFAULT" />
+                      <Phone className="h-5 w-5 text-primary" />
                       <div>
                         <p className="font-label text-label-sm text-on-surface-variant">{t(locale, "postDetail.contact.phone")}</p>
                         <p className="font-body text-body-md font-medium">{contactMutation.data.phone}</p>
@@ -532,7 +532,7 @@ export default function PostDetail() {
                     <button
                       onClick={handleContact}
                       disabled={contactMutation.isPending}
-                      className="h-14 w-full rounded-lg bg-primary-DEFAULT font-label text-label-md font-bold text-white transition-all duration-200 hover:bg-on-primary-fixed-variant active:scale-[0.99] disabled:opacity-60"
+                      className="h-14 w-full rounded-lg bg-primary font-label text-label-md font-bold text-white transition-all duration-200 hover:bg-on-primary-fixed-variant active:scale-[0.99] disabled:opacity-60"
                     >
                       {contactMutation.isPending ? "..." : t(locale, "postDetail.contact.contactBtn")}
                     </button>
@@ -549,7 +549,7 @@ export default function PostDetail() {
               <p className="mb-6 font-body text-body-sm text-on-surface-variant">{t(locale, "postDetail.contact.lockedSub")}</p>
               <button
                 onClick={() => navigate("/login")}
-                className="h-12 rounded-lg bg-primary-DEFAULT px-8 font-label text-label-md font-bold text-white transition hover:bg-on-primary-fixed-variant"
+                className="h-12 rounded-lg bg-primary px-8 font-label text-label-md font-bold text-white transition hover:bg-on-primary-fixed-variant"
               >
                 {t(locale, "postDetail.contact.loginBtn")}
               </button>
@@ -603,12 +603,12 @@ export default function PostDetail() {
                   onChange={(e) => setReviewComment(e.target.value)}
                   placeholder={t(locale, "postDetail.review.placeholder")}
                   rows={3}
-                  className="w-full rounded-lg border border-outline-variant bg-surface-cream p-3 font-body text-body-sm text-on-surface placeholder:text-on-surface-variant focus:border-primary-DEFAULT focus:outline-none focus:ring-1 focus:ring-primary-DEFAULT/30 resize-y"
+                  className="w-full rounded-lg border border-outline-variant bg-surface-cream p-3 font-body text-body-sm text-on-surface placeholder:text-on-surface-variant focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/30 resize-y"
                 />
                 <button
                   onClick={() => reviewMutation.mutate({ postId, revieweeId: revieweeId!, stars: reviewStars, comment: reviewComment || undefined })}
                   disabled={reviewStars === 0 || reviewMutation.isPending}
-                  className="h-12 rounded-lg bg-primary-DEFAULT px-6 font-label text-label-md font-bold text-white transition hover:bg-on-primary-fixed-variant disabled:opacity-50"
+                  className="h-12 rounded-lg bg-primary px-6 font-label text-label-md font-bold text-white transition hover:bg-on-primary-fixed-variant disabled:opacity-50"
                 >
                   {t(locale, "postDetail.review.submit")}
                 </button>
@@ -627,7 +627,7 @@ export default function PostDetail() {
               {postReviews.map((r) => (
                 <div key={r.id} className="rounded-xl bg-white p-5 shadow-card">
                   <div className="mb-2 flex items-center justify-between">
-                    <p className="font-body text-body-sm font-semibold text-on-surface">{r.reviewerName ?? "‚Äî"}</p>
+                    <p className="font-body text-body-sm font-semibold text-on-surface">{r.reviewerName ?? "ó"}</p>
                     <div className="flex gap-0.5">
                       {[1,2,3,4,5].map((s) => (
                         <Star key={s} className={`h-4 w-4 ${s <= r.stars ? "fill-accent-coral text-accent-coral" : "text-outline"}`} />
@@ -684,7 +684,7 @@ export default function PostDetail() {
               <button
                 key={id}
                 onClick={() => handleShare(id)}
-                className="flex flex-col items-center gap-2 rounded-xl bg-surface-cream p-4 text-on-surface-variant transition-colors hover:bg-surface-cream hover:text-primary-DEFAULT"
+                className="flex flex-col items-center gap-2 rounded-xl bg-surface-cream p-4 text-on-surface-variant transition-colors hover:bg-surface-cream hover:text-primary"
               >
                 {icon}
                 <span className="font-label text-label-sm">{label}</span>
@@ -712,7 +712,7 @@ export default function PostDetail() {
               <select
                 value={reportReason}
                 onChange={(e) => setReportReason(e.target.value)}
-                className="w-full rounded-lg border border-outline-variant bg-surface-cream p-3 font-body text-body-sm text-on-surface focus:border-primary-DEFAULT focus:outline-none"
+                className="w-full rounded-lg border border-outline-variant bg-surface-cream p-3 font-body text-body-sm text-on-surface focus:border-primary focus:outline-none"
               >
                 <option value="">{t(locale, "postDetail.reportPlaceholder")}</option>
                 <option value="misleading">{t(locale, "postDetail.reportMisleading")}</option>
@@ -724,7 +724,7 @@ export default function PostDetail() {
                 value={reportDetails}
                 onChange={(e) => setReportDetails(e.target.value)}
                 placeholder={t(locale, "postDetail.reportDetailsPlaceholder")}
-                className="min-h-[100px] w-full resize-y rounded-lg border border-outline-variant bg-surface-cream p-3 font-body text-body-sm text-on-surface focus:border-primary-DEFAULT focus:outline-none"
+                className="min-h-[100px] w-full resize-y rounded-lg border border-outline-variant bg-surface-cream p-3 font-body text-body-sm text-on-surface focus:border-primary focus:outline-none"
               />
               <button
                 onClick={() => {
@@ -732,7 +732,7 @@ export default function PostDetail() {
                   reportMutation.mutate({ postId, reason: reportReason, details: reportDetails });
                 }}
                 disabled={!reportReason || reportMutation.isPending}
-                className="w-full rounded-lg bg-primary-DEFAULT py-2.5 font-label text-label-md font-bold text-white transition hover:bg-on-primary-fixed-variant disabled:opacity-50"
+                className="w-full rounded-lg bg-primary py-2.5 font-label text-label-md font-bold text-white transition hover:bg-on-primary-fixed-variant disabled:opacity-50"
               >
                 {reportMutation.isPending ? t(locale, "postDetail.reportSubmitting") : t(locale, "postDetail.reportSubmit")}
               </button>
@@ -758,7 +758,7 @@ export default function PostDetail() {
           <div className="relative max-h-[80vh] max-w-[90vw]">
             <img
               src={images[galleryIndex]}
-              alt={`${post.title} ‚Äî ${galleryIndex + 1}`}
+              alt={`${post.title} ó ${galleryIndex + 1}`}
               className="max-h-[80vh] max-w-[90vw] rounded-2xl"
             />
             {images.length > 1 && (
