@@ -7,8 +7,6 @@ on:
 jobs:
   build-check:
     runs-on: ubuntu-latest
-    outputs:
-      build_failed: ${{ steps.build.outcome == 'failure' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -45,7 +43,7 @@ jobs:
               ``,
               `[Full workflow run](${runUrl})`,
               ``,
-              `Please fix the build error, commit, and push. Do NOT close this issue manually — it will auto-close when the next build succeeds.`,
+              `Please fix the build error, commit, and push.`,
             ].join('\n');
             await github.rest.issues.create({
               owner: context.repo.owner,
@@ -56,58 +54,112 @@ jobs:
             });
             core.setFailed('Build failed — issue created for @claude');
 
-  health-check:
+  railway-check:
     runs-on: ubuntu-latest
     needs: build-check
     steps:
-      - name: Wait for Railway to deploy
-        run: sleep 150
-
-      - name: Poll health endpoint
-        id: health
+      - name: Wait for Railway deployment to finish
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          for i in 1 2 3 4 5; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://jobsy.lv/health)
-            echo "Attempt $i: HTTP $STATUS"
-            if [ "$STATUS" = "200" ]; then
-              echo "Site is healthy"
-              exit 0
-            fi
-            sleep 30
-          done
-          echo "Health check failed"
-          exit 1
-        continue-on-error: true
+          SERVICE_ID="b8d1b612-f91a-4459-9dd2-164a8d2925d8"
+          ENV_ID="d22af4b3-bf7c-4d84-8287-4fa52170cb5d"
+          MAX_WAIT=300
+          POLL=10
+          ELAPSED=0
 
-      - name: Open issue for Claude to fix runtime failure
-        if: steps.health.outcome == 'failure'
+          echo "Waiting for Railway deployment triggered by commit ${{ github.sha }}..."
+
+          while [ $ELAPSED -lt $MAX_WAIT ]; do
+            RESPONSE=$(curl -s -X POST https://backboard.railway.app/graphql/v2 \
+              -H "Authorization: Bearer $RAILWAY_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"query\":\"{ deployments(input: { serviceId: \\\"$SERVICE_ID\\\", environmentId: \\\"$ENV_ID\\\" }) { edges { node { id status createdAt } } } }\"}")
+
+            STATUS=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin)['data']['deployments']['edges']; print(d[0]['node']['status']) if d else print('NONE')" 2>/dev/null)
+            DEPLOY_ID=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin)['data']['deployments']['edges']; print(d[0]['node']['id']) if d else print('')" 2>/dev/null)
+
+            echo "[$ELAPSED s] Status: $STATUS  (id: $DEPLOY_ID)"
+
+            if [ "$STATUS" = "SUCCESS" ]; then
+              echo "DEPLOY_STATUS=success" >> $GITHUB_ENV
+              echo "Railway deployment succeeded."
+              exit 0
+            elif [ "$STATUS" = "FAILED" ] || [ "$STATUS" = "CRASHED" ]; then
+              echo "DEPLOY_STATUS=failed" >> $GITHUB_ENV
+              echo "DEPLOY_ID=$DEPLOY_ID" >> $GITHUB_ENV
+              echo "Railway deployment FAILED."
+              break
+            fi
+
+            sleep $POLL
+            ELAPSED=$((ELAPSED + POLL))
+          done
+
+          if [ "${DEPLOY_STATUS:-}" != "success" ]; then
+            echo "DEPLOY_STATUS=failed" >> $GITHUB_ENV
+          fi
+
+      - name: Fetch Railway build logs on failure
+        if: env.DEPLOY_STATUS == 'failed'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          DEPLOY_ID="${{ env.DEPLOY_ID }}"
+          if [ -z "$DEPLOY_ID" ]; then
+            echo "No deploy ID, skipping log fetch"
+            echo "BUILD_LOG=No deploy ID available." >> $GITHUB_ENV
+            exit 0
+          fi
+
+          LOGS=$(curl -s -X POST https://backboard.railway.app/graphql/v2 \
+            -H "Authorization: Bearer $RAILWAY_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"query\":\"{ buildLogs(deploymentId: \\\"$DEPLOY_ID\\\") { message severity } }\"}" \
+            | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+logs = data.get('data', {}).get('buildLogs', [])
+for l in logs:
+  print(l.get('message',''))
+" 2>/dev/null | tail -60)
+
+          echo "BUILD_LOG<<EOF" >> $GITHUB_ENV
+          echo "$LOGS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Open issue for Claude to fix Railway failure
+        if: env.DEPLOY_STATUS == 'failed'
         uses: actions/github-script@v7
         with:
           script: |
             const sha = context.sha.substring(0, 7);
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const buildLog = process.env.BUILD_LOG || 'Could not fetch build logs.';
             const body = [
-              `@claude The build succeeded but https://jobsy.lv/health is returning non-200 after deploying commit \`${sha}\` ("${context.payload.head_commit.message}").`,
+              `@claude Railway deployment FAILED for commit \`${sha}\` ("${context.payload.head_commit.message}").`,
               ``,
-              `This means the app either crashed on startup or is unhealthy at runtime. Please:`,
-              `1. Check recent changes in this commit that could cause a runtime crash`,
-              `2. Look for missing env vars, schema mismatches, or bad imports`,
-              `3. Fix and push`,
+              `**Railway build log (last 60 lines):**`,
+              `\`\`\``,
+              buildLog,
+              `\`\`\``,
               ``,
               `[Full workflow run](${runUrl})`,
+              ``,
+              `Please analyze the error, fix it, commit, and push.`,
             ].join('\n');
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `🚨 Runtime health check failed on main (${sha})`,
+              title: `🚨 Railway deployment failed on main (${sha})`,
               body,
               labels: ['bug'],
             });
-            core.setFailed('Health check failed — issue created for @claude');
+            core.setFailed('Railway deployment failed — issue created for @claude');
 
   close-stale-issues:
     runs-on: ubuntu-latest
-    needs: [build-check, health-check]
+    needs: [build-check, railway-check]
     if: success()
     steps:
       - name: Close any open auto-fix issues
@@ -126,7 +178,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issue.number,
-                  body: '✅ Build and health checks passed on the latest push. Auto-closing.',
+                  body: '✅ Build and Railway deployment both passed on the latest push. Auto-closing.',
                 });
                 await github.rest.issues.update({
                   owner: context.repo.owner,
