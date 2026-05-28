@@ -13,9 +13,9 @@ interface BoostPickerProps {
 }
 
 const BOOSTS = [
-  { type: "bump"     as const, icon: "??", cents: 100, priceLabel: "€1.00" },
-  { type: "featured" as const, icon: "?", cents: 200, priceLabel: "€2.00" },
-  { type: "urgent"   as const, icon: "??", cents:  50, priceLabel: "€0.50" },
+  { type: "bump"     as const, icon: "??", cents: 100, priceLabel: "â‚¬1.00" },
+  { type: "featured" as const, icon: "?", cents: 200, priceLabel: "â‚¬2.00" },
+  { type: "urgent"   as const, icon: "??", cents:  50, priceLabel: "â‚¬0.50" },
 ];
 
 export default function BoostPicker({
@@ -72,7 +72,7 @@ export default function BoostPicker({
         {creditBalance > 0 && (
           <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-outline-variant bg-surface-cream px-3 py-1 font-body text-xs font-medium text-on-surface">
             <Wallet className="h-3.5 w-3.5" />
-            {t(locale, "credits.balance")}: €{(creditBalance / 100).toFixed(2)}
+            {t(locale, "credits.balance")}: â‚¬{(creditBalance / 100).toFixed(2)}
           </div>
         )}
 
