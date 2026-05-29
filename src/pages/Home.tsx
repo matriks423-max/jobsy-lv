@@ -167,7 +167,10 @@ export default function Home() {
             className="mb-6 inline-flex overflow-hidden rounded-full border border-white/20 bg-white/10 backdrop-blur-sm"
           >
             <span className="flex items-center gap-1.5 bg-accent-coral/90 px-3.5 py-1.5 font-label text-label-sm font-bold text-white">
-              🇱🇻
+              <svg width="16" height="11" viewBox="0 0 20 12" className="inline-block flex-shrink-0 rounded-[2px]" aria-label="Latvian flag">
+                <rect width="20" height="12" fill="#9E3039"/>
+                <rect y="4" width="20" height="4" fill="white"/>
+              </svg>
               <span>{locale === "ru" ? "Бесплатно" : "Bezmaksas"}</span>
             </span>
             <span className="flex items-center px-3.5 py-1.5 font-label text-label-sm text-white/85">
