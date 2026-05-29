@@ -165,7 +165,7 @@ export default function MyPosts() {
               </span>
             </button>
           ))}
-          {/* Analytics tab ? visible to all, locked for free users */}
+          {/* Analytics tab — visible to all, locked for free users */}
           <button
             onClick={() => setTab("analytics")}
             className={`flex items-center gap-2 rounded-full border-2 px-4 py-2 font-body text-sm font-medium transition ${

@@ -1,7 +1,15 @@
 User-agent: *
 Allow: /
 
-Disallow: /admin
 Disallow: /api/
+Disallow: /admin
+Disallow: /my-posts
+Disallow: /settings
+Disallow: /create
+Disallow: /edit/
+Disallow: /payment
+Disallow: /success
+Disallow: /uploads/
 
 Sitemap: https://jobsy.lv/sitemap.xml
+Feed: https://jobsy.lv/feed.xml

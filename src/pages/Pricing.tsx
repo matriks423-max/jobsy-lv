@@ -101,7 +101,7 @@ export default function Pricing() {
           </p>
         </div>
 
-        {/* Tier cards ? 3 columns */}
+        {/* Tier cards — 3 columns */}
         <div className="mb-10 grid gap-6 md:grid-cols-3 items-stretch">
 
           {/* Free */}

@@ -183,7 +183,7 @@ export default function Settings() {
                 />
               </div>
 
-              {/* Email ? read only */}
+              {/* Email — read only */}
               <div>
                 <label className="mb-2 flex items-center gap-1.5 font-body text-sm font-bold text-on-surface">
                   <Mail className="h-3.5 w-3.5 text-accent-coral" />
@@ -220,7 +220,7 @@ export default function Settings() {
                   {t(locale, "settings.phoneHint")}
                 </p>
 
-                {/* Verify button ? shown after saving phone, if not yet verified */}
+                {/* Verify button — shown after saving phone, if not yet verified */}
                 {canVerify && !otpSent && (
                   <button
                     onClick={() => sendOtpMutation.mutate({ phone })}

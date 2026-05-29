@@ -360,7 +360,7 @@ export const translations = {
     },
     category: {
       ctaHeading: "Vajag palīdzību ar {cat}?",
-      ctaSubtitle: "Publice sludinājumu — 10 mēneši bez maksas.",
+      ctaSubtitle: "Publice sludinājumu — 10 sekundes, bez reģistrācijas.",
     },
     postCard: {
       badgeNew: "Jauns",
@@ -610,7 +610,7 @@ export const translations = {
       alertLabelPlaceholder: "Название (например: IT вакансии в Риге)",
       alertConfirm: "Сохранить",
       showing: "Найдено {count} объявлений",
-      featured: "★ Избранные",
+      featured: "⭐ Избранные",
     },
     postDetail: {
       breadcrumbHome: "Главная",
@@ -1100,8 +1100,8 @@ export const translations = {
       sort: "Sort",
       sortNewest: "Newest",
       sortOldest: "Oldest",
-      sortBudgetAsc: "Price ?",
-      sortBudgetDesc: "Price ?",
+      sortBudgetAsc: "Price ↑",
+      sortBudgetDesc: "Price ↓",
       clear: "Clear",
       empty: "Nothing found. Try different filters.",
       noResults: "Nothing found. Try different filters.",
@@ -1142,7 +1142,7 @@ export const translations = {
       },
       interest: {
         btn: "I'm interested",
-        done: "Interest sent ?",
+        done: "Interest sent ✓",
         toast: "The poster will be notified!",
       },
       review: {
@@ -1378,7 +1378,7 @@ export const translations = {
     },
     category: {
       ctaHeading: "Need help with {cat}?",
-      ctaSubtitle: "Post a listing — 10 per month, free.",
+      ctaSubtitle: "Post a listing — takes 10 seconds, free to start.",
     },
     postCard: {
       badgeNew: "New",
@@ -1497,7 +1497,7 @@ export const translations = {
       verified: "Verified",
       otpSent: "Code sent! Check your SMS.",
       otpConfirm: "Confirm",
-      phoneVerified: "Phone verified ?",
+      phoneVerified: "Phone verified ✓",
       save: "Save",
       saved: "Saved!",
       alertsSection: "My Saved Searches",
