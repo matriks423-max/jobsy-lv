@@ -1,19 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <rect width="32" height="32" rx="7" fill="#003527"/>
   <!-- Ears -->
-  <polygon points="8,15 11,5 14,15" fill="#B8C4CC"/>
-  <polygon points="18,15 21,5 24,15" fill="#B8C4CC"/>
+  <polygon points="8,15 11,5 14,15" fill="#C0C0C0"/>
+  <polygon points="18,15 21,5 24,15" fill="#C0C0C0"/>
   <!-- Inner ears -->
-  <polygon points="9.2,14 11,7.5 12.8,14" fill="#8A9BA8" opacity="0.7"/>
-  <polygon points="19.2,14 21,7.5 22.8,14" fill="#8A9BA8" opacity="0.7"/>
+  <polygon points="9.2,14 11,7.5 12.8,14" fill="#888888" opacity="0.8"/>
+  <polygon points="19.2,14 21,7.5 22.8,14" fill="#888888" opacity="0.8"/>
   <!-- Face -->
-  <circle cx="16" cy="20" r="9.5" fill="#C8D4DC"/>
+  <circle cx="16" cy="20" r="9.5" fill="#D8D8D8"/>
   <!-- Eyes (happy arc) -->
   <path d="M11.5 19.5 Q13 17.5 14.5 19.5" stroke="#003527" stroke-width="1.4" fill="none" stroke-linecap="round"/>
   <path d="M17.5 19.5 Q19 17.5 20.5 19.5" stroke="#003527" stroke-width="1.4" fill="none" stroke-linecap="round"/>
   <!-- Nose -->
   <ellipse cx="16" cy="22" rx="1.2" ry="0.9" fill="#ff8a80"/>
   <!-- Whiskers -->
-  <line x1="8" y1="22" x2="13" y2="22.5" stroke="#e8eef2" stroke-width="0.8"/>
-  <line x1="19" y1="22.5" x2="24" y2="22" stroke="#e8eef2" stroke-width="0.8"/>
+  <line x1="8" y1="22" x2="13" y2="22.5" stroke="#aaaaaa" stroke-width="0.8"/>
+  <line x1="19" y1="22.5" x2="24" y2="22" stroke="#aaaaaa" stroke-width="0.8"/>
 </svg>
