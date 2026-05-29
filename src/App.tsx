@@ -25,7 +25,6 @@ const Settings = lazy(() => import("./pages/Settings"));
 const Category = lazy(() => import("./pages/Category"));
 const Admin = lazy(() => import("./pages/Admin"));
 const NotFound = lazy(() => import("./pages/NotFound"));
-const StylePreview = lazy(() => import("./pages/StylePreview"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
@@ -75,7 +74,6 @@ export default function App() {
               <Route path="/kategorija/:slug" element={<Category />} />
               <Route path="/admin" element={<AdminRoute element={<Admin />} />} />
               <Route path="/user/:id" element={<UserProfile />} />
-              <Route path="/style-preview" element={<AdminRoute element={<StylePreview />} />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
