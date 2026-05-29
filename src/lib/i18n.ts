@@ -1119,7 +1119,7 @@ export const translations = {
       alertLabelPlaceholder: "Name (e.g. IT jobs in Riga)",
       alertConfirm: "Save",
       showing: "Found {count} posts",
-      featured: "? Featured Posts",
+      featured: "⭐ Featured Posts",
     },
     postDetail: {
       breadcrumbHome: "Home",
