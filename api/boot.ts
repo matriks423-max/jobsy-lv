@@ -24,7 +24,8 @@ initSentryServer();
 
 const app = new Hono<{ Bindings: HttpBindings }>();
 
-app.use(bodyLimit({ maxSize: 50 * 1024 * 1024 }));
+// 2 MB global limit; the upload route overrides this with its own higher limit
+app.use(bodyLimit({ maxSize: 2 * 1024 * 1024 }));
 
 // www → canonical redirect (prevents duplicate-content SEO penalty)
 app.use("*", async (c, next) => {
@@ -158,7 +159,11 @@ app.post("/api/checkout", async (c) => {
     }
     const body = await c.req.json();
     const { postId } = body;
-    const result = await createCheckoutSession(Number(postId), user.id);
+    const parsedPostId = Number(postId);
+    if (!Number.isInteger(parsedPostId) || parsedPostId <= 0) {
+      return c.json({ error: "Invalid postId" }, 400);
+    }
+    const result = await createCheckoutSession(parsedPostId, user.id);
     return c.json(result);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Checkout failed";
@@ -194,7 +199,7 @@ setInterval(() => {
 }, 10 * 60 * 1000).unref();
 
 // Image upload — HARDENED
-app.post("/api/upload", async (c) => {
+app.post("/api/upload", bodyLimit({ maxSize: 10 * 1024 * 1024 }), async (c) => {
   try {
     // Auth check — only authenticated users may upload
     const { authenticateRequest } = await import("./kimi/auth");
@@ -292,6 +297,15 @@ app.post("/api/upload", async (c) => {
     // Only insert into postImages if we have a real post ID (not 0 = new post not yet created)
     const realPostId = Number(postId);
     if (realPostId > 0) {
+      // Verify the post belongs to the uploader before attaching the image
+      const [post] = await getDb()
+        .select({ userId: schema.posts.userId })
+        .from(schema.posts)
+        .where(eq(schema.posts.id, realPostId))
+        .limit(1);
+      if (!post || post.userId !== uploadUser.id) {
+        return c.json({ error: "Forbidden" }, 403);
+      }
       await getDb().insert(schema.postImages).values({
         postId: realPostId,
         url,
@@ -347,7 +361,7 @@ function escHtml(str: string): string {
 }
 
 // SEO: bot prerender for /post/:id — serves OG meta tags to social crawlers
-const BOT_UA = /facebookexternalhit|twitterbot|slackbot|linkedinbot|whatsapp|telegrambot|googlebot|bingbot|discordbot|embedly/i;
+const BOT_UA = /facebookexternalhit|twitterbot|slackbot|linkedinbot|whatsapp|telegrambot|googlebot|bingbot|discordbot|embedly|viber|signalbot|applebot|iMessagebot|msnbot|yandexbot|duckduckbot|pinterestbot|vkShare|line-poker|kakaotalk|naver|daum|outbrain|pinterest/i;
 
 app.get("/post/:id", async (c, next) => {
   const ua = c.req.header("user-agent") ?? "";
