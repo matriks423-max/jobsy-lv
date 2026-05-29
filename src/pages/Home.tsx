@@ -144,7 +144,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-surface-off-white">
       {/* -- Hero ------------------------------------------------ */}
-      <section className="relative flex min-h-[72vh] flex-col items-center justify-center overflow-hidden px-4 pb-12 pt-16 text-center">
+      <section className="relative flex min-h-[72vh] flex-col items-center justify-center overflow-hidden px-4 pb-12 pt-4 text-center">
         {/* Emerald gradient background */}
         <div
           className="absolute inset-0"
