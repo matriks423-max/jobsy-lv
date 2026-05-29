@@ -275,13 +275,13 @@ export default function Browse() {
   useEffect(() => {
     const prev = document.title;
     document.title = debouncedSearch
-      ? `"${debouncedSearch}" � jobsy.lv`
-      : t(locale, "browse.title") + " � jobsy.lv";
+      ? `"${debouncedSearch}" — jobsy.lv`
+      : t(locale, "browse.title") + " — jobsy.lv";
 
     const desc = locale === "lv"
-      ? "Atrodi pakalpojumu sniedzejus vai piedava savas prasmes Latvija."
+      ? "Atrodi pakalpojumu sniedzējus vai piedāvā savas prasmes Latvijā."
       : locale === "ru"
-      ? "????? ???????????? ??? ???????? ???? ?????? ? ??????."
+      ? "Найдите поставщиков услуг или предложите свои навыки в Латвии."
       : "Find service providers or offer your skills in Latvia.";
     let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
     const created = !metaDesc;

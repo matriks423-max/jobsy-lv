@@ -396,7 +396,7 @@ export default function CreatePost() {
                   >
                     <X className="h-5 w-5 text-on-surface-variant" />
                     <span className="mt-1 text-[10px] text-on-surface-variant">
-                      {t(locale, "createPost.imagesLabel") === "Atteli" ? "Nav attēla" : locale === "ru" ? "Без фото" : "No image"}
+                      {t(locale, "createPost.noImageSelected")}
                     </span>
                   </button>
 

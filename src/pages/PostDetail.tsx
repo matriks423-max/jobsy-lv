@@ -367,8 +367,8 @@ export default function PostDetail() {
               : "bg-surface-cream text-on-surface-variant"
           }`}>
             {data.post.filled
-              ? `? ${t(locale, "postDetail.statusFilled")}`
-              : `? ${t(locale, "postDetail.statusOpen")}`}
+              ? `✓ ${t(locale, "postDetail.statusFilled")}`
+              : `○ ${t(locale, "postDetail.statusOpen")}`}
           </span>
         </div>
 

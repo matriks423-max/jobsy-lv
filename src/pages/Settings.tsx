@@ -95,7 +95,7 @@ export default function Settings() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "nav.settings") + " ? jobsy.lv";
+    document.title = t(locale, "nav.settings") + " — jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 
@@ -288,7 +288,7 @@ export default function Settings() {
                   <div>
                     <p className="font-body text-sm font-bold text-on-surface">{s.label}</p>
                     <p className="font-mono text-xs text-outline">
-                      {s.type} {s.category ? `? ${s.category}` : ""} {s.city ? `? ${s.city}` : ""} {s.keyword ? `? "${s.keyword}"` : ""}
+                      {s.type} {s.category ? `· ${s.category}` : ""} {s.city ? `· ${s.city}` : ""} {s.keyword ? `· "${s.keyword}"` : ""}
                     </p>
                   </div>
                   <button
@@ -436,7 +436,7 @@ export default function Settings() {
                       </p>
                     </div>
                     <span className={`font-mono text-sm font-bold shrink-0 ${tx.amount > 0 ? "text-success-emerald" : "text-accent-coral"}`}>
-                      {tx.amount > 0 ? "+" : ""}?{(tx.amount / 100).toFixed(2)}
+                      {tx.amount > 0 ? "+" : ""}€{(tx.amount / 100).toFixed(2)}
                     </span>
                   </li>
                 ))}

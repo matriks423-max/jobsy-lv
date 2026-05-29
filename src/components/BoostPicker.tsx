@@ -13,9 +13,9 @@ interface BoostPickerProps {
 }
 
 const BOOSTS = [
-  { type: "bump"     as const, icon: "??", cents: 100, priceLabel: "€1.00" },
-  { type: "featured" as const, icon: "?", cents: 200, priceLabel: "€2.00" },
-  { type: "urgent"   as const, icon: "??", cents:  50, priceLabel: "€0.50" },
+  { type: "bump"     as const, icon: "⬆️", cents: 100, priceLabel: "€1.00" },
+  { type: "featured" as const, icon: "⭐", cents: 200, priceLabel: "€2.00" },
+  { type: "urgent"   as const, icon: "🔥", cents:  50, priceLabel: "€0.50" },
 ];
 
 export default function BoostPicker({

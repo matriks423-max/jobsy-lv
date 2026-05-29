@@ -39,7 +39,7 @@ export default function Pricing() {
   const isPaid = isPro || isBusiness;
 
   useEffect(() => {
-    document.title = t(locale, "pricing.title") + " ? jobsy.lv";
+    document.title = t(locale, "pricing.title") + " — jobsy.lv";
     return () => { document.title = "jobsy.lv"; };
   }, [locale]);
 

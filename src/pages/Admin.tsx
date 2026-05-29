@@ -433,7 +433,7 @@ export default function Admin() {
               <div className="space-y-2">
                 {socialQueueData.map((item) => (
                   <div key={item.id} className="flex items-center gap-3 rounded-xl border-2 border-outline-variant bg-white px-4 py-3">
-                    <span className="text-lg">{item.boostType === "bump" ? "?" : "?"}</span>
+                    <span className="text-lg">{item.boostType === "bump" ? "⬆️" : "⭐"}</span>
                     <div className="flex-1 min-w-0">
                       <p className="truncate font-body text-sm font-medium text-on-surface">
                         #{item.postId} · {item.postTitle ?? "unknown"}

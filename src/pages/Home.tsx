@@ -99,8 +99,18 @@ export default function Home() {
   };
 
   useEffect(() => {
-    document.title = "jobsy.lv — Atrodi palīdzību vai darbu";
-    const desc = "Latvijas ērtākais veids, kā atrast palīgus ikdienas uzdevumiem vai atrast darbiņus. Publicē bezmaksas sludinājumu.";
+    const titles: Record<string, string> = {
+      lv: "jobsy.lv — Atrodi palīdzību vai darbu",
+      ru: "jobsy.lv — Найди помощь или предложи услуги",
+      en: "jobsy.lv — Find help or offer your skills",
+    };
+    const descs: Record<string, string> = {
+      lv: "Latvijas ērtākais veids, kā atrast palīgus ikdienas uzdevumiem vai atrast darbiņus. Publicē bezmaksas sludinājumu.",
+      ru: "Самый удобный способ в Латвии найти помощников для повседневных задач или найти подработку. Разместите объявление бесплатно.",
+      en: "The easiest way in Latvia to find helpers for everyday tasks or find gigs that earn cash. Post your listing for free.",
+    };
+    document.title = titles[locale] ?? titles.lv;
+    const desc = descs[locale] ?? descs.lv;
     let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
     const created = !metaDesc;
     if (!metaDesc) {
@@ -113,7 +123,7 @@ export default function Home() {
       if (created && metaDesc) document.head.removeChild(metaDesc);
       else if (metaDesc) metaDesc.content = "";
     };
-  }, []);
+  }, [locale]);
 
   const { data: stats } = trpc.stats.get.useQuery();
   const { data: categoryCounts } = trpc.posts.categoryCounts.useQuery(undefined, { staleTime: 60 * 1000 });

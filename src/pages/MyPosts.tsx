@@ -40,7 +40,7 @@ export default function MyPosts() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = t(locale, "nav.myPosts") + " ? jobsy.lv";
+    document.title = t(locale, "nav.myPosts") + " — jobsy.lv";
     return () => { document.title = prev; };
   }, [locale]);
 
@@ -277,11 +277,11 @@ export default function MyPosts() {
                     </div>
                     <h3 className="truncate font-body text-base font-bold text-on-surface">{post.title}</h3>
                     <p className="font-body text-xs text-on-surface-variant">
-                      {post.city && `${t(locale, `cities.${post.city}` as never)} ? `}
+                      {post.city && `${t(locale, `cities.${post.city}` as never)} · `}
                       {t(locale, "postDetail.published", {
                         date: new Date(post.createdAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB"),
                       })}
-                      {post.expiresAt && ` ? ${t(locale, "myPosts.expires")} ${new Date(post.expiresAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}`}
+                      {post.expiresAt && ` · ${t(locale, "myPosts.expires")} ${new Date(post.expiresAt).toLocaleDateString(locale === "lv" ? "lv-LV" : locale === "ru" ? "ru-RU" : "en-GB")}`}
                     </p>
                   </div>
 
@@ -315,7 +315,7 @@ export default function MyPosts() {
                               : "border-outline-variant bg-white text-on-surface-variant hover:border-primary hover:text-on-surface"
                           }`}
                         >
-                          {post.filled ? "?" : "?"}
+                          {post.filled ? "✓" : "—"}
                         </button>
                       )}
                       <button
