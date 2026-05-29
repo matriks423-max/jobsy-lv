@@ -27,7 +27,7 @@ export const PRESET_IMAGES: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1625047509168-a7026f36de04?w=800&q=70",
   ],
   childcare: [
-    "https://images.unsplash.com/photo-1471286174890-9c112ac6476f?w=800&q=70",
+    "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=800&q=70",
     "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&q=70",
     "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=800&q=70",
   ],
