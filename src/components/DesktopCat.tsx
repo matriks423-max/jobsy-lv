@@ -467,24 +467,24 @@ function CatSVG() {
     <svg viewBox="0 0 80 68" width="80" height="68" xmlns="http://www.w3.org/2000/svg">
       {/* Tail */}
       <g className="cat-tail-group">
-        <path d="M16,46 C4,50 0,35 6,22 C10,14 17,17 15,25" fill="none" stroke="#F4A261" strokeWidth="7" strokeLinecap="round" />
-        <path d="M16,46 C4,50 0,35 6,22 C10,14 17,17 15,25" fill="none" stroke="#D4834A" strokeWidth="3.5" strokeLinecap="round" strokeDasharray="5 9" opacity="0.45" />
+        <path d="M16,46 C4,50 0,35 6,22 C10,14 17,17 15,25" fill="none" stroke="#C0C0C0" strokeWidth="7" strokeLinecap="round" />
+        <path d="M16,46 C4,50 0,35 6,22 C10,14 17,17 15,25" fill="none" stroke="#909090" strokeWidth="3.5" strokeLinecap="round" strokeDasharray="5 9" opacity="0.45" />
       </g>
       {/* Body */}
       <g className="cat-body-group">
-        <ellipse cx="34" cy="47" rx="19" ry="12" fill="#F4A261" />
-        <path d="M26,37 Q28,47 26,58" stroke="#D4834A" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.5" />
-        <path d="M33,36 Q35,47 33,58" stroke="#D4834A" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.5" />
-        <g className="cat-leg cat-leg-bl"><rect x="18" y="57" width="7" height="11" rx="3.5" fill="#D4834A" /></g>
-        <g className="cat-leg cat-leg-br"><rect x="26" y="57" width="7" height="11" rx="3.5" fill="#E8953A" /></g>
-        <circle cx="57" cy="30" r="17" fill="#F4A261" />
-        <polygon points="42,20 50,7 58,20" fill="#E8953A" />
-        <polygon points="44,20 50,11 56,20" fill="#FFBBA0" />
-        <path d="M49,15 Q51,23 49,30" stroke="#D4834A" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.45" />
-        <path d="M54,13 Q56,21 54,28" stroke="#D4834A" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.45" />
-        <polygon points="55,16 63,3 71,16" fill="#F4A261" />
-        <polygon points="57,16 63,7 69,16" fill="#FFBBA0" />
-        <ellipse cx="64" cy="36" rx="7" ry="6" fill="#FAD9BF" opacity="0.85" />
+        <ellipse cx="34" cy="47" rx="19" ry="12" fill="#C0C0C0" />
+        <path d="M26,37 Q28,47 26,58" stroke="#909090" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.5" />
+        <path d="M33,36 Q35,47 33,58" stroke="#909090" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.5" />
+        <g className="cat-leg cat-leg-bl"><rect x="18" y="57" width="7" height="11" rx="3.5" fill="#909090" /></g>
+        <g className="cat-leg cat-leg-br"><rect x="26" y="57" width="7" height="11" rx="3.5" fill="#A8A8A8" /></g>
+        <circle cx="57" cy="30" r="17" fill="#C0C0C0" />
+        <polygon points="42,20 50,7 58,20" fill="#A8A8A8" />
+        <polygon points="44,20 50,11 56,20" fill="#E8E8E8" />
+        <path d="M49,15 Q51,23 49,30" stroke="#909090" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.45" />
+        <path d="M54,13 Q56,21 54,28" stroke="#909090" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.45" />
+        <polygon points="55,16 63,3 71,16" fill="#C0C0C0" />
+        <polygon points="57,16 63,7 69,16" fill="#E8E8E8" />
+        <ellipse cx="64" cy="36" rx="7" ry="6" fill="#DCDCDC" opacity="0.85" />
         <ellipse cx="67" cy="33" rx="2.5" ry="2" fill="#E08090" />
         <path d="M65,35.5 Q67,38 69,35.5" stroke="#C06070" strokeWidth="1" fill="none" strokeLinecap="round" />
         <g className="cat-eye">
@@ -498,8 +498,8 @@ function CatSVG() {
         <line x1="62" y1="33" x2="49" y2="30" stroke="#9a9a9a" strokeWidth="0.9" />
         <line x1="62" y1="36" x2="49" y2="36" stroke="#9a9a9a" strokeWidth="0.9" />
         <line x1="62" y1="38.5" x2="49" y2="42" stroke="#9a9a9a" strokeWidth="0.9" />
-        <g className="cat-leg cat-leg-fl"><rect x="44" y="57" width="7" height="11" rx="3.5" fill="#E8953A" /></g>
-        <g className="cat-leg cat-leg-fr"><rect x="52" y="57" width="7" height="11" rx="3.5" fill="#F4A261" /></g>
+        <g className="cat-leg cat-leg-fl"><rect x="44" y="57" width="7" height="11" rx="3.5" fill="#A8A8A8" /></g>
+        <g className="cat-leg cat-leg-fr"><rect x="52" y="57" width="7" height="11" rx="3.5" fill="#C0C0C0" /></g>
       </g>
       {/* ZZZ */}
       <text className="cat-zzz cat-zzz-1" x="70" y="14" fontSize="12" fill="#94B4BC" fontWeight="bold" fontFamily="Georgia, serif">z</text>
