@@ -15,39 +15,39 @@ export default function Terms() {
 
   const sections = [
     {
-      title: "Visparigie noteikumi",
+      title: "Vispārīgie noteikumi",
       content:
-        "Lietojot jobsy.lv, tu piekriti šiem noteikumiem. Platforma ir paredzeta personiskai, nekomercialai lietošanai. Aizliegts izmantot platformu nelikumigiem nolukiem, krapšanai vai aizskaroša satura publicešanai.",
+        "Lietojot jobsy.lv, tu piekrīti šiem noteikumiem. Platforma ir paredzēta personiskai, nekomerciālai lietošanai. Aizliegts izmantot platformu nelikumīgiem nolūkiem, krāpšanai vai aizskaroša satura publicēšanai.",
     },
     {
-      title: "Sludinajumi",
+      title: "Sludinājumi",
       content:
-        "Katrs sludinajums ir aktivs 30 dienas no publicešanas briža. Pec tam tas automatiski beidzas. Aizliegts publicet: (1) meligu vai maldinošu informaciju; (2) aizskarošu, diskriminejošu vai nelikumigu saturu; (3) sludinajumus, kas nav saistiti ar pakalpojumu sniegšanu vai meklešanu.",
+        "Katrs sludinājums ir aktīvs 30 dienas no publicēšanas brīža. Pēc tam tas automātiski beidzas. Aizliegts publicēt: (1) nepatiesas vai maldinošas informācijas; (2) aizskaroša, diskriminējoša vai nelikumīga satura; (3) sludinājumus, kas nav saistīti ar pakalpojumu sniegšanu vai meklēšanu.",
     },
     {
-      title: "Maksajumi",
+      title: "Maksājumi",
       content:
-        "Pirmais sludinajums katram jaunam lietotajam ir bez maksas. Katrs nakamais sludinajums maksa €2.00 (divi eiro). Maksajumi tiek apstradati caur Stripe. Maksajumi nav atmaksajami, ja sludinajums jau ir publicets.",
+        "Pirmais sludinājums katram jaunam lietotājam ir bez maksas. Katrs nākamais sludinājums maksā €2.00 (divi eiro). Maksājumi tiek apstrādāti caur Stripe. Maksājumi nav atmaksājami, ja sludinājums jau ir publicēts.",
     },
     {
-      title: "Atbildiba",
+      title: "Atbildība",
       content:
-        "jobsy.lv ir tiks starpniecibas platforma. Mes neesam atbildigi par darijumiem, kas notiek starp lietotajiem. Katrs lietotajs ir atbildigs par savu ricibu, darijumu drošibu un nodoklu saistibam.",
+        "jobsy.lv ir tīri starpniecības platforma. Mēs neesam atbildīgi par darījumiem, kas notiek starp lietotājiem. Katrs lietotājs ir atbildīgs par savu rīcību, darījumu drošību un nodokļu saistībām.",
     },
     {
       title: "Kontu izbeigšana",
       content:
-        "Mes paturam tiesibas dzest kontu vai bloket piekluvi, ja lietotajs parkapj šos noteikumus, publice aizskarošu saturu vai iesaistas krapšana. Konta ipašnieks var jebkura laika dzest savu kontu.",
+        "Mēs paturam tiesības dzēst kontu vai bloķēt piekļuvi, ja lietotājs pārkāpj šos noteikumus, publicē aizskarošu saturu vai iesaistās krāpšanā. Konta īpašnieks var jebkurā laikā dzēst savu kontu.",
     },
     {
-      title: "Grozijumi",
+      title: "Grozījumi",
       content:
-        "Mes paturam tiesibas jebkura laika mainit šos noteikumus. Par butiskiem grozijumiem pazinosim e-pasta vai platforma vismaz 14 dienas pirms stašanas speka.",
+        "Mēs paturam tiesības jebkurā laikā mainīt šos noteikumus. Par būtiskiem grozījumiem paziņosim e-pastā vai platformā vismaz 14 dienas pirms stāšanās spēkā.",
     },
     {
       title: "Kontakti",
       content:
-        "Jautajumu vai sudzibu gadijuma sazinies ar mums: info@jobsy.lv.",
+        "Jautājumu vai sūdzību gadījumā sazinieties ar mums: info@jobsy.lv.",
     },
   ];
 
@@ -59,7 +59,7 @@ export default function Terms() {
           className="mb-6 inline-flex items-center gap-2 font-body text-sm text-on-surface-variant hover:text-on-surface"
         >
           <ArrowLeft className="h-4 w-4" />
-          Atpakal
+          Atpakaļ
         </Link>
 
         <div className="mb-8 flex items-center gap-3">
@@ -69,7 +69,7 @@ export default function Terms() {
               {t(locale, "footer.terms")}
             </h1>
             <p className="font-body text-sm text-on-surface-variant">
-              Pedejo reizi atjaunots: 2025. gada 1. janvari
+              Pēdējo reizi atjaunots: 2025. gada 1. janvārī
             </p>
           </div>
         </div>

@@ -618,11 +618,28 @@ if (env.isProduction) {
 
   // Fire-and-forget additive migrations — safe to run on every boot (IF NOT EXISTS).
   const migrations = [
-    // profiles — new columns added since initial deploy
+    // profiles — columns added across multiple feature commits
     `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS plan ENUM('free','pro','business') NOT NULL DEFAULT 'free'`,
+    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS freePostsUsed INT UNSIGNED NOT NULL DEFAULT 0`,
+    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS companyName VARCHAR(255) NULL`,
+    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS companyLogo VARCHAR(512) NULL`,
+    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS companyWebsite VARCHAR(512) NULL`,
+    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS companyDescription TEXT NULL`,
+    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS monthlyPostCount INT UNSIGNED NOT NULL DEFAULT 0`,
+    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS monthlyPostReset VARCHAR(10) NULL`,
+    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS freeBoostsRemaining INT UNSIGNED NOT NULL DEFAULT 0`,
     `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS creditBalance INT NOT NULL DEFAULT 0`,
     `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS contactViewsThisMonth INT UNSIGNED NOT NULL DEFAULT 0`,
     `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS contactViewsResetAt TIMESTAMP NULL`,
+    // posts — columns added across multiple feature commits
+    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS wasFree TINYINT(1) NOT NULL DEFAULT 0`,
+    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS viewCount INT UNSIGNED NOT NULL DEFAULT 0`,
+    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS contactCount INT UNSIGNED NOT NULL DEFAULT 0`,
+    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS filled TINYINT(1) NOT NULL DEFAULT 0`,
+    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS reminderSent TINYINT(1) NOT NULL DEFAULT 0`,
+    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS boostType ENUM('none','bump','featured','urgent') NOT NULL DEFAULT 'none'`,
+    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS boostExpiresAt TIMESTAMP NULL`,
+    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS boostStripeSessionId VARCHAR(255) NULL`,
     // referrals — referral v2
     `ALTER TABLE referrals ADD COLUMN IF NOT EXISTS referredPostCount INT UNSIGNED NOT NULL DEFAULT 0`,
     // creditTransactions — new table for credit wallet
@@ -634,6 +651,17 @@ if (env.isProduction) {
       description VARCHAR(255) NOT NULL,
       createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
       INDEX idx_credit_tx_user (userId)
+    )`,
+    // socialQueue — new table for boost social posting
+    `CREATE TABLE IF NOT EXISTS socialQueue (
+      id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+      postId BIGINT UNSIGNED NOT NULL,
+      boostType ENUM('bump','featured') NOT NULL,
+      status ENUM('pending','posted','failed') NOT NULL DEFAULT 'pending',
+      scheduledAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      postedAt TIMESTAMP NULL,
+      createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_social_queue_status (status)
     )`,
   ];
   for (const sql of migrations) {

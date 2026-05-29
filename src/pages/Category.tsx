@@ -12,54 +12,54 @@ const PAGE_SIZE = 12;
 // SEO descriptions per category (Latvian)
 const CATEGORY_SEO: Record<string, { heading: string; description: string }> = {
   household: {
-    heading: "Majsaimniecibas darbi Latvija",
+    heading: "Mājsaimniecības darbi Latvijā",
     description:
-      "Atrodi paligus majsaimniecibai ? tiri?anai, mazga?anai, velai un citiem ikdienas darbiem visa Latvija.",
+      "Atrodi palīgus mājsaimniecībai — tīrīšanai, mazgāšanai, veļai un citiem ikdienas darbiem visā Latvijā.",
   },
   moving: {
-    heading: "Parvak?anas palidziba Latvija",
+    heading: "Pārvākšanās palīdzība Latvijā",
     description:
-      "Pieejami parvak?anas pakalpojumi Riga un visa Latvija. Krau?anas, transporta un iesaino?anas paligi.",
+      "Pieejami pārvākšanās pakalpojumi Rīgā un visā Latvijā. Kraušanas, transporta un iesaiņošanas palīgi.",
   },
   repairs: {
-    heading: "Remontdarbi Latvija",
+    heading: "Remontdarbi Latvijā",
     description:
-      "Atrodi remontdarbiniekus elektriskiem, santehnikas, apdares un citiem remontdarbiem Latvija.",
+      "Atrodi remontdarbniekus elektriskiem, santehnikas, apdares un citiem remontdarbiem Latvijā.",
   },
   garden: {
-    heading: "Darza darbi Latvija",
+    heading: "Dārza darbi Latvijā",
     description:
-      "Darznieki, zales plaveji un darza paligi visa Latvija. Atrodi paligu savam darzam.",
+      "Dārznieki, zāles pļāvēji un dārza palīgi visā Latvijā. Atrodi palīgu savam dārzam.",
   },
   auto: {
-    heading: "Auto pakalpojumi Latvija",
+    heading: "Auto pakalpojumi Latvijā",
     description:
-      "Auto remonta, mazga?anas un citi automobilu pakalpojumi Riga un visa Latvija.",
+      "Auto remonta, mazgāšanas un citi automobilu pakalpojumi Rīgā un visā Latvijā.",
   },
   childcare: {
-    heading: "Bernu pieskati?ana Latvija",
+    heading: "Bērnu pieskatīšana Latvijā",
     description:
-      "Aukles un bernu pieskati?anas pakalpojumi visa Latvija. Uzticami paligi gimenem.",
+      "Aukles un bērnu pieskatīšanas pakalpojumi visā Latvijā. Uzticami palīgi ģimenēm.",
   },
   pets: {
-    heading: "Majdzivnieku kop?ana Latvija",
+    heading: "Mājdzīvnieku kopšana Latvijā",
     description:
-      "Majdzivnieku pieskati?ana, pastaiga un kop?ana Riga un visa Latvija.",
+      "Mājdzīvnieku pieskatīšana, pastaiga un kopšana Rīgā un visā Latvijā.",
   },
   it: {
-    heading: "IT pakalpojumi Latvija",
+    heading: "IT pakalpojumi Latvijā",
     description:
-      "Datorspecialisti, web izstradataji un IT atbalsts privatpersonam un uznemumiem Latvija.",
+      "Datorspeciālisti, web izstrādātāji un IT atbalsts privātpersonām un uzņēmumiem Latvijā.",
   },
   tutoring: {
-    heading: "Repeticijas un apmaciba Latvija",
+    heading: "Repetīcijas un apmācība Latvijā",
     description:
-      "Repetitori macibu priek?metos, valodas un citas jomas berniem un pieaugu?ajiem Latvija.",
+      "Repetitori mācību priekšmetos, valodas un citas jomās bērniem un pieaugušajiem Latvijā.",
   },
   other: {
-    heading: "Citi pakalpojumi Latvija",
+    heading: "Citi pakalpojumi Latvijā",
     description:
-      "Da?adi palidzibas un pakalpojumu sludinajumi, kas neietilpst citas kategorijas.",
+      "Dažādi palīdzības un pakalpojumu sludinājumi, kas neietilpst citās kategorijās.",
   },
 };
 

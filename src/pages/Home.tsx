@@ -99,8 +99,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    document.title = "jobsy.lv — Atrodi paligu vai darbu";
-    const desc = "Latvijas ertakais veids, ka atrast paligus ikdienas uzdevumiem vai atrast darbinus. Publice bezmaksas sludinajumu.";
+    document.title = "jobsy.lv — Atrodi palīdzību vai darbu";
+    const desc = "Latvijas ērtākais veids, kā atrast palīgus ikdienas uzdevumiem vai atrast darbiņus. Publicē bezmaksas sludinājumu.";
     let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
     const created = !metaDesc;
     if (!metaDesc) {
@@ -171,7 +171,7 @@ export default function Home() {
                 <rect width="20" height="12" fill="#9E3039"/>
                 <rect y="4" width="20" height="4" fill="white"/>
               </svg>
-              <span>{locale === "ru" ? "Бесплатно" : "Bezmaksas"}</span>
+              <span>{locale === "ru" ? "Бесплатно" : locale === "en" ? "Free" : "Bezmaksas"}</span>
             </span>
             <span className="flex items-center px-3.5 py-1.5 font-label text-label-sm text-white/85">
               {locale === "ru"
