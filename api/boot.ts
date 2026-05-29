@@ -616,32 +616,33 @@ if (env.isProduction) {
   const { serveStaticFiles } = await import("./lib/vite");
   serveStaticFiles(app);
 
-  // Fire-and-forget additive migrations — safe to run on every boot (IF NOT EXISTS).
+  // Fire-and-forget additive migrations — safe to run on every boot.
+  // ALTER TABLE ADD COLUMN errors (duplicate column) are silently swallowed by .catch().
   const migrations = [
     // profiles — columns added across multiple feature commits
-    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS plan ENUM('free','pro','business') NOT NULL DEFAULT 'free'`,
-    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS freePostsUsed INT UNSIGNED NOT NULL DEFAULT 0`,
-    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS companyName VARCHAR(255) NULL`,
-    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS companyLogo VARCHAR(512) NULL`,
-    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS companyWebsite VARCHAR(512) NULL`,
-    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS companyDescription TEXT NULL`,
-    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS monthlyPostCount INT UNSIGNED NOT NULL DEFAULT 0`,
-    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS monthlyPostReset VARCHAR(10) NULL`,
-    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS freeBoostsRemaining INT UNSIGNED NOT NULL DEFAULT 0`,
-    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS creditBalance INT NOT NULL DEFAULT 0`,
-    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS contactViewsThisMonth INT UNSIGNED NOT NULL DEFAULT 0`,
-    `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS contactViewsResetAt TIMESTAMP NULL`,
+    `ALTER TABLE profiles ADD COLUMN plan ENUM('free','pro','business') NOT NULL DEFAULT 'free'`,
+    `ALTER TABLE profiles ADD COLUMN freePostsUsed INT UNSIGNED NOT NULL DEFAULT 0`,
+    `ALTER TABLE profiles ADD COLUMN companyName VARCHAR(255) NULL`,
+    `ALTER TABLE profiles ADD COLUMN companyLogo VARCHAR(512) NULL`,
+    `ALTER TABLE profiles ADD COLUMN companyWebsite VARCHAR(512) NULL`,
+    `ALTER TABLE profiles ADD COLUMN companyDescription TEXT NULL`,
+    `ALTER TABLE profiles ADD COLUMN monthlyPostCount INT UNSIGNED NOT NULL DEFAULT 0`,
+    `ALTER TABLE profiles ADD COLUMN monthlyPostReset VARCHAR(10) NULL`,
+    `ALTER TABLE profiles ADD COLUMN freeBoostsRemaining INT UNSIGNED NOT NULL DEFAULT 0`,
+    `ALTER TABLE profiles ADD COLUMN creditBalance INT NOT NULL DEFAULT 0`,
+    `ALTER TABLE profiles ADD COLUMN contactViewsThisMonth INT UNSIGNED NOT NULL DEFAULT 0`,
+    `ALTER TABLE profiles ADD COLUMN contactViewsResetAt TIMESTAMP NULL`,
     // posts — columns added across multiple feature commits
-    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS wasFree TINYINT(1) NOT NULL DEFAULT 0`,
-    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS viewCount INT UNSIGNED NOT NULL DEFAULT 0`,
-    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS contactCount INT UNSIGNED NOT NULL DEFAULT 0`,
-    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS filled TINYINT(1) NOT NULL DEFAULT 0`,
-    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS reminderSent TINYINT(1) NOT NULL DEFAULT 0`,
-    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS boostType ENUM('none','bump','featured','urgent') NOT NULL DEFAULT 'none'`,
-    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS boostExpiresAt TIMESTAMP NULL`,
-    `ALTER TABLE posts ADD COLUMN IF NOT EXISTS boostStripeSessionId VARCHAR(255) NULL`,
+    `ALTER TABLE posts ADD COLUMN wasFree TINYINT(1) NOT NULL DEFAULT 0`,
+    `ALTER TABLE posts ADD COLUMN viewCount INT UNSIGNED NOT NULL DEFAULT 0`,
+    `ALTER TABLE posts ADD COLUMN contactCount INT UNSIGNED NOT NULL DEFAULT 0`,
+    `ALTER TABLE posts ADD COLUMN filled TINYINT(1) NOT NULL DEFAULT 0`,
+    `ALTER TABLE posts ADD COLUMN reminderSent TINYINT(1) NOT NULL DEFAULT 0`,
+    `ALTER TABLE posts ADD COLUMN boostType ENUM('none','bump','featured','urgent') NOT NULL DEFAULT 'none'`,
+    `ALTER TABLE posts ADD COLUMN boostExpiresAt TIMESTAMP NULL`,
+    `ALTER TABLE posts ADD COLUMN boostStripeSessionId VARCHAR(255) NULL`,
     // referrals — referral v2
-    `ALTER TABLE referrals ADD COLUMN IF NOT EXISTS referredPostCount INT UNSIGNED NOT NULL DEFAULT 0`,
+    `ALTER TABLE referrals ADD COLUMN referredPostCount INT UNSIGNED NOT NULL DEFAULT 0`,
     // creditTransactions — new table for credit wallet
     `CREATE TABLE IF NOT EXISTS creditTransactions (
       id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
