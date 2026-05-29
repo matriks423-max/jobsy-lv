@@ -444,7 +444,7 @@ export default function PostDetail() {
                     )}
                     {isBusiness && (
                       <span className="inline-flex items-center rounded-full bg-on-surface px-1.5 py-0.5 font-label text-label-sm font-bold text-surface-off-white">
-                        ??
+                        🏢
                       </span>
                     )}
                   </div>
