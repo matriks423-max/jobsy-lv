@@ -9,9 +9,9 @@ export default function Terms() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = "Lietošanas noteikumi — jobsy.lv";
+    document.title = t(locale, "footer.terms") + " — jobsy.lv";
     return () => { document.title = prev; };
-  }, []);
+  }, [locale]);
 
   const sections = [
     {

@@ -9,57 +9,59 @@ import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 
 const PAGE_SIZE = 12;
 
-// SEO descriptions per category (Latvian)
-const CATEGORY_SEO: Record<string, { heading: string; description: string }> = {
+type LocaleSEO = { heading: string; description: string };
+type CategorySEO = { lv: LocaleSEO; ru: LocaleSEO; en: LocaleSEO };
+
+const CATEGORY_SEO: Record<string, CategorySEO> = {
   household: {
-    heading: "Mājsaimniecības darbi Latvijā",
-    description:
-      "Atrodi palīgus mājsaimniecībai — tīrīšanai, mazgāšanai, veļai un citiem ikdienas darbiem visā Latvijā.",
+    lv: { heading: "Mājsaimniecības darbi Latvijā", description: "Atrodi palīgus mājsaimniecībai — tīrīšanai, mazgāšanai, veļai un citiem ikdienas darbiem visā Latvijā." },
+    ru: { heading: "Домашние работы в Латвии", description: "Найдите помощников для уборки, стирки, глажки и других домашних дел по всей Латвии." },
+    en: { heading: "Household Services in Latvia", description: "Find helpers for cleaning, laundry, ironing and other household tasks across Latvia." },
   },
   moving: {
-    heading: "Pārvākšanās palīdzība Latvijā",
-    description:
-      "Pieejami pārvākšanās pakalpojumi Rīgā un visā Latvijā. Kraušanas, transporta un iesaiņošanas palīgi.",
+    lv: { heading: "Pārvākšanās palīdzība Latvijā", description: "Pieejami pārvākšanās pakalpojumi Rīgā un visā Latvijā. Kraušanas, transporta un iesaiņošanas palīgi." },
+    ru: { heading: "Помощь с переездом в Латвии", description: "Услуги переезда в Риге и по всей Латвии. Грузчики, транспорт и упаковка." },
+    en: { heading: "Moving Services in Latvia", description: "Moving help in Riga and across Latvia. Movers, transport and packing assistance." },
   },
   repairs: {
-    heading: "Remontdarbi Latvijā",
-    description:
-      "Atrodi remontdarbniekus elektriskiem, santehnikas, apdares un citiem remontdarbiem Latvijā.",
+    lv: { heading: "Remontdarbi Latvijā", description: "Atrodi remontdarbniekus elektriskiem, santehnikas, apdares un citiem remontdarbiem Latvijā." },
+    ru: { heading: "Ремонтные работы в Латвии", description: "Найдите мастеров по электрике, сантехнике, отделке и другим ремонтным работам в Латвии." },
+    en: { heading: "Repair Services in Latvia", description: "Find handymen for electrical, plumbing, finishing and other repair work across Latvia." },
   },
   garden: {
-    heading: "Dārza darbi Latvijā",
-    description:
-      "Dārznieki, zāles pļāvēji un dārza palīgi visā Latvijā. Atrodi palīgu savam dārzam.",
+    lv: { heading: "Dārza darbi Latvijā", description: "Dārznieki, zāles pļāvēji un dārza palīgi visā Latvijā. Atrodi palīgu savam dārzam." },
+    ru: { heading: "Садовые работы в Латвии", description: "Садовники, стрижка газона и помощники по саду по всей Латвии." },
+    en: { heading: "Garden Services in Latvia", description: "Gardeners, lawn mowers and garden helpers across Latvia. Find help for your garden." },
   },
   auto: {
-    heading: "Auto pakalpojumi Latvijā",
-    description:
-      "Auto remonta, mazgāšanas un citi automobilu pakalpojumi Rīgā un visā Latvijā.",
+    lv: { heading: "Auto pakalpojumi Latvijā", description: "Auto remonta, mazgāšanas un citi automobilu pakalpojumi Rīgā un visā Latvijā." },
+    ru: { heading: "Автомобильные услуги в Латвии", description: "Ремонт, мойка и другие автомобильные услуги в Риге и по всей Латвии." },
+    en: { heading: "Auto Services in Latvia", description: "Car repair, washing and other automotive services in Riga and across Latvia." },
   },
   childcare: {
-    heading: "Bērnu pieskatīšana Latvijā",
-    description:
-      "Aukles un bērnu pieskatīšanas pakalpojumi visā Latvijā. Uzticami palīgi ģimenēm.",
+    lv: { heading: "Bērnu pieskatīšana Latvijā", description: "Aukles un bērnu pieskatīšanas pakalpojumi visā Latvijā. Uzticami palīgi ģimenēm." },
+    ru: { heading: "Уход за детьми в Латвии", description: "Няни и услуги по уходу за детьми по всей Латвии. Надёжные помощники для семей." },
+    en: { heading: "Childcare Services in Latvia", description: "Babysitters and childcare services across Latvia. Trusted helpers for families." },
   },
   pets: {
-    heading: "Mājdzīvnieku kopšana Latvijā",
-    description:
-      "Mājdzīvnieku pieskatīšana, pastaiga un kopšana Rīgā un visā Latvijā.",
+    lv: { heading: "Mājdzīvnieku kopšana Latvijā", description: "Mājdzīvnieku pieskatīšana, pastaiga un kopšana Rīgā un visā Latvijā." },
+    ru: { heading: "Уход за питомцами в Латвии", description: "Присмотр за животными, выгул и уход в Риге и по всей Латвии." },
+    en: { heading: "Pet Care Services in Latvia", description: "Pet sitting, dog walking and grooming in Riga and across Latvia." },
   },
   it: {
-    heading: "IT pakalpojumi Latvijā",
-    description:
-      "Datorspeciālisti, web izstrādātāji un IT atbalsts privātpersonām un uzņēmumiem Latvijā.",
+    lv: { heading: "IT pakalpojumi Latvijā", description: "Datorspeciālisti, web izstrādātāji un IT atbalsts privātpersonām un uzņēmumiem Latvijā." },
+    ru: { heading: "IT-услуги в Латвии", description: "Компьютерные специалисты, веб-разработчики и IT-поддержка для частных лиц и компаний в Латвии." },
+    en: { heading: "IT Services in Latvia", description: "Computer specialists, web developers and IT support for individuals and businesses in Latvia." },
   },
   tutoring: {
-    heading: "Repetīcijas un apmācība Latvijā",
-    description:
-      "Repetitori mācību priekšmetos, valodas un citas jomās bērniem un pieaugušajiem Latvijā.",
+    lv: { heading: "Repetīcijas un apmācība Latvijā", description: "Repetitori mācību priekšmetos, valodas un citas jomās bērniem un pieaugušajiem Latvijā." },
+    ru: { heading: "Репетиторство и обучение в Латвии", description: "Репетиторы по учебным предметам, языкам и другим дисциплинам для детей и взрослых в Латвии." },
+    en: { heading: "Tutoring & Lessons in Latvia", description: "Tutors for school subjects, languages and other disciplines for children and adults in Latvia." },
   },
   other: {
-    heading: "Citi pakalpojumi Latvijā",
-    description:
-      "Dažādi palīdzības un pakalpojumu sludinājumi, kas neietilpst citās kategorijās.",
+    lv: { heading: "Citi pakalpojumi Latvijā", description: "Dažādi palīdzības un pakalpojumu sludinājumi, kas neietilpst citās kategorijās." },
+    ru: { heading: "Другие услуги в Латвии", description: "Разнообразные объявления о помощи и услугах, не вошедших в другие категории." },
+    en: { heading: "Other Services in Latvia", description: "Various help and service listings that don't fit other categories." },
   },
 };
 
@@ -70,7 +72,8 @@ export default function Category() {
   const [page, setPage] = useState(0);
 
   const catInfo = CATEGORIES.find((c) => c.key === slug);
-  const seo = slug ? CATEGORY_SEO[slug] : undefined;
+  const seoLocale = (locale === "ru" || locale === "en") ? locale : "lv";
+  const seo = slug ? CATEGORY_SEO[slug]?.[seoLocale] : undefined;
 
   // Redirect unknown slugs to browse
   useEffect(() => {
@@ -82,7 +85,7 @@ export default function Category() {
     const catName = catInfo ? t(locale, `categories.${catInfo.key}` as never) : "";
     if (catName) {
       const prev = document.title;
-      document.title = `${catName} darbi — jobsy.lv`;
+      document.title = seo?.heading ? `${seo.heading} — jobsy.lv` : `${catName} — jobsy.lv`;
       let meta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
       const created = !meta;
       if (!meta) {
@@ -90,7 +93,7 @@ export default function Category() {
         meta.name = "description";
         document.head.appendChild(meta);
       }
-      meta.content = seo?.description ?? `${catName} sludinajumi Latvija — jobsy.lv`;
+      meta.content = seo?.description ?? `${catName} — jobsy.lv`;
       return () => {
         document.title = prev;
         if (created && meta) document.head.removeChild(meta);

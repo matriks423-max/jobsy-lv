@@ -10,6 +10,12 @@ export const statsRouter = createRouter({
       countUsers(),
       countCategories(),
     ]);
-    return { activePosts, needPosts, offerPosts, users, categories };
+    return {
+      activePosts: Number(activePosts),
+      needPosts: Number(needPosts),
+      offerPosts: Number(offerPosts),
+      users: Number(users),
+      categories: Number(categories),
+    };
   }),
 });

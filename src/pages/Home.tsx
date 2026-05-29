@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
-import { CATEGORIES } from "@/lib/categories";
+import { CATEGORIES, CITIES } from "@/lib/categories";
 import HomeCityMap from "@/components/HomeCityMap";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
@@ -262,30 +262,29 @@ export default function Home() {
             ))}
           </motion.div>
 
-          {/* Stats — only render when real data is available */}
-          {stats && (
-            <motion.div
-              className="flex flex-wrap justify-center gap-8 md:gap-12"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.05, duration: 0.4 }}
-            >
-              {[
-                { value: stats.activePosts, label: t(locale, "hero.statsActive") },
-                { value: stats.users,       label: t(locale, "hero.statsUsers") },
-                { value: stats.categories,  label: t(locale, "hero.statsCategories") },
-              ].filter((s) => s.value > 0).map((stat, i) => (
-                <div key={i} className="flex flex-col items-center">
-                  <div className="font-headline text-4xl font-bold text-white">
-                    <AnimatedCounter target={stat.value} />
-                  </div>
-                  <div className="mt-0.5 font-label text-label-sm text-primary-fixed-dim">
-                    {stat.label}
-                  </div>
+          {/* Stats */}
+          <motion.div
+            className="flex flex-wrap justify-center gap-8 md:gap-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.05, duration: 0.4 }}
+          >
+            {[
+              { value: CATEGORIES.length,          label: t(locale, "hero.statsCategories") },
+              { value: CITIES.length - 1,           label: t(locale, "hero.statsCities") },
+              ...(stats?.activePosts > 0 ? [{ value: Number(stats.activePosts), label: t(locale, "hero.statsActive") }] : []),
+              ...(stats?.users > 0       ? [{ value: Number(stats.users),       label: t(locale, "hero.statsUsers") }] : []),
+            ].map((stat, i) => (
+              <div key={i} className="flex flex-col items-center">
+                <div className="font-headline text-4xl font-bold text-white">
+                  <AnimatedCounter target={stat.value} />
                 </div>
-              ))}
-            </motion.div>
-          )}
+                <div className="mt-0.5 font-label text-label-sm text-primary-fixed-dim">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </motion.div>
         </div>
 
         {/* Scroll indicator */}

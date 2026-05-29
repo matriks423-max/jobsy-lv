@@ -9,9 +9,9 @@ export default function Privacy() {
 
   useEffect(() => {
     const prev = document.title;
-    document.title = "Privātuma politika — jobsy.lv";
+    document.title = t(locale, "footer.privacy") + " — jobsy.lv";
     return () => { document.title = prev; };
-  }, []);
+  }, [locale]);
 
   const sections = [
     {
