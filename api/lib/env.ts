@@ -43,6 +43,13 @@ export const env = {
   // Cron secret — required in production (any value, keep secret)
   cronSecret: optional("CRON_SECRET"),
 
+  // Social automation
+  n8nWebhookUrl: optional("N8N_WEBHOOK_URL"),
+  n8nReviewWebhookUrl: optional("N8N_REVIEW_WEBHOOK_URL"),
+  postizApiKey: optional("POSTIZ_API_KEY"),
+  umamiSiteId: optional("UMAMI_SITE_ID"),
+  umamiApiKey: optional("UMAMI_API_KEY"),
+
   // Cloudflare R2 image storage — optional; falls back to local /uploads in dev
   r2AccountId: optional("R2_ACCOUNT_ID"),
   r2AccessKeyId: optional("R2_ACCESS_KEY_ID"),
