@@ -7,7 +7,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-outline-variant bg-surface-off-white">
+    <footer className="border-t border-outline-variant bg-surface-cream">
       <div className="mx-auto max-w-container-max-width px-margin-desktop py-12">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
 
@@ -41,7 +41,7 @@ export default function Footer() {
 
           {/* Column 2: Browse */}
           <div>
-            <h4 className="mb-4 font-label text-label-sm font-bold uppercase tracking-widest text-on-surface">
+            <h4 className="mb-4 font-label text-label-sm font-semibold text-on-surface">
               {t(locale, "nav.browse")}
             </h4>
             <ul className="space-y-3">
@@ -82,7 +82,7 @@ export default function Footer() {
 
           {/* Column 3: Account */}
           <div>
-            <h4 className="mb-4 font-label text-label-sm font-bold uppercase tracking-widest text-on-surface">
+            <h4 className="mb-4 font-label text-label-sm font-semibold text-on-surface">
               {t(locale, "footer.account")}
             </h4>
             <ul className="space-y-3">
@@ -123,7 +123,7 @@ export default function Footer() {
 
           {/* Column 4: Legal */}
           <div>
-            <h4 className="mb-4 font-label text-label-sm font-bold uppercase tracking-widest text-on-surface">
+            <h4 className="mb-4 font-label text-label-sm font-semibold text-on-surface">
               {t(locale, "footer.about")}
             </h4>
             <ul className="space-y-3">
@@ -162,7 +162,7 @@ export default function Footer() {
             © {year} jobsy.lv
           </p>
           <p className="font-label text-label-sm text-outline">
-            {t(locale, "footer.tagline")}
+            Latvija 🇱🇻
           </p>
         </div>
       </div>

@@ -77,12 +77,12 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
         <div className="flex flex-1 flex-col p-6">
           {/* Top badges row */}
           <div className="mb-3 flex flex-wrap items-center gap-2">
-            {/* Type badge */}
+            {/* Type badge — left border signals primary importance */}
             <span
-              className={`rounded px-2 py-0.5 font-label text-label-sm uppercase ${
+              className={`rounded py-0.5 pr-2 pl-1.5 font-label text-label-sm uppercase border-l-[3px] ${
                 isNeed
-                  ? "bg-surface-cream text-primary"
-                  : "bg-secondary-container/30 text-secondary-DEFAULT"
+                  ? "bg-surface-cream text-primary border-l-primary"
+                  : "bg-green-50 text-success-emerald border-l-success-emerald"
               }`}
             >
               {isNeed ? t(locale, "browse.typeNeed") : t(locale, "browse.typeOffer")}
@@ -141,8 +141,8 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
               </span>
             )}
             {post.budgetText && (
-              <span className="inline-flex items-center gap-1 font-label text-label-sm font-medium text-on-surface">
-                <Wallet className="h-3.5 w-3.5 text-primary" />
+              <span className="inline-flex items-center gap-1 font-label text-label-sm font-semibold text-primary">
+                <Wallet className="h-3.5 w-3.5" />
                 {post.budgetText}
               </span>
             )}
@@ -150,12 +150,6 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
               <span className="inline-flex items-center gap-1 font-label text-label-sm text-on-surface-variant">
                 <Calendar className="h-3.5 w-3.5" />
                 {post.whenText}
-              </span>
-            )}
-            {post.viewCount > 0 && (
-              <span className="inline-flex items-center gap-1 font-label text-label-sm text-on-surface-variant">
-                <Eye className="h-3.5 w-3.5" />
-                {post.viewCount}
               </span>
             )}
             {profile?.phoneVerified && (
@@ -187,6 +181,7 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
 export function PostCardSkeleton() {
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-card">
+      <Skeleton className="aspect-video w-full rounded-none" />
       <div className="flex flex-1 flex-col p-6">
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <Skeleton className="h-5 w-12 rounded" />

@@ -232,7 +232,7 @@ export default function Home() {
                 value={heroSearch}
                 onChange={(e) => setHeroSearch(e.target.value)}
                 placeholder={t(locale, "hero.searchPlaceholder")}
-                className="h-14 w-full rounded-xl bg-white pl-12 pr-4 font-body text-body-md text-on-surface shadow-sm placeholder:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary-fixed/50 transition-shadow"
+                className="h-14 w-full rounded-xl bg-white pl-12 pr-4 font-body text-body-md text-on-surface shadow-sm ring-1 ring-white/20 placeholder:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary-fixed/50 transition-shadow"
               />
             </div>
             <button
@@ -304,7 +304,7 @@ export default function Home() {
                 <Link
                   key={cat.key}
                   to={`/browse?category=${cat.key}`}
-                  className="group flex flex-col items-center gap-3 rounded-xl border border-outline-variant bg-white px-4 py-5 text-center shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary hover:shadow-md"
+                  className="group flex flex-col items-center gap-3 rounded-xl bg-white px-4 py-5 text-center shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-card-hover"
                 >
                   <div
                     className="flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110"
@@ -357,20 +357,36 @@ export default function Home() {
             </h2>
           </div>
 
+          {/* Step number indicators with dashed connector */}
+          <div className="relative mb-8 hidden md:grid md:grid-cols-3">
+            <div
+              aria-hidden="true"
+              className="absolute left-[16.667%] top-1/2 h-px w-[66.666%] -translate-y-1/2"
+              style={{ backgroundImage: "repeating-linear-gradient(90deg, #bfc9c3 0, #bfc9c3 6px, transparent 6px, transparent 14px)" }}
+            />
+            {["01", "02", "03"].map((n) => (
+              <div key={n} className="flex justify-center">
+                <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full bg-primary font-headline text-sm font-bold text-white ring-4 ring-surface-cream">
+                  {n}
+                </div>
+              </div>
+            ))}
+          </div>
+
           <div className="grid gap-8 md:grid-cols-3">
             {[
               {
-                num: "01",
+                emoji: "✏️",
                 title: t(locale, "howItWorks.step1"),
                 desc: t(locale, "howItWorks.step1Desc"),
               },
               {
-                num: "02",
+                emoji: "💬",
                 title: t(locale, "howItWorks.step2"),
                 desc: t(locale, "howItWorks.step2Desc"),
               },
               {
-                num: "03",
+                emoji: "🤝",
                 title: t(locale, "howItWorks.step3"),
                 desc: t(locale, "howItWorks.step3Desc"),
               },
@@ -381,11 +397,9 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="flex flex-col items-center rounded-2xl bg-white p-8 text-center shadow-card"
+                className="flex flex-col items-center text-center"
               >
-                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary">
-                  <span className="font-headline text-xl font-bold text-white">{step.num}</span>
-                </div>
+                <span className="mb-4 text-4xl">{step.emoji}</span>
                 <h3 className="mb-2 font-headline text-headline-sm font-semibold text-on-surface">
                   {step.title}
                 </h3>

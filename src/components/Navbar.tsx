@@ -54,6 +54,13 @@ export default function Navbar() {
         {/* Logo */}
         <div className="flex items-center gap-stack-gap-lg">
           <Link to="/" className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2"/>
+                <path d="M16 7V5a2 2 0 0 0-4 0v2"/>
+                <path d="M8 7V5a2 2 0 0 0-4 0v2"/>
+              </svg>
+            </div>
             <span className="font-headline text-headline-sm font-bold text-primary">
               Jobsy
             </span>
@@ -176,7 +183,7 @@ export default function Navbar() {
           {/* CTA */}
           <button
             onClick={() => navigate("/create")}
-            className="rounded-lg bg-primary px-6 py-2.5 font-label text-label-md font-bold text-white shadow-sm transition-all duration-300 hover:bg-on-primary-fixed-variant hover:scale-[1.03] hover:shadow-md active:scale-95"
+            className="rounded-lg bg-accent-coral px-6 py-2.5 font-label text-label-md font-bold text-white shadow-sm transition-all duration-300 hover:bg-accent-coral-hover hover:scale-[1.03] hover:shadow-md active:scale-95"
           >
             {t(locale, "nav.createPost")}
           </button>
@@ -270,7 +277,7 @@ export default function Navbar() {
                 <Link
                   to="/create"
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-2 rounded-lg bg-primary px-4 py-3 font-label text-label-md font-bold text-white transition-all hover:bg-on-primary-fixed-variant"
+                  className="flex items-center gap-2 rounded-lg bg-accent-coral px-4 py-3 font-label text-label-md font-bold text-white transition-all hover:bg-accent-coral-hover"
                 >
                   <Plus className="h-4 w-4" />
                   {t(locale, "nav.createPost")}
