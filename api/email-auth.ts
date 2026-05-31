@@ -124,9 +124,9 @@ export const emailAuthRouter = createRouter({
         email: z.string().email(),
         password: z.string().min(8).max(100),
         referralCode: z.string().optional(),
-        utmSource: z.string().max(100).optional(),
-        utmMedium: z.string().max(100).optional(),
-        utmCampaign: z.string().max(100).optional(),
+        utmSource: z.string().min(1).max(100).optional(),
+        utmMedium: z.string().min(1).max(100).optional(),
+        utmCampaign: z.string().min(1).max(100).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {

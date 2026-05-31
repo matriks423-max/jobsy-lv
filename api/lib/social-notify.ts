@@ -1,12 +1,12 @@
 import { env } from "./env";
 
-export async function notifySocialQueue(
+export function notifySocialQueue(
   postId: number,
   title: string,
   description: string | null,
   category: string,
   city: string | null
-): Promise<void> {
+): void {
   const webhookUrl = env.n8nWebhookUrl;
   if (!webhookUrl) return;
 
@@ -18,11 +18,11 @@ export async function notifySocialQueue(
   }).catch(() => {});
 }
 
-export async function notifyReview(
+export function notifyReview(
   stars: number,
   category: string,
   city: string | null
-): Promise<void> {
+): void {
   const webhookUrl = env.n8nReviewWebhookUrl;
   if (!webhookUrl || stars < 5) return;
 

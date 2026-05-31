@@ -125,9 +125,9 @@ export const authRouter = createRouter({
   setUtm: authedQuery
     .input(
       z.object({
-        utm_source: z.string().max(100).optional(),
-        utm_medium: z.string().max(100).optional(),
-        utm_campaign: z.string().max(100).optional(),
+        utm_source: z.string().min(1).max(100).optional(),
+        utm_medium: z.string().min(1).max(100).optional(),
+        utm_campaign: z.string().min(1).max(100).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
