@@ -278,6 +278,39 @@ export async function sendPostExpired(
   }
 }
 
+export async function sendRetentionEmail(
+  to: string,
+  posts: Array<{ id: number; title: string; city: string | null; category: string }>
+): Promise<void> {
+  try {
+    const listItems = posts
+      .map(
+        (p) =>
+          `<li style="margin-bottom:12px;"><a href="https://jobsy.lv/post/${p.id}?utm_source=email&utm_medium=retention&utm_campaign=weekly" style="color:#064E3B;font-weight:bold;text-decoration:none;">${escHtml(p.title)}</a>${p.city ? ` — ${escHtml(p.city)}` : ""}</li>`
+      )
+      .join("");
+    await getResend().emails.send({
+      from: FROM,
+      to,
+      subject: "Jauni sludinājumi tev tuvumā 🔍",
+      html: `
+        <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; background: #FAF6F0; padding: 40px 32px;">
+          <h1 style="font-size: 28px; color: #1A1208; margin-bottom: 8px;">jobsy<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#064E3B;margin-left:2px;vertical-align:middle;"></span></h1>
+          <hr style="border: 2px solid #1A1208; margin: 16px 0 32px;" />
+          <h2 style="font-size: 20px; color: #1A1208; margin-bottom: 16px;">Šīs nedēļas jaunie sludinājumi</h2>
+          <ul style="padding-left: 20px; color: #4A3728; font-size: 15px; line-height: 1.8;">${listItems}</ul>
+          <a href="https://jobsy.lv?utm_source=email&utm_medium=retention&utm_campaign=weekly" style="display:inline-block;margin-top:24px;background:#064E3B;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;">
+            Skatīt visus sludinājumus →
+          </a>
+          <p style="color: #8A7060; font-size: 12px; margin-top: 32px;">© 2026 jobsy.lv</p>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("[email] sendRetentionEmail failed:", err);
+  }
+}
+
 export async function sendExpiryReminder(
   to: string,
   postTitle: string,

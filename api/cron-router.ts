@@ -1,8 +1,8 @@
 import { Hono } from "hono";
-import { eq, and, lte, gte, isNull, or, sql, inArray } from "drizzle-orm";
+import { eq, and, lte, gte, isNull, isNotNull, or, sql, inArray, count, desc } from "drizzle-orm";
 import * as schema from "@db/schema";
 import { getDb } from "./queries/connection";
-import { sendExpiryReminder, sendSearchAlert, sendPostExpired } from "./lib/email";
+import { sendExpiryReminder, sendSearchAlert, sendPostExpired, sendRetentionEmail } from "./lib/email";
 
 export const cronRouter = new Hono();
 
@@ -277,4 +277,148 @@ cronRouter.get("/backup", async (c) => {
     console.error("[backup] failed:", err);
     return c.json({ error: "Backup failed" }, 500);
   }
+});
+
+cronRouter.get("/weekly-report", async (c) => {
+  const secret = c.req.header("x-cron-secret");
+  const expected = process.env.CRON_SECRET;
+  if (!expected || !secret || secret !== expected) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const now = new Date();
+  const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+  const [
+    totalUsers,
+    newUsers,
+    totalActivePosts,
+    newPosts,
+    filledPosts,
+    paidPostsThisWeek,
+    unresolvedReports,
+    failedSocialPosts,
+    utmBreakdown,
+  ] = await Promise.all([
+    getDb().select({ c: count() }).from(schema.users).then((r) => r[0]?.c ?? 0),
+    getDb().select({ c: count() }).from(schema.users).where(gte(schema.users.createdAt, weekAgo)).then((r) => r[0]?.c ?? 0),
+    getDb().select({ c: count() }).from(schema.posts).where(eq(schema.posts.status, "active")).then((r) => r[0]?.c ?? 0),
+    getDb().select({ c: count() }).from(schema.posts).where(gte(schema.posts.createdAt, weekAgo)).then((r) => r[0]?.c ?? 0),
+    getDb().select({ c: count() }).from(schema.posts).where(and(eq(schema.posts.filled, true), gte(schema.posts.updatedAt, weekAgo))).then((r) => r[0]?.c ?? 0),
+    getDb().select({ c: count() }).from(schema.posts).where(and(eq(schema.posts.wasFree, false), isNotNull(schema.posts.paidAt), gte(schema.posts.paidAt, weekAgo))).then((r) => r[0]?.c ?? 0),
+    getDb().select({ c: count() }).from(schema.reports).where(eq(schema.reports.resolved, false)).then((r) => r[0]?.c ?? 0),
+    getDb().select({ c: count() }).from(schema.socialQueue).where(eq(schema.socialQueue.status, "failed")).then((r) => r[0]?.c ?? 0),
+    getDb()
+      .select({ source: schema.users.utmSource, cnt: count() })
+      .from(schema.users)
+      .where(and(gte(schema.users.createdAt, weekAgo), isNotNull(schema.users.utmSource)))
+      .groupBy(schema.users.utmSource)
+      .then((rows) => rows.map((r) => ({ source: r.source ?? "unknown", count: r.cnt }))),
+  ]);
+
+  return c.json({
+    period: { from: weekAgo.toISOString(), to: now.toISOString() },
+    users: { total: totalUsers, newThisWeek: newUsers },
+    posts: { active: totalActivePosts, newThisWeek: newPosts, filledThisWeek: filledPosts },
+    revenue: { paidPostsThisWeek, estimatedEur: paidPostsThisWeek * 2 },
+    moderation: { unresolvedReports },
+    social: { failedPosts: failedSocialPosts },
+    acquisition: utmBreakdown,
+  });
+});
+
+cronRouter.get("/digest-data", async (c) => {
+  const secret = c.req.header("x-cron-secret");
+  const expected = process.env.CRON_SECRET;
+  if (!expected || !secret || secret !== expected) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const topPosts = await getDb()
+    .select({
+      id: schema.posts.id,
+      title: schema.posts.title,
+      category: schema.posts.category,
+      city: schema.posts.city,
+      viewCount: schema.posts.viewCount,
+      type: schema.posts.type,
+    })
+    .from(schema.posts)
+    .where(eq(schema.posts.status, "active"))
+    .orderBy(desc(schema.posts.viewCount))
+    .limit(5);
+
+  return c.json({ posts: topPosts, generatedAt: new Date().toISOString() });
+});
+
+cronRouter.get("/retention-email", async (c) => {
+  const secret = c.req.header("x-cron-secret");
+  const expected = process.env.CRON_SECRET;
+  if (!expected || !secret || secret !== expected) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const now = new Date();
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+  const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+  const candidates = await getDb()
+    .select({
+      userId: schema.users.id,
+      email: schema.users.email,
+      city: schema.profiles.city,
+      retentionEmailSentAt: schema.profiles.retentionEmailSentAt,
+    })
+    .from(schema.users)
+    .leftJoin(schema.profiles, eq(schema.profiles.userId, schema.users.id))
+    .where(
+      and(
+        lte(schema.users.createdAt, sevenDaysAgo),
+        lte(schema.users.lastSignInAt, fourteenDaysAgo),
+        eq(schema.users.role, "user"),
+        or(
+          isNull(schema.profiles.retentionEmailSentAt),
+          lte(schema.profiles.retentionEmailSentAt, oneWeekAgo)
+        )
+      )
+    )
+    .limit(100);
+
+  let sent = 0;
+  for (const candidate of candidates) {
+    if (!candidate.email || !candidate.city) continue;
+
+    const recentPosts = await getDb()
+      .select({
+        id: schema.posts.id,
+        title: schema.posts.title,
+        city: schema.posts.city,
+        category: schema.posts.category,
+      })
+      .from(schema.posts)
+      .where(
+        and(
+          eq(schema.posts.status, "active"),
+          eq(schema.posts.city, candidate.city)
+        )
+      )
+      .orderBy(desc(schema.posts.createdAt))
+      .limit(3);
+
+    if (recentPosts.length === 0) continue;
+
+    try {
+      await sendRetentionEmail(candidate.email, recentPosts);
+      await getDb()
+        .update(schema.profiles)
+        .set({ retentionEmailSentAt: now })
+        .where(eq(schema.profiles.userId, candidate.userId));
+      sent++;
+    } catch (err) {
+      console.error("[cron/retention-email] failed for user", candidate.userId, err);
+    }
+  }
+
+  return c.json({ ok: true, sent, checked: candidates.length });
 });
