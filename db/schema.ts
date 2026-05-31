@@ -32,6 +32,9 @@ export const users = mysqlTable("users", {
     .notNull()
     .$onUpdate(() => new Date()),
   lastSignInAt: timestamp("lastSignInAt").defaultNow().notNull(),
+  utmSource: varchar("utmSource", { length: 100 }),
+  utmMedium: varchar("utmMedium", { length: 100 }),
+  utmCampaign: varchar("utmCampaign", { length: 100 }),
 });
 
 export const profiles = mysqlTable("profiles", {
@@ -65,6 +68,7 @@ export const profiles = mysqlTable("profiles", {
     .defaultNow()
     .notNull()
     .$onUpdate(() => new Date()),
+  retentionEmailSentAt: timestamp("retentionEmailSentAt"),
 });
 
 export const posts = mysqlTable("posts", {
