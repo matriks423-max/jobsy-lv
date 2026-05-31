@@ -5,6 +5,7 @@ import { getProfileByUserId, updateProfile } from "./queries/profiles";
 import { atomicRewardReferral } from "./queries/referrals";
 import { addFreePostCredit } from "./queries/profiles";
 import { sendPostPublished, sendPaymentFailed, sendBusinessWelcome } from "./lib/email";
+import { notifySocialQueue } from "./lib/social-notify";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
 import { eq } from "drizzle-orm";
@@ -218,6 +219,7 @@ export async function handleStripeWebhook(body: string, signature: string) {
           });
           const profile = await getProfileByUserId(Number(userId));
           if (profile?.email) void sendPostPublished(profile.email, post.title, post.id);
+          void notifySocialQueue(post.id, post.title, post.description ?? null, post.category, post.city ?? null);
           await checkAndRewardReferral(Number(userId));
         }
       }

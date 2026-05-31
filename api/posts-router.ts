@@ -35,6 +35,7 @@ import { createCheckoutSession } from "./stripe";
 import { moderateContent, softFlagCheck } from "./lib/moderation";
 import { sendPostPublished } from "./lib/email";
 import { notifyMatchingSavedSearches } from "./lib/notify-searches";
+import { notifySocialQueue, notifyReview } from "./lib/social-notify";
 
 const MAX_POSTS_PER_DAY = 5;
 
@@ -271,6 +272,7 @@ export const postsRouter = createRouter({
       await checkAndRewardReferralOnPost(ctx.user.id);
       if (!needsReview && profile.email) {
         void sendPostPublished(profile.email, input.title, insertId);
+        void notifySocialQueue(insertId, input.title, input.description ?? null, input.category, input.city ?? null);
         void notifyMatchingSavedSearches({
           id: insertId,
           authorUserId: ctx.user.id,
@@ -609,6 +611,7 @@ export const postsRouter = createRouter({
       if (profile?.email) {
         void sendPostPublished(profile.email, postResult.post.title, input.postId);
       }
+      void notifySocialQueue(input.postId, postResult.post.title, postResult.post.description ?? null, postResult.post.category, postResult.post.city ?? null);
       void notifyMatchingSavedSearches({
         id: input.postId,
         authorUserId: ctx.user.id,
@@ -691,6 +694,7 @@ export const postsRouter = createRouter({
         void sendPostPublished(postResult.profile.email, postResult.post.title, input.postId);
       }
       if (postResult?.post) {
+        void notifySocialQueue(input.postId, postResult.post.title, postResult.post.description ?? null, postResult.post.category, postResult.post.city ?? null);
         void notifyMatchingSavedSearches({
           id: input.postId,
           authorUserId: postResult.post.userId,
@@ -858,6 +862,16 @@ export const postsRouter = createRouter({
         stars: input.stars,
         comment: input.comment,
       }).onDuplicateKeyUpdate({ set: { stars: input.stars, comment: input.comment } });
+
+      const reviewedPost = await getDb()
+        .select({ category: schema.posts.category, city: schema.posts.city })
+        .from(schema.posts)
+        .where(eq(schema.posts.id, input.postId))
+        .limit(1)
+        .then((r) => r[0]);
+      if (reviewedPost) {
+        void notifyReview(input.stars, reviewedPost.category, reviewedPost.city ?? null);
+      }
 
       return { success: true };
     }),
