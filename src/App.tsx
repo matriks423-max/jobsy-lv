@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { Toaster } from "sonner";
@@ -29,6 +29,9 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
 
+import { trpc } from "@/providers/trpc";
+import { useUTM, getStoredUTM, clearStoredUTM } from "@/hooks/useUTM";
+
 function AdminRoute({ element }: { element: React.ReactElement }) {
   const { user, isAuthenticated, isLoading } = useAuth();
   if (isLoading) return null;
@@ -37,6 +40,18 @@ function AdminRoute({ element }: { element: React.ReactElement }) {
 }
 
 export default function App() {
+  const { user, isAuthenticated } = useAuth();
+  useUTM();
+  const setUtm = trpc.auth.setUtm.useMutation();
+  useEffect(() => {
+    if (!isAuthenticated || !user) return;
+    const utm = getStoredUTM();
+    if (!utm.utm_source) return;
+    setUtm.mutate(utm, {
+      onSuccess: () => clearStoredUTM(),
+    });
+  }, [isAuthenticated, user?.id]);
+
   return (
     <div className="flex min-h-screen flex-col">
         <Toaster
