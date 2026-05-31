@@ -7,6 +7,7 @@ import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 
 import { trpc } from "@/providers/trpc";
+import { getStoredUTM } from "@/hooks/useUTM";
 import { useToast } from "@/hooks/useToast";
 import { ArrowLeft, Mail, UserPlus, Loader2, Gift, Eye, EyeOff } from "lucide-react";
 
@@ -82,7 +83,16 @@ export default function Login() {
     if (mode === "login") {
       loginMutation.mutate({ email, password });
     } else {
-      registerMutation.mutate({ name, email, password, referralCode: referralCode || undefined });
+      const utm = getStoredUTM();
+      registerMutation.mutate({
+        name,
+        email,
+        password,
+        referralCode: referralCode || undefined,
+        utmSource: utm.utm_source,
+        utmMedium: utm.utm_medium,
+        utmCampaign: utm.utm_campaign,
+      });
     }
   };
 

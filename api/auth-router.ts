@@ -1,6 +1,6 @@
 import * as cookie from "cookie";
 import { randomBytes } from "crypto";
-import { eq } from "drizzle-orm";
+import { eq, isNull, and } from "drizzle-orm";
 import { z } from "zod";
 import * as bcrypt from "bcryptjs";
 import { Session } from "@contracts/constants";
@@ -119,6 +119,32 @@ export const authRouter = createRouter({
         .set({ passwordHash: hash, resetToken: null, resetTokenExpiry: null })
         .where(eq(schema.users.id, user.id));
 
+      return { success: true };
+    }),
+
+  setUtm: authedQuery
+    .input(
+      z.object({
+        utm_source: z.string().max(100).optional(),
+        utm_medium: z.string().max(100).optional(),
+        utm_campaign: z.string().max(100).optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (!input.utm_source) return { success: false };
+      await getDb()
+        .update(schema.users)
+        .set({
+          utmSource: input.utm_source,
+          utmMedium: input.utm_medium ?? null,
+          utmCampaign: input.utm_campaign ?? null,
+        })
+        .where(
+          and(
+            eq(schema.users.id, ctx.user.id),
+            isNull(schema.users.utmSource)
+          )
+        );
       return { success: true };
     }),
 });

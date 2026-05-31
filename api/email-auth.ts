@@ -124,6 +124,9 @@ export const emailAuthRouter = createRouter({
         email: z.string().email(),
         password: z.string().min(8).max(100),
         referralCode: z.string().optional(),
+        utmSource: z.string().max(100).optional(),
+        utmMedium: z.string().max(100).optional(),
+        utmCampaign: z.string().max(100).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -141,6 +144,9 @@ export const emailAuthRouter = createRouter({
         authMethod: "email",
         role: "user",
         lastSignInAt: new Date(),
+        utmSource: input.utmSource ?? null,
+        utmMedium: input.utmMedium ?? null,
+        utmCampaign: input.utmCampaign ?? null,
       });
 
       const insertId = Number((result as unknown as [{ insertId: bigint }])[0].insertId);
