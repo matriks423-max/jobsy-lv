@@ -413,7 +413,7 @@ export default function Settings() {
               </h2>
               {(subStatus?.creditBalance ?? 0) > 0 && (
                 <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-outline-variant bg-surface-cream px-3 py-1 font-body text-xs font-bold text-on-surface">
-                  {t(locale, "credits.balance")}: ?{((subStatus?.creditBalance ?? 0) / 100).toFixed(2)}
+                  {t(locale, "credits.balance")}: €{((subStatus?.creditBalance ?? 0) / 100).toFixed(2)}
                 </span>
               )}
             </div>

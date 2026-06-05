@@ -291,10 +291,10 @@ export default function PostDetail() {
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
             {/* Type badge */}
-            <span className={`rounded px-2.5 py-1 font-label text-label-sm uppercase ${
+            <span className={`rounded py-1 pr-2.5 pl-2 font-label text-label-sm uppercase border-l-[3px] ${
               post.type === "need"
-                ? "bg-surface-cream text-primary"
-                : "bg-secondary-container/30 text-secondary-DEFAULT"
+                ? "bg-surface-cream text-primary border-l-primary"
+                : "bg-green-50 text-success-emerald border-l-success-emerald"
             }`}>
               {post.type === "need" ? t(locale, "browse.typeNeed") : t(locale, "browse.typeOffer")}
             </span>
@@ -387,7 +387,7 @@ export default function PostDetail() {
                 <button
                   key={i}
                   onClick={() => { setGalleryIndex(i); setShowGallery(true); }}
-                  className="aspect-square overflow-hidden rounded-xl border border-outline-variant transition-shadow hover:shadow-card-hover"
+                  className="aspect-square overflow-hidden rounded-xl shadow-card transition-shadow hover:shadow-card-hover"
                 >
                   <img src={img} alt={`${post.title} — ${i + 1}`} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy" />
                 </button>
@@ -532,7 +532,7 @@ export default function PostDetail() {
                     <button
                       onClick={handleContact}
                       disabled={contactMutation.isPending}
-                      className="h-14 w-full rounded-lg bg-primary font-label text-label-md font-bold text-white transition-all duration-200 hover:bg-on-primary-fixed-variant active:scale-[0.99] disabled:opacity-60"
+                      className="h-14 w-full rounded-lg bg-accent-coral font-label text-label-md font-bold text-white transition-all duration-200 hover:bg-accent-coral-hover active:scale-[0.99] disabled:opacity-60"
                     >
                       {contactMutation.isPending ? "..." : t(locale, "postDetail.contact.contactBtn")}
                     </button>

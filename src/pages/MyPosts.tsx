@@ -270,7 +270,7 @@ export default function MyPosts() {
                           <Zap className="h-2.5 w-2.5" />
                           {post.boostType === "bump" ? "Bump" : post.boostType === "featured" ? "Featured" : "Urgent"}
                           {getBoostTimeRemaining(post.boostExpiresAt) && (
-                            <span className="ml-0.5 opacity-70">? {getBoostTimeRemaining(post.boostExpiresAt)}</span>
+                            <span className="ml-0.5 opacity-70">· {getBoostTimeRemaining(post.boostExpiresAt)}</span>
                           )}
                         </span>
                       )}

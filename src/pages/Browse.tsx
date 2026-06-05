@@ -345,7 +345,7 @@ export default function Browse() {
     if (category !== "all") parts.push(t(locale, `categories.${category}` as never));
     if (city !== "all") parts.push(t(locale, `cities.${city}` as never));
     if (debouncedSearch) parts.push(`"${debouncedSearch}"`);
-    return parts.join(" � ") || t(locale, "browse.title");
+    return parts.join(" · ") || t(locale, "browse.title");
   };
 
   const handleOpenSaveAlert = () => {
@@ -521,7 +521,7 @@ export default function Browse() {
                 ) : posts.length === 0 ? (
                   <div className="py-16 text-center">
                     <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-surface-cream text-2xl">
-                      ??
+                      🔍
                     </div>
                     <p className="font-headline text-headline-sm font-semibold text-on-surface">
                       {t(locale, "browse.noResults")}
@@ -589,7 +589,7 @@ export default function Browse() {
       {/* Mobile FAB */}
       <button
         onClick={() => navigate("/create")}
-        className="fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full bg-primary px-5 py-3 font-label text-label-sm font-bold text-white shadow-float transition-all hover:-translate-y-0.5 active:scale-95 md:hidden"
+        className="fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full bg-accent-coral px-5 py-3 font-label text-label-sm font-bold text-white shadow-float transition-all hover:bg-accent-coral-hover hover:-translate-y-0.5 active:scale-95 md:hidden"
       >
         <Plus className="h-4 w-4" />
         {t(locale, "nav.createPost")}

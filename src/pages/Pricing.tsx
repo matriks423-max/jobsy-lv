@@ -105,9 +105,9 @@ export default function Pricing() {
         <div className="mb-10 grid gap-6 md:grid-cols-3 items-stretch">
 
           {/* Free */}
-          <div className="flex flex-col rounded-2xl border border-outline-variant bg-white p-6">
+          <div className="flex flex-col rounded-2xl bg-white p-6 shadow-card">
             <div className="mb-5">
-              <p className="font-body text-xs font-medium uppercase tracking-widest text-on-surface-variant">
+              <p className="font-body text-xs font-semibold text-on-surface-variant">
                 {t(locale, "pricing.free")}
               </p>
               <p className="mt-1 font-headline text-4xl font-bold text-on-surface">€0</p>
@@ -138,12 +138,12 @@ export default function Pricing() {
           </div>
 
           {/* Pro */}
-          <div className="relative flex flex-col rounded-2xl border border-outline-variant bg-white p-6">
+          <div className="relative flex flex-col rounded-2xl bg-white p-6 shadow-card">
             <div className="absolute -top-3 left-6 rounded-full border border-outline-variant bg-surface-cream px-3 py-0.5 font-mono text-xs font-bold text-on-surface uppercase">
               {t(locale, "pricing.pro")}
             </div>
             <div className="mb-5">
-              <p className="font-body text-xs font-medium uppercase tracking-widest text-on-surface-variant">
+              <p className="font-body text-xs font-semibold text-on-surface-variant">
                 {t(locale, "pricing.pro")}
               </p>
               <div className="mt-1 flex items-end gap-1">
@@ -178,7 +178,7 @@ export default function Pricing() {
               <button
                 onClick={() => handleGo("pro")}
                 disabled={proMutation.isPending}
-                className="w-full rounded-xl border border-outline-variant bg-primary px-6 py-3 font-body text-sm font-semibold text-white hover:opacity-90 transition disabled:opacity-60"
+                className="w-full rounded-xl bg-accent-coral px-6 py-3 font-body text-sm font-semibold text-white hover:bg-accent-coral-hover transition disabled:opacity-60"
               >
                 {proMutation.isPending ? t(locale, "pricing.loading") : t(locale, "pricing.upgradePro")}
               </button>
@@ -191,7 +191,7 @@ export default function Pricing() {
               {t(locale, "pricing.mostPopular")}
             </div>
             <div className="mb-5">
-              <p className="font-body text-xs font-medium uppercase tracking-widest text-white/60">
+              <p className="font-body text-xs font-semibold text-white/70">
                 {t(locale, "pricing.business")}
               </p>
               <div className="mt-1 flex items-end gap-1">
@@ -240,7 +240,7 @@ export default function Pricing() {
           </p>
           <div className="grid gap-4 sm:grid-cols-3">
             {BOOST_FEATURES.map((b) => (
-              <div key={b.name} className="rounded-2xl border border-outline-variant bg-white p-5">
+              <div key={b.name} className="rounded-2xl bg-white p-5 shadow-card">
                 <div className="mb-3 flex items-center justify-between">
                   <span className="text-2xl">{b.icon}</span>
                   <span className="font-mono text-lg font-bold text-on-surface">{b.price}</span>
