@@ -31,6 +31,38 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { lazy, Suspense } from "react";
+import MagneticButton from "@/components/premium/MagneticButton";
+import TiltCard from "@/components/premium/TiltCard";
+import { useLenis } from "@/hooks/useLenis";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+
+const HeroCanvas = lazy(() => import("@/components/premium/HeroCanvas"));
+
+/** Tracks normalized cursor offset (-0.5..0.5) for hero depth parallax. */
+function useHeroParallax() {
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  useEffect(() => {
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let frame = 0;
+    const onMove = (e: PointerEvent) => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() =>
+        setOffset({
+          x: e.clientX / window.innerWidth - 0.5,
+          y: e.clientY / window.innerHeight - 0.5,
+        })
+      );
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("pointermove", onMove);
+    };
+  }, []);
+  return offset;
+}
 
 function AnimatedCounter({ target, duration = 1500 }: { target: number; duration?: number }) {
   const [count, setCount] = useState(0);
@@ -91,6 +123,14 @@ export default function Home() {
   const [activeFilter, setActiveFilter] = useState<"all" | "need" | "offer">("all");
   const [copied, setCopied] = useState(false);
   const [heroSearch, setHeroSearch] = useState("");
+  const parallax = useHeroParallax();
+  const categoriesRef = useScrollReveal<HTMLDivElement>({ selector: ".cat-tile", stagger: 0.05, y: 24 });
+  useLenis();
+
+  // depth: each layer drifts by a multiple of the cursor offset
+  const layer = (depth: number) => ({
+    transform: `translate3d(${parallax.x * depth}px, ${parallax.y * depth}px, 0)`,
+  });
 
   const handleHeroSearch = (e: { preventDefault(): void }) => {
     e.preventDefault();
@@ -145,15 +185,19 @@ export default function Home() {
     <div className="min-h-screen bg-surface-off-white">
       {/* -- Hero ------------------------------------------------ */}
       <section className="relative flex min-h-[72vh] flex-col items-center justify-center overflow-hidden px-4 pb-12 pt-4 text-center">
-        {/* Emerald gradient background */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: "linear-gradient(160deg, #003527 0%, #064e3b 45%, #095c45 100%)",
-          }}
-        />
+        {/* Animated WebGL emerald gradient mesh (lazy, with static CSS fallback) */}
+        <Suspense
+          fallback={
+            <div
+              className="absolute inset-0"
+              style={{ background: "linear-gradient(160deg, #003527 0%, #064e3b 45%, #095c45 100%)" }}
+            />
+          }
+        >
+          <HeroCanvas />
+        </Suspense>
 
-        {/* Subtle noise texture */}
+        {/* Subtle noise texture over the mesh */}
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.03]"
           style={{
@@ -162,13 +206,8 @@ export default function Home() {
           }}
         />
 
-        {/* Decorative emerald orbs */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-secondary-DEFAULT/10 blur-3xl" />
-          <div className="absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-primary-fixed/5 blur-3xl" />
-        </div>
-
         <div className="relative z-10 mx-auto w-full max-w-3xl">
+         <div style={layer(-16)} className="will-change-transform">
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -191,7 +230,9 @@ export default function Home() {
                 : "Bez kredītkartes · Latvijā"}
             </span>
           </motion.div>
+         </div>
 
+         <div style={layer(-9)} className="will-change-transform">
           {/* Headline — word-by-word reveal */}
           <motion.h1 className="mb-5 font-headline text-5xl font-bold leading-tight text-white md:text-[64px] md:leading-[1.1]">
             {t(locale, "hero.title").split(" ").map((word, i) => (
@@ -216,31 +257,35 @@ export default function Home() {
           >
             {t(locale, "hero.subtitle")}
           </motion.p>
+         </div>
 
-          {/* Search bar */}
+         <div style={layer(-4)} className="will-change-transform">
+          {/* Search bar — glass + focus glow */}
           <motion.form
             onSubmit={handleHeroSearch}
-            className="mb-6 flex gap-2"
+            className="group/search mb-6 flex gap-2"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.75, duration: 0.4 }}
           >
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-on-surface-variant" />
+              <Search className="absolute left-4 top-1/2 z-10 h-5 w-5 -translate-y-1/2 text-on-surface-variant" />
               <input
                 type="text"
                 value={heroSearch}
                 onChange={(e) => setHeroSearch(e.target.value)}
                 placeholder={t(locale, "hero.searchPlaceholder")}
-                className="h-14 w-full rounded-xl bg-white pl-12 pr-4 font-body text-body-md text-on-surface shadow-sm ring-1 ring-white/20 placeholder:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary-fixed/50 transition-shadow"
+                className="relative h-14 w-full rounded-xl bg-white/95 pl-12 pr-4 font-body text-body-md text-on-surface shadow-lg shadow-black/20 ring-1 ring-white/30 backdrop-blur-md placeholder:text-on-surface-variant transition-all duration-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-accent-coral/60 focus:shadow-[0_0_0_4px_rgba(255,127,80,0.18),0_18px_40px_-12px_rgba(0,0,0,0.45)]"
               />
             </div>
-            <button
-              type="submit"
-              className="h-14 shrink-0 rounded-xl bg-accent-coral px-6 font-label text-label-md font-bold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-coral-hover active:scale-95"
-            >
-              {t(locale, "hero.searchBtn")}
-            </button>
+            <MagneticButton className="shrink-0" strength={0.5}>
+              <button
+                type="submit"
+                className="h-14 shrink-0 rounded-xl bg-accent-coral px-6 font-label text-label-md font-bold text-white shadow-lg shadow-accent-coral/30 transition-all duration-200 hover:bg-accent-coral-hover active:scale-95"
+              >
+                {t(locale, "hero.searchBtn")}
+              </button>
+            </MagneticButton>
           </motion.form>
 
           {/* Category quick-links */}
@@ -261,7 +306,9 @@ export default function Home() {
               </Link>
             ))}
           </motion.div>
+         </div>
 
+         <div style={layer(-24)} className="will-change-transform">
           {/* Stats */}
           <motion.div
             className="flex flex-wrap justify-center gap-8 md:gap-12"
@@ -285,6 +332,7 @@ export default function Home() {
               </div>
             ))}
           </motion.div>
+         </div>
         </div>
 
         {/* Scroll indicator */}
@@ -296,33 +344,34 @@ export default function Home() {
       {/* -- Categories ----------------------------------------- */}
       <section className="px-margin-mobile py-10 md:px-margin-desktop">
         <div className="mx-auto max-w-container-max-width">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          <div ref={categoriesRef} className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {CATEGORIES.map((cat) => {
               const Icon = CATEGORY_ICONS[cat.key];
               const count = categoryCounts?.[cat.key] ?? 0;
               return (
-                <Link
-                  key={cat.key}
-                  to={`/browse?category=${cat.key}`}
-                  className="group flex flex-col items-center gap-3 rounded-xl bg-white px-4 py-5 text-center shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-card-hover"
-                >
-                  <div
-                    className="flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110"
-                    style={{ backgroundColor: cat.bg }}
+                <TiltCard key={cat.key} className="cat-tile rounded-xl" max={9}>
+                  <Link
+                    to={`/browse?category=${cat.key}`}
+                    className="group flex h-full flex-col items-center gap-3 rounded-xl bg-white px-4 py-5 text-center shadow-card transition-shadow duration-200 hover:shadow-card-hover"
                   >
-                    {Icon && <Icon className="h-6 w-6" style={{ color: cat.color }} />}
-                  </div>
-                  <div>
-                    <p className="font-label text-label-sm font-semibold text-on-surface transition-colors group-hover:text-primary">
-                      {t(locale, `categories.${cat.key}` as never)}
-                    </p>
-                    {count > 0 && (
-                      <p className="mt-0.5 font-mono text-[11px] text-on-surface-variant">
-                        {count}
+                    <div
+                      className="flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110"
+                      style={{ backgroundColor: cat.bg }}
+                    >
+                      {Icon && <Icon className="h-6 w-6" style={{ color: cat.color }} />}
+                    </div>
+                    <div>
+                      <p className="font-label text-label-sm font-semibold text-on-surface transition-colors group-hover:text-primary">
+                        {t(locale, `categories.${cat.key}` as never)}
                       </p>
-                    )}
-                  </div>
-                </Link>
+                      {count > 0 && (
+                        <p className="mt-0.5 font-mono text-[11px] text-on-surface-variant">
+                          {count}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                </TiltCard>
               );
             })}
           </div>
@@ -341,7 +390,9 @@ export default function Home() {
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {featuredPosts.map(({ post, profile, isBusiness, images }) => (
-                <PostCard key={`hf-${post.id}`} post={post} profile={profile} isBusiness={isBusiness} images={images} />
+                <TiltCard key={`hf-${post.id}`} className="rounded-2xl" max={5}>
+                  <PostCard post={post} profile={profile} isBusiness={isBusiness} images={images} />
+                </TiltCard>
               ))}
             </div>
           </div>
@@ -510,13 +561,15 @@ export default function Home() {
             <p className="relative mx-auto mt-3 max-w-md font-body text-body-sm text-primary-fixed-dim">
               {t(locale, "ctaBanner.subtitle")}
             </p>
-            <button
-              onClick={() => navigate(isAuthenticated ? "/create" : "/login")}
-              className="relative mt-6 inline-flex h-12 items-center gap-2 rounded-lg bg-accent-coral px-8 font-label text-label-md font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-coral-hover active:scale-95"
-            >
-              <Plus className="h-4 w-4" />
-              {t(locale, "ctaBanner.btn")}
-            </button>
+            <MagneticButton className="relative mt-6" strength={0.5}>
+              <button
+                onClick={() => navigate(isAuthenticated ? "/create" : "/login")}
+                className="inline-flex h-12 items-center gap-2 rounded-lg bg-accent-coral px-8 font-label text-label-md font-bold text-white shadow-lg shadow-accent-coral/30 transition-all duration-200 hover:bg-accent-coral-hover active:scale-95"
+              >
+                <Plus className="h-4 w-4" />
+                {t(locale, "ctaBanner.btn")}
+              </button>
+            </MagneticButton>
           </div>
 
           {/* Referral — compact strip below CTA */}
