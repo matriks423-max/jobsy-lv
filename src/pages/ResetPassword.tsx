@@ -69,14 +69,17 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="flex min-h-[70vh] items-center justify-center px-4">
-      <div className="w-full max-w-sm">
+    <div className="relative flex min-h-[70vh] items-center justify-center overflow-hidden px-4">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-[20%] h-80 w-[32rem] max-w-[92vw] -translate-x-1/2 rounded-[50%] bg-primary/[0.07] blur-3xl" />
+      </div>
+      <div className="relative w-full max-w-sm">
         <div className="mb-8 text-center">
           <h1 className="font-headline text-3xl font-bold text-on-surface">{t(locale, "resetPassword.heading")}</h1>
           <p className="mt-2 font-body text-sm text-on-surface-variant">{t(locale, "resetPassword.subheading")}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="rounded-2xl border border-outline-variant bg-white p-6 shadow-card">
+        <form onSubmit={handleSubmit} className="rounded-2xl border border-outline-variant bg-white/95 p-6 shadow-xl shadow-primary/10 backdrop-blur-sm">
           {error && (
             <div className="mb-4 rounded-xl border-2 border-need bg-need/10 px-3 py-2 font-body text-sm text-secondary-DEFAULT">
               {error}
