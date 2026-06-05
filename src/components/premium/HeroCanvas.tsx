@@ -134,6 +134,7 @@ export default function HeroCanvas() {
     let renderer: { gl: WebGLRenderingContext; setSize: (w: number, h: number) => void; render: (o: object) => void } | null = null;
     let raf = 0;
     let disposed = false;
+    let resizeHandler: (() => void) | null = null;
     const mouse = { x: 0.5, y: 0.5 };
     const targetMouse = { x: 0.5, y: 0.5 };
 
@@ -175,6 +176,7 @@ export default function HeroCanvas() {
           program.uniforms.uResolution.value = [gl.canvas.width, gl.canvas.height];
         };
         resize();
+        resizeHandler = resize;
         window.addEventListener("resize", resize);
         window.addEventListener("pointermove", onPointer, { passive: true });
 
@@ -188,8 +190,6 @@ export default function HeroCanvas() {
           renderer!.render({ scene: mesh });
         };
         loop();
-
-        return () => window.removeEventListener("resize", resize);
       } catch {
         if (!disposed) setFailed(true);
       }
@@ -199,6 +199,7 @@ export default function HeroCanvas() {
       disposed = true;
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onPointer);
+      if (resizeHandler) window.removeEventListener("resize", resizeHandler);
       const gl = renderer?.gl as WebGLRenderingContext | undefined;
       gl?.getExtension("WEBGL_lose_context")?.loseContext();
     };

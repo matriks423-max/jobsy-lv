@@ -76,7 +76,7 @@ export default function ForgotPassword() {
           <button
             type="submit"
             disabled={forgotMutation.isPending}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant bg-accent-coral py-2.5 font-body font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-accent-coral-hover disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant bg-accent-coral py-2.5 font-body font-semibold text-on-surface transition-all hover:-translate-y-0.5 hover:bg-accent-coral-hover disabled:opacity-60"
           >
             {forgotMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : t(locale, "forgotPassword.submitBtn")}
           </button>

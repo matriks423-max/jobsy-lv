@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import PostCard, { PostCardSkeleton } from "@/components/PostCard";
+import TiltCard from "@/components/premium/TiltCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Search,
@@ -504,7 +505,9 @@ export default function Browse() {
                 </h2>
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                   {featuredPosts.map(({ post, profile, isBusiness, images }) => (
-                    <PostCard key={`featured-${post.id}`} post={post} profile={profile} isBusiness={isBusiness} images={images} />
+                    <TiltCard key={`featured-${post.id}`} className="rounded-2xl" max={5}>
+                      <PostCard post={post} profile={profile} isBusiness={isBusiness} images={images} />
+                    </TiltCard>
                   ))}
                 </div>
                 <div className="mt-6 border-b border-outline-variant" />
@@ -542,7 +545,9 @@ export default function Browse() {
                 ) : (
                   <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                     {posts.map(({ post, profile, isBusiness, images }) => (
-                      <PostCard key={post.id} post={post} profile={profile} isBusiness={isBusiness} images={images} />
+                      <TiltCard key={post.id} className="rounded-2xl" max={5}>
+                        <PostCard post={post} profile={profile} isBusiness={isBusiness} images={images} />
+                      </TiltCard>
                     ))}
                   </div>
                 )}
@@ -589,7 +594,7 @@ export default function Browse() {
       {/* Mobile FAB */}
       <button
         onClick={() => navigate("/create")}
-        className="fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full bg-accent-coral px-5 py-3 font-label text-label-sm font-bold text-white shadow-float transition-all hover:bg-accent-coral-hover hover:-translate-y-0.5 active:scale-95 md:hidden"
+        className="fixed bottom-20 right-4 z-40 flex items-center gap-2 rounded-full bg-accent-coral px-5 py-3 font-label text-label-sm font-bold text-on-surface shadow-float transition-all hover:bg-accent-coral-hover hover:-translate-y-0.5 active:scale-95 md:hidden"
       >
         <Plus className="h-4 w-4" />
         {t(locale, "nav.createPost")}

@@ -5,6 +5,7 @@ import { t } from "@/lib/i18n";
 import { CATEGORIES } from "@/lib/categories";
 import { trpc } from "@/providers/trpc";
 import PostCard, { PostCardSkeleton } from "@/components/PostCard";
+import TiltCard from "@/components/premium/TiltCard";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 
 const PAGE_SIZE = 12;
@@ -177,7 +178,9 @@ export default function Category() {
           <>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {posts.map(({ post, profile, isBusiness, images }) => (
-                <PostCard key={post.id} post={post} profile={profile} isBusiness={isBusiness} images={images} />
+                <TiltCard key={post.id} className="rounded-2xl" max={5}>
+                  <PostCard post={post} profile={profile} isBusiness={isBusiness} images={images} />
+                </TiltCard>
               ))}
             </div>
 

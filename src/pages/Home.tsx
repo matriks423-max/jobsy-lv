@@ -225,7 +225,7 @@ export default function Home() {
             transition={{ delay: 0.1, duration: 0.4 }}
             className="mb-6 inline-flex overflow-hidden rounded-full border border-white/20 bg-white/10 backdrop-blur-sm"
           >
-            <span className="flex items-center gap-1.5 bg-accent-coral/90 px-3.5 py-1.5 font-label text-label-sm font-bold text-white">
+            <span className="flex items-center gap-1.5 bg-accent-coral/90 px-3.5 py-1.5 font-label text-label-sm font-bold text-on-surface">
               <svg width="16" height="11" viewBox="0 0 20 12" className="inline-block flex-shrink-0 rounded-[2px]" aria-label="Latvian flag">
                 <rect width="20" height="12" fill="#9E3039"/>
                 <rect y="4" width="20" height="4" fill="white"/>
@@ -291,7 +291,7 @@ export default function Home() {
             <MagneticButton className="shrink-0" strength={0.5}>
               <button
                 type="submit"
-                className="h-14 shrink-0 rounded-xl bg-accent-coral px-6 font-label text-label-md font-bold text-white shadow-lg shadow-accent-coral/30 transition-all duration-200 hover:bg-accent-coral-hover active:scale-95"
+                className="h-14 shrink-0 rounded-xl bg-accent-coral px-6 font-label text-label-md font-bold text-on-surface shadow-lg shadow-accent-coral/30 transition-all duration-200 hover:bg-accent-coral-hover active:scale-95"
               >
                 {t(locale, "hero.searchBtn")}
               </button>
@@ -578,7 +578,7 @@ export default function Home() {
             <MagneticButton className="relative mt-6" strength={0.5}>
               <button
                 onClick={() => navigate(isAuthenticated ? "/create" : "/login")}
-                className="inline-flex h-12 items-center gap-2 rounded-lg bg-accent-coral px-8 font-label text-label-md font-bold text-white shadow-lg shadow-accent-coral/30 transition-all duration-200 hover:bg-accent-coral-hover active:scale-95"
+                className="inline-flex h-12 items-center gap-2 rounded-lg bg-accent-coral px-8 font-label text-label-md font-bold text-on-surface shadow-lg shadow-accent-coral/30 transition-all duration-200 hover:bg-accent-coral-hover active:scale-95"
               >
                 <Plus className="h-4 w-4" />
                 {t(locale, "ctaBanner.btn")}

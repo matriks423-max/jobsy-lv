@@ -59,7 +59,7 @@ export default function ResetPassword() {
           <p className="mt-2 font-body text-on-surface-variant">{t(locale, "resetPassword.successDesc")}</p>
           <button
             onClick={() => navigate("/login")}
-            className="mt-6 rounded-xl border border-outline-variant bg-accent-coral px-6 py-2.5 font-body font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-accent-coral-hover"
+            className="mt-6 rounded-xl border border-outline-variant bg-accent-coral px-6 py-2.5 font-body font-semibold text-on-surface transition-all hover:-translate-y-0.5 hover:bg-accent-coral-hover"
           >
             {t(locale, "resetPassword.loginBtn")}
           </button>
@@ -123,7 +123,7 @@ export default function ResetPassword() {
           <button
             type="submit"
             disabled={resetMutation.isPending}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant bg-accent-coral py-2.5 font-body font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-accent-coral-hover disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant bg-accent-coral py-2.5 font-body font-semibold text-on-surface transition-all hover:-translate-y-0.5 hover:bg-accent-coral-hover disabled:opacity-60"
           >
             {resetMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : t(locale, "resetPassword.submitBtn")}
           </button>

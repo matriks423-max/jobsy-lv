@@ -187,7 +187,7 @@ export default function Pricing() {
                 <button
                   onClick={() => handleGo("pro")}
                   disabled={proMutation.isPending}
-                  className="w-full rounded-xl bg-accent-coral px-6 py-3 font-body text-sm font-semibold text-white shadow-lg shadow-accent-coral/25 hover:bg-accent-coral-hover transition disabled:opacity-60"
+                  className="w-full rounded-xl bg-accent-coral px-6 py-3 font-body text-sm font-semibold text-on-surface shadow-lg shadow-accent-coral/25 hover:bg-accent-coral-hover transition disabled:opacity-60"
                 >
                   {proMutation.isPending ? t(locale, "pricing.loading") : t(locale, "pricing.upgradePro")}
                 </button>
@@ -235,7 +235,7 @@ export default function Pricing() {
                 <button
                   onClick={() => handleGo("business")}
                   disabled={upgradeMutation.isPending}
-                  className="w-full rounded-xl bg-accent-coral px-6 py-3 font-body text-sm font-semibold text-white shadow-lg shadow-accent-coral/30 hover:bg-accent-coral-hover transition disabled:opacity-60"
+                  className="w-full rounded-xl bg-accent-coral px-6 py-3 font-body text-sm font-semibold text-on-surface shadow-lg shadow-accent-coral/30 hover:bg-accent-coral-hover transition disabled:opacity-60"
                 >
                   {upgradeMutation.isPending ? t(locale, "pricing.loading") : t(locale, "pricing.upgrade")}
                 </button>

@@ -118,7 +118,7 @@ export default function JobMap({ posts }: JobMapProps) {
                 )}
                 <Link
                   to={`/post/${post.id}`}
-                  className="inline-block rounded-lg bg-accent-coral px-3 py-1 font-mono text-xs font-medium text-white transition hover:-translate-y-0.5 hover:bg-accent-coral-hover"
+                  className="inline-block rounded-lg bg-accent-coral px-3 py-1 font-mono text-xs font-medium text-on-surface transition hover:-translate-y-0.5 hover:bg-accent-coral-hover"
                 >
                   {t(locale, "browse.viewPost")} →
                 </Link>

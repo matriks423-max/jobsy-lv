@@ -60,7 +60,7 @@ export default function HomeCityMap() {
                 </p>
                 <Link
                   to={`/browse?city=${cityKey}`}
-                  className="inline-block rounded-lg bg-accent-coral px-3 py-1 font-label text-label-sm font-medium text-white transition hover:opacity-90"
+                  className="inline-block rounded-lg bg-accent-coral px-3 py-1 font-label text-label-sm font-medium text-on-surface transition hover:opacity-90"
                 >
                   {t(locale, "cityMap.viewPosts")} ?
                 </Link>

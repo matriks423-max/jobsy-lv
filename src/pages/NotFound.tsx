@@ -50,7 +50,7 @@ export default function NotFound() {
           </div>
           <button
             type="submit"
-            className="rounded-xl border border-outline-variant bg-accent-coral px-4 py-2.5 font-body text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-card-hover"
+            className="rounded-xl border border-outline-variant bg-accent-coral px-4 py-2.5 font-body text-sm font-semibold text-on-surface transition-all hover:-translate-y-0.5 hover:shadow-card-hover"
           >
             {t(locale, "hero.searchBtn")}
           </button>

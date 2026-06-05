@@ -9,6 +9,8 @@ import { useToast } from "@/hooks/useToast";
 import { Skeleton } from "@/components/ui/skeleton";
 import PostCard from "@/components/PostCard";
 import BoostPicker from "@/components/BoostPicker";
+import TiltCard from "@/components/premium/TiltCard";
+import MagneticButton from "@/components/premium/MagneticButton";
 import {
   Dialog,
   DialogContent,
@@ -399,22 +401,26 @@ export default function PostDetail() {
         {/* Info Cards */}
         <div className="mb-8 grid gap-4 sm:grid-cols-2">
           {post.budgetText && (
-            <div className="rounded-xl bg-white p-5 shadow-card">
-              <div className="mb-1 flex items-center gap-2 font-label text-label-sm text-on-surface-variant">
-                <Wallet className="h-4 w-4 text-primary" />
-                {t(locale, "postDetail.budget")}
+            <TiltCard className="rounded-xl" max={6}>
+              <div className="h-full rounded-xl bg-white p-5 shadow-card">
+                <div className="mb-1 flex items-center gap-2 font-label text-label-sm text-on-surface-variant">
+                  <Wallet className="h-4 w-4 text-primary" />
+                  {t(locale, "postDetail.budget")}
+                </div>
+                <p className="font-headline text-headline-sm font-semibold text-on-surface">{post.budgetText}</p>
               </div>
-              <p className="font-headline text-headline-sm font-semibold text-on-surface">{post.budgetText}</p>
-            </div>
+            </TiltCard>
           )}
           {post.whenText && (
-            <div className="rounded-xl bg-white p-5 shadow-card">
-              <div className="mb-1 flex items-center gap-2 font-label text-label-sm text-on-surface-variant">
-                <Calendar className="h-4 w-4 text-primary" />
-                {t(locale, "postDetail.when")}
+            <TiltCard className="rounded-xl" max={6}>
+              <div className="h-full rounded-xl bg-white p-5 shadow-card">
+                <div className="mb-1 flex items-center gap-2 font-label text-label-sm text-on-surface-variant">
+                  <Calendar className="h-4 w-4 text-primary" />
+                  {t(locale, "postDetail.when")}
+                </div>
+                <p className="font-headline text-headline-sm font-semibold text-on-surface">{post.whenText}</p>
               </div>
-              <p className="font-headline text-headline-sm font-semibold text-on-surface">{post.whenText}</p>
-            </div>
+            </TiltCard>
           )}
         </div>
 
@@ -514,7 +520,7 @@ export default function PostDetail() {
                       </p>
                       <Link
                         to="/pricing"
-                        className="inline-block rounded-lg bg-accent-coral px-5 py-2.5 font-label text-label-md font-bold text-white transition hover:bg-accent-coral-hover"
+                        className="inline-block rounded-lg bg-accent-coral px-5 py-2.5 font-label text-label-md font-bold text-on-surface transition hover:bg-accent-coral-hover"
                       >
                         {t(locale, "pricing.upgradeForContacts")}
                       </Link>
@@ -532,7 +538,7 @@ export default function PostDetail() {
                     <button
                       onClick={handleContact}
                       disabled={contactMutation.isPending}
-                      className="h-14 w-full rounded-lg bg-accent-coral font-label text-label-md font-bold text-white transition-all duration-200 hover:bg-accent-coral-hover active:scale-[0.99] disabled:opacity-60"
+                      className="h-14 w-full rounded-lg bg-accent-coral font-label text-label-md font-bold text-on-surface transition-all duration-200 hover:bg-accent-coral-hover active:scale-[0.99] disabled:opacity-60"
                     >
                       {contactMutation.isPending ? "..." : t(locale, "postDetail.contact.contactBtn")}
                     </button>
@@ -547,12 +553,14 @@ export default function PostDetail() {
               </div>
               <p className="mb-2 font-headline text-headline-sm font-semibold text-on-surface">{t(locale, "postDetail.contact.locked")}</p>
               <p className="mb-6 font-body text-body-sm text-on-surface-variant">{t(locale, "postDetail.contact.lockedSub")}</p>
-              <button
-                onClick={() => navigate("/login")}
-                className="h-12 rounded-lg bg-primary px-8 font-label text-label-md font-bold text-white transition hover:bg-on-primary-fixed-variant"
-              >
-                {t(locale, "postDetail.contact.loginBtn")}
-              </button>
+              <MagneticButton strength={0.4}>
+                <button
+                  onClick={() => navigate("/login")}
+                  className="h-12 rounded-lg bg-primary px-8 font-label text-label-md font-bold text-white shadow-lg shadow-primary/25 transition hover:bg-on-primary-fixed-variant"
+                >
+                  {t(locale, "postDetail.contact.loginBtn")}
+                </button>
+              </MagneticButton>
             </div>
           )}
         </div>

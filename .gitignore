@@ -42,3 +42,5 @@ coverage/
 .env.railway
 .shots/
 scripts/shot.mjs
+scripts/seed-demo.mjs
+scripts/coral-contrast-fix.mjs

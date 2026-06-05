@@ -62,7 +62,7 @@ export default function PWAInstallPrompt() {
       <div className="border-t border-outline-variant px-4 py-3">
         <button
           onClick={install}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant bg-accent-coral py-2 font-body text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-accent-coral-hover"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant bg-accent-coral py-2 font-body text-sm font-semibold text-on-surface transition-all hover:-translate-y-0.5 hover:bg-accent-coral-hover"
         >
           <Download className="h-4 w-4" />
           {t(locale, "pwa.install")}

@@ -233,7 +233,7 @@ export default function Login() {
               <button
                 onClick={handleSubmit}
                 disabled={loginMutation.isPending || registerMutation.isPending}
-                className="flex h-12 w-full items-center justify-center rounded-lg bg-accent-coral font-label text-label-md font-bold text-white transition-all hover:bg-accent-coral-hover active:scale-[0.99] disabled:opacity-60"
+                className="flex h-12 w-full items-center justify-center rounded-lg bg-accent-coral font-label text-label-md font-bold text-on-surface transition-all hover:bg-accent-coral-hover active:scale-[0.99] disabled:opacity-60"
               >
                 {loginMutation.isPending || registerMutation.isPending ? (
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />

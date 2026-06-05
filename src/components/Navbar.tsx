@@ -185,7 +185,7 @@ export default function Navbar() {
           <MagneticButton strength={0.4}>
             <button
               onClick={() => navigate("/create")}
-              className="rounded-lg bg-accent-coral px-6 py-2.5 font-label text-label-md font-bold text-white shadow-sm transition-all duration-300 hover:bg-accent-coral-hover hover:scale-[1.03] hover:shadow-md active:scale-95"
+              className="rounded-lg bg-accent-coral px-6 py-2.5 font-label text-label-md font-bold text-on-surface shadow-sm transition-all duration-300 hover:bg-accent-coral-hover hover:scale-[1.03] hover:shadow-md active:scale-95"
             >
               {t(locale, "nav.createPost")}
             </button>
@@ -280,7 +280,7 @@ export default function Navbar() {
                 <Link
                   to="/create"
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-2 rounded-lg bg-accent-coral px-4 py-3 font-label text-label-md font-bold text-white transition-all hover:bg-accent-coral-hover"
+                  className="flex items-center gap-2 rounded-lg bg-accent-coral px-4 py-3 font-label text-label-md font-bold text-on-surface transition-all hover:bg-accent-coral-hover"
                 >
                   <Plus className="h-4 w-4" />
                   {t(locale, "nav.createPost")}
