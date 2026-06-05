@@ -40,3 +40,5 @@ build/
 coverage/
 .nyc_output/
 .env.railway
+.shots/
+scripts/shot.mjs

@@ -90,22 +90,32 @@ const fragment = /* glsl */ `
     );
     float f = fbm(p + 2.0 * r);
 
-    vec3 deep   = vec3(0.000, 0.207, 0.152); // #003527
+    vec3 deep   = vec3(0.000, 0.169, 0.124); // #002c20 darker base for contrast
     vec3 mid    = vec3(0.023, 0.305, 0.231); // #064e3b
-    vec3 bright = vec3(0.035, 0.360, 0.270); // #095c45
+    vec3 bright = vec3(0.043, 0.451, 0.333); // #0b7355
+    vec3 glow   = vec3(0.067, 0.596, 0.435); // #119870 emerald highlight
     vec3 ember  = vec3(1.000, 0.498, 0.314); // #FF7F50
 
-    vec3 col = mix(deep, mid, smoothstep(0.1, 0.7, f));
-    col = mix(col, bright, smoothstep(0.5, 1.1, f + 0.3 * r.x));
+    vec3 col = mix(deep, mid, smoothstep(0.05, 0.6, f));
+    col = mix(col, bright, smoothstep(0.42, 1.0, f + 0.3 * r.x));
 
-    // faint coral ember, bottom-left, breathing
-    float ember_d = distance(uv, vec2(0.12, 0.16));
-    float ember_g = smoothstep(0.55, 0.0, ember_d) * (0.06 + 0.03 * sin(uTime * 0.3));
-    col = mix(col, ember, ember_g * 0.5);
+    // flowing bright ridge — the visible "mesh" depth
+    float ridge = smoothstep(0.60, 0.95, f + 0.25 * q.y);
+    col = mix(col, glow, ridge * 0.55);
 
-    // subtle vignette for depth
-    float vig = smoothstep(1.15, 0.25, distance(uv, vec2(0.5)));
-    col *= 0.82 + 0.18 * vig;
+    // slow drifting soft light — Stripe-style sheen across the surface
+    vec2 lp = vec2(0.5 + 0.34 * sin(uTime * 0.12), 0.34 + 0.20 * cos(uTime * 0.16));
+    float light = smoothstep(0.62, 0.0, distance(uv * vec2(aspect, 1.0), lp * vec2(aspect, 1.0)));
+    col += glow * light * 0.20;
+
+    // coral ember, bottom-left, breathing
+    float ember_d = distance(uv, vec2(0.14, 0.18));
+    float ember_g = smoothstep(0.50, 0.0, ember_d) * (0.09 + 0.04 * sin(uTime * 0.3));
+    col = mix(col, ember, ember_g * 0.6);
+
+    // vignette for depth
+    float vig = smoothstep(1.2, 0.2, distance(uv, vec2(0.5)));
+    col *= 0.78 + 0.22 * vig;
 
     gl_FragColor = vec4(col, 1.0);
   }
