@@ -6,6 +6,7 @@ import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
+import MagneticButton from "@/components/premium/MagneticButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { PostWithProfile } from "@/types/post";
 import BoostPicker from "@/components/BoostPicker";
@@ -138,13 +139,15 @@ export default function MyPosts() {
         {/* Header */}
         <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <h1 className="font-headline text-3xl font-bold text-on-surface md:text-4xl">{t(locale, "myPosts.title")}</h1>
-          <Button
-            onClick={() => navigate("/create")}
-            className="h-12 rounded-xl border border-outline-variant bg-accent-coral px-6 font-body font-medium text-on-surface hover:bg-accent-coral-hover"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            {t(locale, "myPosts.newPost")}
-          </Button>
+          <MagneticButton strength={0.4}>
+            <Button
+              onClick={() => navigate("/create")}
+              className="h-12 rounded-xl border border-outline-variant bg-accent-coral px-6 font-body font-medium text-on-surface hover:bg-accent-coral-hover"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              {t(locale, "myPosts.newPost")}
+            </Button>
+          </MagneticButton>
         </div>
 
         {/* Tabs */}

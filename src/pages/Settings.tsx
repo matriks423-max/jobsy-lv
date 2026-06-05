@@ -6,6 +6,7 @@ import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
+import MagneticButton from "@/components/premium/MagneticButton";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -392,6 +393,7 @@ export default function Settings() {
               {t(locale, "settings.manageBilling")}
             </button>
           ) : (
+            <MagneticButton strength={0.4}>
             <button
               onClick={() => upgradeMutation.mutate()}
               disabled={upgradeMutation.isPending}
@@ -400,6 +402,7 @@ export default function Settings() {
               <Building2 className="h-4 w-4" />
               {t(locale, "settings.upgradeToBusiness")}
             </button>
+            </MagneticButton>
           )}
         </div>
 
