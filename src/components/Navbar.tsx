@@ -27,6 +27,7 @@ import {
   Settings,
   Shield,
 } from "lucide-react";
+import MagneticButton from "@/components/premium/MagneticButton";
 
 export default function Navbar() {
   const { locale, setLocale } = useLocale();
@@ -181,12 +182,14 @@ export default function Navbar() {
           )}
 
           {/* CTA */}
-          <button
-            onClick={() => navigate("/create")}
-            className="rounded-lg bg-accent-coral px-6 py-2.5 font-label text-label-md font-bold text-white shadow-sm transition-all duration-300 hover:bg-accent-coral-hover hover:scale-[1.03] hover:shadow-md active:scale-95"
-          >
-            {t(locale, "nav.createPost")}
-          </button>
+          <MagneticButton strength={0.4}>
+            <button
+              onClick={() => navigate("/create")}
+              className="rounded-lg bg-accent-coral px-6 py-2.5 font-label text-label-md font-bold text-white shadow-sm transition-all duration-300 hover:bg-accent-coral-hover hover:scale-[1.03] hover:shadow-md active:scale-95"
+            >
+              {t(locale, "nav.createPost")}
+            </button>
+          </MagneticButton>
         </div>
 
         {/* Mobile language switcher — visible in bar */}

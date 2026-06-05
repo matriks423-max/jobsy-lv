@@ -100,14 +100,20 @@ export default function Login() {
   const hasGoogle = !!googleClientId && googleClientId !== "your_google_client_id.apps.googleusercontent.com";
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-surface-off-white px-4">
-      <div className="w-full max-w-md">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-surface-off-white px-4">
+      {/* soft emerald depth backdrop */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-[18%] h-[28rem] w-[36rem] max-w-[92vw] -translate-x-1/2 rounded-[50%] bg-primary/[0.07] blur-3xl" />
+        <div className="absolute -bottom-24 right-[12%] h-72 w-72 rounded-full bg-accent-coral/[0.06] blur-3xl" />
+      </div>
+
+      <div className="relative w-full max-w-md">
         <Link to="/" className="mb-6 inline-flex items-center gap-2 font-label text-label-sm text-on-surface-variant transition-colors hover:text-primary">
           <ArrowLeft className="h-4 w-4" />
           {t(locale, "login.back")}
         </Link>
 
-        <Card className="border border-outline-variant bg-white shadow-card">
+        <Card className="border border-outline-variant bg-white/95 shadow-xl shadow-primary/10 backdrop-blur-sm">
           <CardContent className="p-8">
             {/* Toggle tabs */}
             <div className="mb-6 flex rounded-lg border border-outline-variant bg-surface-cream p-1">
