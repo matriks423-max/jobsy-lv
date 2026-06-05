@@ -6,6 +6,9 @@ import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { Check, ChevronDown } from "lucide-react";
+import TiltCard from "@/components/premium/TiltCard";
+import MagneticButton from "@/components/premium/MagneticButton";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 export default function Pricing() {
   const { locale } = useLocale();
@@ -13,6 +16,8 @@ export default function Pricing() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const tiersRef = useScrollReveal<HTMLDivElement>({ selector: ".tier-card", stagger: 0.1, y: 30 });
+  const boostsRef = useScrollReveal<HTMLDivElement>({ selector: ".boost-card", stagger: 0.08, y: 24 });
 
   const { data: status } = trpc.subscription.status.useQuery(undefined, {
     enabled: isAuthenticated ?? false,
@@ -102,10 +107,11 @@ export default function Pricing() {
         </div>
 
         {/* Tier cards — 3 columns */}
-        <div className="mb-10 grid gap-6 md:grid-cols-3 items-stretch">
+        <div ref={tiersRef} className="mb-10 grid gap-6 md:grid-cols-3 items-stretch">
 
           {/* Free */}
-          <div className="flex flex-col rounded-2xl bg-white p-6 shadow-card">
+          <TiltCard className="tier-card h-full rounded-2xl" max={4}>
+          <div className="flex h-full flex-col rounded-2xl bg-white p-6 shadow-card">
             <div className="mb-5">
               <p className="font-body text-xs font-semibold text-on-surface-variant">
                 {t(locale, "pricing.free")}
@@ -136,9 +142,11 @@ export default function Pricing() {
               </Link>
             )}
           </div>
+          </TiltCard>
 
           {/* Pro */}
-          <div className="relative flex flex-col rounded-2xl bg-white p-6 shadow-card">
+          <TiltCard className="tier-card h-full rounded-2xl" max={4}>
+          <div className="relative flex h-full flex-col rounded-2xl bg-white p-6 shadow-card">
             <div className="absolute -top-3 left-6 rounded-full border border-outline-variant bg-surface-cream px-3 py-0.5 font-mono text-xs font-bold text-on-surface uppercase">
               {t(locale, "pricing.pro")}
             </div>
@@ -175,18 +183,22 @@ export default function Pricing() {
                 {t(locale, "pricing.currentPlanIsBusiness")}
               </div>
             ) : (
-              <button
-                onClick={() => handleGo("pro")}
-                disabled={proMutation.isPending}
-                className="w-full rounded-xl bg-accent-coral px-6 py-3 font-body text-sm font-semibold text-white hover:bg-accent-coral-hover transition disabled:opacity-60"
-              >
-                {proMutation.isPending ? t(locale, "pricing.loading") : t(locale, "pricing.upgradePro")}
-              </button>
+              <MagneticButton className="w-full" strength={0.35}>
+                <button
+                  onClick={() => handleGo("pro")}
+                  disabled={proMutation.isPending}
+                  className="w-full rounded-xl bg-accent-coral px-6 py-3 font-body text-sm font-semibold text-white shadow-lg shadow-accent-coral/25 hover:bg-accent-coral-hover transition disabled:opacity-60"
+                >
+                  {proMutation.isPending ? t(locale, "pricing.loading") : t(locale, "pricing.upgradePro")}
+                </button>
+              </MagneticButton>
             )}
           </div>
+          </TiltCard>
 
           {/* Business */}
-          <div className="relative flex flex-col rounded-2xl border border-outline-variant bg-primary p-6 text-white shadow-card">
+          <TiltCard className="tier-card h-full rounded-2xl" max={4}>
+          <div className="relative flex h-full flex-col rounded-2xl border border-outline-variant bg-primary p-6 text-white shadow-xl shadow-primary/30 ring-1 ring-success-emerald/30">
             <div className="absolute -top-3 left-6 rounded-full border border-outline-variant bg-accent-coral px-3 py-0.5 font-mono text-xs font-bold text-on-surface uppercase">
               {t(locale, "pricing.mostPopular")}
             </div>
@@ -219,15 +231,18 @@ export default function Pricing() {
                 {t(locale, "pricing.manageBilling")}
               </button>
             ) : (
-              <button
-                onClick={() => handleGo("business")}
-                disabled={upgradeMutation.isPending}
-                className="w-full rounded-xl border border-outline-variant bg-accent-coral px-6 py-3 font-body text-sm font-semibold text-on-surface hover:opacity-90 transition disabled:opacity-60"
-              >
-                {upgradeMutation.isPending ? t(locale, "pricing.loading") : t(locale, "pricing.upgrade")}
-              </button>
+              <MagneticButton className="w-full" strength={0.35}>
+                <button
+                  onClick={() => handleGo("business")}
+                  disabled={upgradeMutation.isPending}
+                  className="w-full rounded-xl bg-accent-coral px-6 py-3 font-body text-sm font-semibold text-white shadow-lg shadow-accent-coral/30 hover:bg-accent-coral-hover transition disabled:opacity-60"
+                >
+                  {upgradeMutation.isPending ? t(locale, "pricing.loading") : t(locale, "pricing.upgrade")}
+                </button>
+              </MagneticButton>
             )}
           </div>
+          </TiltCard>
         </div>
 
         {/* Boosts */}
@@ -238,16 +253,18 @@ export default function Pricing() {
           <p className="mb-6 font-body text-sm text-on-surface-variant">
             {t(locale, "pricing.boostForAllDesc")}
           </p>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div ref={boostsRef} className="grid gap-4 sm:grid-cols-3">
             {BOOST_FEATURES.map((b) => (
-              <div key={b.name} className="rounded-2xl bg-white p-5 shadow-card">
-                <div className="mb-3 flex items-center justify-between">
-                  <span className="text-2xl">{b.icon}</span>
-                  <span className="font-mono text-lg font-bold text-on-surface">{b.price}</span>
+              <TiltCard key={b.name} className="boost-card rounded-2xl" max={6}>
+                <div className="h-full rounded-2xl bg-white p-5 shadow-card">
+                  <div className="mb-3 flex items-center justify-between">
+                    <span className="text-2xl">{b.icon}</span>
+                    <span className="font-mono text-lg font-bold text-on-surface">{b.price}</span>
+                  </div>
+                  <p className="font-body text-sm font-bold text-on-surface">{b.name}</p>
+                  <p className="mt-1 font-body text-xs text-on-surface-variant">{b.desc}</p>
                 </div>
-                <p className="font-body text-sm font-bold text-on-surface">{b.name}</p>
-                <p className="mt-1 font-body text-xs text-on-surface-variant">{b.desc}</p>
-              </div>
+              </TiltCard>
             ))}
           </div>
         </div>
