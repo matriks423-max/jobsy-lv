@@ -94,6 +94,16 @@ function AnimatedCounter({ target, duration = 1500 }: { target: number; duration
   return <span ref={ref}>{count}</span>;
 }
 
+/** Soft gradient-mesh divider — gives continuous depth between flat sections. */
+function SectionDivider() {
+  return (
+    <div aria-hidden="true" className="relative h-16 w-full overflow-hidden">
+      <div className="absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-primary/15 to-transparent" />
+      <div className="absolute left-1/2 top-0 h-32 w-[42rem] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-primary/[0.06] blur-2xl" />
+    </div>
+  );
+}
+
 const CATEGORY_ICONS: Record<string, LucideIcon> = {
   household: HomeIcon,
   moving: Truck,
@@ -378,6 +388,8 @@ export default function Home() {
         </div>
       </section>
 
+      <SectionDivider />
+
       {/* -- Featured Posts -------------------------------------- */}
       {featuredPosts.length > 0 && (
         <section className="px-margin-mobile py-10 md:px-margin-desktop">
@@ -542,6 +554,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <SectionDivider />
 
       {/* -- CTA --------------------------------------------------- */}
       <section className="px-margin-mobile py-14 md:px-margin-desktop">
