@@ -33,7 +33,7 @@ export default function Success() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface-off-white px-4">
-      <div className="w-full max-w-lg rounded-3xl border border-outline-variant bg-white p-8 text-center shadow-float md:p-12">
+      <div className="w-full max-w-lg rounded-2xl border border-outline-variant bg-white p-8 text-center shadow-float md:p-12">
         <div className={`mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-outline-variant ${isReview ? "bg-surface-cream" : "bg-success-emerald/10"}`}>
           {isReview
             ? <Clock className="h-10 w-10 text-on-surface-variant" />

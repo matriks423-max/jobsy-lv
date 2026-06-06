@@ -53,8 +53,8 @@ export default function UserProfile() {
     return (
       <div className="min-h-screen bg-surface-off-white px-margin-mobile py-10 md:px-margin-desktop md:py-14">
         <div className="mx-auto max-w-3xl space-y-4">
-          <Skeleton className="h-32 rounded-3xl border border-outline-variant" />
-          <Skeleton className="h-48 rounded-3xl border border-outline-variant" />
+          <Skeleton className="h-32 rounded-2xl border border-outline-variant" />
+          <Skeleton className="h-48 rounded-2xl border border-outline-variant" />
         </div>
       </div>
     );
@@ -75,7 +75,7 @@ export default function UserProfile() {
       <div className="mx-auto max-w-3xl">
 
         {/* Profile card */}
-        <div className="mb-6 rounded-3xl border border-outline-variant bg-white p-6 md:p-8">
+        <div className="mb-6 rounded-2xl border border-outline-variant bg-white p-6 md:p-8">
           <div className="flex flex-wrap items-start gap-4">
             {profile.avatarUrl ? (
               <img

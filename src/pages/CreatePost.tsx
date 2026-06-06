@@ -253,7 +253,7 @@ export default function CreatePost() {
         </div>
 
         {/* Form */}
-        <div className="rounded-3xl border border-outline-variant bg-white p-6 md:p-8">
+        <div className="rounded-2xl border border-outline-variant bg-white p-6 md:p-8">
           {/* Type Selection */}
           {!isEditing && (
             <div className="mb-6">

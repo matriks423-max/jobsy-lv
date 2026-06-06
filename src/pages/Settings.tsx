@@ -141,7 +141,7 @@ export default function Settings() {
         </h1>
 
         {/* Profile section */}
-        <div className="mb-6 rounded-3xl border border-outline-variant bg-white p-6 md:p-8">
+        <div className="mb-6 rounded-2xl border border-outline-variant bg-white p-6 md:p-8">
           <div className="mb-6 flex items-center gap-3">
             <User className="h-5 w-5 text-accent-coral" />
             <h2 className="font-body text-lg font-bold text-on-surface">
@@ -273,7 +273,7 @@ export default function Settings() {
         </div>
 
         {/* My Alerts section */}
-        <div className="mb-6 rounded-3xl border border-outline-variant bg-white p-6 md:p-8">
+        <div className="mb-6 rounded-2xl border border-outline-variant bg-white p-6 md:p-8">
           <div className="mb-6 flex items-center gap-3">
             <Bell className="h-5 w-5 text-accent-coral" />
             <h2 className="font-body text-lg font-bold text-on-surface">
