@@ -3,7 +3,8 @@ import { useNavigate, Link, useParams } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { CATEGORIES, CITIES } from "@/lib/categories";
-import { PRESET_IMAGES } from "@/lib/preset-images";
+import { PRESET_IMAGES, CATEGORY_SEARCH_SEED } from "@/lib/preset-images";
+import ImageSearchPicker from "@/components/ImageSearchPicker";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
@@ -382,64 +383,60 @@ export default function CreatePost() {
             ) : (
               (() => {
               const presets = PRESET_IMAGES[category] ?? PRESET_IMAGES["other"];
+              const seed = title.trim() || CATEGORY_SEARCH_SEED[category] || CATEGORY_SEARCH_SEED.other;
               return (
-                <div className="flex flex-wrap items-center gap-3">
-                  {/* No image option */}
-                  <button
-                    type="button"
-                    onClick={() => { setSelectedPreset(null); setImages([]); }}
-                    className={`flex h-20 w-32 flex-col items-center justify-center rounded-xl border-2 transition-all ${
-                      selectedPreset === null
-                        ? "border-primary bg-surface-cream"
-                        : "border-outline-variant bg-white hover:border-outline"
-                    }`}
-                  >
-                    <X className="h-5 w-5 text-on-surface-variant" />
-                    <span className="mt-1 text-[10px] text-on-surface-variant">
-                      {t(locale, "createPost.noImageSelected")}
-                    </span>
-                  </button>
-
-                  {/* Preset options */}
-                  {presets.map((url, i) => (
+                <div className="space-y-3">
+                  <div className="flex flex-wrap items-center gap-3">
+                    {/* No image option */}
                     <button
-                      key={i}
                       type="button"
-                      onClick={() => { setSelectedPreset(url); setImages([url]); }}
-                      className={`relative h-20 w-32 overflow-hidden rounded-xl border-2 transition-all ${
-                        selectedPreset === url
-                          ? "border-primary ring-2 ring-primary ring-offset-1"
-                          : "border-outline-variant hover:border-outline"
+                      onClick={() => { setSelectedPreset(null); setImages([]); }}
+                      className={`flex h-16 w-28 flex-col items-center justify-center rounded-xl border-2 transition-all ${
+                        selectedPreset === null
+                          ? "border-primary bg-surface-cream"
+                          : "border-outline-variant bg-white hover:border-outline"
                       }`}
                     >
-                      <img src={url} alt="" className="h-full w-full object-cover" />
+                      <X className="h-5 w-5 text-on-surface-variant" />
+                      <span className="mt-1 text-[10px] text-on-surface-variant">
+                        {t(locale, "createPost.noImageSelected")}
+                      </span>
                     </button>
-                  ))}
 
-                  {/* Admin upload option */}
-                  {user?.role === "admin" && (
-                    <button
-                      type="button"
-                      onClick={() => fileRef.current?.click()}
-                      disabled={uploading}
-                      className="flex h-20 w-32 flex-col items-center justify-center rounded-xl border-2 border-dashed border-outline-variant bg-surface-cream hover:border-primary"
-                    >
-                      {uploading ? (
-                        <Loader2 className="h-5 w-5 animate-spin text-on-surface-variant" />
-                      ) : (
-                        <>
-                          <ImagePlus className="h-5 w-5 text-on-surface-variant" />
-                          <span className="mt-1 text-[10px] text-on-surface-variant">Upload</span>
-                        </>
-                      )}
-                    </button>
-                  )}
-                  <input
-                    ref={fileRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageUpload}
+                    {/* Admin upload option */}
+                    {user?.role === "admin" && (
+                      <button
+                        type="button"
+                        onClick={() => fileRef.current?.click()}
+                        disabled={uploading}
+                        className="flex h-16 w-28 flex-col items-center justify-center rounded-xl border-2 border-dashed border-outline-variant bg-surface-cream hover:border-primary"
+                      >
+                        {uploading ? (
+                          <Loader2 className="h-5 w-5 animate-spin text-on-surface-variant" />
+                        ) : (
+                          <>
+                            <ImagePlus className="h-5 w-5 text-on-surface-variant" />
+                            <span className="mt-1 text-[10px] text-on-surface-variant">Upload</span>
+                          </>
+                        )}
+                      </button>
+                    )}
+                    <input
+                      ref={fileRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageUpload}
+                    />
+                  </div>
+
+                  {/* Searchable job photo picker (live Unsplash + curated fallback) */}
+                  <ImageSearchPicker
+                    initialQuery={seed}
+                    fallbackImages={presets}
+                    selectedUrl={selectedPreset}
+                    onSelect={(url) => { setSelectedPreset(url); setImages([url]); }}
+                    locale={locale}
                   />
                 </div>
               );

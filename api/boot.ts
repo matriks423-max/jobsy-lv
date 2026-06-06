@@ -590,6 +590,59 @@ app.get("/.well-known/apple-developer-merchantid-domain-association", async (c) 
   }
 });
 
+// Unsplash image search — proxied so the access key stays server-side.
+// Returns { results: [...] }. When no key is configured, returns
+// { results: [], unavailable: true } so the picker falls back to curated presets.
+const imgSearchCache = new Map<string, { at: number; data: unknown }>();
+const IMG_SEARCH_TTL = 60 * 60 * 1000; // 1h
+
+app.get("/api/images/search", async (c) => {
+  const q = (c.req.query("q") ?? "").trim().slice(0, 100);
+  if (!q) return c.json({ results: [] });
+  if (!env.unsplashAccessKey) return c.json({ results: [], unavailable: true });
+
+  const cacheKey = q.toLowerCase();
+  const hit = imgSearchCache.get(cacheKey);
+  if (hit && Date.now() - hit.at < IMG_SEARCH_TTL) return c.json(hit.data);
+
+  try {
+    const r = await fetch(
+      `https://api.unsplash.com/search/photos?per_page=24&orientation=landscape&content_filter=high&query=${encodeURIComponent(q)}`,
+      { headers: { Authorization: `Client-ID ${env.unsplashAccessKey}`, "Accept-Version": "v1" } }
+    );
+    if (!r.ok) return c.json({ results: [], error: true });
+    const j = (await r.json()) as { results?: Array<Record<string, any>> };
+    const results = (j.results ?? []).map((p) => ({
+      id: p.id as string,
+      thumb: p.urls?.small as string,
+      url: `${p.urls?.raw}&w=1080&h=720&fit=crop&q=70` as string,
+      alt: (p.alt_description ?? q) as string,
+      author: p.user?.name as string,
+      authorUrl: p.user?.links?.html as string,
+      downloadLocation: p.links?.download_location as string,
+    }));
+    const data = { results };
+    imgSearchCache.set(cacheKey, { at: Date.now(), data });
+    return c.json(data);
+  } catch {
+    return c.json({ results: [], error: true });
+  }
+});
+
+// Unsplash download tracking — required by the API guidelines when a photo is used.
+app.post("/api/images/track", async (c) => {
+  if (!env.unsplashAccessKey) return c.json({ ok: false });
+  try {
+    const { downloadLocation } = (await c.req.json()) as { downloadLocation?: string };
+    if (typeof downloadLocation === "string" && downloadLocation.startsWith("https://api.unsplash.com/")) {
+      await fetch(downloadLocation, { headers: { Authorization: `Client-ID ${env.unsplashAccessKey}` } });
+    }
+    return c.json({ ok: true });
+  } catch {
+    return c.json({ ok: false });
+  }
+});
+
 // Cron jobs
 app.route("/api/cron", cronRouter);
 

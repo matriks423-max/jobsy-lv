@@ -1,3 +1,18 @@
+// English search seed per category — Unsplash indexes English, so we prefill the
+// photo search with a relevant English term; users can refine to their exact job.
+export const CATEGORY_SEARCH_SEED: Record<string, string> = {
+  household: "house cleaning",
+  moving: "movers moving boxes",
+  repairs: "home repair tools",
+  garden: "gardening backyard",
+  auto: "car repair mechanic",
+  childcare: "babysitter child care",
+  pets: "pet care dog walking",
+  it: "computer laptop repair",
+  tutoring: "tutoring studying",
+  other: "helping hands service",
+};
+
 // Curated Unsplash photos shown in the preset image picker (CreatePost).
 // Matches the same photos used on post cards so listings look consistent.
 export const PRESET_IMAGES: Record<string, string[]> = {

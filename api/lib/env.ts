@@ -43,6 +43,9 @@ export const env = {
   // Cron secret — required in production (any value, keep secret)
   cronSecret: optional("CRON_SECRET"),
 
+  // Unsplash image search (optional — picker falls back to curated presets if unset)
+  unsplashAccessKey: optional("UNSPLASH_ACCESS_KEY"),
+
   // Social automation
   n8nWebhookUrl: optional("N8N_WEBHOOK_URL"),
   n8nReviewWebhookUrl: optional("N8N_REVIEW_WEBHOOK_URL"),
