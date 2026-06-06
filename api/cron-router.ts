@@ -184,7 +184,10 @@ cronRouter.get("/expire", async (c) => {
         eq(schema.posts.status, "active")
       )
     );
-  const actuallyExpired = (updateResult as unknown as [{ affectedRows: number }])[0].affectedRows;
+  const ur = updateResult as unknown;
+  const actuallyExpired = Array.isArray(ur)
+    ? ((ur[0] as { affectedRows?: number })?.affectedRows ?? 0)
+    : ((ur as { affectedRows?: number })?.affectedRows ?? 0);
 
   // If another cron worker transitioned all posts first, skip emails entirely to prevent duplicates.
   if (actuallyExpired === 0) return c.json({ ok: true, expired: 0, notified: 0 });

@@ -172,6 +172,12 @@ export const postsRouter = createRouter({
         });
       }
       await incrementViewCount(input.id);
+      // SECURITY: never expose owner email/phone on the public post query — contact
+      // info is gated behind the authed `contact` mutation (auth + view limits + logging).
+      if (result.profile) {
+        const { email: _email, phone: _phone, ...publicProfile } = result.profile;
+        return { ...result, profile: publicProfile };
+      }
       return result;
     }),
 
@@ -467,6 +473,10 @@ export const postsRouter = createRouter({
       const postResult = await getPostWithProfile(input.postId);
       if (!postResult) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
+      }
+      // Only reveal contact info for live posts — not expired/rejected/pending.
+      if (postResult.post.status !== "active") {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Post is not active" });
       }
 
       const alreadyContacted = await hasContacted(input.postId, ctx.user.id);

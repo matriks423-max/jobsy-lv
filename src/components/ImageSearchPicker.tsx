@@ -71,6 +71,9 @@ export default function ImageSearchPicker({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { run(initialQuery); setQuery(initialQuery); }, [JSON.stringify(fallbackImages)]);
 
+  // cancel any pending debounced search on unmount (avoids setState after unmount)
+  useEffect(() => () => clearTimeout(debounce.current), []);
+
   const onInput = (v: string) => {
     setQuery(v);
     clearTimeout(debounce.current);

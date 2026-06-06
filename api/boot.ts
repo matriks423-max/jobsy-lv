@@ -53,7 +53,7 @@ app.use("*", async (c, next) => {
       "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://js.stripe.com https://umami-production-d8c2.up.railway.app",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net",
-      "img-src 'self' data: blob: https: http:",
+      "img-src 'self' data: blob: https:",
       "connect-src 'self' https://api.stripe.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://sentry.io https://*.sentry.io https://*.ingest.sentry.io https://umami-production-d8c2.up.railway.app wss:",
       "frame-src https://js.stripe.com https://hooks.stripe.com",
       "object-src 'none'",
@@ -595,6 +595,16 @@ app.get("/.well-known/apple-developer-merchantid-domain-association", async (c) 
 // { results: [], unavailable: true } so the picker falls back to curated presets.
 const imgSearchCache = new Map<string, { at: number; data: unknown }>();
 const IMG_SEARCH_TTL = 60 * 60 * 1000; // 1h
+const IMG_SEARCH_ERR_TTL = 60 * 1000; // 1m — short-cache failures to avoid hammering Unsplash
+const IMG_SEARCH_MAX = 500; // bound the cache (evict oldest)
+
+function cacheImg(key: string, data: unknown, ttl: number) {
+  if (imgSearchCache.size >= IMG_SEARCH_MAX) {
+    const oldest = imgSearchCache.keys().next().value;
+    if (oldest !== undefined) imgSearchCache.delete(oldest);
+  }
+  imgSearchCache.set(key, { at: Date.now() - (IMG_SEARCH_TTL - ttl), data });
+}
 
 app.get("/api/images/search", async (c) => {
   const q = (c.req.query("q") ?? "").trim().slice(0, 100);
@@ -610,7 +620,11 @@ app.get("/api/images/search", async (c) => {
       `https://api.unsplash.com/search/photos?per_page=24&orientation=landscape&content_filter=high&query=${encodeURIComponent(q)}`,
       { headers: { Authorization: `Client-ID ${env.unsplashAccessKey}`, "Accept-Version": "v1" } }
     );
-    if (!r.ok) return c.json({ results: [], error: true });
+    if (!r.ok) {
+      const errData = { results: [], error: true };
+      cacheImg(cacheKey, errData, IMG_SEARCH_ERR_TTL);
+      return c.json(errData);
+    }
     const j = (await r.json()) as { results?: Array<Record<string, any>> };
     const results = (j.results ?? []).map((p) => ({
       id: p.id as string,
@@ -622,7 +636,7 @@ app.get("/api/images/search", async (c) => {
       downloadLocation: p.links?.download_location as string,
     }));
     const data = { results };
-    imgSearchCache.set(cacheKey, { at: Date.now(), data });
+    cacheImg(cacheKey, data, IMG_SEARCH_TTL);
     return c.json(data);
   } catch {
     return c.json({ results: [], error: true });
@@ -635,7 +649,10 @@ app.post("/api/images/track", async (c) => {
   try {
     const { downloadLocation } = (await c.req.json()) as { downloadLocation?: string };
     if (typeof downloadLocation === "string" && downloadLocation.startsWith("https://api.unsplash.com/")) {
-      await fetch(downloadLocation, { headers: { Authorization: `Client-ID ${env.unsplashAccessKey}` } });
+      await fetch(downloadLocation, {
+        headers: { Authorization: `Client-ID ${env.unsplashAccessKey}` },
+        redirect: "manual",
+      });
     }
     return c.json({ ok: true });
   } catch {

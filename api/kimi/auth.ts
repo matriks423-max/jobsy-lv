@@ -105,6 +105,11 @@ export function createOAuthCallbackHandler() {
 
     try {
       const redirectUri = atob(state);
+      // SECURITY: only allow our own origin as the OAuth redirect target — never
+      // trust an attacker-supplied redirect_uri decoded from `state`.
+      if (env.siteUrl && !redirectUri.startsWith(env.siteUrl)) {
+        return c.json({ error: "invalid redirect_uri" }, 400);
+      }
       const tokenResp = await exchangeAuthCode(code, redirectUri);
       const { userId } = await verifyAccessToken(tokenResp.access_token);
       const userProfile = await kimiUsers.getProfile(tokenResp.access_token);

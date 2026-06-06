@@ -19,7 +19,7 @@ const CATEGORY_IMAGE_MAP: Record<CategoryKey, string[]> = {
     "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=800&q=70",
   ],
   garden: [
-    "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=70",
+    "https://images.unsplash.com/photo-1532211387405-12202cb81d7b?w=800&q=70",
     "https://images.unsplash.com/photo-1599598425947-5202edd56bdb?w=800&q=70",
     "https://images.unsplash.com/photo-1542621334-a254cf47733d?w=800&q=70",
   ],

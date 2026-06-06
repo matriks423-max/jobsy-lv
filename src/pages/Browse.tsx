@@ -18,6 +18,7 @@ import {
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import PostCard, { PostCardSkeleton } from "@/components/PostCard";
 import TiltCard from "@/components/premium/TiltCard";
+import { getCityCoords } from "@/lib/lv-cities";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Search,
@@ -583,7 +584,7 @@ export default function Browse() {
                   <JobMap posts={posts} />
                 )}
                 <p className="mt-3 font-body text-body-sm text-on-surface-variant">
-                  {t(locale, "browse.mapShowing", { count: posts.filter(({ post }) => post.city && post.city !== "other").length })}
+                  {t(locale, "browse.mapShowing", { count: posts.filter(({ post }) => getCityCoords(post.city) !== null).length })}
                 </p>
               </div>
             )}
