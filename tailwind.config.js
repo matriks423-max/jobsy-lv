@@ -109,7 +109,7 @@ module.exports = {
       fontFamily: {
         display: ['Hanken Grotesk', 'system-ui', 'sans-serif'],
         headline: ['Hanken Grotesk', 'system-ui', 'sans-serif'],
-        body: ['Inter', 'system-ui', 'sans-serif'],
+        body: ['Geist', 'system-ui', 'sans-serif'],
         label: ['Geist', 'system-ui', 'sans-serif'],
         mono: ['Geist Mono', 'ui-monospace', 'monospace'],
       },

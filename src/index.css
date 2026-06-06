@@ -4,7 +4,7 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap');
 
 
 /* ─── Leaflet: cap z-indexes below Sheet/Navbar overlays (z-50) ── */
@@ -76,12 +76,19 @@ nav.navbar-scrolled {
   }
 
   body {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Geist', system-ui, sans-serif;
     background-color: #F9FAF7;
     color: #141b2b;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    font-feature-settings: "cv01", "ss01";
+  }
+
+  /* Tabular figures for all monospace/number displays (prices, budgets, stats) */
+  .font-mono,
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 
   /* ─── Scrollbar theming (Emerald Executive) ─────────────────── */
@@ -119,7 +126,7 @@ nav.navbar-scrolled {
   }
 
   input, textarea, select {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Geist', system-ui, sans-serif;
   }
 }
 

@@ -54,6 +54,12 @@ export default function App() {
 
   return (
     <div className="flex min-h-screen flex-col">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:font-label focus:text-label-sm focus:font-bold focus:text-white"
+        >
+          Pāriet uz saturu
+        </a>
         <Toaster
           position="bottom-right"
           toastOptions={{
@@ -69,7 +75,7 @@ export default function App() {
         />
         <ScrollToTop />
         <Navbar />
-        <main className="flex-1">
+        <main id="main-content" className="flex-1">
           <Suspense fallback={null}>
             <Routes>
               <Route path="/" element={<Home />} />
@@ -98,6 +104,16 @@ export default function App() {
         <CookieBanner />
         <PWAInstallPrompt />
         <DesktopCat />
+        {/* Subtle film grain — adds surface texture so flat sections don't read sterile */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-0 z-[1] opacity-[0.025] mix-blend-multiply"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+            backgroundSize: "180px",
+          }}
+        />
       </div>
   );
 }
