@@ -28,6 +28,7 @@ import {
   Shield,
 } from "lucide-react";
 import MagneticButton from "@/components/premium/MagneticButton";
+import BrandIcon from "@/components/BrandIcon";
 
 export default function Navbar() {
   const { locale, setLocale } = useLocale();
@@ -55,13 +56,7 @@ export default function Navbar() {
         {/* Logo */}
         <div className="flex items-center gap-stack-gap-lg">
           <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="7" width="20" height="14" rx="2"/>
-                <path d="M16 7V5a2 2 0 0 0-4 0v2"/>
-                <path d="M8 7V5a2 2 0 0 0-4 0v2"/>
-              </svg>
-            </div>
+            <BrandIcon className="h-8 w-8 rounded-lg" />
             <span className="font-headline text-headline-sm font-bold text-primary">
               Jobsy
             </span>
@@ -222,7 +217,8 @@ export default function Navbar() {
           >
             <div className="flex h-full flex-col">
               <div className="flex items-center justify-between border-b border-outline-variant p-4">
-                <SheetTitle className="font-headline text-xl font-bold text-primary">
+                <SheetTitle className="flex items-center gap-2 font-headline text-xl font-bold text-primary">
+                  <BrandIcon className="h-7 w-7 rounded-md" />
                   Jobsy
                 </SheetTitle>
                 <SheetClose asChild>
