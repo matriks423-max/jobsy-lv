@@ -172,13 +172,25 @@ export const postsRouter = createRouter({
         });
       }
       await incrementViewCount(input.id);
-      // SECURITY: never expose owner email/phone on the public post query — contact
-      // info is gated behind the authed `contact` mutation (auth + view limits + logging).
-      if (result.profile) {
-        const { email: _email, phone: _phone, ...publicProfile } = result.profile;
-        return { ...result, profile: publicProfile };
-      }
-      return result;
+      // SECURITY: expose ONLY public profile fields on the public post query.
+      // Contact info (email/phone) is gated behind the authed `contact` mutation;
+      // internal fields (stripeCustomerId, creditBalance, referralCode, counters…)
+      // must never reach the client.
+      const p = result.profile;
+      const publicProfile = p
+        ? {
+            userId: p.userId,
+            name: p.name,
+            avatarUrl: p.avatarUrl,
+            city: p.city,
+            phoneVerified: p.phoneVerified,
+            companyName: p.companyName,
+            companyLogo: p.companyLogo,
+            companyWebsite: p.companyWebsite,
+            companyDescription: p.companyDescription,
+          }
+        : p;
+      return { ...result, profile: publicProfile };
     }),
 
   create: authedQuery
