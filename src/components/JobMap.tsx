@@ -1,7 +1,9 @@
 import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import { Link } from "react-router";
+import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
+import "leaflet.markercluster";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
@@ -10,6 +12,10 @@ import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import { CATEGORIES } from "@/lib/categories";
 import type { Post, Profile } from "@db/schema";
+
+function escHtml(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
 
 // Fix Leaflet's broken default icon paths in Vite
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
@@ -83,6 +89,50 @@ function FitBoundsController({ posts }: JobMapProps) {
   return null;
 }
 
+// Clustered marker layer — groups nearby/co-located pins (posts share city
+// coords, so a city's listings stack on one point) into numbered clusters that
+// spiderfy on click. Built imperatively for react-leaflet 5 compatibility.
+function ClusteredMarkers({ posts, locale }: JobMapProps & { locale: string }) {
+  const map = useMap();
+  useEffect(() => {
+    const group = (L as any).markerClusterGroup({
+      showCoverageOnHover: false,
+      spiderfyOnMaxZoom: true,
+      maxClusterRadius: 45,
+      iconCreateFunction: (cluster: any) => {
+        const n = cluster.getChildCount();
+        const size = n < 10 ? 36 : n < 50 ? 44 : 52;
+        return L.divIcon({
+          html: `<div style="display:flex;align-items:center;justify-content:center;width:${size}px;height:${size}px;border-radius:50%;background:#003527;color:#fff;font:700 13px/1 system-ui;border:3px solid rgba(255,255,255,0.85);box-shadow:0 2px 8px rgba(0,0,0,0.3)">${n}</div>`,
+          className: "",
+          iconSize: L.point(size, size),
+        });
+      },
+    });
+
+    const viewLabel = t(locale, "browse.viewPost");
+    for (const { post } of posts) {
+      const coords = getCityCoords(post.city);
+      if (!coords) continue;
+      const category = CATEGORIES.find((c) => c.key === post.category);
+      const catLabel = category ? t(locale, `categories.${category.key}` as never) : post.category;
+      const marker = L.marker([coords.lat, coords.lng]);
+      marker.bindPopup(
+        `<div style="min-width:160px">
+          <p style="margin:0 0 2px;font:600 10px/1.2 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.04em;color:#e56a3a">${escHtml(catLabel)}</p>
+          <p style="margin:0 0 6px;font-weight:700;line-height:1.3;color:#141b2b">${escHtml(post.title)}</p>
+          ${post.budgetText ? `<p style="margin:0 0 6px;font:12px ui-monospace,monospace;color:#404944">${escHtml(post.budgetText)}</p>` : ""}
+          <a href="/post/${post.id}" style="display:inline-block;border-radius:8px;background:#FF7F50;padding:4px 12px;font:600 12px system-ui;color:#141b2b;text-decoration:none">${escHtml(viewLabel)} →</a>
+        </div>`
+      );
+      group.addLayer(marker);
+    }
+    map.addLayer(group);
+    return () => { map.removeLayer(group); };
+  }, [map, posts, locale]);
+  return null;
+}
+
 export default function JobMap({ posts }: JobMapProps) {
   const { locale } = useLocale();
 
@@ -102,31 +152,7 @@ export default function JobMap({ posts }: JobMapProps) {
       />
       <InvalidateSizeOnMount />
       <FitBoundsController posts={mappable} />
-      {mappable.map(({ post }) => {
-        const coords = getCityCoords(post.city)!;
-        const category = CATEGORIES.find((c) => c.key === post.category);
-        return (
-          <Marker key={post.id} position={[coords.lat, coords.lng]}>
-            <Popup>
-              <div className="min-w-[160px]">
-                <p className="mb-1 font-mono text-[10px] font-medium uppercase tracking-wide text-accent-coral">
-                  {category ? t(locale, `categories.${category.key}` as never) : post.category}
-                </p>
-                <p className="mb-2 font-bold leading-snug text-on-surface">{post.title}</p>
-                {post.budgetText && (
-                  <p className="mb-2 font-mono text-xs text-on-surface-variant">{post.budgetText}</p>
-                )}
-                <Link
-                  to={`/post/${post.id}`}
-                  className="inline-block rounded-lg bg-accent-coral px-3 py-1 font-mono text-xs font-medium text-on-surface transition hover:-translate-y-0.5 hover:bg-accent-coral-hover"
-                >
-                  {t(locale, "browse.viewPost")} →
-                </Link>
-              </div>
-            </Popup>
-          </Marker>
-        );
-      })}
+      <ClusteredMarkers posts={mappable} locale={locale} />
     </MapContainer>
     </div>
   );
