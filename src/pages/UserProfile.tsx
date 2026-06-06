@@ -51,7 +51,7 @@ export default function UserProfile() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen px-4 py-8">
+      <div className="min-h-screen bg-surface-off-white px-margin-mobile py-10 md:px-margin-desktop md:py-14">
         <div className="mx-auto max-w-3xl space-y-4">
           <Skeleton className="h-32 rounded-3xl border border-outline-variant" />
           <Skeleton className="h-48 rounded-3xl border border-outline-variant" />
@@ -71,7 +71,7 @@ export default function UserProfile() {
   const { profile, isBusiness, memberSince, posts, reviews, avgRating, reviewCount } = data;
 
   return (
-    <div className="min-h-screen px-4 py-8">
+    <div className="min-h-screen bg-surface-off-white px-margin-mobile py-10 md:px-margin-desktop md:py-14">
       <div className="mx-auto max-w-3xl">
 
         {/* Profile card */}

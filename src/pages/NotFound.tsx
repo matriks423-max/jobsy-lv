@@ -21,7 +21,7 @@ export default function NotFound() {
   };
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center px-4">
+    <div className="flex min-h-[80vh] items-center justify-center bg-surface-off-white px-4">
       <div className="w-full max-w-md text-center">
         {/* Large decorative 404 */}
         <div className="mb-2 font-headline text-[120px] font-bold leading-none text-accent-coral/15">

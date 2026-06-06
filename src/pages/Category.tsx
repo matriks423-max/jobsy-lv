@@ -127,7 +127,7 @@ export default function Category() {
   if (!catInfo) return null;
 
   return (
-    <div className="min-h-screen px-4 py-6">
+    <div className="min-h-screen bg-surface-off-white px-margin-mobile py-10 md:px-margin-desktop md:py-14">
       <div className="mx-auto max-w-container-max-width">
         {/* Breadcrumb */}
         <nav className="mb-3 flex items-center gap-2 font-body text-sm text-on-surface-variant">

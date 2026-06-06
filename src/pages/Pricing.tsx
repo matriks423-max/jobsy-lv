@@ -9,6 +9,8 @@ import { Check, ChevronDown } from "lucide-react";
 import TiltCard from "@/components/premium/TiltCard";
 import MagneticButton from "@/components/premium/MagneticButton";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import PageShell from "@/components/layout/PageShell";
+import PageHeader from "@/components/layout/PageHeader";
 
 export default function Pricing() {
   const { locale } = useLocale();
@@ -93,18 +95,8 @@ export default function Pricing() {
   };
 
   return (
-    <div className="min-h-screen px-4 py-10">
-      <div className="mx-auto max-w-5xl">
-
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="font-headline text-4xl font-bold text-on-surface md:text-5xl">
-            {t(locale, "pricing.title")}
-          </h1>
-          <p className="mt-3 font-body text-lg text-on-surface-variant">
-            {t(locale, "pricing.subtitle")}
-          </p>
-        </div>
+    <PageShell width="wide">
+        <PageHeader align="center" title={t(locale, "pricing.title")} subtitle={t(locale, "pricing.subtitle")} />
 
         {/* Tier cards — 3 columns */}
         <div ref={tiersRef} className="mb-10 grid gap-6 md:grid-cols-3 items-stretch">
@@ -291,7 +283,6 @@ export default function Pricing() {
           </div>
         </div>
 
-      </div>
-    </div>
+    </PageShell>
   );
 }

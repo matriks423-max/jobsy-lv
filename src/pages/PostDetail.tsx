@@ -220,7 +220,7 @@ export default function PostDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-surface-off-white px-margin-mobile py-8 md:px-margin-desktop">
+      <div className="min-h-screen bg-surface-off-white px-margin-mobile py-10 md:px-margin-desktop md:py-14">
         <div className="mx-auto max-w-3xl space-y-4">
           <Skeleton className="h-6 w-48 rounded-lg" />
           <Skeleton className="h-10 w-full rounded-xl" />
@@ -277,7 +277,7 @@ export default function PostDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-surface-off-white px-margin-mobile py-8 md:px-margin-desktop">
+    <div className="min-h-screen bg-surface-off-white px-margin-mobile py-10 md:px-margin-desktop md:py-14">
       <div className="mx-auto max-w-3xl">
 
         {/* Breadcrumb */}

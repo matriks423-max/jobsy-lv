@@ -215,7 +215,7 @@ export default function CreatePost() {
   }
 
   return (
-    <div className="min-h-screen px-4 py-8">
+    <div className="min-h-screen bg-surface-off-white px-margin-mobile py-10 md:px-margin-desktop md:py-14">
       <div className="mx-auto max-w-2xl">
         {/* Header */}
         <div className="mb-8 flex items-start justify-between">

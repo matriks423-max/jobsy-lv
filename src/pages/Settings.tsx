@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
 import MagneticButton from "@/components/premium/MagneticButton";
+import PageShell from "@/components/layout/PageShell";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -134,8 +135,7 @@ export default function Settings() {
   const canVerify = !!phone && !phoneChanged && !profile?.phoneVerified;
 
   return (
-    <div className="min-h-screen px-4 py-8">
-      <div className="mx-auto max-w-xl">
+    <PageShell width="narrow">
         <h1 className="mb-8 font-headline text-3xl font-bold text-on-surface md:text-4xl">
           {t(locale, "settings.title")}
         </h1>
@@ -448,7 +448,6 @@ export default function Settings() {
           </div>
         )}
 
-      </div>
-    </div>
+    </PageShell>
   );
 }

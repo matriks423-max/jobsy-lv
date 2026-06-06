@@ -369,7 +369,7 @@ export default function Browse() {
 
   return (
     <div className="min-h-screen bg-surface-off-white">
-      <div className="mx-auto max-w-container-max-width px-margin-mobile py-8 md:px-margin-desktop">
+      <div className="mx-auto max-w-container-max-width px-margin-mobile py-10 md:px-margin-desktop md:py-14">
 
         {/* Top bar */}
         <div className="mb-6 flex items-start justify-between gap-4">
