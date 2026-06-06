@@ -105,9 +105,17 @@ export function createOAuthCallbackHandler() {
 
     try {
       const redirectUri = atob(state);
-      // SECURITY: only allow our own origin as the OAuth redirect target — never
-      // trust an attacker-supplied redirect_uri decoded from `state`.
-      if (env.siteUrl && !redirectUri.startsWith(env.siteUrl)) {
+      // SECURITY: only allow our own ORIGIN as the OAuth redirect target — never
+      // trust an attacker-supplied redirect_uri decoded from `state`. Compare the
+      // parsed origin exactly (a startsWith check is bypassable via
+      // https://jobsy.lv.evil.com / userinfo tricks).
+      try {
+        const target = new URL(redirectUri);
+        const allowed = new URL(env.siteUrl || "http://localhost:3000");
+        if (target.origin !== allowed.origin) {
+          return c.json({ error: "invalid redirect_uri" }, 400);
+        }
+      } catch {
         return c.json({ error: "invalid redirect_uri" }, 400);
       }
       const tokenResp = await exchangeAuthCode(code, redirectUri);

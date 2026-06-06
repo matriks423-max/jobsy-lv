@@ -8,6 +8,20 @@ export async function createPost(data: InsertPost) {
   return result;
 }
 
+// SECURITY: the only profile columns safe to expose on public (unauthenticated)
+// post listings. Never include email/phone/stripeCustomerId/credit/referral here.
+const PUBLIC_PROFILE_COLS = {
+  userId: schema.profiles.userId,
+  name: schema.profiles.name,
+  avatarUrl: schema.profiles.avatarUrl,
+  city: schema.profiles.city,
+  phoneVerified: schema.profiles.phoneVerified,
+  companyName: schema.profiles.companyName,
+  companyLogo: schema.profiles.companyLogo,
+  companyWebsite: schema.profiles.companyWebsite,
+  companyDescription: schema.profiles.companyDescription,
+} as const;
+
 export async function getPostById(id: number) {
   const rows = await getDb()
     .select()
@@ -122,7 +136,7 @@ export async function listPostsWithProfiles(filters?: {
   const postIds = posts.map((p) => p.id);
   const [profiles, users, imageRows] = await Promise.all([
     getDb()
-      .select()
+      .select(PUBLIC_PROFILE_COLS)
       .from(schema.profiles)
       .where(inArray(schema.profiles.userId, userIds)),
     getDb()
@@ -174,7 +188,7 @@ export async function getFeaturedPosts(limit = 6) {
   const postIds = posts.map((p) => p.id);
   const [profiles, users, imageRows] = await Promise.all([
     getDb()
-      .select()
+      .select(PUBLIC_PROFILE_COLS)
       .from(schema.profiles)
       .where(inArray(schema.profiles.userId, userIds)),
     getDb()
