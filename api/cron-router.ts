@@ -256,10 +256,14 @@ cronRouter.get("/backup", async (c) => {
       profiles,
     };
 
+    const adminEmail = process.env.ADMIN_EMAIL;
+    // Skip gracefully (not an error) when backup email isn't configured — a
+    // missing optional var must not fail the whole daily cron chain.
+    if (!adminEmail || !process.env.RESEND_API_KEY) {
+      return c.json({ ok: true, skipped: "backup email not configured", counts: backup.counts });
+    }
     const { Resend } = await import("resend");
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const adminEmail = process.env.ADMIN_EMAIL;
-    if (!adminEmail) return c.json({ error: "ADMIN_EMAIL env var not set" }, 500);
 
     await resend.emails.send({
       from: "jobsy.lv <noreply@jobsy.lv>",
