@@ -24,11 +24,7 @@ import {
   Flower2,
   Baby,
   Monitor,
-  Car,
-  Cat,
-  GraduationCap,
   MoreHorizontal,
-  type LucideIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { lazy, Suspense } from "react";
@@ -36,6 +32,7 @@ import MagneticButton from "@/components/premium/MagneticButton";
 import TiltCard from "@/components/premium/TiltCard";
 import { useLenis } from "@/hooks/useLenis";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { CategoryIcon } from "@/lib/categoryIcons";
 
 const HeroCanvas = lazy(() => import("@/components/premium/HeroCanvas"));
 
@@ -103,19 +100,6 @@ function SectionDivider() {
     </div>
   );
 }
-
-const CATEGORY_ICONS: Record<string, LucideIcon> = {
-  household: HomeIcon,
-  moving: Truck,
-  repairs: Wrench,
-  garden: Flower2,
-  auto: Car,
-  childcare: Baby,
-  pets: Cat,
-  it: Monitor,
-  tutoring: GraduationCap,
-  other: MoreHorizontal,
-};
 
 const QUICK_CATEGORIES = [
   { key: "repairs",   Icon: Wrench    },
@@ -356,7 +340,6 @@ export default function Home() {
         <div className="mx-auto max-w-container-max-width">
           <div ref={categoriesRef} className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {CATEGORIES.map((cat) => {
-              const Icon = CATEGORY_ICONS[cat.key];
               const count = categoryCounts?.[cat.key] ?? 0;
               return (
                 <TiltCard key={cat.key} className="cat-tile rounded-xl" max={9}>
@@ -368,7 +351,7 @@ export default function Home() {
                       className="flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110"
                       style={{ backgroundColor: cat.bg }}
                     >
-                      {Icon && <Icon className="h-6 w-6" style={{ color: cat.color }} />}
+                      <CategoryIcon catKey={cat.key} color={cat.color} size={26} />
                     </div>
                     <div>
                       <p className="font-label text-label-sm font-semibold text-on-surface transition-colors group-hover:text-primary">
