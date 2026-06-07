@@ -9,6 +9,7 @@ import { getSessionCookieOptions } from "./lib/cookies";
 import { signAppSessionToken } from "./auth/session";
 import { createRouter, publicQuery } from "./middleware";
 import { findUserByGoogleId, findUserByEmail, createUser, findUserById as findUserByIdFn } from "./queries/users";
+import { sendWelcome } from "./lib/email";
 import { getDb } from "./queries/connection";
 import * as schema from "@db/schema";
 
@@ -180,6 +181,9 @@ export const emailAuthRouter = createRouter({
             .where(eq(schema.profiles.userId, insertId));
         }
       }
+
+      // Welcome email — fire-and-forget (never block signup on email delivery)
+      void sendWelcome(input.email, input.name);
 
       const token = await signAppSessionToken({ userId: insertId });
       const cookieOpts = getSessionCookieOptions(ctx.req.headers);
