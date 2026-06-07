@@ -218,6 +218,7 @@ export default function CreatePost() {
       const res = await fetch("/api/upload", {
         method: "POST",
         body: formData,
+        signal: AbortSignal.timeout(30000),
       });
       const data = await res.json();
       if (data.url) {

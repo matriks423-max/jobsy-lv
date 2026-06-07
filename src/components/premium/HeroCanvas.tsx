@@ -135,6 +135,7 @@ export default function HeroCanvas() {
     let raf = 0;
     let disposed = false;
     let resizeHandler: (() => void) | null = null;
+    let io: IntersectionObserver | null = null;
     const mouse = { x: 0.5, y: 0.5 };
     const targetMouse = { x: 0.5, y: 0.5 };
 
@@ -181,7 +182,9 @@ export default function HeroCanvas() {
         window.addEventListener("pointermove", onPointer, { passive: true });
 
         const start = performance.now();
+        let visible = true;
         const loop = () => {
+          if (!visible) { raf = 0; return; } // paused offscreen — no wasted GPU
           raf = requestAnimationFrame(loop);
           mouse.x += (targetMouse.x - mouse.x) * 0.05;
           mouse.y += (targetMouse.y - mouse.y) * 0.05;
@@ -190,6 +193,18 @@ export default function HeroCanvas() {
           renderer!.render({ scene: mesh });
         };
         loop();
+
+        // Pause the RAF loop when the hero scrolls out of view.
+        if (typeof IntersectionObserver !== "undefined" && canvasRef.current) {
+          io = new IntersectionObserver(
+            (entries) => {
+              visible = entries[0].isIntersecting;
+              if (visible && !raf && !disposed) raf = requestAnimationFrame(loop);
+            },
+            { threshold: 0 }
+          );
+          io.observe(canvasRef.current);
+        }
       } catch {
         if (!disposed) setFailed(true);
       }
@@ -198,6 +213,7 @@ export default function HeroCanvas() {
     return () => {
       disposed = true;
       cancelAnimationFrame(raf);
+      io?.disconnect();
       window.removeEventListener("pointermove", onPointer);
       if (resizeHandler) window.removeEventListener("resize", resizeHandler);
       const gl = renderer?.gl as WebGLRenderingContext | undefined;

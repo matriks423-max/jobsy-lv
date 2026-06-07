@@ -825,7 +825,8 @@ app.post("/api/ai/draft-post", async (c) => {
       budgetText: clean(draft.budgetText, 100),
       whenText: clean(draft.whenText, 100),
     });
-  } catch {
+  } catch (err) {
+    console.error("[ai/draft-post] failed:", err instanceof Error ? err.message : err);
     return c.json({ error: "AI request failed" }, 502);
   }
 });
@@ -906,7 +907,13 @@ if (env.isProduction) {
     )`,
   ];
   for (const sql of migrations) {
-    getDb().execute(drizzleSql.raw(sql)).catch(() => { /* already exists — harmless */ });
+    getDb().execute(drizzleSql.raw(sql)).catch((err: { errno?: number; message?: string }) => {
+      // Expected idempotency errors: duplicate column/key/table — silently OK.
+      const expected = [1050, 1060, 1061, 1062, 1091];
+      if (!expected.includes(err?.errno ?? 0)) {
+        console.error("[migration] failed:", err?.message ?? err, "\nSQL:", sql.slice(0, 80));
+      }
+    });
   }
 
   const port = parseInt(process.env.PORT || "3000");
