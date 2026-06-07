@@ -32,6 +32,7 @@ import MagneticButton from "@/components/premium/MagneticButton";
 import TiltCard from "@/components/premium/TiltCard";
 import { useLenis } from "@/hooks/useLenis";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useSeo } from "@/hooks/useSeo";
 import { CategoryIcon } from "@/lib/categoryIcons";
 import { NotePencil, ChatCircleDots, Handshake } from "@phosphor-icons/react";
 
@@ -133,32 +134,21 @@ export default function Home() {
     navigate(q ? `/browse?search=${encodeURIComponent(q)}` : "/browse");
   };
 
-  useEffect(() => {
-    const titles: Record<string, string> = {
-      lv: "jobsy.lv — Atrodi palīdzību vai darbu",
-      ru: "jobsy.lv — Найди помощь или предложи услуги",
-      en: "jobsy.lv — Find help or offer your skills",
-    };
-    const descs: Record<string, string> = {
-      lv: "Latvijas ērtākais veids, kā atrast palīgus ikdienas uzdevumiem vai atrast darbiņus. Publicē bezmaksas sludinājumu.",
-      ru: "Самый удобный способ в Латвии найти помощников для повседневных задач или найти подработку. Разместите объявление бесплатно.",
-      en: "The easiest way in Latvia to find helpers for everyday tasks or find gigs that earn cash. Post your listing for free.",
-    };
-    document.title = titles[locale] ?? titles.lv;
-    const desc = descs[locale] ?? descs.lv;
-    let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
-    const created = !metaDesc;
-    if (!metaDesc) {
-      metaDesc = document.createElement("meta");
-      metaDesc.name = "description";
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.content = desc;
-    return () => {
-      if (created && metaDesc) document.head.removeChild(metaDesc);
-      else if (metaDesc) metaDesc.content = "";
-    };
-  }, [locale]);
+  const homeTitles: Record<string, string> = {
+    lv: "jobsy.lv — Atrodi palīdzību vai darbu",
+    ru: "jobsy.lv — Найди помощь или предложи услуги",
+    en: "jobsy.lv — Find help or offer your skills",
+  };
+  const homeDescs: Record<string, string> = {
+    lv: "Latvijas ērtākais veids, kā atrast palīgus ikdienas uzdevumiem vai atrast darbiņus. Publicē bezmaksas sludinājumu.",
+    ru: "Самый удобный способ в Латвии найти помощников для повседневных задач или найти подработку. Разместите объявление бесплатно.",
+    en: "The easiest way in Latvia to find helpers for everyday tasks or find gigs that earn cash. Post your listing for free.",
+  };
+  useSeo({
+    title: homeTitles[locale] ?? homeTitles.lv,
+    description: homeDescs[locale] ?? homeDescs.lv,
+    canonicalPath: "/",
+  });
 
   const { data: stats } = trpc.stats.get.useQuery();
   const { data: categoryCounts } = trpc.posts.categoryCounts.useQuery(undefined, { staleTime: 60 * 1000 });

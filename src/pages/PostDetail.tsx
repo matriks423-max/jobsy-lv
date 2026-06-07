@@ -148,28 +148,51 @@ export default function PostDetail() {
     onError: (err) => toast(err.message, "error"),
   });
 
-  // JSON-LD structured data
+  // JSON-LD structured data (JobPosting + BreadcrumbList)
   useEffect(() => {
     if (!data?.post) return;
     const post = data.post;
+    const cat = CATEGORIES.find((c) => c.key === post.category);
+    const catName = cat ? t(locale, `categories.${cat.key}` as never) : post.category;
+    const orgName = data.profile?.companyName || data.profile?.name || "jobsy.lv";
+    const postUrl = `https://jobsy.lv/post/${post.id}`;
+
+    const graph = {
+      "@context": "https://schema.org/",
+      "@graph": [
+        {
+          "@type": "JobPosting",
+          title: post.title,
+          description: (post.description ?? post.title).slice(0, 500),
+          datePosted: new Date(post.createdAt).toISOString().split("T")[0],
+          validThrough: post.expiresAt ? new Date(post.expiresAt).toISOString().split("T")[0] : undefined,
+          employmentType: post.type === "offer" ? "CONTRACTOR" : "OTHER",
+          hiringOrganization: { "@type": "Organization", name: orgName, sameAs: "https://jobsy.lv" },
+          jobLocation: {
+            "@type": "Place",
+            address: { "@type": "PostalAddress", addressLocality: post.city ?? "Latvija", addressCountry: "LV" },
+          },
+          applicantLocationRequirements: { "@type": "Country", name: "Latvia" },
+          ...(post.budgetText ? { incentiveCompensation: post.budgetText } : {}),
+        },
+        {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: t(locale, "postDetail.breadcrumbHome"), item: "https://jobsy.lv/" },
+            { "@type": "ListItem", position: 2, name: t(locale, "postDetail.breadcrumbPosts"), item: "https://jobsy.lv/browse" },
+            { "@type": "ListItem", position: 3, name: catName, item: `https://jobsy.lv/kategorija/${post.category}` },
+            { "@type": "ListItem", position: 4, name: post.title, item: postUrl },
+          ],
+        },
+      ],
+    };
     const script = document.createElement("script");
     script.type = "application/ld+json";
     script.id = "job-posting-schema";
-    script.text = JSON.stringify({
-      "@context": "https://schema.org/",
-      "@type": "JobPosting",
-      title: post.title,
-      description: (post.description ?? "").slice(0, 500),
-      datePosted: new Date(post.createdAt).toISOString().split("T")[0],
-      validThrough: post.expiresAt ? new Date(post.expiresAt).toISOString().split("T")[0] : undefined,
-      jobLocation: {
-        "@type": "Place",
-        address: { "@type": "PostalAddress", addressLocality: post.city ?? "Latvija", addressCountry: "LV" },
-      },
-    });
+    script.text = JSON.stringify(graph);
     document.head.appendChild(script);
     return () => { const e = document.getElementById("job-posting-schema"); if (e) document.head.removeChild(e); };
-  }, [data?.post]);
+  }, [data?.post, data?.profile, locale]);
 
   useEffect(() => {
     if (!data?.post) return;

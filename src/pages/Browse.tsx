@@ -19,6 +19,7 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import PostCard, { PostCardSkeleton } from "@/components/PostCard";
 import TiltCard from "@/components/premium/TiltCard";
 import { getCityCoords } from "@/lib/lv-cities";
+import { useSeo } from "@/hooks/useSeo";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Search,
@@ -274,30 +275,16 @@ export default function Browse() {
     search: listInput.search,
   }, { staleTime: 30 * 1000 });
 
-  useEffect(() => {
-    const prev = document.title;
-    document.title = debouncedSearch
-      ? `"${debouncedSearch}" — jobsy.lv`
-      : t(locale, "browse.title") + " — jobsy.lv";
-
-    const desc = locale === "lv"
-      ? "Atrodi pakalpojumu sniedzējus vai piedāvā savas prasmes Latvijā."
-      : locale === "ru"
-      ? "Найдите поставщиков услуг или предложите свои навыки в Латвии."
-      : "Find service providers or offer your skills in Latvia.";
-    let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
-    const created = !metaDesc;
-    if (!metaDesc) {
-      metaDesc = document.createElement("meta");
-      metaDesc.name = "description";
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.content = desc;
-    return () => {
-      document.title = prev;
-      if (created && metaDesc) document.head.removeChild(metaDesc);
-    };
-  }, [locale, debouncedSearch]);
+  useSeo({
+    title: debouncedSearch ? `"${debouncedSearch}" — jobsy.lv` : t(locale, "browse.title") + " — jobsy.lv",
+    description:
+      locale === "lv"
+        ? "Atrodi pakalpojumu sniedzējus vai piedāvā savas prasmes Latvijā."
+        : locale === "ru"
+        ? "Найдите поставщиков услуг или предложите свои навыки в Латвии."
+        : "Find service providers or offer your skills in Latvia.",
+    canonicalPath: "/browse", // search/filter params excluded from canonical
+  });
 
   useEffect(() => {
     const params = new URLSearchParams();

@@ -6,6 +6,7 @@ import { CATEGORIES, CITIES } from "@/lib/categories";
 import { trpc } from "@/providers/trpc";
 import PostCard, { PostCardSkeleton } from "@/components/PostCard";
 import TiltCard from "@/components/premium/TiltCard";
+import { useSeo } from "@/hooks/useSeo";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 
 const PAGE_SIZE = 12;
@@ -106,30 +107,15 @@ export default function Category() {
     ? (page + 1) * PAGE_SIZE < totalCount
     : posts.length === PAGE_SIZE;
 
-  // Set document title + meta + robots for SEO
-  useEffect(() => {
-    if (!catName) return;
-    const prev = document.title;
-    document.title = `${heading} — jobsy.lv`;
-    const ensure = (sel: string, make: () => HTMLMetaElement) => {
-      let el = document.querySelector<HTMLMetaElement>(sel);
-      const created = !el;
-      if (!el) { el = make(); document.head.appendChild(el); }
-      return { el, created };
-    };
-    const descText = cityKey
-      ? `${catName} ${cityName}. ${seo?.description ?? ""}`.trim()
-      : (seo?.description ?? `${catName} — jobsy.lv`);
-    const d = ensure('meta[name="description"]', () => Object.assign(document.createElement("meta"), { name: "description" }));
-    d.el.content = descText;
-    const r = ensure('meta[name="robots"]', () => Object.assign(document.createElement("meta"), { name: "robots" }));
-    r.el.content = noindex ? "noindex, follow" : "index, follow";
-    return () => {
-      document.title = prev;
-      if (d.created) d.el.remove(); else d.el.content = "";
-      if (r.created) r.el.remove(); else r.el.content = "index, follow";
-    };
-  }, [catName, cityName, cityKey, heading, seo, noindex]);
+  const descText = cityKey
+    ? `${catName} ${cityName}. ${seo?.description ?? ""}`.trim()
+    : (seo?.description ?? `${catName} — jobsy.lv`);
+  useSeo({
+    title: catName ? `${heading} — jobsy.lv` : "jobsy.lv",
+    description: descText,
+    canonicalPath: cityKey ? `/kategorija/${slug}/${cityKey}` : `/kategorija/${slug}`,
+    robots: noindex ? "noindex, follow" : "index, follow",
+  });
 
   if (!catInfo) return null;
 
