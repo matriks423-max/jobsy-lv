@@ -50,3 +50,4 @@ scripts/hiwshot.mjs
 scripts/ai-test.mjs
 scripts/ai-verify.mjs
 scripts/ai-shot.mjs
+scripts/seo-shot.mjs

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
-import { CATEGORIES } from "@/lib/categories";
+import { CATEGORIES, CITIES } from "@/lib/categories";
 import { trpc } from "@/providers/trpc";
 import PostCard, { PostCardSkeleton } from "@/components/PostCard";
 import TiltCard from "@/components/premium/TiltCard";
@@ -67,62 +67,69 @@ const CATEGORY_SEO: Record<string, CategorySEO> = {
 };
 
 export default function Category() {
-  const { slug } = useParams<{ slug: string }>();
+  const { slug, city } = useParams<{ slug: string; city?: string }>();
   const navigate = useNavigate();
   const { locale } = useLocale();
   const [page, setPage] = useState(0);
 
   const catInfo = CATEGORIES.find((c) => c.key === slug);
+  const cityKey = city && CITIES.includes(city as never) && city !== "other" ? city : undefined;
+  const cityName = cityKey ? t(locale, `cities.${cityKey}` as never) : "";
   const seoLocale = (locale === "ru" || locale === "en") ? locale : "lv";
   const seo = slug ? CATEGORY_SEO[slug]?.[seoLocale] : undefined;
+  const catName = catInfo ? t(locale, `categories.${catInfo.key}` as never) : "";
+  // page heading: category, optionally scoped to a city ("Remontdarbi — Rīga")
+  const heading = cityKey ? `${seo?.heading ?? catName} — ${cityName}` : (seo?.heading ?? catName);
 
-  // Redirect unknown slugs to browse
+  // Redirect unknown slugs / invalid city to a valid page
   useEffect(() => {
     if (!catInfo) navigate("/browse", { replace: true });
-  }, [catInfo, navigate]);
-
-  // Set document title + meta description for SEO
-  useEffect(() => {
-    const catName = catInfo ? t(locale, `categories.${catInfo.key}` as never) : "";
-    if (catName) {
-      const prev = document.title;
-      document.title = seo?.heading ? `${seo.heading} — jobsy.lv` : `${catName} — jobsy.lv`;
-      let meta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
-      const created = !meta;
-      if (!meta) {
-        meta = document.createElement("meta");
-        meta.name = "description";
-        document.head.appendChild(meta);
-      }
-      meta.content = seo?.description ?? `${catName} — jobsy.lv`;
-      return () => {
-        document.title = prev;
-        if (created && meta) document.head.removeChild(meta);
-        else if (meta) meta.content = "";
-      };
-    }
-  }, [catInfo, locale, seo]);
+    else if (city && !cityKey) navigate(`/kategorija/${slug}`, { replace: true });
+  }, [catInfo, city, cityKey, slug, navigate]);
 
   const { data, isLoading } = trpc.posts.list.useQuery(
-    {
-      category: slug,
-      status: "active",
-      limit: PAGE_SIZE,
-      offset: page * PAGE_SIZE,
-    },
+    { category: slug, city: cityKey, status: "active", limit: PAGE_SIZE, offset: page * PAGE_SIZE },
     { enabled: !!catInfo }
   );
 
   const { data: totalCount } = trpc.posts.count.useQuery(
-    { category: slug, status: "active" },
+    { category: slug, city: cityKey, status: "active" },
     { enabled: !!catInfo }
   );
 
   const posts = data ?? [];
+  const activeCount = totalCount ?? posts.length;
+  // Thin-content / index-bloat safeguard: city-scoped pages stay noindex until
+  // they hold enough real listings to be useful. They auto-index as supply grows.
+  const noindex = !!cityKey && activeCount < 3;
   const hasMore = totalCount !== undefined
     ? (page + 1) * PAGE_SIZE < totalCount
     : posts.length === PAGE_SIZE;
-  const catName = catInfo ? t(locale, `categories.${catInfo.key}` as never) : "";
+
+  // Set document title + meta + robots for SEO
+  useEffect(() => {
+    if (!catName) return;
+    const prev = document.title;
+    document.title = `${heading} — jobsy.lv`;
+    const ensure = (sel: string, make: () => HTMLMetaElement) => {
+      let el = document.querySelector<HTMLMetaElement>(sel);
+      const created = !el;
+      if (!el) { el = make(); document.head.appendChild(el); }
+      return { el, created };
+    };
+    const descText = cityKey
+      ? `${catName} ${cityName}. ${seo?.description ?? ""}`.trim()
+      : (seo?.description ?? `${catName} — jobsy.lv`);
+    const d = ensure('meta[name="description"]', () => Object.assign(document.createElement("meta"), { name: "description" }));
+    d.el.content = descText;
+    const r = ensure('meta[name="robots"]', () => Object.assign(document.createElement("meta"), { name: "robots" }));
+    r.el.content = noindex ? "noindex, follow" : "index, follow";
+    return () => {
+      document.title = prev;
+      if (d.created) d.el.remove(); else d.el.content = "";
+      if (r.created) r.el.remove(); else r.el.content = "index, follow";
+    };
+  }, [catName, cityName, cityKey, heading, seo, noindex]);
 
   if (!catInfo) return null;
 
@@ -130,7 +137,7 @@ export default function Category() {
     <div className="min-h-screen bg-surface-off-white px-margin-mobile py-10 md:px-margin-desktop md:py-14">
       <div className="mx-auto max-w-container-max-width">
         {/* Breadcrumb */}
-        <nav className="mb-3 flex items-center gap-2 font-body text-sm text-on-surface-variant">
+        <nav className="mb-3 flex flex-wrap items-center gap-2 font-body text-sm text-on-surface-variant">
           <Link to="/" className="hover:text-on-surface">
             {t(locale, "postDetail.breadcrumbHome")}
           </Link>
@@ -139,19 +146,54 @@ export default function Category() {
             {t(locale, "postDetail.breadcrumbPosts")}
           </Link>
           <span>/</span>
-          <span className="text-on-surface">{catName}</span>
+          {cityKey ? (
+            <>
+              <Link to={`/kategorija/${slug}`} className="hover:text-on-surface">{catName}</Link>
+              <span>/</span>
+              <span className="text-on-surface">{cityName}</span>
+            </>
+          ) : (
+            <span className="text-on-surface">{catName}</span>
+          )}
         </nav>
 
         {/* SEO heading */}
         <div className="mb-6">
           <h1 className="font-headline text-3xl font-bold text-on-surface md:text-4xl">
-            {seo?.heading ?? catName}
+            {heading}
           </h1>
           {seo?.description && (
             <p className="mt-2 max-w-2xl font-body text-base text-on-surface-variant">
               {seo.description}
             </p>
           )}
+        </div>
+
+        {/* City links — internal linking + programmatic landing pages */}
+        <div className="mb-8 flex flex-wrap gap-2">
+          <Link
+            to={`/kategorija/${slug}`}
+            className={`rounded-lg border px-3 py-1.5 font-label text-label-sm transition ${
+              !cityKey
+                ? "border-primary bg-primary text-white"
+                : "border-outline-variant bg-white text-on-surface-variant hover:border-primary hover:text-primary"
+            }`}
+          >
+            {t(locale, "browse.city")}
+          </Link>
+          {CITIES.filter((cc) => cc !== "other").map((cc) => (
+            <Link
+              key={cc}
+              to={`/kategorija/${slug}/${cc}`}
+              className={`rounded-lg border px-3 py-1.5 font-label text-label-sm transition ${
+                cityKey === cc
+                  ? "border-primary bg-primary text-white"
+                  : "border-outline-variant bg-white text-on-surface-variant hover:border-primary hover:text-primary"
+              }`}
+            >
+              {t(locale, `cities.${cc}` as never)}
+            </Link>
+          ))}
         </div>
 
         {/* Post grid */}

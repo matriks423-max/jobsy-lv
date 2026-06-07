@@ -455,6 +455,60 @@ app.get("/kategorija/:slug", async (c, next) => {
   return c.html(html, 200);
 });
 
+// Latvian display names for the programmatic city landing pages
+const CITY_LV: Record<string, string> = {
+  riga: "Rīga", daugavpils: "Daugavpils", liepaja: "Liepāja", jelgava: "Jelgava",
+  rezekne: "Rēzekne", ventspils: "Ventspils", jurmala: "Jūrmala", valmiera: "Valmiera",
+  jekabpils: "Jēkabpils", tukums: "Tukums", ogre: "Ogre", cesis: "Cēsis",
+  sigulda: "Sigulda", bauska: "Bauska", saldus: "Saldus", kuldiga: "Kuldīga",
+  dobele: "Dobele", talsi: "Talsi",
+};
+
+// SEO: bot prerender for /kategorija/:slug/:city — programmatic landing pages
+app.get("/kategorija/:slug/:city", async (c, next) => {
+  const ua = c.req.header("user-agent") ?? "";
+  if (!BOT_UA.test(ua)) return next();
+
+  const slug = c.req.param("slug");
+  const city = c.req.param("city");
+  const seo = CATEGORY_SEO[slug];
+  const cityName = CITY_LV[city];
+  if (!seo || !cityName) return next();
+
+  // Thin-content safeguard: noindex until the combo holds enough listings.
+  let count = 0;
+  try {
+    const { listPosts } = await import("./queries/posts");
+    const rows = await listPosts({ category: slug, city, status: "active", limit: 3 });
+    count = rows.length;
+  } catch { /* treat as empty */ }
+  const robots = count >= 3 ? "index, follow" : "noindex, follow";
+
+  const url = `https://jobsy.lv/kategorija/${slug}/${city}`;
+  const heading = `${seo.heading} — ${cityName}`;
+  const title = `${heading} — jobsy.lv`;
+  const desc = `${seo.heading} ${cityName}. ${seo.desc}`;
+  const html = `<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8"/>
+<title>${title}</title>
+<meta name="description" content="${escHtml(desc)}"/>
+<meta name="robots" content="${robots}"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="${url}"/>
+<meta property="og:title" content="${escHtml(title)}"/>
+<meta property="og:description" content="${escHtml(desc)}"/>
+<meta property="og:image" content="https://jobsy.lv/og-image.png"/>
+<meta property="og:locale" content="lv_LV"/>
+<link rel="canonical" href="${url}"/>
+<script>window.location.replace("${url}")</script>
+</head>
+<body><h1>${escHtml(heading)}</h1><p>${escHtml(desc)}</p></body>
+</html>`;
+  return c.html(html, 200);
+});
+
 // AI/LLM crawler discovery
 app.get("/llms.txt", async (c) => {
   try {
@@ -508,8 +562,9 @@ app.get("/sitemap.xml", async (c) => {
     changefreq: "daily",
   }));
 
-  // Include active posts in sitemap
+  // Include active posts in sitemap + programmatic category×city landing pages
   let postPages: { loc: string; priority: string; changefreq: string; lastmod: string }[] = [];
+  let cityComboPages: { loc: string; priority: string; changefreq: string; lastmod: string }[] = [];
   try {
     const { listPosts } = await import("./queries/posts");
     const activePosts = await listPosts({ status: "active", limit: 500 });
@@ -519,11 +574,24 @@ app.get("/sitemap.xml", async (c) => {
       changefreq: "weekly",
       lastmod: p.updatedAt.toISOString().split("T")[0],
     }));
+    // Only list category×city combos that have enough listings to be useful
+    // (matches the in-app noindex<3 safeguard — prevents thin-content/index bloat).
+    const comboCount = new Map<string, number>();
+    for (const p of activePosts) {
+      if (p.category && p.city && p.city !== "other") {
+        const key = `${p.category}/${p.city}`;
+        comboCount.set(key, (comboCount.get(key) ?? 0) + 1);
+      }
+    }
+    cityComboPages = [...comboCount.entries()]
+      .filter(([, n]) => n >= 3)
+      .map(([key]) => ({ loc: `/kategorija/${key}`, priority: "0.6", changefreq: "daily", lastmod: now }));
   } catch { /* ignore — sitemap still works without posts */ }
 
   const allPages = [
     ...staticPages.map((p) => ({ ...p, lastmod: now })),
     ...catPages.map((p) => ({ ...p, lastmod: now })),
+    ...cityComboPages,
     ...postPages,
   ];
   const urls = allPages.map((p) => `
