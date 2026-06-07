@@ -5,6 +5,7 @@ import { t } from "@/lib/i18n";
 import { CATEGORIES, CITIES } from "@/lib/categories";
 import { PRESET_IMAGES, CATEGORY_SEARCH_SEED } from "@/lib/preset-images";
 import ImageSearchPicker from "@/components/ImageSearchPicker";
+import { Sparkle } from "@phosphor-icons/react";
 import { trpc } from "@/providers/trpc";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
@@ -60,7 +61,38 @@ export default function CreatePost() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
+  const [aiIdea, setAiIdea] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const runAiDraft = async () => {
+    const idea = aiIdea.trim();
+    if (idea.length < 4) return;
+    setAiLoading(true);
+    try {
+      const res = await fetch("/api/ai/draft-post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idea }),
+      });
+      const d = await res.json();
+      if (!res.ok) {
+        toast(d.error || t(locale, "createPost.aiError"), "error");
+        return;
+      }
+      if (d.type) setType(d.type);
+      if (d.category) setCategory(d.category);
+      if (d.title) setTitle(d.title);
+      if (d.description) setDescription(d.description);
+      if (d.budgetText) setBudgetText(d.budgetText);
+      if (d.whenText) setWhenText(d.whenText);
+      toast(t(locale, "createPost.aiDone"), "success");
+    } catch {
+      toast(t(locale, "createPost.aiError"), "error");
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   const { data: referralInfo } = trpc.referral.me.useQuery(undefined, {
     enabled: isAuthenticated ?? false,
@@ -251,6 +283,38 @@ export default function CreatePost() {
             </Button>
           )}
         </div>
+
+        {/* AI assist — only for new posts */}
+        {!isEditing && (
+          <div className="mb-6 rounded-2xl border border-primary/15 bg-primary/[0.045] p-5 md:p-6">
+            <div className="mb-1.5 flex items-center gap-2">
+              <Sparkle size={20} weight="duotone" className="text-primary" />
+              <h2 className="font-headline text-headline-sm font-semibold text-on-surface">
+                {t(locale, "createPost.aiTitle")}
+              </h2>
+            </div>
+            <p className="mb-3 font-body text-body-sm text-on-surface-variant">
+              {t(locale, "createPost.aiSubtitle")}
+            </p>
+            <Textarea
+              value={aiIdea}
+              onChange={(e) => setAiIdea(e.target.value)}
+              placeholder={t(locale, "createPost.aiPlaceholder")}
+              rows={2}
+              maxLength={600}
+              className="mb-3 resize-none rounded-xl border-2 border-outline-variant bg-white font-body focus:border-primary"
+            />
+            <button
+              type="button"
+              onClick={runAiDraft}
+              disabled={aiLoading || aiIdea.trim().length < 4}
+              className="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 font-label text-label-md font-bold text-white transition hover:bg-on-primary-fixed-variant disabled:opacity-50"
+            >
+              {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkle size={18} weight="fill" />}
+              {t(locale, "createPost.aiButton")}
+            </button>
+          </div>
+        )}
 
         {/* Form */}
         <div className="rounded-2xl border border-outline-variant bg-white p-6 md:p-8">

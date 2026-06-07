@@ -46,6 +46,9 @@ export const env = {
   // Unsplash image search (optional — picker falls back to curated presets if unset)
   unsplashAccessKey: optional("UNSPLASH_ACCESS_KEY"),
 
+  // NVIDIA NIM (free LLM) — powers the AI post-writing assistant. Optional.
+  nvidiaApiKey: optional("NVIDIA_API_KEY"),
+
   // Social automation
   n8nWebhookUrl: optional("N8N_WEBHOOK_URL"),
   n8nReviewWebhookUrl: optional("N8N_REVIEW_WEBHOOK_URL"),

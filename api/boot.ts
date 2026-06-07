@@ -660,6 +660,83 @@ app.post("/api/images/track", async (c) => {
   }
 });
 
+// AI post-writing assistant (NVIDIA NIM, free) — turns a rough idea into a
+// polished Latvian listing draft. Authed + rate-limited.
+const AI_CATEGORIES = ["household", "moving", "repairs", "garden", "auto", "childcare", "pets", "it", "tutoring", "other"];
+const aiRateMap = new Map<number, { count: number; windowStart: number }>();
+const AI_RATE_LIMIT = 15;
+const AI_RATE_WINDOW_MS = 10 * 60 * 1000;
+
+app.post("/api/ai/draft-post", async (c) => {
+  const { authenticateRequest } = await import("./kimi/auth");
+  let user: { id: number };
+  try {
+    user = await authenticateRequest(c.req.raw.headers);
+  } catch {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+  if (!env.nvidiaApiKey) return c.json({ error: "AI unavailable" }, 503);
+
+  // rate limit
+  const now = Date.now();
+  const rl = aiRateMap.get(user.id);
+  if (rl && now - rl.windowStart < AI_RATE_WINDOW_MS) {
+    if (rl.count >= AI_RATE_LIMIT) return c.json({ error: "Too many requests. Try again later." }, 429);
+    aiRateMap.set(user.id, { count: rl.count + 1, windowStart: rl.windowStart });
+  } else {
+    aiRateMap.set(user.id, { count: 1, windowStart: now });
+  }
+
+  const body = (await c.req.json().catch(() => ({}))) as { idea?: string };
+  const idea = (body.idea ?? "").trim().slice(0, 600);
+  if (idea.length < 4) return c.json({ error: "Idea too short" }, 400);
+
+  const system =
+    `You write listings for jobsy.lv, a Latvian local-services classifieds site. ` +
+    `Given the user's rough idea, produce ONE polished listing. Respond with ONLY a JSON object (no markdown, no commentary) with EXACTLY these keys: ` +
+    `"type" (either "need" if they are looking for help, or "offer" if they provide a service), ` +
+    `"category" (one of: ${AI_CATEGORIES.join(", ")}), ` +
+    `"title" (catchy, natural Latvian, max 70 characters), ` +
+    `"description" (2-3 sentences in natural Latvian, max 400 characters), ` +
+    `"budgetText" (short price/budget hint in Latvian like "€20–40/h" or "Pēc vienošanās", or ""), ` +
+    `"whenText" (short timing in Latvian like "Šonedēļ" or "Elastīgs grafiks", or ""). ` +
+    `Always write the title and description in Latvian regardless of the input language.`;
+
+  try {
+    const r = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${env.nvidiaApiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "meta/llama-3.3-70b-instruct",
+        messages: [{ role: "system", content: system }, { role: "user", content: idea }],
+        temperature: 0.5,
+        max_tokens: 500,
+      }),
+      signal: AbortSignal.timeout(40000),
+    });
+    if (!r.ok) return c.json({ error: "AI request failed" }, 502);
+    const j = (await r.json()) as { choices?: Array<{ message?: { content?: string } }> };
+    const raw = j.choices?.[0]?.message?.content ?? "";
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) return c.json({ error: "AI returned no draft" }, 502);
+    const draft = JSON.parse(match[0]) as Record<string, unknown>;
+
+    const type = draft.type === "offer" ? "offer" : "need";
+    const category = AI_CATEGORIES.includes(String(draft.category)) ? String(draft.category) : "other";
+    const clean = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
+    return c.json({
+      type,
+      category,
+      title: clean(draft.title, 80),
+      description: clean(draft.description, 500),
+      budgetText: clean(draft.budgetText, 100),
+      whenText: clean(draft.whenText, 100),
+    });
+  } catch {
+    return c.json({ error: "AI request failed" }, 502);
+  }
+});
+
 // Cron jobs
 app.route("/api/cron", cronRouter);
 
