@@ -9,7 +9,7 @@ import { t } from "@/lib/i18n";
 import { trpc } from "@/providers/trpc";
 import { getStoredUTM } from "@/hooks/useUTM";
 import { useToast } from "@/hooks/useToast";
-import { ArrowLeft, Mail, UserPlus, Loader2, Gift, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Mail, UserPlus, Loader2, Gift, Eye, EyeOff, Check } from "lucide-react";
 
 function getGoogleOAuthUrl(referralCode?: string) {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? "";
@@ -247,6 +247,18 @@ export default function Login() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Why join — social proof / risk-reversal (register mode) */}
+        {mode === "register" && (
+          <ul className="mt-5 space-y-2.5">
+            {[t(locale, "login.benefit1"), t(locale, "login.benefit2"), t(locale, "login.benefit3")].map((b) => (
+              <li key={b} className="flex items-center gap-2.5 font-body text-body-sm text-on-surface-variant">
+                <Check className="h-4 w-4 shrink-0 text-success-emerald" aria-hidden="true" />
+                {b}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

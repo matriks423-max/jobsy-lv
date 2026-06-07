@@ -266,6 +266,9 @@ export const translations = {
       createAnother: "Izveidot vēl vienu",
     },
     login: {
+      benefit1: "Pilnīgi bez maksas — bez kredītkartes",
+      benefit2: "Saņem atbildes jau dažu stundu laikā",
+      benefit3: "Verificēti lietotāji ar telefona apstiprinājumu",
       title: "Pieslēdzies, lai turpinātu",
       subtitle: "Pieslēdzies ar Google vai e-pastu — ātri un droši.",
       btn: "Pieslēgties",
@@ -792,6 +795,9 @@ export const translations = {
       createAnother: "Создать ещё одно",
     },
     login: {
+      benefit1: "Полностью бесплатно — без кредитной карты",
+      benefit2: "Получайте ответы уже через пару часов",
+      benefit3: "Проверенные пользователи с подтверждённым телефоном",
       title: "Войдите, чтобы продолжить",
       subtitle: "Войдите через Google или email — быстро и удобно.",
       btn: "Войти",
@@ -1318,6 +1324,9 @@ export const translations = {
       createAnother: "Create another",
     },
     login: {
+      benefit1: "Completely free — no credit card",
+      benefit2: "Get replies within a few hours",
+      benefit3: "Verified users with confirmed phone numbers",
       title: "Log in to continue",
       subtitle: "Log in with Google or email — fast and secure.",
       btn: "Log in",
