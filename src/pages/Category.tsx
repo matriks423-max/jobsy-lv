@@ -7,6 +7,7 @@ import { trpc } from "@/providers/trpc";
 import PostCard, { PostCardSkeleton } from "@/components/PostCard";
 import TiltCard from "@/components/premium/TiltCard";
 import { useSeo } from "@/hooks/useSeo";
+import EmptyState from "@/components/EmptyState";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 
 const PAGE_SIZE = 12;
@@ -190,18 +191,12 @@ export default function Category() {
             ))}
           </div>
         ) : posts.length === 0 ? (
-          <div className="py-20 text-center">
-            <p className="font-body text-lg text-on-surface-variant">
-              {t(locale, "browse.noResults")}
-            </p>
-            <Link
-              to="/create"
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-outline-variant bg-accent-coral px-6 py-3 font-body text-sm font-medium text-on-surface hover:bg-accent-coral-hover"
-            >
-              <Plus className="h-4 w-4" />
-              {t(locale, "myPosts.newPost")}
-            </Link>
-          </div>
+          <EmptyState
+            categoryKey={slug}
+            title={t(locale, "emptyState.beFirstTitle")}
+            subtitle={`${catName}${cityName ? " — " + cityName : ""}. ${t(locale, "emptyState.beFirstSub")}`}
+            ctaLabel={t(locale, "emptyState.beFirstCta")}
+          />
         ) : (
           <>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

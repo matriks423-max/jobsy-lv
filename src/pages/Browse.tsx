@@ -20,6 +20,7 @@ import PostCard, { PostCardSkeleton } from "@/components/PostCard";
 import TiltCard from "@/components/premium/TiltCard";
 import { getCityCoords } from "@/lib/lv-cities";
 import { useSeo } from "@/hooks/useSeo";
+import EmptyState from "@/components/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Search,
@@ -510,26 +511,28 @@ export default function Browse() {
                     {Array.from({ length: 6 }).map((_, i) => <PostCardSkeleton key={i} />)}
                   </div>
                 ) : posts.length === 0 ? (
-                  <div className="py-16 text-center">
-                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-surface-cream text-2xl">
-                      🔍
-                    </div>
-                    <p className="font-headline text-headline-sm font-semibold text-on-surface">
-                      {t(locale, "browse.noResults")}
-                    </p>
-                    {debouncedSearch && (
-                      <p className="font-mono text-body-sm text-on-surface-variant">"{debouncedSearch}"</p>
-                    )}
-                    <p className="mt-2 font-body text-body-sm text-on-surface-variant">
-                      {t(locale, "browse.noResultsSub")}
-                    </p>
-                    <button
-                      onClick={clearFilters}
-                      className="mt-4 rounded-lg border border-outline-variant bg-white px-4 py-2 font-label text-label-sm text-on-surface shadow-card transition-all hover:border-primary hover:text-primary"
-                    >
-                      {t(locale, "browse.clear")}
-                    </button>
-                  </div>
+                  activeFiltersCount > 0 ? (
+                    <EmptyState
+                      title={t(locale, "emptyState.noResultsTitle")}
+                      subtitle={t(locale, "emptyState.noResultsSub")}
+                      ctaLabel={t(locale, "emptyState.beFirstCta")}
+                      secondary={
+                        <button
+                          onClick={clearFilters}
+                          className="rounded-lg border border-outline-variant bg-white px-4 py-2 font-label text-label-sm text-on-surface shadow-card transition-all hover:border-primary hover:text-primary"
+                        >
+                          {t(locale, "browse.clear")}
+                        </button>
+                      }
+                    />
+                  ) : (
+                    <EmptyState
+                      categoryKey={category !== "all" ? category : undefined}
+                      title={t(locale, "emptyState.beFirstTitle")}
+                      subtitle={t(locale, "emptyState.beFirstSub")}
+                      ctaLabel={t(locale, "emptyState.beFirstCta")}
+                    />
+                  )
                 ) : (
                   <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                     {posts.map(({ post, profile, isBusiness, images }) => (

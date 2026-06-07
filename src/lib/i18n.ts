@@ -3,6 +3,13 @@ export type Locale = "lv" | "ru" | "en";
 export const translations = {
   lv: {
     appName: "jobsy.lv",
+    emptyState: {
+      beFirstTitle: "Esi pirmais!",
+      beFirstSub: "Šeit vēl nav sludinājumu. Publicē savu — tas aizņem 30 sekundes un ir pilnīgi bez maksas.",
+      beFirstCta: "Publicēt sludinājumu",
+      noResultsTitle: "Nekas netika atrasts",
+      noResultsSub: "Pamēģini citus filtrus vai publicē savu sludinājumu.",
+    },
     nav: {
       menu: "Izvēlne",
       language: "Valoda",
@@ -523,6 +530,13 @@ export const translations = {
   },
   ru: {
     appName: "jobsy.lv",
+    emptyState: {
+      beFirstTitle: "Будьте первым!",
+      beFirstSub: "Здесь пока нет объявлений. Разместите своё — это займёт 30 секунд и совершенно бесплатно.",
+      beFirstCta: "Разместить объявление",
+      noResultsTitle: "Ничего не найдено",
+      noResultsSub: "Попробуйте другие фильтры или разместите своё объявление.",
+    },
     nav: {
       menu: "Меню",
       language: "Язык",
@@ -1042,6 +1056,13 @@ export const translations = {
   },
   en: {
     appName: "jobsy.lv",
+    emptyState: {
+      beFirstTitle: "Be the first!",
+      beFirstSub: "No listings here yet. Post yours — it takes 30 seconds and it's completely free.",
+      beFirstCta: "Post a listing",
+      noResultsTitle: "Nothing found",
+      noResultsSub: "Try different filters, or post your own listing.",
+    },
     nav: {
       menu: "Menu",
       language: "Language",
