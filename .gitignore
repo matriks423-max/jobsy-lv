@@ -46,3 +46,4 @@ scripts/seed-demo.mjs
 scripts/coral-contrast-fix.mjs
 scripts/clustercheck.mjs
 scripts/audit-all.mjs
+scripts/hiwshot.mjs
