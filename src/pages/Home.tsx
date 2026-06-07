@@ -33,6 +33,7 @@ import TiltCard from "@/components/premium/TiltCard";
 import { useLenis } from "@/hooks/useLenis";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { CategoryIcon } from "@/lib/categoryIcons";
+import { NotePencil, ChatCircleDots, Handshake } from "@phosphor-icons/react";
 
 const HeroCanvas = lazy(() => import("@/components/premium/HeroCanvas"));
 
@@ -397,45 +398,18 @@ export default function Home() {
       {/* -- How It Works ---------------------------------------- */}
       <section className="bg-surface-cream px-margin-mobile py-14 md:px-margin-desktop">
         <div className="mx-auto max-w-container-max-width">
-          <div className="mb-10 text-center">
+          <div className="mb-8 flex items-end justify-between gap-4">
             <h2 className="font-headline text-headline-md font-bold text-on-surface">
               {t(locale, "howItWorks.title")}
             </h2>
+            <span className="hidden font-mono text-label-sm text-on-surface-variant sm:block">01 — 03</span>
           </div>
 
-          {/* Step number indicators with dashed connector */}
-          <div className="relative mb-8 hidden md:grid md:grid-cols-3">
-            <div
-              aria-hidden="true"
-              className="absolute left-[16.667%] top-1/2 h-px w-[66.666%] -translate-y-1/2"
-              style={{ backgroundImage: "repeating-linear-gradient(90deg, #bfc9c3 0, #bfc9c3 6px, transparent 6px, transparent 14px)" }}
-            />
-            {["01", "02", "03"].map((n) => (
-              <div key={n} className="flex justify-center">
-                <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full bg-primary font-headline text-sm font-bold text-white ring-4 ring-surface-cream">
-                  {n}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-3 md:gap-6">
             {[
-              {
-                emoji: "✏️",
-                title: t(locale, "howItWorks.step1"),
-                desc: t(locale, "howItWorks.step1Desc"),
-              },
-              {
-                emoji: "💬",
-                title: t(locale, "howItWorks.step2"),
-                desc: t(locale, "howItWorks.step2Desc"),
-              },
-              {
-                emoji: "🤝",
-                title: t(locale, "howItWorks.step3"),
-                desc: t(locale, "howItWorks.step3Desc"),
-              },
+              { Icon: NotePencil, title: t(locale, "howItWorks.step1"), desc: t(locale, "howItWorks.step1Desc") },
+              { Icon: ChatCircleDots, title: t(locale, "howItWorks.step2"), desc: t(locale, "howItWorks.step2Desc") },
+              { Icon: Handshake, title: t(locale, "howItWorks.step3"), desc: t(locale, "howItWorks.step3Desc") },
             ].map((step, i) => (
               <motion.div
                 key={i}
@@ -443,13 +417,26 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="flex flex-col items-center text-center"
+                className="relative flex flex-col overflow-hidden rounded-2xl bg-white p-6 shadow-card"
               >
-                <span className="mb-4 text-4xl">{step.emoji}</span>
-                <h3 className="mb-2 font-headline text-headline-sm font-semibold text-on-surface">
+                {/* editorial ghost numeral */}
+                <span className="pointer-events-none absolute -right-1 -top-3 select-none font-headline text-[88px] font-bold leading-none text-primary/[0.06]">
+                  {i + 1}
+                </span>
+                <div className="relative mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/[0.07]">
+                  <step.Icon size={26} weight="duotone" className="text-primary" />
+                </div>
+                <h3 className="relative mb-2 font-headline text-headline-sm font-semibold text-on-surface">
                   {step.title}
                 </h3>
-                <p className="font-body text-body-sm text-on-surface-variant">{step.desc}</p>
+                <p className="relative font-body text-body-sm text-on-surface-variant">{step.desc}</p>
+                {/* connector arrow to next step (desktop) */}
+                {i < 2 && (
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="absolute -right-[18px] top-1/2 z-10 hidden h-5 w-5 -translate-y-1/2 text-primary/30 md:block"
+                  />
+                )}
               </motion.div>
             ))}
           </div>
