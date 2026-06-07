@@ -785,7 +785,7 @@ export default function PostDetail() {
 
       {/* Lightbox */}
       {showGallery && images.length > 0 && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => setShowGallery(false)}>
+        <div role="dialog" aria-modal="true" aria-label={post.title} className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => setShowGallery(false)}>
           <div className="relative max-h-[80vh] max-w-[90vw]">
             <img
               src={images[galleryIndex]}
@@ -795,16 +795,18 @@ export default function PostDetail() {
             {images.length > 1 && (
               <>
                 <button
+                  aria-label={t(locale, "postDetail.gallery.prev")}
                   onClick={(e) => { e.stopPropagation(); setGalleryIndex((i) => (i - 1 + images.length) % images.length); }}
                   className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 shadow-lg"
                 >
-                  <ChevronLeft className="h-5 w-5 text-on-surface" />
+                  <ChevronLeft className="h-5 w-5 text-on-surface" aria-hidden="true" />
                 </button>
                 <button
+                  aria-label={t(locale, "postDetail.gallery.next")}
                   onClick={(e) => { e.stopPropagation(); setGalleryIndex((i) => (i + 1) % images.length); }}
                   className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 shadow-lg"
                 >
-                  <ChevronRight className="h-5 w-5 text-on-surface" />
+                  <ChevronRight className="h-5 w-5 text-on-surface" aria-hidden="true" />
                 </button>
               </>
             )}

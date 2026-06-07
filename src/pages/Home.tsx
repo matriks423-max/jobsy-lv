@@ -410,11 +410,11 @@ export default function Home() {
                 className="relative flex flex-col overflow-hidden rounded-2xl bg-white p-6 shadow-card"
               >
                 {/* editorial ghost numeral */}
-                <span className="pointer-events-none absolute -right-1 -top-3 select-none font-headline text-[88px] font-bold leading-none text-primary/[0.06]">
+                <span aria-hidden="true" className="pointer-events-none absolute -right-1 -top-3 select-none font-headline text-[88px] font-bold leading-none text-primary/[0.06]">
                   {i + 1}
                 </span>
                 <div className="relative mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/[0.07]">
-                  <step.Icon size={26} weight="duotone" className="text-primary" />
+                  <step.Icon size={26} weight="duotone" className="text-primary" aria-hidden="true" />
                 </div>
                 <h3 className="relative mb-2 font-headline text-headline-sm font-semibold text-on-surface">
                   {step.title}

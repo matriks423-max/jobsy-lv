@@ -288,7 +288,7 @@ export default function CreatePost() {
         {!isEditing && (
           <div className="mb-6 rounded-2xl border border-primary/15 bg-primary/[0.045] p-5 md:p-6">
             <div className="mb-1.5 flex items-center gap-2">
-              <Sparkle size={20} weight="duotone" className="text-primary" />
+              <Sparkle size={20} weight="duotone" className="text-primary" aria-hidden="true" />
               <h2 className="font-headline text-headline-sm font-semibold text-on-surface">
                 {t(locale, "createPost.aiTitle")}
               </h2>
@@ -310,7 +310,7 @@ export default function CreatePost() {
               disabled={aiLoading || aiIdea.trim().length < 4}
               className="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 font-label text-label-md font-bold text-white transition hover:bg-on-primary-fixed-variant disabled:opacity-50"
             >
-              {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkle size={18} weight="fill" />}
+              {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Sparkle size={18} weight="fill" aria-hidden="true" />}
               {t(locale, "createPost.aiButton")}
             </button>
           </div>
@@ -480,7 +480,7 @@ export default function CreatePost() {
                         ) : (
                           <>
                             <ImagePlus className="h-5 w-5 text-on-surface-variant" />
-                            <span className="mt-1 text-[10px] text-on-surface-variant">Upload</span>
+                            <span className="mt-1 text-[10px] text-on-surface-variant">{t(locale, "createPost.uploadButton")}</span>
                           </>
                         )}
                       </button>

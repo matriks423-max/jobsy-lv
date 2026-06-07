@@ -4,6 +4,8 @@ export const translations = {
   lv: {
     appName: "jobsy.lv",
     nav: {
+      menu: "Izvēlne",
+      language: "Valoda",
       browse: "Sludinājumi",
       myPosts: "Mani sludinājumi",
       createPost: "Izveidot sludinājumu",
@@ -105,6 +107,7 @@ export const translations = {
     },
     postDetail: {
       breadcrumbHome: "Sākums",
+      gallery: { prev: "Iepriekšējais attēls", next: "Nākamais attēls" },
       breadcrumbPosts: "Sludinājumi",
       published: "Publicēts {date}",
       budget: "Budžets",
@@ -161,6 +164,7 @@ export const translations = {
       aiButton: "Sagatavot ar AI",
       aiDone: "Sludinājums sagatavots — pārbaudi un rediģē!",
       aiError: "Neizdevās sagatavot. Mēģini vēlreiz.",
+      uploadButton: "Augšupielādēt",
       title: "Izveidot sludinājumu",
       titleItalic: "sludinājumu",
       editTitle: "Labot sludinājumu",
@@ -520,6 +524,8 @@ export const translations = {
   ru: {
     appName: "jobsy.lv",
     nav: {
+      menu: "Меню",
+      language: "Язык",
       browse: "Объявления",
       myPosts: "Мои объявления",
       createPost: "Создать объявление",
@@ -620,6 +626,7 @@ export const translations = {
     },
     postDetail: {
       breadcrumbHome: "Главная",
+      gallery: { prev: "Предыдущее фото", next: "Следующее фото" },
       breadcrumbPosts: "Объявления",
       published: "Опубликовано {date}",
       budget: "Бюджет",
@@ -676,6 +683,7 @@ export const translations = {
       aiButton: "Подготовить с ИИ",
       aiDone: "Объявление готово — проверьте и отредактируйте!",
       aiError: "Не удалось подготовить. Попробуйте ещё раз.",
+      uploadButton: "Загрузить",
       title: "Создать объявление",
       titleItalic: "объявление",
       editTitle: "Редактировать объявление",
@@ -1035,6 +1043,8 @@ export const translations = {
   en: {
     appName: "jobsy.lv",
     nav: {
+      menu: "Menu",
+      language: "Language",
       browse: "Browse",
       myPosts: "My Posts",
       createPost: "Post a Job",
@@ -1135,6 +1145,7 @@ export const translations = {
     },
     postDetail: {
       breadcrumbHome: "Home",
+      gallery: { prev: "Previous image", next: "Next image" },
       breadcrumbPosts: "Posts",
       published: "Posted {date}",
       budget: "Budget",
@@ -1191,6 +1202,7 @@ export const translations = {
       aiButton: "Draft with AI",
       aiDone: "Draft ready — review and edit!",
       aiError: "Couldn't generate. Try again.",
+      uploadButton: "Upload",
       title: "Create a post",
       titleItalic: "post",
       editTitle: "Edit post",

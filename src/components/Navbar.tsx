@@ -207,8 +207,8 @@ export default function Navbar() {
         {/* Mobile hamburger */}
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetTrigger asChild className="md:hidden">
-            <button className="rounded-lg border border-outline p-2 text-on-surface transition-colors hover:border-primary hover:bg-surface-cream">
-              <Menu className="h-5 w-5" />
+            <button aria-label={t(locale, "nav.menu")} className="rounded-lg border border-outline p-2 text-on-surface transition-colors hover:border-primary hover:bg-surface-cream">
+              <Menu className="h-5 w-5" aria-hidden="true" />
             </button>
           </SheetTrigger>
           <SheetContent
@@ -232,7 +232,7 @@ export default function Navbar() {
                 <div className="mb-1 flex items-center gap-2 rounded-lg border border-outline-variant bg-surface-cream px-3 py-2">
                   <Globe className="h-4 w-4 shrink-0 text-on-surface-variant" />
                   <span className="font-label text-label-sm text-on-surface-variant">
-                    {locale === "lv" ? "Valoda" : locale === "ru" ? "Язык" : "Language"}
+                    {t(locale, "nav.language")}
                   </span>
                   <div className="ml-auto flex gap-1">
                     {(["lv", "ru", "en"] as const).map((l) => (

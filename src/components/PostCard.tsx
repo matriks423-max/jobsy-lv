@@ -69,6 +69,8 @@ export default function PostCard({ post, profile, isBusiness, images }: PostCard
             alt={post.title}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
+            decoding="async"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
           {/* Subtle gradient overlay so badges are readable */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />

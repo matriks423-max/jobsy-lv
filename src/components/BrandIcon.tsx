@@ -2,7 +2,7 @@
 // navbar, footer, and favicon stay consistent.
 export default function BrandIcon({ className = "h-8 w-8" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 32 32" className={className} role="img" aria-label="Jobsy">
+    <svg viewBox="0 0 32 32" className={className} aria-hidden="true" focusable="false">
       <rect width="32" height="32" rx="7" fill="#003527" />
       {/* Ears */}
       <polygon points="8,15 11,5 14,15" fill="#C0C0C0" />

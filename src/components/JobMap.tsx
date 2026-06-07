@@ -103,7 +103,7 @@ function ClusteredMarkers({ posts, locale }: JobMapProps & { locale: string }) {
         const n = cluster.getChildCount();
         const size = n < 10 ? 36 : n < 50 ? 44 : 52;
         return L.divIcon({
-          html: `<div style="display:flex;align-items:center;justify-content:center;width:${size}px;height:${size}px;border-radius:50%;background:#003527;color:#fff;font:700 13px/1 system-ui;border:3px solid rgba(255,255,255,0.85);box-shadow:0 2px 8px rgba(0,0,0,0.3)">${n}</div>`,
+          html: `<div role="img" aria-label="${n} ${n === 1 ? "sludinājums" : "sludinājumi"}" style="display:flex;align-items:center;justify-content:center;width:${size}px;height:${size}px;border-radius:50%;background:#003527;color:#fff;font:700 13px/1 system-ui;border:3px solid rgba(255,255,255,0.85);box-shadow:0 2px 8px rgba(0,0,0,0.3)">${n}</div>`,
           className: "",
           iconSize: L.point(size, size),
         });
