@@ -8,6 +8,18 @@ export function initSentryServer() {
     dsn,
     environment: process.env.NODE_ENV ?? "production",
     tracesSampleRate: 0.1,
+    sendDefaultPii: false,
+    // Defensive: never let request auth headers (NVIDIA/Unsplash keys, session
+    // cookies) reach Sentry, regardless of future integrations.
+    beforeSend(event) {
+      const h = event.request?.headers;
+      if (h) {
+        for (const k of Object.keys(h)) {
+          if (/^(authorization|cookie|x-cron-secret)$/i.test(k)) h[k] = "[redacted]";
+        }
+      }
+      return event;
+    },
   });
 }
 

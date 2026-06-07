@@ -90,8 +90,11 @@ export async function listPosts(filters?: {
     where.push(eq(schema.posts.userId, filters.userId));
   }
   if (filters?.search) {
+    // Escape LIKE wildcards so user input matches literally (a search for "50%"
+    // shouldn't act as a wildcard). Value is still bound as a parameter.
+    const term = "%" + filters.search.replace(/[\\%_]/g, (ch) => "\\" + ch) + "%";
     where.push(
-      sql`(${schema.posts.title} LIKE ${"%" + filters.search + "%"} OR ${schema.posts.description} LIKE ${"%" + filters.search + "%"})`
+      sql`(${schema.posts.title} LIKE ${term} OR ${schema.posts.description} LIKE ${term})`
     );
   }
 
@@ -280,8 +283,11 @@ export async function countPosts(filters?: {
   if (filters?.status) where.push(eq(schema.posts.status, filters.status as "pending_payment" | "active" | "closed" | "expired" | "rejected"));
   if (filters?.userId) where.push(eq(schema.posts.userId, filters.userId));
   if (filters?.search) {
+    // Escape LIKE wildcards so user input matches literally (a search for "50%"
+    // shouldn't act as a wildcard). Value is still bound as a parameter.
+    const term = "%" + filters.search.replace(/[\\%_]/g, (ch) => "\\" + ch) + "%";
     where.push(
-      sql`(${schema.posts.title} LIKE ${"%" + filters.search + "%"} OR ${schema.posts.description} LIKE ${"%" + filters.search + "%"})`
+      sql`(${schema.posts.title} LIKE ${term} OR ${schema.posts.description} LIKE ${term})`
     );
   }
   const result = await getDb()

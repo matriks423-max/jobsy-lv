@@ -54,7 +54,7 @@ app.use("*", async (c, next) => {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net",
       "img-src 'self' data: blob: https:",
-      "connect-src 'self' https://api.stripe.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://sentry.io https://*.sentry.io https://*.ingest.sentry.io https://umami-production-d8c2.up.railway.app wss:",
+      "connect-src 'self' https://api.stripe.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://sentry.io https://*.sentry.io https://*.ingest.sentry.io https://umami-production-d8c2.up.railway.app",
       "frame-src https://js.stripe.com https://hooks.stripe.com",
       "object-src 'none'",
       "base-uri 'self'",
@@ -674,6 +674,27 @@ function cacheImg(key: string, data: unknown, ttl: number) {
   imgSearchCache.set(key, { at: Date.now() - (IMG_SEARCH_TTL - ttl), data });
 }
 
+// Per-IP rate limiter (bounded map) — used to protect the unauthenticated,
+// quota-bearing Unsplash proxy from cache-busting abuse.
+function makeIpLimiter(limit: number, windowMs: number) {
+  const map = new Map<string, { count: number; windowStart: number }>();
+  return (ip: string): boolean => {
+    const now = Date.now();
+    const e = map.get(ip);
+    if (e && now - e.windowStart < windowMs) {
+      if (e.count >= limit) return false;
+      e.count++;
+      return true;
+    }
+    if (map.size > 5000) { const k = map.keys().next().value; if (k !== undefined) map.delete(k); }
+    map.set(ip, { count: 1, windowStart: now });
+    return true;
+  };
+}
+const clientIp = (c: { req: { header: (n: string) => string | undefined } }) =>
+  (c.req.header("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown";
+const imgSearchLimiter = makeIpLimiter(40, 60 * 1000); // 40/min per IP
+
 app.get("/api/images/search", async (c) => {
   const q = (c.req.query("q") ?? "").trim().slice(0, 100);
   if (!q) return c.json({ results: [] });
@@ -683,10 +704,13 @@ app.get("/api/images/search", async (c) => {
   const hit = imgSearchCache.get(cacheKey);
   if (hit && Date.now() - hit.at < IMG_SEARCH_TTL) return c.json(hit.data);
 
+  // Rate-limit only uncached lookups (cached hits are free + already returned).
+  if (!imgSearchLimiter(clientIp(c))) return c.json({ results: [], error: "rate_limited" }, 429);
+
   try {
     const r = await fetch(
       `https://api.unsplash.com/search/photos?per_page=24&orientation=landscape&content_filter=high&query=${encodeURIComponent(q)}`,
-      { headers: { Authorization: `Client-ID ${env.unsplashAccessKey}`, "Accept-Version": "v1" } }
+      { headers: { Authorization: `Client-ID ${env.unsplashAccessKey}`, "Accept-Version": "v1" }, signal: AbortSignal.timeout(8000) }
     );
     if (!r.ok) {
       const errData = { results: [], error: true };
@@ -706,7 +730,8 @@ app.get("/api/images/search", async (c) => {
     const data = { results };
     cacheImg(cacheKey, data, IMG_SEARCH_TTL);
     return c.json(data);
-  } catch {
+  } catch (err) {
+    console.error("[images/search] failed:", err instanceof Error ? err.message : err);
     return c.json({ results: [], error: true });
   }
 });
