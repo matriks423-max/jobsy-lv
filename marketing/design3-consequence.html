@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volko Engineering – Design 3: The Consequence</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+    font-family: 'Georgia', serif;
+    background: #0d0d0d;
+  }
+
+  .card {
+    width: 1080px;
+    height: 1080px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* FULL BLEED: interior/document table or house papers scene */
+  .bg {
+    position: absolute;
+    inset: 0;
+    background:
+      url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1080&q=90') center/cover no-repeat;
+  }
+
+  /* Heavy dark overlay – keeps it dramatic */
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      160deg,
+      rgba(10,10,10,0.92) 0%,
+      rgba(10,10,10,0.65) 50%,
+      rgba(10,10,10,0.88) 100%
+    );
+  }
+
+  /* TOP STRIP */
+  .top-strip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(to right, #C9A84C 0%, #8B6914 50%, #C9A84C 100%);
+  }
+
+  /* Logo top-left */
+  .logo {
+    position: absolute;
+    top: 48px;
+    left: 56px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .logo-name {
+    font-family: 'Arial', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3.5px;
+    color: #C9A84C;
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+
+  /* FREE BADGE – top right */
+  .badge {
+    position: absolute;
+    top: 44px;
+    right: 56px;
+    border: 2px solid #C9A84C;
+    padding: 9px 22px;
+    font-family: 'Arial', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    color: #C9A84C;
+    text-transform: uppercase;
+  }
+
+  /* MAIN CENTER content */
+  .center {
+    position: absolute;
+    top: 50%;
+    left: 56px;
+    right: 56px;
+    transform: translateY(-52%);
+  }
+
+  /* Three consequence pills */
+  .pills {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 52px;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 24px;
+    border-left: 4px solid #C9A84C;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(4px);
+    width: fit-content;
+  }
+
+  .pill-num {
+    font-family: 'Arial', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #C9A84C;
+    letter-spacing: 1px;
+    min-width: 24px;
+  }
+
+  .pill-text {
+    font-family: 'Arial', sans-serif;
+    font-size: 20px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+
+  .pill-text strong {
+    color: rgba(255,255,255,0.9);
+    font-weight: 600;
+  }
+
+  /* BIG headline */
+  .headline {
+    font-family: 'Georgia', serif;
+    font-size: 76px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    margin-bottom: 16px;
+  }
+
+  .headline .gold {
+    color: #C9A84C;
+  }
+
+  /* Thin rule */
+  .rule {
+    width: 72px;
+    height: 3px;
+    background: #C9A84C;
+    margin: 32px 0;
+  }
+
+  .sub {
+    font-family: 'Arial', sans-serif;
+    font-size: 22px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+    font-weight: 300;
+    max-width: 580px;
+  }
+
+  /* BOTTOM CTA BAND */
+  .bottom-band {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #C9A84C;
+    padding: 0 56px;
+    height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .cta-text {
+    font-family: 'Arial', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #0d0d0d;
+    text-transform: uppercase;
+  }
+
+  .cta-right {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .cta-url {
+    font-family: 'Arial', sans-serif;
+    font-size: 15px;
+    color: rgba(0,0,0,0.55);
+    letter-spacing: 0.5px;
+  }
+
+  .cta-arrow {
+    font-size: 36px;
+    color: #0d0d0d;
+    font-weight: 300;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="bg"></div>
+  <div class="overlay"></div>
+  <div class="top-strip"></div>
+
+  <!-- Logo -->
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 44 44" fill="none">
+      <rect x="17" y="8" width="10" height="28" fill="#C9A84C"/>
+      <rect x="6" y="16" width="9" height="20" fill="#C9A84C" opacity="0.65"/>
+      <rect x="29" y="13" width="9" height="23" fill="#C9A84C" opacity="0.8"/>
+      <rect x="20" y="3" width="4" height="7" fill="#C9A84C"/>
+    </svg>
+    <div class="logo-name">VOLKO<br>ENGINEERING</div>
+  </div>
+
+  <!-- Badge -->
+  <div class="badge">Bezmaksas</div>
+
+  <!-- CENTER -->
+  <div class="center">
+    <div class="pills">
+      <div class="pill">
+        <span class="pill-num">01</span>
+        <span class="pill-text"><strong>Banka</strong> var atteikt kredītu</span>
+      </div>
+      <div class="pill">
+        <span class="pill-num">02</span>
+        <span class="pill-text"><strong>Pircējs</strong> var atkāpties no darījuma</span>
+      </div>
+      <div class="pill">
+        <span class="pill-num">03</span>
+        <span class="pill-text"><strong>Tiesa</strong> var pieprasīt nojaukšanu</span>
+      </div>
+    </div>
+
+    <div class="headline">
+      Uzzini pirms<br>
+      viņi <span class="gold">uzzina.</span>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="sub">
+      Bezmaksas īpašuma novērtējums —<br>
+      konfidenciāli, 48h laikā.
+    </div>
+  </div>
+
+  <!-- Bottom CTA band -->
+  <div class="bottom-band">
+    <div class="cta-text">Saņem bezmaksas izvērtējumu</div>
+    <div class="cta-right">
+      <div class="cta-url">volkoengineering.com</div>
+      <div class="cta-arrow">→</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

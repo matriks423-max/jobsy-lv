@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volko Engineering – Design 2: The Shock Statistic</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+    font-family: 'Georgia', serif;
+    background: #F5F0E8;
+  }
+
+  .card {
+    width: 1080px;
+    height: 1080px;
+    position: relative;
+    display: flex;
+  }
+
+  /* LEFT PANEL – image */
+  .left {
+    width: 520px;
+    height: 1080px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .left-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        135deg,
+        rgba(0,0,0,0.1) 0%,
+        rgba(0,0,0,0.4) 100%
+      ),
+      url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=90') center/cover no-repeat;
+  }
+
+  /* Red X stamp – illegal marker */
+  .stamp {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    width: 240px;
+    height: 240px;
+    border: 14px solid rgba(220, 38, 38, 0.85);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stamp-text {
+    font-family: 'Arial', sans-serif;
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: rgba(220, 38, 38, 0.85);
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  /* left bottom label */
+  .left-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 28px 36px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  }
+
+  .left-label-text {
+    font-family: 'Arial', sans-serif;
+    font-size: 17px;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.5px;
+  }
+
+  /* RIGHT PANEL */
+  .right {
+    flex: 1;
+    height: 1080px;
+    background: #F5F0E8;
+    display: flex;
+    flex-direction: column;
+    padding: 58px 52px 52px;
+    position: relative;
+  }
+
+  /* Top gold badge */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #C9A84C;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 9px 20px;
+    align-self: flex-start;
+    margin-bottom: 56px;
+  }
+
+  /* BIG NUMBER */
+  .big-num {
+    font-family: 'Georgia', serif;
+    font-size: 200px;
+    font-weight: bold;
+    color: #1a1a1a;
+    line-height: 0.85;
+    letter-spacing: -6px;
+    margin-bottom: 0;
+  }
+
+  .big-num-unit {
+    font-family: 'Georgia', serif;
+    font-size: 48px;
+    font-weight: bold;
+    color: #C9A84C;
+    letter-spacing: -1px;
+    margin-top: -8px;
+    margin-bottom: 28px;
+  }
+
+  .gold-line {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, #C9A84C, transparent);
+    margin-bottom: 32px;
+  }
+
+  .headline-right {
+    font-family: 'Georgia', serif;
+    font-size: 36px;
+    color: #1a1a1a;
+    line-height: 1.35;
+    margin-bottom: 20px;
+  }
+
+  .headline-right .gold {
+    color: #C9A84C;
+    font-style: italic;
+  }
+
+  .sub-right {
+    font-family: 'Arial', sans-serif;
+    font-size: 17px;
+    color: #555;
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  /* CTA */
+  .cta-wrap {
+    margin-top: auto;
+  }
+
+  .cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #1a1a1a;
+    color: #C9A84C;
+    font-family: 'Arial', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 22px 28px;
+    text-decoration: none;
+    margin-bottom: 22px;
+  }
+
+  .cta-arrow { font-size: 22px; }
+
+  /* Logo bottom */
+  .logo-bottom {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon-sm {
+    width: 32px;
+    height: 32px;
+  }
+
+  .logo-text-sm {
+    font-family: 'Arial', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #888;
+    text-transform: uppercase;
+  }
+
+  .website-right {
+    font-family: 'Arial', sans-serif;
+    font-size: 13px;
+    color: #aaa;
+    margin-top: 10px;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- LEFT: dramatic house with illegal stamp -->
+  <div class="left">
+    <div class="left-bg"></div>
+    <div class="stamp">
+      <div class="stamp-text">NELE-<br>GĀLS</div>
+    </div>
+    <div class="left-label">
+      <div class="left-label-text">Vai zini, ko jūsu māja slēpj?</div>
+    </div>
+  </div>
+
+  <!-- RIGHT: stat + copy -->
+  <div class="right">
+    <div class="badge">Latvijas statistika</div>
+
+    <div class="big-num">1/3</div>
+    <div class="big-num-unit">māju ir problemātiskas</div>
+
+    <div class="gold-line"></div>
+
+    <div class="headline-right">
+      Īpašnieki <span class="gold">nezina</span>,<br>
+      kamēr nav par vēlu.
+    </div>
+
+    <div class="sub-right">
+      Banka, pircējs vai tiesa parasti atklāj pirmie.<br>
+      Saņem bezmaksas izvērtējumu — šodien.
+    </div>
+
+    <div class="cta-wrap">
+      <a href="#" class="cta">
+        Pārbaudi savu īpašumu <span class="cta-arrow">→</span>
+      </a>
+      <div class="logo-bottom">
+        <svg class="logo-icon-sm" viewBox="0 0 32 32" fill="none">
+          <rect x="12" y="6" width="8" height="20" fill="#C9A84C"/>
+          <rect x="4" y="12" width="7" height="14" fill="#C9A84C" opacity="0.65"/>
+          <rect x="21" y="10" width="7" height="16" fill="#C9A84C" opacity="0.8"/>
+          <rect x="15" y="2" width="3" height="6" fill="#C9A84C"/>
+        </svg>
+        <div>
+          <div class="logo-text-sm">Volko Engineering</div>
+          <div class="website-right">volkoengineering.com</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
