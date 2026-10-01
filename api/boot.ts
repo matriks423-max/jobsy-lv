@@ -759,6 +759,47 @@ const AI_CATEGORIES = ["household", "moving", "repairs", "garden", "auto", "chil
 const aiRateMap = new Map<number, { count: number; windowStart: number }>();
 const AI_RATE_LIMIT = 15;
 const AI_RATE_WINDOW_MS = 10 * 60 * 1000;
+// Tried in order, each with its own time budget (total stays under nginx's 60s).
+// Glimmer writes natural Latvian but takes 6-15s and sometimes far longer;
+// Nemotron answers in ~2s with clumsy Latvian ("nāda" for "aukle"). NVIDIA
+// retires free NIM models (llama-3.3-70b: HTTP 410 since 2026-08-26), so
+// re-probe an id with a real completion before changing it.
+const AI_DRAFT_MODELS: Array<[model: string, timeoutMs: number]> = [
+  ["meta/muse-glimmer-30b", 25_000],
+  ["nvidia/nemotron-3-super-120b-a12b", 15_000],
+];
+
+/** One draft attempt. Throws with the HTTP status / finish reason so the caller can log why. */
+async function draftListing(model: string, system: string, idea: string, timeoutMs: number) {
+  const r = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${env.nvidiaApiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model,
+      // Nemotron answered Russian ideas in Russian until the user turn repeated this.
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: `${idea}\n\n(Write the JSON listing with the title and description in Latvian.)` },
+      ],
+      temperature: 0.5,
+      // Room for Glimmer's residual reasoning, which counts against this budget.
+      max_tokens: 1200,
+      // Nemotron 3 thinks by default and the thinking counts against max_tokens.
+      chat_template_kwargs: { enable_thinking: false },
+    }),
+    signal: AbortSignal.timeout(timeoutMs),
+  });
+  if (!r.ok) {
+    throw new Error(`HTTP ${r.status}: ${(await r.text()).replace(/\s+/g, " ").slice(0, 300)}`);
+  }
+  const j = (await r.json()) as { choices?: Array<{ message?: { content?: string | null }; finish_reason?: string }> };
+  const raw = j.choices?.[0]?.message?.content ?? "";
+  const match = raw.match(/\{[\s\S]*\}/);
+  if (!match) {
+    throw new Error(`no JSON draft (finish_reason=${j.choices?.[0]?.finish_reason ?? "n/a"}): ${JSON.stringify(raw.slice(0, 200))}`);
+  }
+  return JSON.parse(match[0]) as Record<string, unknown>;
+}
 
 app.post("/api/ai/draft-post", async (c) => {
   const { authenticateRequest } = await import("./kimi/auth");
@@ -795,40 +836,28 @@ app.post("/api/ai/draft-post", async (c) => {
     `"whenText" (short timing in Latvian like "Šonedēļ" or "Elastīgs grafiks", or ""). ` +
     `Always write the title and description in Latvian regardless of the input language.`;
 
-  try {
-    const r = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${env.nvidiaApiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "meta/llama-3.3-70b-instruct",
-        messages: [{ role: "system", content: system }, { role: "user", content: idea }],
-        temperature: 0.5,
-        max_tokens: 500,
-      }),
-      signal: AbortSignal.timeout(40000),
-    });
-    if (!r.ok) return c.json({ error: "AI request failed" }, 502);
-    const j = (await r.json()) as { choices?: Array<{ message?: { content?: string } }> };
-    const raw = j.choices?.[0]?.message?.content ?? "";
-    const match = raw.match(/\{[\s\S]*\}/);
-    if (!match) return c.json({ error: "AI returned no draft" }, 502);
-    const draft = JSON.parse(match[0]) as Record<string, unknown>;
-
-    const type = draft.type === "offer" ? "offer" : "need";
-    const category = AI_CATEGORIES.includes(String(draft.category)) ? String(draft.category) : "other";
-    const clean = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
-    return c.json({
-      type,
-      category,
-      title: clean(draft.title, 80),
-      description: clean(draft.description, 500),
-      budgetText: clean(draft.budgetText, 100),
-      whenText: clean(draft.whenText, 100),
-    });
-  } catch (err) {
-    console.error("[ai/draft-post] failed:", err instanceof Error ? err.message : err);
-    return c.json({ error: "AI request failed" }, 502);
+  let draft: Record<string, unknown> | null = null;
+  for (const [model, timeoutMs] of AI_DRAFT_MODELS) {
+    try {
+      draft = await draftListing(model, system, idea, timeoutMs);
+      break;
+    } catch (err) {
+      console.error(`[ai/draft-post] ${model} FAILED: ${err instanceof Error ? `${err.name}: ${err.message}` : err}`);
+    }
   }
+  if (!draft) return c.json({ error: "AI request failed" }, 502);
+
+  const type = draft.type === "offer" ? "offer" : "need";
+  const category = AI_CATEGORIES.includes(String(draft.category)) ? String(draft.category) : "other";
+  const clean = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
+  return c.json({
+    type,
+    category,
+    title: clean(draft.title, 80),
+    description: clean(draft.description, 500),
+    budgetText: clean(draft.budgetText, 100),
+    whenText: clean(draft.whenText, 100),
+  });
 });
 
 // Cron jobs
