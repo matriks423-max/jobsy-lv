@@ -102,14 +102,14 @@ export const translations = {
       viewPost: "Skatīt",
       viewList: "Saraksts",
       viewMap: "Karte",
-      mapShowing: "Kartē redzami {count} sludinājumi",
+      mapShowing: { zero: "Kartē redzami {count} sludinājumu", one: "Kartē redzams {count} sludinājums", other: "Kartē redzami {count} sludinājumi" },
       prev: "Iepriekšējie",
       next: "Nākamie",
       saveAlert: "Saglabāt meklēšanu",
       alertSaved: "Meklēšana saglabāta! Saņemsi paziņojumu par jauniem sludinājumiem.",
       alertLabelPlaceholder: "Nosaukums (piemēram: IT darbi Rīgā)",
       alertConfirm: "Saglabāt",
-      showing: "Atrasti {count} sludinājumi",
+      showing: { zero: "Atrasti {count} sludinājumu", one: "Atrasts {count} sludinājums", other: "Atrasti {count} sludinājumi" },
       featured: "⭐ Izceltie sludinājumi",
     },
     postDetail: {
@@ -631,14 +631,14 @@ export const translations = {
       viewPost: "Смотреть",
       viewList: "Список",
       viewMap: "Карта",
-      mapShowing: "На карте видно {count} объявлений",
+      mapShowing: { one: "На карте видно {count} объявление", few: "На карте видно {count} объявления", many: "На карте видно {count} объявлений", other: "На карте видно {count} объявления" },
       prev: "Назад",
       next: "Вперёд",
       saveAlert: "Сохранить поиск",
       alertSaved: "Поиск сохранён! Получите уведомление о новых объявлениях.",
       alertLabelPlaceholder: "Название (например: IT вакансии в Риге)",
       alertConfirm: "Сохранить",
-      showing: "Найдено {count} объявлений",
+      showing: { one: "Найдено {count} объявление", few: "Найдено {count} объявления", many: "Найдено {count} объявлений", other: "Найдено {count} объявления" },
       featured: "⭐ Избранные",
     },
     postDetail: {
@@ -1160,14 +1160,14 @@ export const translations = {
       viewPost: "View",
       viewList: "List",
       viewMap: "Map",
-      mapShowing: "Showing {count} posts on map",
+      mapShowing: { one: "Showing {count} post on map", other: "Showing {count} posts on map" },
       prev: "Previous",
       next: "Next",
       saveAlert: "Save search",
       alertSaved: "Search saved! You'll be notified about new matching posts.",
       alertLabelPlaceholder: "Name (e.g. IT jobs in Riga)",
       alertConfirm: "Save",
-      showing: "Found {count} posts",
+      showing: { one: "Found {count} post", other: "Found {count} posts" },
       featured: "⭐ Featured Posts",
     },
     postDetail: {
@@ -1611,6 +1611,11 @@ export function t(locale: Locale, key: string, params?: Record<string, string | 
         }
       }
     }
+  }
+  // Plural forms: { one, few, many, zero, other } picked by the locale's CLDR rules for params.count.
+  if (value && typeof value === "object" && "other" in value && typeof params?.count === "number") {
+    const forms = value as Record<string, string>;
+    value = forms[new Intl.PluralRules(locale).select(params.count)] ?? forms.other;
   }
   if (typeof value !== "string") return key;
   if (params) {
